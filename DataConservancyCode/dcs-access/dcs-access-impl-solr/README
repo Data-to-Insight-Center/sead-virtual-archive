@@ -1,0 +1,2 @@
+Setup solr server. Can use embedded server or http server.
+Use schema.xml in src/main/resources/org/dataconservancy/dcs/access/impl/solr/conf.

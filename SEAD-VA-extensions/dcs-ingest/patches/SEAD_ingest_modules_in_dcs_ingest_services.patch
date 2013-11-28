@@ -1,0 +1,324 @@
+Index: dcs-ingest-services/src/main/java/org/dataconservancy/dcs/ingest/services/StagedContentResolver.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- dcs-ingest-services/src/main/java/org/dataconservancy/dcs/ingest/services/StagedContentResolver.java	(revision 2117)
++++ dcs-ingest-services/src/main/java/org/dataconservancy/dcs/ingest/services/StagedContentResolver.java	(revision )
+@@ -31,6 +31,7 @@
+ import org.dataconservancy.model.dcs.DcsEvent;
+ import org.dataconservancy.model.dcs.DcsFile;
+ import org.dataconservancy.model.dcs.DcsFixity;
++import org.seadva.model.pack.ResearchObject;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+ 
+Index: dcs-ingest-services/src/main/java/org/dataconservancy/dcs/ingest/services/SimpleMimeCharacterizer.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- dcs-ingest-services/src/main/java/org/dataconservancy/dcs/ingest/services/SimpleMimeCharacterizer.java	(revision 2117)
++++ dcs-ingest-services/src/main/java/org/dataconservancy/dcs/ingest/services/SimpleMimeCharacterizer.java	(revision )
+@@ -15,6 +15,7 @@
+  */
+ package org.dataconservancy.dcs.ingest.services;
+ 
++import java.io.File;
+ import java.io.IOException;
+ import java.io.InputStream;
+ 
+@@ -33,6 +34,7 @@
+ import org.dataconservancy.model.dcs.DcsEvent;
+ import org.dataconservancy.model.dcs.DcsFile;
+ import org.dataconservancy.model.dcs.DcsFormat;
++import org.seadva.model.pack.ResearchObject;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+ 
+@@ -69,7 +71,7 @@
+ 
+     public void execute(String sipRef) throws IngestServiceException {
+         if (isDisabled()) return;
+-        
++
+         Dcp sip = ingest.getSipStager().getSIP(sipRef);
+         Set<DcsFile> files = new HashSet<DcsFile>();
+         List<DcsEvent> events = new ArrayList<DcsEvent>();
+@@ -93,6 +95,11 @@
+                 modified = true;
+             }
+ 
++            File filePath = new File(file.getSource().replace("file://",""));
++            long length = filePath.length();
++            file.setSizeBytes(length);
++
++            modified = true;
+             files.add(file);
+         }
+ 
+Index: dcs-ingest-services/src/main/java/org/dataconservancy/dcs/ingest/services/ExternalContentStager.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- dcs-ingest-services/src/main/java/org/dataconservancy/dcs/ingest/services/ExternalContentStager.java	(revision 2117)
++++ dcs-ingest-services/src/main/java/org/dataconservancy/dcs/ingest/services/ExternalContentStager.java	(revision )
+@@ -21,6 +21,7 @@
+ import java.net.MalformedURLException;
+ import java.net.URL;
+ 
++import java.net.URLConnection;
+ import java.security.MessageDigest;
+ import java.security.NoSuchAlgorithmException;
+ 
+@@ -45,6 +46,7 @@
+ import org.dataconservancy.model.dcs.DcsEvent;
+ import org.dataconservancy.model.dcs.DcsFile;
+ import org.dataconservancy.model.dcs.DcsFixity;
++import org.seadva.model.pack.ResearchObject;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+ 
+@@ -98,7 +100,7 @@
+ 
+         if (modified) {
+             sip.setFiles(files);
+-            ingest.getSipStager().updateSIP(sip, sipRef);
++            ingest.getSipStager().updateSIP((ResearchObject)sip, sipRef);
+         }
+     }
+ 
+@@ -125,7 +127,20 @@
+         InputStream stream = null;
+         StagedFile staged = null;
+         try {
+-            stream = fixityFilter(fileUrl.openStream(), metadata, eventsToAdd);
++            InputStream src = null;
++            if(file.getSource().contains("file:"))
++                src = fileUrl.openStream();
++            else if (file.getSource().contains("http:"))
++            {
++                String loginPassword = "kavchand@indiana.edu"+ ":" + "maximus";
++                String encoded = new sun.misc.BASE64Encoder().encode (loginPassword.getBytes());
++                URLConnection conn = fileUrl.openConnection();
++                conn.setConnectTimeout(15*1000);
++                conn.setReadTimeout(15*1000);
++                conn.setRequestProperty ("Authorization", "Basic " + encoded);
++                src = conn.getInputStream();
++            }
++            stream = fixityFilter(src, metadata, eventsToAdd);
+             staged = ingest.getFileContentStager().add(stream, metadata);
+             file.setSource(staged.getReferenceURI());
+         } catch (IOException e) {
+@@ -177,7 +192,7 @@
+             fixity.setValue(outcome[1]);
+             fileEntity.addFixity(fixity);
+         }
+-        ingest.getSipStager().updateSIP(stagedSip, sipRef);
++        ingest.getSipStager().updateSIP((ResearchObject)stagedSip, sipRef);
+ 
+         /*
+          * Set the staged content file as the target for all events, and add
+Index: dcs-ingest-services/src/main/java/org/dataconservancy/dcs/ingest/services/util/CachedSipStager.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- dcs-ingest-services/src/main/java/org/dataconservancy/dcs/ingest/services/util/CachedSipStager.java	(revision 2117)
++++ dcs-ingest-services/src/main/java/org/dataconservancy/dcs/ingest/services/util/CachedSipStager.java	(revision )
+@@ -67,7 +67,7 @@
+ 
+     public void retire(String id) {
+         if (cache.containsKey(id)) {
+-            delegate.updateSIP((Dcp) cache.get(id), id);
++            delegate.updateSIP(cache.get(id), id);
+             cache.remove(id);
+         }
+         delegate.retire(id);
+@@ -114,7 +114,7 @@
+ 
+         @Override
+         protected boolean removeLRU(LinkEntry entry) {
+-            delegate.updateSIP((Dcp) entry.getValue(), (String) entry.getKey());
++            delegate.updateSIP((Dcp)entry.getValue(), (String) entry.getKey());
+             return true;
+         }
+     }
+Index: dcs-ingest-services/src/main/java/org/dataconservancy/dcs/ingest/services/util/QueryServiceSipStager.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- dcs-ingest-services/src/main/java/org/dataconservancy/dcs/ingest/services/util/QueryServiceSipStager.java	(revision 2117)
++++ dcs-ingest-services/src/main/java/org/dataconservancy/dcs/ingest/services/util/QueryServiceSipStager.java	(revision )
+@@ -30,6 +30,7 @@
+ import org.dataconservancy.model.dcs.DcsEvent;
+ import org.dataconservancy.model.dcs.DcsFile;
+ import org.dataconservancy.model.dcs.DcsManifestation;
++import org.seadva.model.pack.ResearchObject;
+ import org.springframework.beans.factory.annotation.Required;
+ 
+ import static org.dataconservancy.dcs.index.solr.support.SolrQueryUtil.createLiteralQuery;
+@@ -88,7 +89,7 @@
+                 return null; /* no results */
+             }
+ 
+-            Dcp result = new Dcp();
++            ResearchObject result = new ResearchObject();
+ 
+             for (QueryMatch<DcsEntity> m : matches.getMatches()) {
+                 DcsEntity entity = m.getObject();
+Index: dcs-ingest-services/src/main/java/org/dataconservancy/dcs/ingest/services/LineageLabeller.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- dcs-ingest-services/src/main/java/org/dataconservancy/dcs/ingest/services/LineageLabeller.java	(revision 2117)
++++ dcs-ingest-services/src/main/java/org/dataconservancy/dcs/ingest/services/LineageLabeller.java	(revision )
+@@ -33,6 +33,7 @@
+ import org.dataconservancy.model.dcs.DcsEvent;
+ import org.dataconservancy.model.dcs.DcsRelation;
+ import org.dataconservancy.model.dcs.DcsRelationship;
++import org.seadva.model.pack.ResearchObject;
+ import org.springframework.beans.factory.annotation.Required;
+ 
+ /**
+Index: dcs-ingest-services/src/main/java/org/dataconservancy/dcs/ingest/services/util/ReadingSipStager.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- dcs-ingest-services/src/main/java/org/dataconservancy/dcs/ingest/services/util/ReadingSipStager.java	(revision 2117)
++++ dcs-ingest-services/src/main/java/org/dataconservancy/dcs/ingest/services/util/ReadingSipStager.java	(revision )
+@@ -19,6 +19,7 @@
+ 
+ import org.dataconservancy.dcs.ingest.SipStager;
+ import org.dataconservancy.model.dcp.Dcp;
++import org.seadva.model.pack.ResearchObject;
+ import org.springframework.beans.factory.annotation.Required;
+ 
+ /**
+Index: dcs-ingest-services/pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- dcs-ingest-services/pom.xml	(revision 2117)
++++ dcs-ingest-services/pom.xml	(revision )
+@@ -21,6 +21,7 @@
+   <name>Ingest services</name>
+   <description>Individual services for processing ingested content</description>
+   <packaging>jar</packaging>
++    <version>1.1.1-SNAPSHOT</version>
+ 
+   <parent>
+     <artifactId>dcs-ingest</artifactId>
+@@ -104,10 +105,22 @@
+     <dependency>
+       <groupId>org.dataconservancy.dcs</groupId>
+       <artifactId>dcs-virus-scanning</artifactId>
++      <version>1.1.0-SNAPSHOT</version>
++    </dependency>
++
++      <dependency>
++          <groupId>org.seadva.model</groupId>
++          <artifactId>sead-model</artifactId>
++          <version>1.1.0-SNAPSHOT</version>
++      </dependency>
++
++      <dependency>
++          <groupId>org.seadva.model</groupId>
++          <artifactId>sead-model-builder-xstream</artifactId>
+-      <version>1.1.0-SNAPSHOT</version>
+-    </dependency>
++          <version>1.1.0-SNAPSHOT</version>
++      </dependency>
+ 
+-    <dependency>
++      <dependency>
+       <groupId>org.springframework</groupId>
+       <artifactId>spring-beans</artifactId>
+       <scope>provided</scope>
+Index: dcs-ingest-services/src/main/java/org/dataconservancy/dcs/ingest/services/Finisher.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- dcs-ingest-services/src/main/java/org/dataconservancy/dcs/ingest/services/Finisher.java	(revision 2117)
++++ dcs-ingest-services/src/main/java/org/dataconservancy/dcs/ingest/services/Finisher.java	(revision )
+@@ -37,6 +37,7 @@
+ import org.dataconservancy.model.dcs.DcsEntity;
+ import org.dataconservancy.model.dcs.DcsEntityReference;
+ import org.dataconservancy.model.dcs.DcsEvent;
++import org.seadva.model.pack.ResearchObject;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+ import org.springframework.beans.factory.annotation.Required;
+@@ -149,9 +150,9 @@
+ 
+     public void execute(String sipRef) {
+         if (isDisabled()) return;
+-        Dcp dcp = ingest.getSipStager().getSIP(sipRef);
++        ResearchObject dcp = (ResearchObject)ingest.getSipStager().getSIP(sipRef);
+ 
+-        if (verifyArchiveEntities) {
++       /* if (verifyArchiveEntities) {
+             checkArchive(dcp);
+         }
+ 
+@@ -162,10 +163,10 @@
+             }
+             checkIndex(dcp);
+         }
+-
++*/
+         addSuccessEvent(sipRef, dcp);
+ 
+-        dcp = ingest.getSipStager().getSIP(sipRef);
++        dcp = (ResearchObject)ingest.getSipStager().getSIP(sipRef);
+ 
+         for (DcsEvent e : dcp.getEvents()) {
+             if (Events.INGEST_SUCCESS.equals(e.getEventType())) {
+@@ -244,7 +245,7 @@
+     }
+ 
+     private void archiveEvent(DcsEvent e) {
+-        Dcp dcp = new Dcp();
++        ResearchObject dcp = new ResearchObject();
+         dcp.addEvent(e);
+ 
+         ByteArrayOutputStream out = new ByteArrayOutputStream();
+Index: dcs-ingest-services/src/main/java/org/dataconservancy/dcs/ingest/services/Labeller.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- dcs-ingest-services/src/main/java/org/dataconservancy/dcs/ingest/services/Labeller.java	(revision 2117)
++++ dcs-ingest-services/src/main/java/org/dataconservancy/dcs/ingest/services/Labeller.java	(revision )
+@@ -44,6 +44,8 @@
+ import org.dataconservancy.model.dcs.DcsManifestationFile;
+ import org.dataconservancy.model.dcs.DcsMetadataRef;
+ import org.dataconservancy.model.dcs.DcsRelation;
++import org.seadva.model.SeadDeliverableUnit;
++import org.seadva.model.pack.ResearchObject;
+ import org.springframework.beans.factory.annotation.Required;
+ 
+ /**
+@@ -81,6 +83,7 @@
+         Map<String, String> idMap = new HashMap<String, String>();
+         List<DcsEvent> events = new ArrayList<DcsEvent>();
+         Iterator<Identifier> idItr;
++        System.out.println("---------------------" + ((SeadDeliverableUnit)((ResearchObject) sip).getDeliverableUnits().iterator().next()).getAbstrct()+"------------------------");
+ 
+         Collection<DcsCollection> collections = sip.getCollections();
+         if (collections.size() > 0) {
+@@ -137,7 +140,7 @@
+ 
+         /* Update internal references, and save */
+         sip = updateReferences(ingest.getSipStager().getSIP(sipRef), idMap);
+-        ingest.getSipStager().updateSIP(sip, sipRef);
++        ingest.getSipStager().updateSIP((ResearchObject)sip, sipRef);
+ 
+     }
+ 

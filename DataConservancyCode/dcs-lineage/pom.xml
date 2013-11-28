@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+--><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  
+  <!-- 
+    $Id$
+    $URL$
+  -->
+  
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.dataconservancy.lineage</groupId>
+  <artifactId>dcs-lineage</artifactId>
+  <packaging>pom</packaging>
+  <name>Data Conservancy Lineage Service (parent pom)</name>
+  <description>A service to determine the lineage of versioned items</description>
+  <url>http://maven.dataconservancy.org/sites/lineage</url>
+  <parent>
+    <artifactId>project-pom</artifactId>
+    <groupId>org.dataconservancy</groupId>
+    <version>1.1.0-SNAPSHOT</version>
+  </parent>
+  
+  <!-- Modules  =================================================== -->
+  
+  <profiles>
+    <profile>
+      <id>default</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <modules>
+        <module>dcs-lineage-api</module>
+        <module>dcs-lineage-impl</module>
+        <module>dcs-lineage-http</module>
+        <!--module>dcs-lineage-webapp</module-->
+      </modules>
+    </profile>
+    
+    <profile>
+      <id>aggregate_release</id>
+      <modules>
+        <!-- Intentionally left empty -->
+      </modules>
+    </profile>
+  </profiles>
+  
+  <reporting>
+    
+    <plugins>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>2.3.1</version>
+        <reportSets>
+          <reportSet>
+            <configuration>
+              <webAccessUrl>https://scm.dataconservancy.org/svn/dcs-access/trunk</webAccessUrl>
+              <anonymousConnection>scm:svn:https://scm.dataconservancy.org/svn/dcs-access/trunk</anonymousConnection>
+              <developerConnection>scm:svn:https://scm.dataconservancy.org/svn/dcs-access/trunk</developerConnection>
+            </configuration>
+            <reports>
+              <report>mailing-list</report>
+              <report>cim</report>
+              <report>issue-tracking</report>
+              <report>scm</report>
+              <report>index</report>
+              <report>license</report>
+            </reports>
+          </reportSet>          
+        </reportSets>                                  
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <reportSets>
+          <reportSet>
+            <id>default</id>
+            <reports>
+              <report>javadoc</report>
+            </reports>
+          </reportSet>
+          <reportSet>
+            <id>aggregate</id>
+            <reports>
+              <report>aggregate</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      
+    </plugins>
+  </reporting>  
+
+  <!-- SCM  ======================================================= -->
+
+  <scm>
+    <connection>scm:svn:${svn.base}/dcs-lineage/trunk/</connection>
+    <developerConnection>scm:svn:${svn.base}/dcs-lineage/trunk/</developerConnection>
+    <url>https://scm.dataconservancy.org/svn/dcs-lineage/trunk/</url>
+  </scm>
+
+</project>

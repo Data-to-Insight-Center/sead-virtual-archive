@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2013 The Trustees of Indiana University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<wsdl:definitions targetNamespace="http://seadva.org/MatchMaker/Webservice" xmlns:impl="http://seadva.org/MatchMaker" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:impl2="http://seadva.org/MatchMaker/Webservice" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <wsdl:types>
+    <schema elementFormDefault="qualified" targetNamespace="http://seadva.org/MatchMaker" xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://seadva.org/MatchMaker" schemaLocation="ad.xsd"/>
+
+        </schema>
+    <schema elementFormDefault="qualified" targetNamespace="http://seadva.org/MatchMaker/Webservice" xmlns="http://www.w3.org/2001/XMLSchema">
+
+            <element name="GetMatchRequest">
+                <complexType>
+                    <sequence>
+                        <element name="userClassAd" type="impl:classAdType"/>
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="GetMatchResponse">
+                <complexType>
+                    <sequence>
+                        <element name="resourceClassAd" type="impl:classAdType"/>
+                    </sequence>
+                </complexType>
+            </element>
+        </schema>
+  </wsdl:types>
+  <wsdl:message name="GetMatchResponseMessage">
+    <wsdl:part name="output" element="impl2:GetMatchResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetMatchRequestMessage">
+    <wsdl:part name="input" element="impl2:GetMatchRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="MatchMakerPortType">
+    <wsdl:operation name="GetMatch" parameterOrder="input">
+      <wsdl:input name="GetMatchRequestMessage" message="impl2:GetMatchRequestMessage">
+    </wsdl:input>
+      <wsdl:output name="GetMatchResponseMessage" message="impl2:GetMatchResponseMessage">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="MatchMakerSoapBinding" type="impl2:MatchMakerPortType">
+    <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="GetMatch">
+      <wsdlsoap:operation soapAction="GetMatch"/>
+      <wsdl:input>
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="MatchMakerService">
+    <wsdl:port name="MatchMaker" binding="impl2:MatchMakerSoapBinding">
+      <wsdlsoap:address location="http://localhost:8080/axis2/services/MatchMaker/"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

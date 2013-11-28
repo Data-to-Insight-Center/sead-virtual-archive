@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!--
+  Represents a minimal DCP SIP, with each container containing one entity, no parent Collections or Deliverable Units.
+-->
+<dcp xmlns="http://dataconservancy.org/schemas/dcp/1.0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://dataconservancy.org/schemas/dcp/1.0 file:/Users/esm/dc-svn/model/trunk/dcs-model/src/main/resources/schema/dcp.xsd">
+  
+  <DeliverableUnits>
+    <DeliverableUnit id="urn:DeliverableUnit:1">
+      <collection ref="urn:Collection:1"/>
+      <type>music album</type>
+      <title>Discovery: LP</title>
+      <creator>Discovery</creator>
+      <subject>music</subject>
+      <formerExternalRef><![CDATA[http://www.amazon.com/LP/dp/B002EAP0FE/ref=sr_shvl_album_1?ie=UTF8&qid=1276130789&sr=301-1]]></formerExternalRef>
+      <digitalSurrogate>true</digitalSurrogate>
+      <metadata>
+        <amzn:md xmlns:amzn="http://amazon.com/mp3">
+          <amzn:track>
+            <amzn:sequence>1</amzn:sequence>
+            <amzn:title>Orange Shirt</amzn:title>
+            <amzn:length>3:30</amzn:length>
+          </amzn:track>          
+          <amzn:track>
+            <amzn:sequence>2</amzn:sequence>
+            <amzn:title>Osaka Loop Line</amzn:title>
+            <amzn:length>4:01</amzn:length>
+          </amzn:track>          
+          <amzn:track>
+            <amzn:sequence>3</amzn:sequence>
+            <amzn:title>Can You Discover?</amzn:title>
+            <amzn:length>2:22</amzn:length>
+          </amzn:track>          
+          <amzn:track>
+            <amzn:sequence>4</amzn:sequence>
+            <amzn:title>I Wanna Be Your Boyfriend (featuring Angel Deradoorian)</amzn:title>
+            <amzn:length>2:39</amzn:length>
+          </amzn:track>          
+          <amzn:track>
+            <amzn:sequence>5</amzn:sequence>
+            <amzn:title>So Insane</amzn:title>
+            <amzn:length>3:12</amzn:length>
+          </amzn:track>          
+          <amzn:track>
+            <amzn:sequence>6</amzn:sequence>
+            <amzn:title>Swing Tree</amzn:title>
+            <amzn:length>2:38</amzn:length>
+          </amzn:track>          
+          <amzn:track>
+            <amzn:sequence>7</amzn:sequence>
+            <amzn:title>Carby (featuring Ezra Koenig)</amzn:title>
+            <amzn:length>3:07</amzn:length>
+          </amzn:track>          
+          <amzn:track>
+            <amzn:sequence>8</amzn:sequence>
+            <amzn:title>I Want You Back</amzn:title>
+            <amzn:length>3:26</amzn:length>
+          </amzn:track>          
+          <amzn:track>
+            <amzn:sequence>9</amzn:sequence>
+            <amzn:title>It's Not My Fault (It's My Fault)</amzn:title>
+            <amzn:length>2:33</amzn:length>
+          </amzn:track>          
+          <amzn:track>
+            <amzn:sequence>10</amzn:sequence>
+            <amzn:title>Slang Tang</amzn:title>
+            <amzn:length>2:27</amzn:length>
+          </amzn:track>
+        </amzn:md>
+      </metadata>
+      <relationship rel="urn:dataconservancy.org:rel/hasMetadata" ref="urn:File:2"/>
+    </DeliverableUnit>
+  </DeliverableUnits>
+  
+  <Collections>
+    <Collection id="urn:Collection:1">
+      <type>music collection</type>
+      <title>Elliot's iTunes Catalog</title>
+      <creator>Elliot Metsger</creator>
+      <subject>music</subject>
+      <subject>movies</subject>
+      <metadata>
+        <it:md xmlns:it="http://apple.com/itunes">
+          <it:size units="tracks">2707</it:size>
+          <it:size units="days">8.1</it:size>
+          <it:size units="albums">739</it:size>
+          <it:size units="GiB">18.70</it:size>
+        </it:md>
+      </metadata>
+    </Collection>
+  </Collections>
+  
+  <Manifestations>
+    <Manifestation id="urn:Manifestation:1">
+      <deliverableUnit ref="urn:DeliverableUnit:1"/>
+      <technicalEnvironment>mp3 player</technicalEnvironment>
+      <technicalEnvironment>zip</technicalEnvironment>
+      <type>application/zip</type>
+      <manifestationFile ref="urn:File:1">
+        <path>/tmp/discovery_lp.zip</path>
+      </manifestationFile>
+      <metadata>
+        <os:md xmlns:os="http://apple.com/os">
+          <os:fileSize units="bytes">445067993</os:fileSize>
+        </os:md>
+      </metadata>
+    </Manifestation>
+  </Manifestations>
+  
+  <Files>
+    <File id="urn:File:1">
+      <fileName>discovery_lp.zip</fileName>
+      <extant>true</extant>
+    </File>
+    <File id="urn:File:2">
+      <fileName>discovery.png</fileName>
+      <extant>true</extant>
+      <format>
+        <id scheme="urn:pronom">fmt/13</id>
+        <name>PNG</name>
+        <version>1.2</version>       
+      </format>      
+    </File>
+  </Files>
+  
+  <Events>
+    <Event id="urn:Event:1">
+      <eventType>INGEST</eventType>
+      <eventDate>2002-10-10T17:00:00Z</eventDate>
+      <eventTarget ref="urn:DeliverableUnit:1"/>
+      <eventDetail>ingestion event</eventDetail>
+      <eventOutcome>SUCCESS</eventOutcome>
+    </Event>
+  </Events>
+  
+</dcp>

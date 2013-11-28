@@ -1,0 +1,16 @@
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<dcp xmlns="http://dataconservancy.org/schemas/dcp/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://dataconservancy.org/schemas/dcp/1.0 http://dataconservancy.org/schemas/dcp/1.0"><Manifestations><Manifestation id="http://localhost:8080/entity/test75"><deliverableUnit ref="http://localhost:8080/entity/test74" /><manifestationFile ref="http://localhost:8080/entity/test80"><path>fwjcfuoyri</path></manifestationFile><manifestationFile ref="http://localhost:8080/entity/test83"><path>ucmbxkeogk</path></manifestationFile><manifestationFile ref="http://localhost:8080/entity/test78"><path>xgobmbuunx</path></manifestationFile><manifestationFile ref="http://localhost:8080/entity/test76"><path>clyduerqnq</path></manifestationFile><manifestationFile ref="http://localhost:8080/entity/test81"><path>slwqnvuypd</path></manifestationFile><manifestationFile ref="http://localhost:8080/entity/test82"><path>ghxnygwxpm</path></manifestationFile><manifestationFile ref="http://localhost:8080/entity/test77"><path>cjxtduzmvi</path></manifestationFile><manifestationFile ref="http://localhost:8080/entity/test79"><path>xeeqtufqqw</path></manifestationFile><metadata><root xmlns=""><elsk>mv</elsk><elsk ej="xdnph">mcbpcwiamy</elsk><elon>aj</elon><elon ad="tzpgg">avpkqmsnhk</elon><elxp>id</elxp><elxp cp="bweim">lgaohuaedg</elxp></root></metadata></Manifestation></Manifestations></dcp>

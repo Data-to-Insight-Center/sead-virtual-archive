@@ -1,0 +1,16 @@
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<dcp xmlns="http://dataconservancy.org/schemas/dcp/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://dataconservancy.org/schemas/dcp/1.0 http://dataconservancy.org/schemas/dcp/1.0"><Manifestations><Manifestation id="http://localhost:8080/entity/test15"><deliverableUnit ref="http://localhost:8080/entity/test14" /><manifestationFile ref="http://localhost:8080/entity/test16"><path>qfynjkmcfi</path></manifestationFile><manifestationFile ref="http://localhost:8080/entity/test17"><path>llbueaelne</path></manifestationFile><metadata schemaURI="slatgspjtz"><root xmlns=""><elbe>rh</elbe><elbe ca="wivxf">fsoifbgrbg</elbe><elcw>ux</elcw><elcw lm="cxksm">lwjvlkvlao</elcw><elal>mr</elal><elal ge="lbnev">dybmwfnybr</elal></root></metadata><metadata schemaURI="eerrkhbwgl"><root xmlns=""><eljd>zk</eljd><eljd cq="dfawv">vvvmvwginf</eljd><elup>wo</elup><elup zb="oipff">pwwnkkpwwa</elup><elxr>hg</elxr><elxr ip="tdnxd">viubejcapq</elxr></root></metadata></Manifestation></Manifestations></dcp>

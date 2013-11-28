@@ -1,0 +1,10 @@
+----------------------------------------------------------------
+Fri Nov 01 15:16:17 EDT 2013:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.9.1.0 - (1344872): instance a816c00e-0142-1518-33ae-000002d50000 
+on database directory /tmp/db  with class loader java.net.URLClassLoader@191c263 
+Loaded from jar:rsrc:derby.jar!/
+java.vendor=Oracle Corporation
+java.runtime.version=1.7.0_05-b06
+user.dir=/home/kavchand/scratch/release_1.0/git/utils/initDB
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''

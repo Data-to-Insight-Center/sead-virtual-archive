@@ -1,0 +1,1458 @@
+<!--edited with XMLSpy v2008 sp1 (http://www.altova.com) by Systems Administrator (NCDDC)-->
+<xs:schema blockDefault="#all" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="idinfo" type="idinfoType">
+    <xs:annotation>
+      <xs:documentation>Basic information about the data set</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Identification Information"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="idinfoType">
+    <xs:sequence>
+      <xs:element ref="citation">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="1d57b376-13bf-456e-976b-859ed3d23eba" parentId="18334429-1057-41ba-baad-c79a79754f2f" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="descript">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="5c82fb78-e74d-4154-b535-0113fe93c413" parentId="18334429-1057-41ba-baad-c79a79754f2f" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>a characterization of the data set, including its intended use and limitations.</ann:description>
+                <ann:shortDescription>Description</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="timeperd">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="4878846f-8995-40ee-a5b1-4889a523b8d5" parentId="18334429-1057-41ba-baad-c79a79754f2f" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="status">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="d154d75b-250f-4bb7-bb83-d93182255c91" parentId="18334429-1057-41ba-baad-c79a79754f2f" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the state of and maintenance information for the data set.</ann:description>
+                <ann:shortDescription>Status</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="spdom">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="515b2bd9-c34c-4572-9afa-87d6535b6759" parentId="18334429-1057-41ba-baad-c79a79754f2f" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="keywords">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="b3ebed03-36d0-4d13-a4ec-eb872722ff95" parentId="18334429-1057-41ba-baad-c79a79754f2f" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="accconst">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="bfae912a-9f06-450c-a254-11946b0697fb" parentId="18334429-1057-41ba-baad-c79a79754f2f" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>restrictions and legal prerequisites for accessing the data set. These include any access</ann:description>
+                <ann:shortDescription>Access Constraints</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="useconst">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="64a22f08-187b-4f99-b9ff-43f5e8eef304" parentId="18334429-1057-41ba-baad-c79a79754f2f" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>restrictions and legal prerequisites for using the data set after access is granted. These</ann:description>
+                <ann:shortDescription>Use Constraints</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="ptcontac" minOccurs="0">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="ee8da866-181b-48c1-aad8-34f341f05c54" parentId="18334429-1057-41ba-baad-c79a79754f2f" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>contact information for an individual or organization that is knowledgeable about the data set.</ann:description>
+                <ann:shortDescription>Point of Contact</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="browse" minOccurs="0" maxOccurs="unbounded">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="dcbcc734-2502-493d-9b3c-10463932ec7e" parentId="18334429-1057-41ba-baad-c79a79754f2f" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:source>fgdc</ann:source>
+                <ann:description>a graphic that provides an illustration of the data set. The graphic should include</ann:description>
+                <ann:shortDescription>Browse Graphic</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="datacred" minOccurs="0">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="01421021-3193-4509-832e-b49e69766040" parentId="18334429-1057-41ba-baad-c79a79754f2f" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>recognition of those who contributed to the data set.</ann:description>
+                <ann:shortDescription>Data Set Credit</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="secinfo" minOccurs="0">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="1ed524bc-e62e-42c5-bece-bbe18621f83d" parentId="18334429-1057-41ba-baad-c79a79754f2f" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>handling restrictions imposed on the data set because of national security, privacy, or</ann:description>
+                <ann:shortDescription>Security Information</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="native" minOccurs="0">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="44d1ceec-6cb2-4ad9-a792-7d0936268845" parentId="18334429-1057-41ba-baad-c79a79754f2f" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>a description of the data set in the producer's processing environment, including</ann:description>
+                <ann:shortDescription>Native Data Set Environment</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="crossref" minOccurs="0" maxOccurs="unbounded">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="6901cbd9-b49d-4076-b300-749b9ce9c0a1" parentId="18334429-1057-41ba-baad-c79a79754f2f" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:source>fgdc</ann:source>
+                <ann:description>information about other, related data sets that are likely to be of interest.</ann:description>
+                <ann:shortDescription>Cross Reference</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="citation" type="citationType">
+    <xs:annotation>
+      <xs:documentation>Information to be used to reference the data set.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Citation"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="citationType">
+    <xs:sequence>
+      <xs:element ref="citeinfo">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="12f62a33-5529-41b9-9bb0-adcdce71e01d" parentId="1d57b376-13bf-456e-976b-859ed3d23eba" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the recommended reference to be used for the data set. (Note: this section provides a</ann:description>
+                <ann:shortDescription>Citation Information</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="descript" type="descriptType">
+    <xs:annotation>
+      <xs:documentation>A characterization of the data set, including its intended use and limitations.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Description"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="descriptType">
+    <xs:sequence>
+      <xs:element ref="abstract">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="e4ffa4e3-eeca-4715-8144-d1ec1169c2e6" parentId="5c82fb78-e74d-4154-b535-0113fe93c413" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>a brief narrative summary of the data set.</ann:description>
+                <ann:shortDescription>Abstract</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="purpose">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="45354c84-cdd4-49b6-963a-e0007886c269" parentId="5c82fb78-e74d-4154-b535-0113fe93c413" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>a summary of the intentions with which the data set was developed.</ann:description>
+                <ann:shortDescription>Purpose</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="supplinf" minOccurs="0">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="7961d2e0-434d-4bda-a73a-fe787221c634" parentId="5c82fb78-e74d-4154-b535-0113fe93c413" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>other descriptive information about the data set.</ann:description>
+                <ann:shortDescription>Supplemental Information</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="abstract" type="abstractType">
+    <xs:annotation>
+      <xs:documentation>A brief narrative summary of the data set.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Abstract"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="abstractType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="purpose" type="purposeType">
+    <xs:annotation>
+      <xs:documentation>A summary of the intentions with which the data set was developed.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Purpose"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="purposeType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="supplinf" type="supplinfType">
+    <xs:annotation>
+      <xs:documentation>Other descriptive information about the data set.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Supplemental Information"/>
+        <xs:attribute name="use" fixed="Optional"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="supplinfType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="timeperd" type="timeperdType">
+    <xs:annotation>
+      <xs:documentation>Time period(s) for which the data set corresponds to the currentness reference.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Time Period of Content"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="timeperdType">
+    <xs:sequence>
+      <xs:element ref="timeinfo">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="80657692-7a8c-4f27-967e-4c7325bd4040" parentId="4878846f-8995-40ee-a5b1-4889a523b8d5" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>information about the date and time of an event.</ann:description>
+                <ann:shortDescription>Time Period Information</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="current">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="80ca39f2-98eb-4e56-a3db-9e7ce0a30b46" parentId="4878846f-8995-40ee-a5b1-4889a523b8d5" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the basis on which the time period of content information is determined.</ann:description>
+                <ann:shortDescription>Currentness Reference</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="current" type="currentType">
+    <xs:annotation>
+      <xs:documentation>The basis on which the time period of content information is determined.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Currentness Reference"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="currentType">
+    <xs:union memberTypes="FGDCstring">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="ground condition"/>
+          <xs:enumeration value="publication date"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:element name="status" type="statusType">
+    <xs:annotation>
+      <xs:documentation>The state of and maintenance information for the data set.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Status"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="statusType">
+    <xs:sequence>
+      <xs:element ref="progress">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="81947253-5ca5-4eb2-985f-6e59ab235196" parentId="d154d75b-250f-4bb7-bb83-d93182255c91" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the state of the data set.</ann:description>
+                <ann:shortDescription>Progress</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="update">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="167506f6-fe67-4e13-b0b5-9569c66c75ea" parentId="d154d75b-250f-4bb7-bb83-d93182255c91" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the frequency with which changes and additions are made to the data</ann:description>
+                <ann:shortDescription>Maintenance and Update Frequency</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="progress" type="progressType">
+    <xs:annotation>
+      <xs:documentation>The state of the data set.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Progress"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="progressType">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="Complete"/>
+      <xs:enumeration value="In work"/>
+      <xs:enumeration value="Planned"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="update" type="updateType">
+    <xs:annotation>
+      <xs:documentation>The frequency with which changes and additions are made to the data set after the initial data set is completed.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Maintenance and Update Frequency"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="updateType">
+    <xs:union memberTypes="FGDCstring">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="Annually"/>
+          <xs:enumeration value="As needed"/>
+          <xs:enumeration value="Continually"/>
+          <xs:enumeration value="Daily"/>
+          <xs:enumeration value="Irregular"/>
+          <xs:enumeration value="Monthly"/>
+          <xs:enumeration value="None Planned"/>
+          <xs:enumeration value="Unknown"/>
+          <xs:enumeration value="Weekly"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:element name="spdom" type="spdomType">
+    <xs:annotation>
+      <xs:documentation>The geographic areal domain of the data set.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Spatial Domain"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="spdomType">
+    <xs:sequence>
+      <xs:element ref="bounding">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="ab53c809-de66-42d2-af60-0e61238f06bc" parentId="515b2bd9-c34c-4572-9afa-87d6535b6759" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the frequency with which changes and additions are made to the data</ann:description>
+                <ann:shortDescription>Maintenance and Update Frequency</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="dsgpoly" minOccurs="0" maxOccurs="unbounded">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="fb7249b9-d176-4c7a-88ce-8dd044b2c430" parentId="515b2bd9-c34c-4572-9afa-87d6535b6759" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:source>fgdc</ann:source>
+                <ann:description>coordinates defining the outline of an area covered by a data set.</ann:description>
+                <ann:shortDescription>Data Set G-Polygon</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="bounding" type="boundingType">
+    <xs:annotation>
+      <xs:documentation>The limits of coverage of a data set expressed by latitude and longitude values in the order western-most, eastern-most, northern-most, and southern-most. For data sets that include a complete band of latitude around the earth, the West Bounding Coordinate shall be assigned the value -180.0, and the East Bounding Coordinate shall be assigned the value 180.0.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Bounding Coordinates"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+        <xs:attribute name="other-validation-rules" fixed="checkBoundingCoordinates([westbc,eastbc]);checkBoundingCoordinates([northbc,southbc]);checkRangeExcludeMax([westbc,-180.0,180.0])"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="boundingType">
+    <xs:sequence>
+      <xs:element ref="westbc">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="b23a8e05-da36-4011-80bb-7fb8ffbf052d" parentId="ab53c809-de66-42d2-af60-0e61238f06bc" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>western-most coordinate of the limit of coverage expressed in longitude.</ann:description>
+                <ann:shortDescription>West Bounding Coordinate</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="eastbc">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="bc5db6ed-b7e3-476c-9795-e4e5355512a5" parentId="ab53c809-de66-42d2-af60-0e61238f06bc" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>eastern-most coordinate of the limit of coverage expressed in longitude.</ann:description>
+                <ann:shortDescription>East Bounding Coordinate</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="northbc">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="a37f2541-e271-4a1e-9c88-a7609e6c0fd2" parentId="ab53c809-de66-42d2-af60-0e61238f06bc" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>northern-most coordinate of the limit of coverage expressed in latitude.</ann:description>
+                <ann:shortDescription>North Bounding Coordinate</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="southbc">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="f496b155-f185-4808-833a-94f8a01c0219" parentId="ab53c809-de66-42d2-af60-0e61238f06bc" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>southern-most coordinate of the limit of coverage expressed in latitude.</ann:description>
+                <ann:shortDescription>South Bounding Coordinate</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="westbc" type="westbcType">
+    <xs:annotation>
+      <xs:documentation>Western-most coordinate of the limit of coverage expressed in longitude.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="West Bounding Coordinate"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+        <xs:attribute name="string-input-format" fixed="-180.0 &lt;= West Bounding Coordinate &lt; 180.0"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="westbcType">
+    <xs:restriction base="FGDClongitude">
+      <xs:maxExclusive value="180.0"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="eastbc" type="eastbcType">
+    <xs:annotation>
+      <xs:documentation>Eastern-most coordinate of the limit of coverage expressed in longitude.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="East Bounding Coordinate"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+        <xs:attribute name="string-input-format" fixed="-180.0 &lt;= East Bounding Coordinate &lt;= 180.0"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="eastbcType">
+    <xs:restriction base="FGDClongitude"/>
+  </xs:simpleType>
+  <xs:element name="northbc" type="northbcType">
+    <xs:annotation>
+      <xs:documentation>Northern-most coordinate of the limit of coverage expressed in latitude.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="North Bounding Coordinate"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+        <xs:attribute name="string-input-format" fixed="-90.0 &lt;= North Bounding Coordinate &lt; 90.0|North Bounding Coordinate >= South Bounding Coordinate"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="northbcType">
+    <xs:restriction base="FGDClatitude"/>
+  </xs:simpleType>
+  <xs:element name="southbc" type="southbcType">
+    <xs:annotation>
+      <xs:documentation>Southern-most coordinate of the limit of coverage expressed in latitude.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="South Bounding Coordinate"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+        <xs:attribute name="string-input-format" fixed="-90.0 &lt;= South Bounding Coordinate &lt; 90.0|South Bounding Coordinate &lt;= North Bounding Coordinate"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="southbcType">
+    <xs:restriction base="FGDClatitude"/>
+  </xs:simpleType>
+  <xs:element name="dsgpoly" type="dsgpolyType">
+    <xs:annotation>
+      <xs:documentation>Coordinates defining the outline of an area covered by a data set.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Data Set G-Ring Polygon"/>
+        <xs:attribute name="use" fixed="Optional"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="dsgpolyType">
+    <xs:sequence>
+      <xs:element ref="dsgpolyo">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="3ff46966-72bb-40e0-8b7d-dd56a2f6ce14" parentId="fb7249b9-d176-4c7a-88ce-8dd044b2c430" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="dsgpolyx" minOccurs="0" maxOccurs="unbounded">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="b16fb464-1bcc-4fbe-9fb5-08b977caa0b0" parentId="fb7249b9-d176-4c7a-88ce-8dd044b2c430" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the closed nonintersecting boundary of a void area (or "hole" in an</ann:description>
+                <ann:shortDescription>Data Set G-Polygon Exclusion G-Ring</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="dsgpolyo" type="dsgpolyoType">
+    <xs:annotation>
+      <xs:documentation>The closed nonintersecting boundary of an interior area.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Data Set G-Polygon Outer G-Ring"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+        <xs:attribute name="other-validation-rules" fixed="checkLatLonList([gring,4]);checkOr([grngpoin,gring]);checkFirstLastValuesEqual([gring]);checkFirstLastValuesEqual([grngpoin])"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="dsgpolyoType">
+    <xs:choice>
+      <xs:element ref="grngpoin" minOccurs="4" maxOccurs="unbounded">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="1dbe3e21-9add-43cd-a37a-233d3088b8c3" parentId="3ff46966-72bb-40e0-8b7d-dd56a2f6ce14" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:source>fgdc</ann:source>
+                <ann:description>a single geographic location.</ann:description>
+                <ann:shortDescription>G-Ring Point</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="gring">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="ce3f1525-1934-4e88-a973-b39078228731" parentId="3ff46966-72bb-40e0-8b7d-dd56a2f6ce14" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>a set of ordered pairs of floating-point numbers, separated by commas, in which the first number in</ann:description>
+                <ann:shortDescription>G-Ring</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:choice>
+  </xs:complexType>
+  <xs:element name="grngpoin" type="grngpoinType">
+    <xs:annotation>
+      <xs:documentation>A single geographic location.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="G-Ring Point"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+        <xs:attribute name="other-validation-rules" fixed="checkRangeExcludeMax([gringlon,-180.0,180.0])"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="grngpoinType">
+    <xs:sequence>
+      <xs:element ref="gringlat">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="f6fafe30-8a8a-4b34-904c-8156904bea88" parentId="27ecc961-c081-4a42-a6dc-6a815b8425a3" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="f6fafe30-8a8a-4b34-904c-8156904bea88" parentId="27ecc961-c081-4a42-a6dc-6a815b8425a3" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="5082cb54-94f4-40ed-8a67-bedfe4570879" parentId="1dbe3e21-9add-43cd-a37a-233d3088b8c3" version="2128d281-1f66-4a19-bf28-d5b7ba5758ca" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="gringlon">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="1202f2f8-3359-43ae-805f-6427a7166e40" parentId="27ecc961-c081-4a42-a6dc-6a815b8425a3" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="1202f2f8-3359-43ae-805f-6427a7166e40" parentId="27ecc961-c081-4a42-a6dc-6a815b8425a3" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="0bc86935-e11e-44ea-ba8b-ba208a81d1df" parentId="1dbe3e21-9add-43cd-a37a-233d3088b8c3" version="2128d281-1f66-4a19-bf28-d5b7ba5758ca" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="gringlat" type="gringlatType">
+    <xs:annotation>
+      <xs:documentation>The latitude of a point of the G-ring.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="G-Ring Latitude"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+        <xs:attribute name="string-input-format" fixed="-90.0 &lt;= G-Ring Latitude &lt;= 90.0"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="gringlatType">
+    <xs:restriction base="FGDClatitude"/>
+  </xs:simpleType>
+  <xs:element name="gringlon" type="gringlonType">
+    <xs:annotation>
+      <xs:documentation>The longitude of a point of the G-ring.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="G-Ring Longitude"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+        <xs:attribute name="string-input-format" fixed="-180.0 &lt;= G-Ring Longitude &lt; 180.0"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="gringlonType">
+    <xs:restriction base="FGDClongitude">
+      <xs:maxExclusive value="180.0"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="gring" type="gringType">
+    <xs:annotation>
+      <xs:documentation>A set of ordered pairs of floating-point numbers, separated by commas, in which the first number in each pair is the longitude of a point and the second is the latitude of the point.  Longitude and latitude are specified in decimal degrees with north latitudes positive and south negative, east longitude positive and west negative.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="G-Ring"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+        <xs:attribute name="string-input-format" fixed="-90.0 &lt;= Latitude elements &lt;= 90.0|-180.0 &lt;= Longitude elements &lt;= 180.0"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="gringType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="dsgpolyx" type="dsgpolyxType">
+    <xs:annotation>
+      <xs:documentation>The closed nonintersecting boundary of a void area (or 'hole' in an interior area).</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Data Set G-Polygon Exclusion G-Ring"/>
+        <xs:attribute name="use" fixed="Mandatory-if-applicable"/>
+        <xs:attribute name="other-validation-rules" fixed="checkLatLonList([gring,4]);checkOr([grngpoin,gring]);checkFirstLastValuesEqual([gring]);checkFirstLastValuesEqual([grngpoin])"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="dsgpolyxType">
+    <xs:choice>
+      <xs:element ref="grngpoin" minOccurs="4" maxOccurs="unbounded">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="27ecc961-c081-4a42-a6dc-6a815b8425a3" parentId="b16fb464-1bcc-4fbe-9fb5-08b977caa0b0" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:source>fgdc</ann:source>
+                <ann:description>a single geographic location.</ann:description>
+                <ann:shortDescription>G-Ring Point</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="gring">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="9e7e3300-8e71-45a9-9765-794b044672b7" parentId="b16fb464-1bcc-4fbe-9fb5-08b977caa0b0" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>a set of ordered pairs of floating-point numbers, separated by commas, in which the first number in</ann:description>
+                <ann:shortDescription>G-Ring</ann:shortDescription>
+                <ann:elementType>STRING</ann:elementType>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:choice>
+  </xs:complexType>
+  <xs:element name="keywords" type="keywordsType">
+    <xs:annotation>
+      <xs:documentation>Words or phrases summarizing an aspect of the data set.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Keywords"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="keywordsType">
+    <xs:sequence>
+      <xs:element ref="theme" maxOccurs="unbounded">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="51b6f8b1-7120-4d02-8ecf-c9cb0f2839ef" parentId="b3ebed03-36d0-4d13-a4ec-eb872722ff95" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:source>fgdc</ann:source>
+                <ann:description>subjects covered by the data set (for a list of some commonly-used thesauri, see Part IV:</ann:description>
+                <ann:shortDescription>Theme</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="place" minOccurs="0" maxOccurs="unbounded">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="bbc308c6-0168-4061-9b16-b9f7dc34791e" parentId="b3ebed03-36d0-4d13-a4ec-eb872722ff95" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:source>fgdc</ann:source>
+                <ann:description>geographic locations characterized by the data set.</ann:description>
+                <ann:shortDescription>Place</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="stratum" minOccurs="0" maxOccurs="unbounded">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="b54e79bc-5746-42b0-951a-cb17a56db02a" parentId="b3ebed03-36d0-4d13-a4ec-eb872722ff95" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:source>fgdc</ann:source>
+                <ann:description>layered, vertical locations characterized by the data set.</ann:description>
+                <ann:shortDescription>Stratum</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="temporal" minOccurs="0" maxOccurs="unbounded">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="6f689336-05ae-4b4a-b63f-68ab8f847c93" parentId="b3ebed03-36d0-4d13-a4ec-eb872722ff95" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:source>fgdc</ann:source>
+                <ann:description>time period(s) characterized by the data set.</ann:description>
+                <ann:shortDescription>Temporal</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="theme" type="themeType">
+    <xs:annotation>
+      <xs:documentation>Subjects covered by the data set (for a list of some commonly-used thesauri, see Part IV:  Subject/index term sources in Network Development and MARC Standards Office, 1988, USMARC code list for relators, sources, and description conventions:  Washington, Library of Congress).</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Theme Keywords"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="themeType">
+    <xs:sequence>
+      <xs:element ref="themekt">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="10bf5a0a-d2a0-4333-b8ac-84179fa5ac3d" parentId="51b6f8b1-7120-4d02-8ecf-c9cb0f2839ef" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>reference to a formally registered thesaurus or a similar authoritative source of</ann:description>
+                <ann:shortDescription>Theme Keyword Thesaurus</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="themekey" maxOccurs="unbounded">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="669f4792-3594-4d57-8ad5-a90ad65ca6e0" parentId="51b6f8b1-7120-4d02-8ecf-c9cb0f2839ef" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:source>fgdc</ann:source>
+                <ann:description>common-use word or phrase used to describe the subject of the data set.</ann:description>
+                <ann:shortDescription>Theme Keyword</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="themekt" type="themektType">
+    <xs:annotation>
+      <xs:documentation>Reference to a formally registered thesaurus or a similar authoritative source of theme keywords.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Theme Keyword Thesaurus"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="themektType">
+    <xs:union memberTypes="FGDCstring">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="None"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:element name="themekey" type="themekeyType">
+    <xs:annotation>
+      <xs:documentation>Common-use word or phrase used to describe the subject of the data set.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Theme Keyword"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="themekeyType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="place" type="placeType">
+    <xs:annotation>
+      <xs:documentation>Geographic locations characterized by the data set.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Place Keywords"/>
+        <xs:attribute name="use" fixed="Mandatory-if-applicable"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="placeType">
+    <xs:sequence>
+      <xs:element ref="placekt">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="b7f5b793-cb18-48ee-a0f5-191a8f6bcc1c" parentId="bbc308c6-0168-4061-9b16-b9f7dc34791e" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>reference to a formally registered thesaurus or a similar authoritative source of</ann:description>
+                <ann:shortDescription>Place Keyword Thesaurus</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="placekey" maxOccurs="unbounded">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="6e14b37f-2750-484d-a306-82a5dbdbbd2b" parentId="bbc308c6-0168-4061-9b16-b9f7dc34791e" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the geographic name of a location covered by a data set.</ann:description>
+                <ann:shortDescription>Place Keyword</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="placekt" type="placektType">
+    <xs:annotation>
+      <xs:documentation>Reference to a formally registered thesaurus or a similar authoritative source of place keywords.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Place Keyword Thesaurus"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="placektType">
+    <xs:union memberTypes="FGDCstring">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="None"/>
+          <xs:enumeration value="Geographic Names Information System"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:element name="placekey" type="placekeyType">
+    <xs:annotation>
+      <xs:documentation>The geographic name of a location covered by a data set.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Place Keyword"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="placekeyType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="stratum" type="stratumType">
+    <xs:annotation>
+      <xs:documentation>Layered, vertical locations characterized by the data set.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Stratum Keywords"/>
+        <xs:attribute name="use" fixed="Mandatory-if-applicable"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="stratumType">
+    <xs:sequence>
+      <xs:element ref="stratkt">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="14e391f8-883c-4b29-bcc0-df2704ce328d" parentId="b54e79bc-5746-42b0-951a-cb17a56db02a" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>reference to a formally registered thesaurus or a similar authoritative source of</ann:description>
+                <ann:shortDescription>Stratum Keyword Thesaurus</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="stratkey" maxOccurs="unbounded">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="c34516fe-7815-4022-866a-3fed0f2d8ba5" parentId="b54e79bc-5746-42b0-951a-cb17a56db02a" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the name of a vertical location used to describe the locations</ann:description>
+                <ann:shortDescription>Stratum Keyword</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="stratkt" type="stratktType">
+    <xs:annotation>
+      <xs:documentation>Reference to a formally registered thesaurus or a similar authoritative source of stratum keywords.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Stratum Keyword Thesaurus"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="stratktType">
+    <xs:union memberTypes="FGDCstring">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="None"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:element name="stratkey" type="stratkeyType">
+    <xs:annotation>
+      <xs:documentation>The name of a vertical location used to describe the locations covered by a data set.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Stratum Keyword"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="stratkeyType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="temporal" type="temporalType">
+    <xs:annotation>
+      <xs:documentation>Time period(s) characterized by the data set.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Temporal Keywords"/>
+        <xs:attribute name="use" fixed="Mandatory-if-applicable"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="temporalType">
+    <xs:sequence>
+      <xs:element ref="tempkt">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="690f4242-cb2b-41bc-9222-0048ffe2cdf9" parentId="6f689336-05ae-4b4a-b63f-68ab8f847c93" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>reference to a formally registered thesaurus or a similar authoritative source</ann:description>
+                <ann:shortDescription>Temporal Keyword Thesaurus</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="tempkey" maxOccurs="unbounded">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="319ed3ac-0ac7-4c8a-a0ee-fd1c5c22cd3a" parentId="6f689336-05ae-4b4a-b63f-68ab8f847c93" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the name of a time period covered by a data set.</ann:description>
+                <ann:shortDescription>Temporal Keyword</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="tempkt" type="tempktType">
+    <xs:annotation>
+      <xs:documentation>Reference to a formally registered thesaurus or a similar authoritative source of temporal keywords.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Temporal Keyword Thesaurus"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="tempktType">
+    <xs:union memberTypes="FGDCstring">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="None"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:element name="tempkey" type="tempkeyType">
+    <xs:annotation>
+      <xs:documentation>The name of a time period covered by a data set.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Temporal Keyword"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="tempkeyType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="accconst" type="accconstType">
+    <xs:annotation>
+      <xs:documentation>Restrictions and legal prerequisites for accessing the data set. These include any access constraints applied to assure the protection of privacy or intellectual property, and any special restrictions or limitations on obtaining the data set.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Access Constraints"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="accconstType">
+    <xs:union memberTypes="FGDCstring">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="None"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:element name="useconst" type="useconstType">
+    <xs:annotation>
+      <xs:documentation>Restrictions and legal prerequisites for using the data set after access is granted. These include any use constraints applied to assure the protection of privacy or intellectual property, and any special restrictions or limitations on using the data set.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Use Constraints"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="useconstType">
+    <xs:union memberTypes="FGDCstring">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="None"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:element name="ptcontac" type="ptcontacType">
+    <xs:annotation>
+      <xs:documentation>Contact information for an individual or organization that is knowledgeable about the data set.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Point of Contact"/>
+        <xs:attribute name="use" fixed="Optional"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="ptcontacType">
+    <xs:sequence>
+      <xs:element ref="cntinfo">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="1a4cdbb2-6de3-4d93-9cd6-8eb1e62dd007" parentId="ee8da866-181b-48c1-aad8-34f341f05c54" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="browse" type="browseType">
+    <xs:annotation>
+      <xs:documentation>A graphic that provides an illustration of the data set. The graphic should include a legend for interpreting the graphic.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Browse Graphic"/>
+        <xs:attribute name="use" fixed="Optional"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="browseType">
+    <xs:sequence>
+      <xs:element ref="browsen">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="42049077-cb14-406b-b1de-9a434b436008" parentId="dcbcc734-2502-493d-9b3c-10463932ec7e" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>name of a related graphic file that provides an illustration of the</ann:description>
+                <ann:shortDescription>Browse Graphic File Name</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="browsed">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="599bd9fe-005c-47a5-b25a-292ada99b090" parentId="dcbcc734-2502-493d-9b3c-10463932ec7e" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>a text description of the illustration.</ann:description>
+                <ann:shortDescription>Browse Graphic File Description</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="browset">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="c063a8a4-c316-45ea-8fab-5e5c9f7d296f" parentId="dcbcc734-2502-493d-9b3c-10463932ec7e" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>graphic file type of a related graphic file.</ann:description>
+                <ann:shortDescription>Browse Graphic File Type</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="browsen" type="browsenType">
+    <xs:annotation>
+      <xs:documentation>Name of a related graphic file that provides an illustration of the data set.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Browse Graphic File Name"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="browsenType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="browsed" type="browsedType">
+    <xs:annotation>
+      <xs:documentation>A text description of the illustration.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Browse Graphic File Description"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="browsedType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="browset" type="browsetType">
+    <xs:annotation>
+      <xs:documentation>Graphic file type of a related graphic file.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Browse Graphic File Type"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="browsetType">
+    <xs:union memberTypes="FGDCstring">
+      <xs:simpleType>
+        <xs:restriction base="FGDCstring">
+          <xs:enumeration value="CGM"/>
+          <xs:enumeration value="EPS"/>
+          <xs:enumeration value="EMF"/>
+          <xs:enumeration value="GIF"/>
+          <xs:enumeration value="JPEG"/>
+          <xs:enumeration value="PBM"/>
+          <xs:enumeration value="PS"/>
+          <xs:enumeration value="TIFF"/>
+          <xs:enumeration value="WMF"/>
+          <xs:enumeration value="XWD"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:element name="datacred" type="datacredType">
+    <xs:annotation>
+      <xs:documentation>Recognition of those who contributed to the data set.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Data Set Credit"/>
+        <xs:attribute name="use" fixed="Optional"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="datacredType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="secinfo" type="secinfoType">
+    <xs:annotation>
+      <xs:documentation>Handling restrictions imposed on the data set because of national security, privacy, or other concerns</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Security Information"/>
+        <xs:attribute name="use" fixed="Optional"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="secinfoType">
+    <xs:sequence>
+      <xs:element ref="secsys">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="b7b6af02-d8f0-4ff5-9a34-d8f1e8a676e6" parentId="1ed524bc-e62e-42c5-bece-bbe18621f83d" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>name of the classification system.</ann:description>
+                <ann:shortDescription>Security Classification System</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="secclass">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="339d0c74-9b6c-45ac-9920-d5f0400c95af" parentId="1ed524bc-e62e-42c5-bece-bbe18621f83d" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>name of the handling restrictions on the data set.</ann:description>
+                <ann:shortDescription>Security Classification</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="sechandl">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="ee9d9201-a1b9-48c8-87d6-5f55d37a2f33" parentId="1ed524bc-e62e-42c5-bece-bbe18621f83d" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>additional information about the restrictions on handling the data set.</ann:description>
+                <ann:shortDescription>Security Handling Description</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="secsys" type="secsysType">
+    <xs:annotation>
+      <xs:documentation>Name of the classification system.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Security Classification System"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="secsysType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="secclass" type="secclassType">
+    <xs:annotation>
+      <xs:documentation>Name of the handling restrictions on the data set.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Security Classification"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="secclassType">
+    <xs:union memberTypes="FGDCstring">
+      <xs:simpleType>
+        <xs:restriction base="FGDCstring">
+          <xs:enumeration value="Confidential"/>
+          <xs:enumeration value="Restricted"/>
+          <xs:enumeration value="Secret"/>
+          <xs:enumeration value="Sensitive"/>
+          <xs:enumeration value="Top Secret"/>
+          <xs:enumeration value="Unclassified"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:element name="sechandl" type="sechandlType">
+    <xs:annotation>
+      <xs:documentation>Additional information about the restrictions on handling the data set.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Security Handling Description"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="sechandlType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="native" type="nativeType">
+    <xs:annotation>
+      <xs:documentation>A description of the data set in the producer's processing environment, including items such as: name of the software (including version), computer operating system, file name (including host-, path-, and filenames), data set size.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Native Data Set Environment"/>
+        <xs:attribute name="use" fixed="Optional"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="nativeType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="crossref" type="crossrefType">
+    <xs:annotation>
+      <xs:documentation>Information about other, related data sets that are likely to be of interest.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Cross Reference"/>
+        <xs:attribute name="use" fixed="Optional"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="crossrefType">
+    <xs:sequence>
+      <xs:element ref="citeinfo">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="48f6b07b-3c2f-44fc-80cb-82d92c69108e" parentId="6901cbd9-b49d-4076-b300-749b9ce9c0a1" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

@@ -1,0 +1,93 @@
+Building
+--------
+To create executable jar do 'mvn package'.   This will create an artifact 
+named *-standalone.jar in the 'target' directory, as well as a *.war
+artifact.
+
+Running
+-------
+There are several ways to run the integration dcs app:
+  - in maven via 'mvn jetty:run-war"
+  - Using the standalone jar via 'java -jar *-standalone.jar'
+  - Dropping the war into your favorite servlet container
+  
+Defaults
+---------
+By default, the following services are available at the given addresses:
+
+Sword deposit service document (mind the slash):
+http://localhost:8080/dcs-integration-main/deposit/
+
+Sword Sip deposit endpoint:
+http://localhost:8080/dcs-integration-main/deposit/sip
+
+Sword File upload endpoint:
+http://localhost:8080/dcs-integration-main/deposit/file
+
+Access entity service:
+http://localhost:8080/dcs-integration-main/entity/
+
+Access datastream service:
+http://localhost:8080/dcs-integration-main/datastream/
+
+Access search service:
+http://localhost:8080/dcs-integration-main/query/
+
+Additionally, the dcs will store its internal data in the directory:
+/tmp/dcs
+It will create the directory if not present, and use the data in it if it is.
+
+Configuration via properties
+-------------
+See default.properties in src/main/resources, as well as the spring beans in
+src/main/webapp/WEB-INF/applicationContext.xml
+
+In general, individual properties may be set with individual system properties
+(e.g. java -jar integration.jar -Ddcs.home=/storage/dcsTest)
+
+.. or by witing properties in a file and providing a location to this file:
+(e.g. java -jar integration.jar -Dconfig=file:/etc/dcsconfig/local.properties)
+
+
+Some particularly useful properties to set are:
+config - uri to a file or classpath resource containing a .properties file
+dcs.home - Directory in which to store dcs data files
+dcs.baseurl - If running on a different port or different container path
+
+
+Advanced configuration
+----------------------
+dcs.archive
+Can be used to specify archive impl.  Default is an embedded elm archive.  
+A Fedora-based archive may be enabled by:
+dcs.archive=org.dataconservancy.archive.impl.fcrepo.FcrepoArchiveStore
+The fedora archive needs additional properties dcs.archive.fcrepo.url,
+dcs.archive.fcrepo.user, and dcs.archive.fcrepo.password
+
+dcs.idservice.hibernate.*
+Properties which specify a database in which to store identifiers
+
+ingest.sipstager.delete
+Determines if staged sips are deleted after ingest has *successfully* completed.  
+Deposit status/info will no longer be accessible unless the service is 
+configured to use a 'cold' sip stager that can re-construct deposit data from
+the access service index (such as AccessServiceSipStager).  
+
+ingest.bootstrap.executor
+bean name of the executor implementation for ingest services.  Possible
+values are basicThreadPoolExecutor, boundedBlockingThreadPoolExecutor, and
+synchronousExecutor.  See documentation in the spring bean file for more info:
+src/main/webapp/WEB-INF/applicationContext.xml
+
+ingest.bootstrap.executor.threads
+Number of threads in which to run ingest services.  This will be ignored if
+synchronousExecutor is selected.
+
+dcs.access.solr
+Can be used to specify the solr impl.  By default, it is embedded.  Can use
+an external solr server by
+dcs.access.solr=org.apache.solr.client.solrj.impl.CommonsHttpSolrServer
+The http solr server needs the additional property dcs.access.solr.url
+
+Additionally, any spring bean property value can be overriden by:
+beanName.propertyName=newValue

@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2013 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:tx="http://www.springframework.org/schema/tx" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                      http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+                      http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+
+  <context:annotation-config />
+
+  <bean id="propertyPlaceholderConfigurer"
+    class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <property name="ignoreUnresolvablePlaceholders" value="true" />
+  </bean>
+
+  <bean id="servletContextPropertyPlaceholderConfigurer"
+    class="org.springframework.web.context.support.ServletContextPropertyPlaceholderConfigurer">
+    <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+    <property name="searchContextAttributes" value="true" />
+    <property name="contextOverride" value="true" />
+    <property name="ignoreResourceNotFound" value="true" />
+    <property name="ignoreUnresolvablePlaceholders" value="true" />
+    <property name="locations">
+      <list>
+        <value>classpath:default.properties</value>
+
+        <!-- If this is found in the classpath, it will override the default 
+          values -->
+        <value>classpath:dcs.properties</value>
+
+        <!-- Can be specified as a system property on the commend line, specifying 
+          an external or classpath resource. example -Dconfig=file:/mnt/dcs/config.properties -->
+        <value>${config}</value>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="propertyOverrideConfigurer"
+    class="org.springframework.beans.factory.config.PropertyOverrideConfigurer">
+    <property name="ignoreInvalidKeys" value="true" />
+    <property name="locations">
+      <list>
+        <value>${config}</value>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="swordProvider"
+    class="org.dataconservancy.deposit.sword.server.impl.DefaultSWORDProvider">
+    <constructor-arg value="/deposit/" />
+    <constructor-arg>
+      <list>
+        <bean
+          class="org.apache.abdera.protocol.server.impl.SimpleWorkspaceInfo">
+          <property name="title" value="Basic Deposit" />
+          <property name="collections">
+            <list>
+              <ref bean="dcpSipAdapter" />
+              <ref bean="fileUploadAdapter" />
+            </list>
+          </property>
+        </bean>
+      </list>
+    </constructor-arg>
+  </bean>
+
+  <bean id="dcpSipAdapter"
+    class="org.dataconservancy.deposit.sword.server.DepositManagerAdaptor">
+    <property name="title" value="SIP deposit" />
+    <property name="id" value="sip" />
+    <property name="accepts">
+      <value>application/xml</value>
+    </property>
+    <property name="acceptedPackaging">
+      <list>
+        <ref bean="dcpPackaging" />
+      </list>
+    </property>
+    <property name="depositManager" ref="sipDepositManager" />
+    <property name="statusResourceLocator" ref="statusResourceLocator" />
+    <property name="contentResourceLocator" ref="contentResourceLocator" />
+  </bean>
+
+  <bean id="fileUploadAdapter"
+    class="org.dataconservancy.deposit.sword.server.DepositManagerAdaptor">
+    <property name="title" value="File Upload" />
+    <property name="id" value="file" />
+    <property name="depositManager" ref="fileUploadManager" />
+    <property name="statusResourceLocator" ref="statusResourceLocator" />
+    <property name="contentResourceLocator" ref="contentResourceLocator" />
+  </bean>
+
+  <bean id="dcpPackaging" class="org.dataconservancy.deposit.sword.SWORDPackaging">
+    <constructor-arg value="http://dataconservancy.org/schemas/dcp/1.0" />
+  </bean>
+
+  <bean id="statusResourceLocator"
+    class="org.dataconservancy.deposit.status.DepositStatusServlet">
+    <property name="depositManagers">
+      <list>
+        <ref bean="fileUploadManager" />
+        <ref bean="sipDepositManager" />
+      </list>
+    </property>
+    <property name="baseURL" value="${dcs.baseurl}/status/" />
+  </bean>
+
+  <bean id="contentResourceLocator"
+    class="org.dataconservancy.deposit.status.DepositContentServlet">
+    <property name="depositManagers">
+      <list>
+        <ref bean="fileUploadManager" />
+        <ref bean="sipDepositManager" />
+      </list>
+    </property>
+    <property name="baseURL" value="${dcs.baseurl}/content/" />
+  </bean>
+
+  <bean id="sipDepositManager" class="org.dataconservancy.dcs.ingest.sip.DcpXmlSipManager">
+    <property name="bootstrap" ref="${ingest.bootstrap}" />
+    <property name="sipStager" ref="${ingest.sipstager}" />
+    <property name="eventManager" ref="ingestEventManager" />
+    <property name="managerId" value="sipDeposit" />
+    <property name="validating" value="true" />
+  </bean>
+
+  <bean id="fileUploadManager"
+    class="org.dataconservancy.dcs.ingest.file.StagedFileUploadManager">
+    <property name="alwaysCalculateFixityFor">
+      <list>
+        <value>SHA-1</value>
+      </list>
+    </property>
+    <property name="fileContentStager" ref="ingestFileContentStager" />
+    <property name="sipStager" ref="${ingest.sipstager}" />
+    <property name="eventManager" ref="ingestEventManager" />
+    <property name="idService" ref="${dcs.idservice}" />
+    <property name="managerId" value="fileUpload" />
+  </bean>
+
+  <bean id="dcsModelBuilder"
+    class="org.dataconservancy.model.builder.xstream.DcsXstreamStaxModelBuilder"
+    scope="singleton" />
+
+  <!-- Ingest pipeline -->
+
+  <bean id="ingestEventManager" class="org.dataconservancy.dcs.ingest.impl.InlineEventManager"
+    scope="singleton">
+    <property name="idService" ref="${dcs.idservice}" />
+    <property name="sipStager" ref="${ingest.sipstager}" />
+  </bean>
+
+  <bean id="org.dataconservancy.dcs.ingest.impl.MemoryStager"
+    class="org.dataconservancy.dcs.ingest.impl.MemoryStager" lazy-init="true">
+    <property name="deleteUponRetire" value="${ingest.sipstager.delete}" />
+  </bean>
+
+  <bean id="org.dataconservancy.dcs.ingest.services.util.ElmSipStager"
+    class="org.dataconservancy.dcs.ingest.services.util.ElmSipStager"
+    scope="singleton" lazy-init="true">
+    <property name="deleteUponRetire" value="${ingest.sipstager.delete}" />
+    <property name="identifierService" ref="${dcs.idservice}" />
+    <property name="modelBuilder" ref="dcsModelBuilder" />
+    <property name="entityStore">
+      <bean id="elmStagerEntityStore"
+        class="org.dataconservancy.archive.impl.elm.fs.FsEntityStore">
+        <property name="baseDir" value="${dcs.home}/staging/sips" />
+        <property name="filePathKeyAlgorithm" ref="keyFilePathAlgorithm" />
+      </bean>
+    </property>
+    <property name="metadataStore">
+      <bean id="elmStagerMetadataStore"
+        class="org.dataconservancy.archive.impl.elm.fs.FsMetadataStore">
+        <property name="baseDir" value="${dcs.home}/staging/metadata" />
+        <property name="filePathKeyAlgorithm" ref="keyFilePathAlgorithm" />
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="org.dataconservancy.dcs.ingest.services.util.CachedSipStager"
+        class="org.dataconservancy.dcs.ingest.services.util.CachedSipStager">
+    <property name="delegate" ref="org.dataconservancy.dcs.ingest.services.util.ElmSipStager"/>
+  </bean>
+
+  <bean id="keyFilePathAlgorithm" class="org.dataconservancy.dcs.util.PooledKeyDigestPathAlgorithm">
+    <constructor-arg value="MD5" />
+    <constructor-arg value="1" />
+    <constructor-arg value="2" />
+    <constructor-arg value="" />
+  </bean>
+
+  <bean id="org.dataconservancy.dcs.ingest.services.util.ReadingSipStager"
+    class="org.dataconservancy.dcs.ingest.services.util.ReadingSipStager"
+    scope="singleton" lazy-init="true">
+    <property name="writableStager" ref="${ingest.sipstager.reading.writable}" />
+    <property name="readableStager" ref="${ingest.sipstager.reading.readable}" />
+  </bean>
+
+  <bean
+    id="org.dataconservancy.dcs.ingest.services.util.QueryServiceSipStager"
+    class="org.dataconservancy.dcs.ingest.services.util.QueryServiceSipStager"
+    scope="singleton" lazy-init="true">
+    <property name="accessService" ref="org.dataconservancy.dcs.query.dcpsolr.DcsDataModelQueryService" />
+  </bean>
+  
+  <bean id="ingestFileContentStager"
+    class="org.dataconservancy.dcs.ingest.file.impl.FileSystemContentStager">
+
+    <property name="sipStager" ref="${ingest.sipstager}" />
+    <property name="baseDir" value="${dcs.home}/files" />
+    <property name="pathAlgorithm">
+      <bean
+        class="org.dataconservancy.dcs.util.FileContentDigestPathAlgorithm">
+        <constructor-arg value="SHA-1" />
+        <constructor-arg value="1" />
+        <constructor-arg value="2" />
+
+        <!-- We set this (calculate hash) to false, since we know we'll have 
+          a correct SHA-1 value present due to our configuration of the 'fileUploadManager' 
+          bean -->
+        <constructor-arg value="false" />
+      </bean>
+    </property>
+  </bean>
+  
+  <bean id="inMemoryLockService" class="org.dataconservancy.dcs.ingest.impl.InMemoryLockService" />
+
+  <bean id="ingestFramework" class="org.dataconservancy.dcs.ingest.IngestFramework">
+    <property name="eventManager" ref="ingestEventManager" />
+    <property name="sipStager" ref="${ingest.sipstager}" />
+    <property name="fileContentStager" ref="ingestFileContentStager" />
+    <property name="lockService" ref="inMemoryLockService"/>
+  </bean>
+
+  <bean id="org.dataconservancy.dcs.ingest.services.ExternalContentStager"
+    class="org.dataconservancy.dcs.ingest.services.ExternalContentStager">
+    <property name="ingestFramework" ref="ingestFramework" />
+    <property name="alwaysCalculateFixityFor">
+      <list>
+        <value>SHA-1</value>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="org.dataconservancy.dcs.ingest.services.StagedContentResolver"
+    class="org.dataconservancy.dcs.ingest.services.StagedContentResolver">
+    <property name="ingestFramework" ref="ingestFramework" />
+    <property name="disabled" value="false" />
+  </bean>
+
+  <bean id="org.dataconservancy.dcs.ingest.services.Labeller"
+    class="org.dataconservancy.dcs.ingest.services.Labeller">
+    <property name="ingestFramework" ref="ingestFramework" />
+    <property name="identifierService" ref="${dcs.idservice}" />
+    <property name="bulkIdService" ref="${dcs.idservice}" />
+    <property name="idPrefix" value="${dcs.idservice.prefix}" />
+    <property name="disabled" value="false" />
+  </bean>
+
+  <bean id="org.dataconservancy.dcs.ingest.services.LineageLabeller"
+    class="org.dataconservancy.dcs.ingest.services.LineageLabeller">
+    <property name="ingestFramework" ref="ingestFramework" />
+    <property name="identifierService" ref="${dcs.idservice}" />
+    <property name="lookupQueryService" ref="org.dataconservancy.dcs.query.dcpsolr.DcsDataModelQueryService"/>
+    <property name="disabled" value="false" />
+  </bean>
+
+  <bean id="org.dataconservancy.dcs.ingest.services.BranchChecker"
+    class="org.dataconservancy.dcs.ingest.services.BranchChecker">
+    <property name="ingestFramework" ref="ingestFramework" />
+    <property name="queryService" ref="org.dataconservancy.dcs.query.dcpsolr.DcsDataModelQueryService"/>
+    <property name="disabled" value="false" />
+  </bean>
+
+  <bean
+    id="org.dataconservancy.dcs.ingest.services.SimpleMimeCharacterizer"
+    class="org.dataconservancy.dcs.ingest.services.SimpleMimeCharacterizer">
+    <property name="ingestFramework" ref="ingestFramework" />
+    <property name="disabled" value="false" />
+  </bean>
+
+  <bean id="org.dataconservancy.dcs.ingest.services.SimpleLinkValidator"
+    class="org.dataconservancy.dcs.ingest.services.SimpleLinkValidator">
+    <property name="ingestFramework" ref="ingestFramework" />
+    <property name="identifierService" ref="${dcs.idservice}" />
+    <property name="disabled" value="false" />
+  </bean>
+
+  <bean id="org.dataconservancy.dcs.ingest.services.Archiver"
+    class="org.dataconservancy.dcs.ingest.services.Archiver">
+    <property name="archiveStore" ref="org.dataconservancy.archive.api.ArchiveStore" />
+    <property name="ingestFramework" ref="ingestFramework" />
+    <property name="modelBuilder" ref="dcsModelBuilder" />
+    <property name="disabled" value="false" />
+  </bean>
+
+  <bean id="org.dataconservancy.dcs.ingest.services.Finisher"
+    class="org.dataconservancy.dcs.ingest.services.Finisher">
+    <property name="archiveStore" ref="org.dataconservancy.archive.api.ArchiveStore" />
+    <property name="ingestFramework" ref="ingestFramework" />
+    <property name="modelBuilder" ref="dcsModelBuilder" />
+    <property name="verifyArchiveEntities" value="false" />
+    <property name="disabled" value="false" />
+    <property name="confirmIndexEntities" value="true"/>
+    <property name="lookupQueryService" ref="org.dataconservancy.dcs.query.dcpsolr.DcsDataModelQueryService"/>
+  </bean>
+
+  <bean id="org.dataconservancy.dcs.ingest.services.Cleanup" class="org.dataconservancy.dcs.ingest.services.Cleanup">
+    <property name="ingestFramework" ref="ingestFramework" />
+    <property name="disabled" value="false" />
+  </bean>
+
+  <bean
+    id="org.dataconservancy.dcs.ingest.services.runners.ExecutorBootstrap"
+    class="org.dataconservancy.dcs.ingest.services.runners.ExecutorBootstrap"
+    lazy-init="true">
+    <property name="ingestFramework" ref="ingestFramework" />
+    <property name="executor" ref="${ingest.bootstrap.executor}" />
+    <property name="ingestServices">
+      <list>
+        <ref
+          bean="org.dataconservancy.dcs.ingest.services.ExternalContentStager" />
+        <ref
+          bean="org.dataconservancy.dcs.ingest.services.StagedContentResolver" />
+        <ref bean="org.dataconservancy.dcs.ingest.services.Labeller" />
+        <ref bean="org.dataconservancy.dcs.ingest.services.LineageLabeller" />
+        <ref bean="org.dataconservancy.dcs.ingest.services.BranchChecker" />
+        <ref
+          bean="org.dataconservancy.dcs.ingest.services.SimpleMimeCharacterizer" />
+        <ref
+          bean="org.dataconservancy.dcs.ingest.services.SimpleLinkValidator" />
+        <ref
+          bean="org.dataconservancy.dcs.ingest.services.BasicFeatureExtraction.BEFORE" />
+        <ref bean="org.dataconservancy.dcs.ingest.services.Archiver" />
+        <ref bean="org.dataconservancy.dcs.ingest.services.BasicFeatureExtraction.AFTER" />
+        <ref bean="org.dataconservancy.dcs.ingest.services.Finisher" />
+        <ref bean="org.dataconservancy.dcs.ingest.services.Cleanup" />
+      </list>
+    </property>
+  </bean>
+
+
+  <!-- Feature Extraction -->
+  <bean id="org.dataconservancy.dcs.ingest.services.BasicFeatureExtraction.AFTER"
+    class="org.dataconservancy.dcs.ingest.services.BasicFeatureExtraction">
+    <property name="ingestFramework" ref="ingestFramework" />
+    <property name="executionEnvironment"
+      ref="org.dataconservancy.dcs.ingest.services.BasicFeatureExtraction.BasicExecutionEnvironment" />
+    <property name="jobs">
+      <list>
+        <bean
+          class="org.dataconservancy.dcs.ingest.services.BasicFeatureExtraction$Job">
+          <property name="mapping">
+            <bean class="org.dataconservancy.transform.execution.NoOpMapping" />
+          </property>
+          <property name="outputFactory">
+            <bean class="org.dataconservancy.dcs.transform.index.BatchIndexOutputFactory">
+                <constructor-arg ref="org.dataconservancy.dcs.index.dcpsolr.DcpIndexService" />
+            </bean>
+          </property>  
+          <property name="failureAllowed" value="true"/>
+          <property name="label" value="DCP indexing"/>
+          <property name="createEvent" value="false" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="org.dataconservancy.dcs.ingest.services.BasicFeatureExtraction.BEFORE"
+    class="org.dataconservancy.dcs.ingest.services.BasicFeatureExtraction">
+    <property name="ingestFramework" ref="ingestFramework" />
+    <property name="executionEnvironment"
+      ref="org.dataconservancy.dcs.ingest.services.BasicFeatureExtraction.BasicExecutionEnvironment" />
+    <property name="jobs">
+      <list />
+    </property>
+  </bean>
+
+
+  <bean
+    id="org.dataconservancy.dcs.ingest.services.BasicFeatureExtraction.BasicExecutionEnvironment "
+    class="org.dataconservancy.transform.execution.BasicExecutionEnvironment">
+    <property name="executorService">
+      <bean class="org.dataconservancy.dcs.util.SynchronousExecutor" />
+    </property>
+  </bean>
+
+
+  <!-- Limited number of executing threads, but unbounded queue. Invoking 
+    thread drops off a task into this queue, which is then executed asynchronously 
+    at some point in the future. -->
+  <bean id="basicThreadPoolExecutor" class="java.util.concurrent.Executors"
+    factory-method="newFixedThreadPool" destroy-method="shutdown">
+    <constructor-arg value="${ingest.bootstrap.executor.threads}" />
+  </bean>
+
+  <!-- Limited number of executing threads. Invoking thread is blocked if 
+    all threads in pool are busy executing other tasks. Once a thread frees up, 
+    task will be dropped into the thread and executed asynchronously. Basically, 
+    this will allow multiple threads to execute, but throttle requests to the 
+    rate at which they can be processed. -->
+  <bean id="boundedBlockingThreadPoolExecutor"
+    class="org.dataconservancy.dcs.util.BoundedBlockingPoolExecutor"
+    factory-method="getInstance" destroy-method="shutdown">
+    <constructor-arg value="${ingest.bootstrap.executor.threads}" />
+  </bean>
+
+  <!-- Task executes synchronously in current thread - just like a normal 
+    method call. Invoking thread continues once task is completed. -->
+  <bean id="synchronousExecutor" class="org.dataconservancy.dcs.util.SynchronousExecutor" />
+
+  <bean
+    class="org.springframework.web.context.support.ServletContextAttributeExporter">
+    <property name="attributes">
+      <map>
+        <entry key="dcpquery.instance" value-ref="org.dataconservancy.dcs.query.dcpsolr.DcsDataModelQueryService" />
+        <entry key="datastream.url" value="${dcs.access.datastream.url}" />
+      </map>
+    </property>
+  </bean>
+
+  <!-- Transaction wrappers and session factory for IDService -->
+  <tx:annotation-driven transaction-manager="idTxManager" />
+
+  <bean id="idTxManager"
+    class="org.springframework.orm.hibernate3.HibernateTransactionManager"
+    lazy-init="true">
+    <property name="sessionFactory" ref="idSessionFactory" />
+  </bean>
+
+  <bean id="idTxWrapper"
+    class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+    lazy-init="true">
+    <property name="transactionManager" ref="idTxManager" />
+    <property name="target"
+      ref="org.dataconservancy.dcs.id.impl.hibernate.HibernateIdService" />
+    <property name="transactionAttributes">
+      <props>
+        <prop key="locateIp">PROPAGATION_REQUIRED</prop>
+      </props>
+    </property>
+  </bean>
+
+  <bean id="metadataFormatBootstrap"
+        class="org.dataconservancy.dcs.integration.bootstrap.MetadataFormatRegistryBootstrap"
+        init-method="bootstrapFormats">
+    <constructor-arg ref="sipDepositManager"/>
+    <constructor-arg ref="fileUploadManager"/>
+    <constructor-arg ref="formatRegistry"/>
+    <constructor-arg ref="org.dataconservancy.dcs.query.dcpsolr.DcsDataModelQueryService"/>
+    <constructor-arg ref="dcsModelBuilder"/>
+    <property name="disabled" value="${dcs.bootstrap.metadataformatregistry.disabled}"/>
+  </bean>
+
+</beans>

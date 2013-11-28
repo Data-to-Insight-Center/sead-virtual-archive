@@ -1,0 +1,814 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2013 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.0.xsd">
+
+    <bean id="servicesImplPlaceholderConfig"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+      <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+      <property name="ignoreUnresolvablePlaceholders" value="true"/>
+      <property name="ignoreResourceNotFound" value="true"/>
+      <property name="locations">
+        <list>
+          <value>classpath:smtpServerSettings.properties</value>
+          <value>classpath:notificationEmailSettings.properties</value>
+          <value>classpath*:org/dataconservancy/mhf/config/dcs-mhf.properties</value>
+          <!--
+            ext.properties goes last, so properties defined here "win"
+          -->
+          <value>classpath:ext.properties</value>
+        </list>
+      </property>
+    </bean>
+    
+  <!--
+   | The format registry in use.  Typically test environments will define an in-memory implementation, while
+   | production will define an implementation backed by the Data Conservancy.
+   +-->
+  <alias name="${formatRegistry}" alias="formatRegistryImpl"/>
+  
+  <!-- 
+   | The scheme registry in use. Typically test environments will define an in-memory implementation, while
+   | production will define an implementation backed by the Data Conservancy.
+   + -->
+  <alias name="${schemeRegistry}" alias="schemeRegistryImpl"/>
+  
+  <!--
+   | The user service to use.  Typically test environments will define an in-memory implementation, while
+   | production will define a JDBC-backed implementation.
+   +-->
+  <alias name="${dcs.ui.userservice}" alias="userService"/>
+
+  <!--
+    Spring Transaction Proxies (AOP)
+  -->
+  <!--
+    - This point-cut applies transactions to all services in org.dataconservancy.ui.services
+    - See the 'jdbcTxAdvice' bean for transaction semantics.
+  -->
+  <aop:config>
+    <aop:pointcut id="serviceMethods" expression="execution(* org.dataconservancy.ui.services.*Service*.*(..))"/>
+    <aop:advisor advice-ref="jdbcTxAdvice" pointcut-ref="serviceMethods"/>
+  </aop:config>
+
+  <!--
+    - This point-cut applies to all classes in org.dataconservancy.dcs.id.api
+    - It applies read-only semantics to all methods except methods with names beginning with "create"
+    - (via the hibernateTxAdvice bean)
+  -->
+  <aop:config>
+    <aop:pointcut id="idCreationMethods" expression="execution(* org.dataconservancy.dcs.id.api.*.*(..))"/>
+    <aop:advisor advice-ref="hibernateTxAdvice" pointcut-ref="idCreationMethods"/>
+  </aop:config>
+
+  <!--
+    Spring-managed Transaction Management
+    http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/transaction.html
+  -->
+  <!-- For JDBC -->
+  <bean id="jdbcTxManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    <property name="dataSource" ref="uiDataSource"/>
+  </bean>
+
+  <!-- For Hibernate -->
+  <bean id="hibernateTxManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+    <property name="sessionFactory" ref="uiIdServiceSessionFactory"/>
+  </bean>
+
+  <!--
+    Spring JDBC Transaction Semantics
+  -->
+  <tx:advice id="jdbcTxAdvice" transaction-manager="jdbcTxManager">
+    <tx:attributes>
+      <!-- all methods starting with 'get', 'list', 'load', retrieve, or 'find' are read-only -->
+      <!-- we allow these methods to read transactions that are not yet committed -->
+      <tx:method name="get*" read-only="true" isolation="READ_UNCOMMITTED"/>
+      <tx:method name="list*" read-only="true" isolation="READ_UNCOMMITTED"/>
+      <tx:method name="find*" read-only="true" isolation="READ_UNCOMMITTED"/>
+      <tx:method name="load*" read-only="true" isolation="READ_UNCOMMITTED"/>
+      <tx:method name="retrieve*" read-only="true" isolation="READ_UNCOMMITTED"/>
+      <!-- other methods use the default transaction settings of the data source -->
+      <tx:method name="*"/>
+    </tx:attributes>
+  </tx:advice>
+
+  <!-- Transaction advice for the ID service (which uses hibernate) -->
+  <tx:advice id="hibernateTxAdvice" transaction-manager="hibernateTxManager">
+    <tx:attributes>
+      <!-- Create method is not read-only -->
+      <tx:method name="create*" propagation="REQUIRED" read-only="false"/>
+      <!-- All other methods are -->
+      <tx:method name="*" read-only="true"/>
+    </tx:attributes>
+  </tx:advice>
+
+  <!-- DC Project Service Implementation -->
+  <bean id="projectService" class="org.dataconservancy.ui.services.ProjectServiceImpl">
+    <constructor-arg ref="projectDao"/>
+    <constructor-arg ref="delegatingPersonDao"/>
+    <constructor-arg ref="projectPIDao"/>
+    <constructor-arg ref="projectAwardDao"/>
+  </bean>
+
+  <!--
+  | User Service Implementation
+  | - User services are the entrance point to reading and writing user information
+  | - Various implementations exist, but are always backed by a PersonDAO
+  | - The UserService interface is adapted to Spring Security's UserDetailsService
+  +-->
+
+  <!--
+    User service backed by the delegating PersonDAO.
+  -->
+  <bean id="delegatingUserService" name="delegatingUserService" class="org.dataconservancy.ui.services.UserServiceImpl">
+    <constructor-arg ref="delegatingPersonDao"/>
+    <constructor-arg ref="personBizPolicyConsultant"/>
+    <constructor-arg ref="idBizPolicyConsultant"/>
+    <constructor-arg ref="uiIdService"/>
+  </bean>
+
+  <!-- RelationshipService -->
+  <bean id="relationshipService" class="org.dataconservancy.ui.services.RelationshipServiceImpl">
+    <constructor-arg ref="relationshipDao"/>
+    <constructor-arg ref="delegatingPersonDao"/>
+    <constructor-arg ref="projectDao"/>
+    <constructor-arg ref="projectAwardDao"/>
+    <constructor-arg ref="archiveService"/>
+  </bean>
+
+  <!-- CitationServiceImpl -->
+  <bean id="citationService" class="org.dataconservancy.ui.services.CitationServiceImpl">
+    <constructor-arg ref="archiveService"/>
+    <constructor-arg ref="relationshipService"/>
+  </bean>
+
+  <!-- Velocity Template Helper -->
+  <bean id="velocityTemplateHelper" class="org.dataconservancy.ui.services.VelocityTemplateHelper">
+    <constructor-arg ref="classpathLoadingVelocityTemplateEngine"/>
+  </bean>
+
+  <!-- Velocity Engine, configured to load templates from the classpath -->
+  <bean id="classpathLoadingVelocityTemplateEngine" class="org.apache.velocity.app.VelocityEngine">
+    <constructor-arg>
+      <props>
+        <prop key="resource.loader">class</prop>
+        <prop key="class.resource.loader.class">org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+        </prop>
+      </props>
+    </constructor-arg>
+  </bean>
+
+  <bean id="ezidService" class="org.dataconservancy.ui.services.EZIDServiceImpl">
+    <property name="username" value="${ezid.username}"/>
+    <property name="password" value="${ezid.password}"/>
+    <property name="requestUrl" value="${ezid.requestUrl}"/>
+    <property name="namespace" value="${ezid.namespace}"/>
+  </bean>
+
+  <!-- Business Services -->
+  <bean id="projectBizService" class="org.dataconservancy.ui.services.ProjectBizServiceImpl">
+    <property name="relationshipService" ref="relationshipService"/>
+    <property name="projectService" ref="projectService"/>
+    <property name="idService" ref="uiIdService"/>
+    <property name="authorizationService" ref="authorizationService"/>
+    <property name="userService" ref="delegatingUserService"/>
+  </bean>
+
+  <bean id="fileBizService" class="org.dataconservancy.ui.services.FileBizServiceImpl">
+    <property name="relationshipService" ref="relationshipService"/>
+    <property name="authorizationService" ref="authorizationService"/>
+    <property name="archiveService" ref="archiveService"/>
+    <property name="userService" ref="userService"/>
+  </bean>
+
+  <bean id="dataItemBizService" class="org.dataconservancy.ui.services.DataItemBizServiceImpl">
+    <constructor-arg ref="archiveService"/>
+    <constructor-arg ref="authorizationService"/>
+    <property name="userService" ref="userService"/>
+    <property name="relationshipService" ref="relationshipService"/>
+    <property name="collectionBizService" ref="collectionBizService"/>
+  </bean>
+
+  <bean id="dataItemTransportService" class="org.dataconservancy.ui.services.DataItemTransportServiceImpl">
+    <constructor-arg ref="archiveService"/>
+  </bean>
+
+  <bean id="collectionBizService" class="org.dataconservancy.ui.services.CollectionBizServiceImpl">
+    <property name="archiveService" ref="archiveService"/>
+    <property name="authorizationService" ref="authorizationService"/>
+    <property name="projectBizService" ref="projectBizService"/>
+    <property name="relationshipService" ref="relationshipService"/>
+    <property name="userService" ref="userService"/>
+  </bean>
+
+  <!-- IngestReportService -->
+  <bean id="ingestReportService" class="org.dataconservancy.ui.services.IngestReportServiceImpl">
+    <constructor-arg ref="ingestReportBuilder"/>
+    <property name="idService" ref="uiIdService"/>
+    <property name="collectionBizService" ref="collectionBizService"/>
+  </bean>
+
+  <bean id="ingestReportBuilder" class="org.dataconservancy.reporting.model.builder.xstream.XstreamIngestReportBuilder" />
+
+  <!-- BusinessObjectMapService -->
+  <bean id="businessObjectMapService" class="org.dataconservancy.ui.services.BusinessObjectMapServiceImpl">
+    <constructor-arg ref="archiveService"/>
+    <constructor-arg ref="relationshipService"/>
+  </bean>
+  
+  <bean id="metadataFileBizService" class="org.dataconservancy.ui.services.MetadataFileBizServiceImpl">
+  	<constructor-arg ref="archiveService"/>
+  	<property name="authorizationService" ref="authorizationService"/>
+    <property name="relationshipService" ref="relationshipService"/>
+    <property name="projectBizService" ref="projectBizService"/>
+    <property name="archiveDepositInfoDao" ref="archiveDepositInfoDao"/>
+  </bean>
+
+  <bean id="metadataBizService" class="org.dataconservancy.ui.services.MetadataBizServiceImpl">
+  	<constructor-arg ref="metadataHandlingService"/>
+  	<property name="metadataValidationService" ref="metadataValidationService"/>
+  </bean>
+  
+  <bean id="metadataHandlingService" class="org.dataconservancy.mhf.services.MetadataHandlingServiceImpl">
+  	<constructor-arg ref="metadataValidationService"/>
+  	<constructor-arg ref="metadataExtractionService"/>
+  	<constructor-arg ref="metadataFindingService"/>
+  </bean>
+
+  <bean id="metadataValidationService" class="org.dataconservancy.mhf.services.MetadataValidationServiceImpl">
+  	<constructor-arg ref="metadataFindingService"/>
+  	<constructor-arg ref="metadataValidatorRegistry"/>
+  </bean>
+  
+  <bean id="metadataFindingService" class="org.dataconservancy.mhf.services.MetadataFindingServiceImpl">
+  	<constructor-arg ref="metadataFinderRegistry"/>
+  </bean>
+  
+  <bean id="metadataExtractionService" class="org.dataconservancy.mhf.services.AttributeSetMetadataExtractionServiceImpl">
+  	<constructor-arg ref="metadataExtractorRegistry"/>
+  </bean>
+  
+    <!-- Finder Registry -->
+  <bean id="metadataFinderRegistry" class="org.dataconservancy.registry.shared.memory.InMemoryRegistry">
+    <constructor-arg value="dataconservancy.org:registry-entry:metadataFinder"/>
+    <property name="entries">
+      <map>
+        <entry key="dc:metadata:finder/Collection" value-ref="collectionMetadataFinderEntry"/>
+        <entry key="dc:metadata:finder/DataItem" value-ref="dataItemMetadataFinderEntry"/>
+        <entry key="dc:metadata:finder/Project" value-ref="projectMetadataFinderEntry"/>
+        <entry key="dc:metadata:finder/DataFile" value-ref="dataFileBoMetadataFinderEntry"/>
+        <entry key="dc:metadata:finder/MetadataFile" value-ref="metadataFileMetadataFinderEntry"/>
+        <entry key="dc:metadata:finder/EmbeddedMetadataFile" value-ref="embeddedMetadataInMetadataFileFinderEntry"/>
+        <entry key="dc:metadata:finder/EmbeddedDataFile" value-ref="embeddedMetadataInDataFileFinderEntry"/>
+      </map>
+    </property>
+  </bean>
+
+    <!-- Extractor Registry -->
+    <bean id="metadataExtractorRegistry" class="org.dataconservancy.registry.shared.memory.InMemoryRegistry">
+      <constructor-arg value="dataconservancy.org:registry-entry:metadataExtractor"/>
+      <property name="entries">
+        <map>
+          <entry key="dc:metadata:extractor/AttributeSet" value-ref="attributeSetMetadataExtractorEntry"/>
+          <entry key="dc:metadata:extractor/FGDC" value-ref="fgdcMetadataExtractorEntry"/>
+          <entry key="dc:metadata:extractor/JPG" value-ref="jpgMetadataExtractorEntry"/>
+          <entry key="dc:metadata:extractor/JPEG" value-ref="jpegMetadataExtractorEntry"/>
+          <entry key="dc:metadata:extractor/TIF" value-ref="tifMetadataExtractorEntry"/>
+          <entry key="dc:metadata:extractor/TIFF" value-ref="tiffMetadataExtractorEntry"/>
+        </map>
+      </property>
+    </bean>
+
+    <!-- Validator Registry -->
+    <bean id="metadataValidatorRegistry" class="org.dataconservancy.registry.shared.memory.InMemoryRegistry">
+      <constructor-arg value="dataconservancy.org:registry-entry:metadataValidator"/>
+      <property name="entries">
+        <map>
+          <entry key="dc:metadata:validator/Xml" value-ref="xmlMetadataValidatorEntry"/>
+          <entry key="dc:metadata:validator/Xsd" value-ref="xsdValidatorEntry"/>
+        </map>
+      </property>
+    </bean>
+
+    <bean id="metadataObjectBuilder" class="org.dataconservancy.mhf.model.builder.xstream.XstreamMetadataObjectBuilder">
+      <constructor-arg ref="xstream"/>
+    </bean>
+    <bean id="attributeValueBuilder" class="org.dataconservancy.mhf.model.builder.xstream.XStreamAttributeValueBuilder">
+      <constructor-arg ref="xstream"/>
+    </bean>
+    
+
+    <bean id="xstream" class="com.thoughtworks.xstream.XStream"/>
+    <!-- *********************************************************************************************************** -->
+    <!-- Validator Registry Entries -->
+    <!-- *********************************************************************************************************** -->
+  
+    <bean id="metadataFormatResourceResolver" class="org.dataconservancy.mhf.validators.util.DcsMetadataFormatResourceResolver">
+      <constructor-arg ref="formatRegistryImpl"/>
+    </bean>
+
+    <bean id="metadataSchemeResourceResolver" class="org.dataconservancy.mhf.validators.util.DcsMetadataSchemeResourceResolver">
+      <constructor-arg ref="schemeRegistryImpl"/>
+    </bean>
+
+	<bean id="xsdSchemeResourceResolver" class="org.dataconservancy.mhf.validators.util.XsdHttpResourceResolver"/>
+	
+    <bean id="metadataSchemaFactory" class="javax.xml.validation.SchemaFactory" factory-method="newInstance">
+      <constructor-arg type="java.lang.String" value="http://www.w3.org/2001/XMLSchema"/>
+      <property name="resourceResolver">
+        <bean class="org.dataconservancy.mhf.validators.dom.impl.LSResourceResolverImpl">
+            <constructor-arg ref="metadataSchemeResourceResolver"/>
+        </bean>
+      </property>
+    </bean>
+    
+    <bean id="xsdMetadataSchemaFactory" class="javax.xml.validation.SchemaFactory" factory-method="newInstance">
+      <constructor-arg type="java.lang.String" value="http://www.w3.org/2001/XMLSchema"/>
+      <property name="resourceResolver">
+        <bean class="org.dataconservancy.mhf.validators.dom.impl.LSResourceResolverImpl">
+        	<constructor-arg ref="xsdSchemeResourceResolver"/>
+        </bean>
+      </property>
+    </bean>
+
+    <bean id="xmlMetadataValidator" class="org.dataconservancy.mhf.validators.XmlMetadataValidatorImpl">
+      <constructor-arg ref="metadataSchemaFactory"/>
+      <constructor-arg ref="metadataFormatResourceResolver"/>
+      <constructor-arg ref="metadataSchemeResourceResolver"/>
+      <constructor-arg ref="mhfEventManager"/>
+    </bean>
+
+    <bean id="xmlMetadataValidatorEntry" class="org.dataconservancy.registry.api.support.BasicRegistryEntryImpl">
+      <property name="entry" ref="xmlMetadataValidator"/>
+      <property name="entryType" value="dataconservancy.org:registry-entry:metadataValidator" />
+      <property name="id" value="dc:metadata:validator/Xml" />
+      <property name="description" value="Validate MetadataInstances."/>
+      <property name="keys">
+        <list>
+          <value>dataconservancy.org:formats:file:metadata:fgdc:xml</value>
+        </list>
+      </property>
+    </bean>
+    
+    <bean id="xsdValidatorEntry" class="org.dataconservancy.registry.api.support.BasicRegistryEntryImpl">
+      <property name="entry" ref="xsdMetadataValidator"/>
+      <property name="entryType" value="dataconservancy.org:registry-entry:metadataValidator"/>
+      <property name="id" value="dc:metadata:validator/Xsd"/>
+      <property name="description" value="Validate schemas"/>
+      <property name="keys">
+      	<list>
+      	  <value>dataconservancy.org:formats:file:xsd:2004</value>
+      	</list>
+      </property>
+    </bean>
+    
+    <bean id="xsdMetadataValidator" class="org.dataconservancy.mhf.validators.XsdMetadataValidatorImpl">
+      <constructor-arg ref="metadataSchemaFactory"/>
+      <constructor-arg ref="xsdMetadataSchemaFactory"/>
+      <constructor-arg ref="metadataFormatResourceResolver"/>
+      <constructor-arg ref="xsdSchemeResourceResolver"/>
+      <constructor-arg ref="mhfEventManager"/>
+    </bean>
+    <!-- *********************************************************************************************************** -->
+    <!-- Extractors Registry Entries -->
+    <!-- *********************************************************************************************************** -->
+
+
+    <bean id="attributeSetMetadataExtractorEntry" class="org.dataconservancy.registry.api.support.BasicRegistryEntryImpl">
+      <property name="entry" ref="attributeSetMetadataExtractor"/>
+      <property name="entryType" value="dataconservancy.org:registry-entry:metadataExtractor"/>
+      <property name="id" value="dc:metadata:extractor/AttributeSet"/>
+      <property name="description" value="Extract MetadataRepresentation from MetadataAttributeSet."/>
+      <property name="keys">
+        <list>
+          <value>dataconservancy.org:formats:attributeset-metadataformat:1.0</value>
+          <value>dataconservancy.org:mhf:representations:attribute-set:1.0</value>
+        </list>
+      </property>
+    </bean>
+
+
+    <bean id="attributeSetMetadataExtractor" class="org.dataconservancy.mhf.extractors.AttributeSetMetadataExtractor">
+      <constructor-arg ref="metadataObjectBuilder"/>
+    </bean>
+
+    <bean id="fgdcMetadataExtractorEntry" class="org.dataconservancy.registry.api.support.BasicRegistryEntryImpl">
+      <property name="entry" ref="fgdcMetadataExtractor"/>
+      <property name="entryType" value="dataconservancy.org:registry-entry:metadataExtractor"/>
+      <property name="id" value="dc:metadata:extractor/FGDC"/>
+      <property name="description" value="Extract MetadataRepresentation from FGDC MetadataInstance."/>
+      <property name="keys">
+        <list>
+          <value>dataconservancy.org:formats:file:metadata:fgdc:xml</value>
+          <value>dataconservancy.org:mhf:representations:attribute-set:1.0</value>
+        </list>
+      </property>
+    </bean>
+
+    <bean id="fgdcMetadataExtractor" class="org.dataconservancy.mhf.extractors.FGDCXMLMetadataExtractor">
+      <constructor-arg ref="metadataObjectBuilder"/>
+      <constructor-arg ref="attributeValueBuilder"/>
+    </bean>
+
+    <bean id="jpegMetadataExtractorEntry" class="org.dataconservancy.registry.api.support.BasicRegistryEntryImpl">
+      <property name="entry" ref="jpegMetadataExtractor"/>
+      <property name="entryType" value="dataconservancy.org:registry-entry:metadataExtractor"/>
+      <property name="id" value="dc:metadata:extractor/JPEG"/>
+      <property name="description" value="Extract MetadataRepresentation from JPEG Embedded MetadataInstance."/>
+      <property name="keys">
+        <list>
+          <value>dataconservancy.org:formats:file:jpeg</value>
+          <value>dataconservancy.org:mhf:representations:attribute-set:1.0</value>
+        </list>
+      </property>
+    </bean>
+
+    <bean id="jpgMetadataExtractorEntry" class="org.dataconservancy.registry.api.support.BasicRegistryEntryImpl">
+      <property name="entry" ref="jpegMetadataExtractor"/>
+      <property name="entryType" value="dataconservancy.org:registry-entry:metadataExtractor"/>
+      <property name="id" value="dc:metadata:extractor/JPG"/>
+      <property name="description" value="Extract MetadataRepresentation from JPG Embedded MetadataInstance."/>
+      <property name="keys">
+        <list>
+          <value>dataconservancy.org:formats:file:jpg</value>
+          <value>dataconservancy.org:mhf:representations:attribute-set:1.0</value>
+        </list>
+      </property>
+    </bean>
+
+    <bean id="jpegMetadataExtractor" class="org.dataconservancy.mhf.extractors.JPEGDNMetadataExtractor">
+      <constructor-arg ref="metadataObjectBuilder"/>
+      <constructor-arg ref="attributeValueBuilder"/>
+    </bean>
+
+    <bean id="tiffMetadataExtractorEntry" class="org.dataconservancy.registry.api.support.BasicRegistryEntryImpl">
+      <property name="entry" ref="tiffMetadataExtractor"/>
+      <property name="entryType" value="dataconservancy.org:registry-entry:metadataExtractor"/>
+      <property name="id" value="dc:metadata:extractor/TIFF"/>
+      <property name="description" value="Extract MetadataRepresentation from TIFF Embedded MetadataInstance."/>
+      <property name="keys">
+        <list>
+          <value>dataconservancy.org:formats:file:tiff</value>
+          <value>dataconservancy.org:mhf:representations:attribute-set:1.0</value>
+        </list>
+      </property>
+    </bean>
+
+    <bean id="tifMetadataExtractorEntry" class="org.dataconservancy.registry.api.support.BasicRegistryEntryImpl">
+      <property name="entry" ref="tiffMetadataExtractor"/>
+      <property name="entryType" value="dataconservancy.org:registry-entry:metadataExtractor"/>
+      <property name="id" value="dc:metadata:extractor/TIF"/>
+      <property name="description" value="Extract MetadataRepresentation from TIFF Embedded MetadataInstance."/>
+      <property name="keys">
+        <list>
+          <value>dataconservancy.org:formats:file:tif</value>
+          <value>dataconservancy.org:mhf:representations:attribute-set:1.0</value>
+        </list>
+      </property>
+    </bean>
+
+    <bean id="tiffMetadataExtractor" class="org.dataconservancy.mhf.extractors.TIFFDNMetadataExtractor">
+      <constructor-arg ref="metadataObjectBuilder"/>
+      <constructor-arg ref="attributeValueBuilder"/>
+    </bean>
+    <!-- *********************************************************************************************************** -->
+    <!-- Finder Registry Entries-->
+    <!-- *********************************************************************************************************** -->
+    <bean id="collectionMetadataFinderEntry" class="org.dataconservancy.registry.api.support.BasicRegistryEntryImpl">
+      <property name="entry" ref="collectionMetadataFinder"/>
+      <property name="entryType" value="dataconservancy.org:registry-entry:metadataFinder"/>
+      <property name="id" value="dc:metadata:finder/Collection"/>
+      <property name="description" value="Find MetadataInstances contained within a Collection business object."/>
+      <property name="keys">
+        <list>
+          <value>org.dataconservancy.ui.model.Collection</value>
+        </list>
+      </property>
+    </bean>
+
+    <bean id="collectionMetadataFinder" class="org.dataconservancy.mhf.finders.CollectionMetadataFinder">
+        <constructor-arg ref="metadataObjectBuilder"/>
+        <constructor-arg ref="attributeValueBuilder"/>
+    </bean>
+
+    <bean id="projectMetadataFinderEntry" class="org.dataconservancy.registry.api.support.BasicRegistryEntryImpl">
+      <property name="entry" ref="projectMetadataFinder"/>
+      <property name="entryType" value="dataconservancy.org:registry-entry:metadataFinder"/>
+      <property name="id" value="dc:metadata:finder/Project"/>
+      <property name="description" value="Find MetadataInstances contained within a Project business object."/>
+      <property name="keys">
+        <list>
+            <value>org.dataconservancy.ui.model.Project</value>
+        </list>
+      </property>
+    </bean>
+
+    <bean id="projectMetadataFinder" class="org.dataconservancy.mhf.finders.ProjectMetadataFinder">
+      <constructor-arg ref="metadataObjectBuilder"/>
+    </bean>
+
+    <bean id="dataItemMetadataFinderEntry" class="org.dataconservancy.registry.api.support.BasicRegistryEntryImpl">
+      <property name="entry" ref="dataItemMetadataFinder"/>
+      <property name="entryType" value="dataconservancy.org:registry-entry:metadataFinder"/>
+      <property name="id" value="dc:metadata:finder/DataItem"/>
+      <property name="description" value="Find MetadataInstances contained within a DataItem business object."/>
+      <property name="keys">
+        <list>
+          <value>org.dataconservancy.ui.model.DataItem</value>
+        </list>
+      </property>
+    </bean>
+
+    <bean id="dataItemMetadataFinder" class="org.dataconservancy.mhf.finders.DataItemMetadataFinder">
+      <constructor-arg ref="metadataObjectBuilder"/>
+    </bean>
+
+    <bean id="embeddedMetadataInMetadataFileFinderEntry" class="org.dataconservancy.registry.api.support.BasicRegistryEntryImpl">
+      <property name="entry" ref="embeddedMetadataFinder"/>
+      <property name="entryType" value="dataconservancy.org:registry-entry:metadataFinder"/>
+      <property name="id" value="dc:metadata:finder/EmbeddedMetadataFile"/>
+      <property name="description" value="Find MetadataInstances embedded in the ByteStream of DataFile or MetadataFile business object."/>
+        <property name="keys">
+          <list>
+            <value>org.dataconservancy.ui.model.MetadataFile</value>
+          </list>
+        </property>
+    </bean>
+
+    <bean id="embeddedMetadataInDataFileFinderEntry" class="org.dataconservancy.registry.api.support.BasicRegistryEntryImpl">
+      <property name="entry" ref="embeddedMetadataFinder"/>
+      <property name="entryType" value="dataconservancy.org:registry-entry:metadataFinder"/>
+      <property name="id" value="dc:metadata:finder/EmbeddedDataFile"/>
+      <property name="description" value="Find MetadataInstances embedded in the ByteStream of DataFile or MetadataFile business object."/>
+        <property name="keys">
+          <list>
+            <value>org.dataconservancy.ui.model.DataFile</value>
+          </list>
+        </property>
+    </bean>
+
+    <bean id="metadataFileMetadataFinderEntry" class="org.dataconservancy.registry.api.support.BasicRegistryEntryImpl">
+      <property name="entry" ref="metadataFileBoMetadataFinder"/>
+      <property name="entryType" value="dataconservancy.org:registry-entry:metadataFinder"/>
+      <property name="id" value="dc:metadata:finder/MetadataFile"/>
+      <property name="description" value="Find MetadataInstances contained within a MetadataFile business object."/>
+      <property name="keys">
+        <list>
+          <value>org.dataconservancy.ui.model.MetadataFile</value>
+        </list>
+      </property>
+    </bean>
+
+    <bean id="embeddedMetadataFinder" class="org.dataconservancy.mhf.finders.EmbeddedMetadataFinder">
+      <constructor-arg ref="metadataObjectBuilder"/>
+    </bean>
+
+    <bean id="dataFileBoMetadataFinderEntry" class="org.dataconservancy.registry.api.support.BasicRegistryEntryImpl">
+      <property name="entry" ref="dataFileBoMetadataFinder"/>
+      <property name="entryType" value="dataconservancy.org:registry-entry:metadataFinder"/>
+      <property name="id" value="dc:metadata:finder/DataFile"/>
+      <property name="description" value="Find MetadataInstances contained within a DataFile business object."/>
+      <property name="keys">
+        <list>
+          <value>org.dataconservancy.ui.model.DataFile</value>
+        </list>
+      </property>
+    </bean>
+
+    <bean id="dataFileBoMetadataFinder" class="org.dataconservancy.mhf.finders.DataFileBoMetadataFinder">
+      <constructor-arg ref="metadataObjectBuilder"/>
+    </bean>
+
+    <bean id="metadataFileBoMetadataFinder" class="org.dataconservancy.mhf.finders.MetadataFileBoMetadataFinder">
+      <constructor-arg ref="metadataObjectBuilder"/>
+    </bean>
+  
+  <!-- Archive Backed Registry Lookup Service -->
+  <bean id="archiveFormatRegistry" class="org.dataconservancy.registry.shared.query.GenericQueryFrameworkRegistry"
+  		lazy-init="true">
+  	<constructor-arg value="dataconservancy.types:registry-entry:metadataformat"/>
+  	<constructor-arg ref="registryEntryLookupService"/>
+  </bean>
+  
+  <!-- Archive Backed Scheme Registry Wrapper -->
+  <bean id="archiveSchemeRegistry" class="org.dataconservancy.ui.services.util.MetadataSchemeRegistryWrapper" 
+  		lazy-init="true">
+    <constructor-arg value="org.dataconservancy:registry:metadatascheme"/>
+    <constructor-arg value="Registry of Metadata Schemes"/>
+    <constructor-arg ref="archiveFormatRegistry"/>
+  </bean>
+  
+  <bean id="registryEntryLookupService" class="org.dataconservancy.registry.shared.query.support.RegistryEntryLookupService">
+  	<constructor-arg ref="connectorBackedDcpQueryService"/>
+  	<constructor-arg ref="metadataFormatRegistryEntryMapper"/>
+  	<constructor-arg ref="metadataFormatProfile"/>
+  </bean>
+
+  <bean id="metadataFormatProfile" class="org.dataconservancy.registry.impl.metadata.shared.MetadataFormatProfile"/>
+  
+  <!-- Authorization Service -->
+  <bean id="authorizationService" class="org.dataconservancy.ui.services.AuthorizationServiceImpl">
+    <constructor-arg ref="relationshipService"/>
+  </bean>
+
+  <!-- MetadataFormat Service -->
+
+  <bean id="metadataRegistryType" class="java.lang.String">
+    <constructor-arg value="dataconservancy.types:registry-entry:metadatascheme"/>
+  </bean>
+
+  <bean id="metadataFormatService" class="org.dataconservancy.ui.services.MetadataFormatServiceRegistryImpl">
+    <constructor-arg ref="formatRegistryImpl"/>
+    <constructor-arg ref="archiveService"/>
+    <constructor-arg ref="metadataValidatorRegistry"/>
+    <constructor-arg ref="relationshipService"/>
+    <constructor-arg ref="metadataFormatPropertiesDao"/>
+    <constructor-arg ref="disciplineDao"/>
+    <constructor-arg ref="uiIdService"/>
+  </bean>
+
+  <!-- Project Activity Service -->
+  <bean id="collectionActivityService" class="org.dataconservancy.ui.services.CollectionActivityServiceImpl">
+    <constructor-arg ref="archiveService"/>
+    <constructor-arg ref="userService"/>
+  </bean>
+
+  <!-- Package Service  -->
+  <bean id="packageService" class="org.dataconservancy.ui.services.PackageServiceImpl">
+    <constructor-arg ref="packageDao"/>
+  </bean>
+
+  <!-- Notification/Email Service -->
+  <bean id="notificationService" class="org.dataconservancy.ui.services.EmailService">
+    <property name="smtpServerSettings" ref="smtpServerSettings"/>
+  </bean>
+
+  <!-- Package Ingest Notification -->
+  <bean id="packageIngestCompleteNotification" class="org.dataconservancy.ui.model.Email">
+    <property name="sender" value="${packageIngestNotificationSender}"/>
+    <property name="subject" value="${packageIngestNotificationSubject}"/>
+    <property name="notificationMessage" value="${packageIngestNotificationBody}"/>
+  </bean>
+
+
+    <!-- Password Reset Service -->
+  <bean id="passwordResetService" class="org.dataconservancy.ui.services.PasswordResetServiceImpl">
+    <constructor-arg ref="passwordResetRequestDao"/>
+    <constructor-arg ref="userService"/>
+    <!-- number of hours a password reset request remains valid -->
+    <property name="passwordResetRequestWindow" value="${dcs.ui.passwordResetRequestWindow}"/>
+  </bean>
+
+  <bean id="smtpServerSettings" class="org.dataconservancy.ui.model.SMTPServerSettings">
+  	<property name="authenticationEnabled" value="${authenticationEnabled}"/>
+    <property name="emailServiceEnabled" value="${emailServiceEnabled}"/>
+  	<property name="sslEnabled" value="${sslEnabled}"/>
+  	<property name="smtpServer" value="${smtpServer}"/>
+  	<property name="portNumber" value="${portNumber}"/>
+  	<property name="username" value="${username}"/>
+  	<property name="password" value="${password}"/>
+  </bean>
+
+  <bean id="uiIdService" class="org.dataconservancy.dcs.id.impl.hibernate.HibernateIdService">
+    <property name="sessionFactory" ref="uiIdServiceSessionFactory"/>
+    <property name="urlPrefix" ref="idPrefixBootstrap"/>
+    <property name="identifierFactory" ref="uiIdentifierFactory"/>
+  </bean>
+
+  <bean id="uiIdServiceSessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+    <property name="dataSource" ref="uiHibernateDataSource"/>
+    <property name="hibernateProperties">
+      <props>
+        <prop key="hibernate.dialect">${dcs.ui.id.hibernate.dialect}</prop>
+        <prop key="hibernate.hbm2ddl.auto">${dcs.ui.id.hibernate.ddl}</prop>
+        <prop key="hibernate.show_sql">false</prop>
+      </props>
+    </property>
+    <property name="annotatedClasses">
+      <value>org.dataconservancy.dcs.id.impl.hibernate.TypeInfo</value>
+    </property>
+  </bean>
+
+  <bean id="removeExpiredPasswordResetRequests" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+    <property name="targetObject" ref="passwordResetService"/>
+    <property name="targetMethod" value="removeExpiredRequests"/>
+  </bean>
+
+  <bean id="passwordResetCleanoutCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+    <property name="jobDetail" ref="removeExpiredPasswordResetRequests"/>
+    <!-- run every day at 5 AM -->
+    <property name="cronExpression" value="0 0 5 * * ?"/>
+  </bean>
+
+  <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+    <property name="triggers">
+      <list>
+        <ref local="passwordResetCleanoutCronTrigger"/>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="uiIdentifierFactory" class="org.dataconservancy.ui.services.util.IdWrapperFactory"/>
+  
+  <bean id="dropboxAccessor" class="org.dataconservancy.storage.dropbox.DropboxAccessorImpl"/>
+  
+  <bean id="dropboxService" class="org.dataconservancy.ui.services.DropboxServiceImpl">
+    <constructor-arg ref="dropboxDao"/>
+    <constructor-arg ref="dropboxAccessor"/>
+  </bean>
+  
+  <!-- Packaging Bean definitions -->
+  <bean class="org.dataconservancy.ui.services.ExternalReferenceChecker">
+    <property name="projectBizService" ref="projectBizService"/>
+    <property name="collectionBizService" ref="collectionBizService"/>
+    <property name="dataItemBizService" ref="dataItemBizService"/>
+    <property name="metadataFileBizService" ref="metadataFileBizService"/>
+    <property name="idService" ref="uiIdService"/>
+  </bean>
+
+  <bean class="org.dataconservancy.packaging.ingest.services.BusinessObjectBuilder">
+    <property name="idService" ref="uiIdService"/>
+  </bean>
+  
+  <bean class="org.dataconservancy.packaging.ingest.services.BusinessObjectValidator" />
+
+  <bean class="org.dataconservancy.packaging.ingest.services.ASMetadataFileBuilder">
+    <property name="idService" ref="uiIdService"/>
+  </bean>
+
+  <!-- Phase Two Ingest Services --> 
+  <util:list id="phaseTwoIngestServices">
+    <ref bean="org.dataconservancy.ui.services.ExternalReferenceChecker"/>
+    <bean class="org.dataconservancy.packaging.ingest.services.RemoveUnsupportedAggregationsService"/>
+ 	<ref bean="org.dataconservancy.packaging.ingest.services.BusinessObjectBuilder"/>
+    <ref bean="org.dataconservancy.packaging.ingest.services.BusinessObjectValidator"/>
+    <ref bean="org.dataconservancy.packaging.ingest.services.ASMetadataFileBuilder"/>
+  </util:list>
+  
+  <bean id="phaseTwo" class="org.dataconservancy.packaging.ingest.services.IngestPhaseImpl">
+    <constructor-arg value="2000"/>
+    <constructor-arg value="true"/>
+  </bean>
+  
+  <bean id="packageIngestPhaseTwo" class="org.dataconservancy.packaging.ingest.services.IngestPhaseLoader" depends-on="phaseOneIngestServices, packageIngestBootstrap" init-method="addPhase">
+   	<property name="bootstrap" ref="packageIngestBootstrap"/>
+    <property name="phase" ref="phaseTwo"/>
+    <property name="phaseServices" ref="phaseTwoIngestServices"/>
+  </bean>
+
+  <!-- Phase Three Ingest Services -->
+
+  <bean class="org.dataconservancy.ui.services.IngestPackageBusinessObjectsService">
+    <constructor-arg ref="collectionBizService"/>
+    <constructor-arg ref="projectBizService"/>
+    <constructor-arg ref="dataItemBizService"/>
+    <constructor-arg ref="metadataFileBizService"/>
+    <constructor-arg ref="userService"/>
+    <constructor-arg ref="archiveService"/>
+    <constructor-arg ref="uiIdService"/>
+  </bean>
+  
+  <util:list id="phaseThreeIngestServices">
+    <ref bean="org.dataconservancy.ui.services.IngestPackageBusinessObjectsService"/>
+    <bean class="org.dataconservancy.ui.services.BusinessObjectMapIngestService">
+      <property name="businessObjectMapService" ref="businessObjectMapService"/>
+      <property name="notificationService" ref="notificationService"/>
+      <property name="userService" ref="userService"/>
+      <property name="velocityHelper" ref="velocityTemplateHelper"/>
+      <property name="emailTemplate" ref="packageIngestCompleteNotification"/>
+    </bean>
+    <bean class="org.dataconservancy.packaging.ingest.services.CleanupIngestService"/>
+  </util:list>
+
+  <bean id="phaseThree" class="org.dataconservancy.packaging.ingest.services.IngestPhaseImpl">
+    <constructor-arg value="3000"/>
+    <constructor-arg value="false"/>
+  </bean>
+
+  <bean id="packageIngestPhaseThree" class="org.dataconservancy.packaging.ingest.services.IngestPhaseLoader" depends-on="packageIngestPhaseTwo" init-method="addPhase">
+    <property name="bootstrap" ref="packageIngestBootstrap"/>
+    <property name="phase" ref="phaseThree"/>
+    <property name="phaseServices" ref="phaseThreeIngestServices"/>
+  </bean>
+  
+</beans>

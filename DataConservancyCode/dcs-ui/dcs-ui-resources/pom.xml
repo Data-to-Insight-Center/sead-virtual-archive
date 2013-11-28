@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  
+  <modelVersion>4.0.0</modelVersion>   
+  <groupId>org.dataconservancy.ui</groupId>
+  <artifactId>dcs-ui-resources</artifactId>
+  <packaging>jar</packaging>
+  <name>DC UI resources</name>
+  <description>Resources for DC UI</description>
+
+  <parent>
+    <artifactId>dcs-ui</artifactId>
+    <groupId>org.dataconservancy.ui</groupId>
+    <version>1.1.0-SNAPSHOT</version>
+  </parent>
+  
+  <!-- Build ====================================================== -->
+  
+  <build>
+    
+    <plugins>
+            
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-remote-resources-plugin</artifactId>
+        <executions>
+          
+          <!-- Produce our bundle from resources in this module. -->
+          <execution>
+            <id>bundle-resources</id>
+            <goals>
+              <goal>bundle</goal>
+            </goals>
+            <configuration>
+              <includes>
+                <include>**/*</include>
+              </includes>
+            </configuration>
+          </execution>
+          
+          <!--
+            Override the behavior of the MRRP defined in the parent POM.  
+            The dcs-ui-*resources modules shouldn't run process-resources or
+            process-test-resources MRRP executions 
+          -->          
+          <execution>
+            <id>process-test-resources</id>
+            <goals/>
+            <phase>none</phase>
+          </execution>
+          
+          <!--
+            Override the behavior of the MRRP defined in the parent POM.  
+            The dcs-ui-*resources modules shouldn't run process-resources or
+            process-test-resources MRRP executions 
+          -->          
+          <execution>
+            <id>process-resources</id>
+            <goals/>
+            <phase>none</phase>
+          </execution>
+          
+        </executions>
+      </plugin>      
+      
+    </plugins>
+    
+  </build>
+  
+  
+  <!-- Dependencies =============================================== -->
+  
+  <dependencies>
+
+    <!-- Provided ================================================= -->
+
+    <!-- Compile ================================================== -->
+
+    <!-- Runtime ================================================== -->
+
+    <!-- Test ===================================================== -->
+
+  </dependencies>
+  
+</project>

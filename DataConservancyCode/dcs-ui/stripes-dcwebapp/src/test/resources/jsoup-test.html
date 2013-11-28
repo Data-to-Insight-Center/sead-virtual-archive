@@ -1,0 +1,171 @@
+
+
+
+
+
+
+    <!DOCTYPE html>
+        <head>
+            <title>
+                
+                
+                    Configure metadata formats supported by this instance
+                
+            </title>
+            <link rel="stylesheet"
+                  type="text/css"
+                  href="/styles/default/default.css"/>
+            <link rel="stylesheet"
+                  type="text/css"
+                  href="/styles/default/form.css"/>
+            <link rel="shortcut icon" href="/resources/images/DC-favicon.ico" >
+            
+            <!-- Using JQuery 1.8.3 specifically to make sure the logout overlay works.
+                 JQuery have deprecated the usage of .browser in the latest version of JQuery
+                 which breaks our local script. 
+             -->
+            <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+            <script src="/resources/scripts/jquery.tools.min.js"></script>
+            <script src="/resources/scripts/dc-custom.js"></script>
+           <script>
+  /* $(function() {
+$("input.tip").tooltip({ position: "center right"});
+$(".user-menu-trigger[rel]").overlay({ fixed: false, top: 83, left: 80%});
+});
+$(function(){
+   var path = location.pathname.substring(1);
+   if ( path )
+     $(.navleft li a[href$=' + path + ']).attr(class, selected);
+ });
+ */
+   </script>
+        </head>
+        
+        
+        
+        <body>
+
+                    
+                         
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div id="header">
+
+
+        
+    <nav id="user">
+        
+        
+        <a href="#" class="user-menu-trigger" rel="#user-menu">Welcome Elliot</a>
+        <div id="user-menu">
+        <ul>
+             <li><a title="Edit" href="/userprofile/userprofile.action?editUserProfile=">User profile</a></li>
+             <li><a href="/j_spring_security_logout">Logout</a></li>
+        </ul>
+        </div>
+        
+    
+    </nav>
+
+<a rel="home" title="Data Conservancy" href="http://dataconservancy.org/">
+<h1>Data Conservancy Software</h1>
+</a>
+
+</div>
+
+<div id="dc-body">
+
+<nav id="dc-default-navbar" title="DC Default Navbar Div">
+        <ul class="navleft">
+          <li><a title="Home" href="/home/home.action">Home</a></li>
+                                  
+         
+            <li>
+    <a title="Profile" href="/userprofile/userprofile.action">Profile</a></li>
+            <li>
+    <a title="Projects" href="/userprofile/project.action">Projects</a></li>
+        <li>
+    <a title="Collection" href="/usercollections/render/usercollections.action">Collections</a></li>
+            
+                <li>
+            <a title="Admin" href="/admin/adminhome.action">Admin</a></li>
+            
+
+
+                                
+        </ul>
+
+</nav>
+
+  
+
+                    
+                   
+         <div class="content-wrapper">              
+         <div id="dc-content" class="pageContent"> 
+         <div id="breadcrumb">
+             
+         </div>
+                        <h1 id="page-title">
+                            
+                                Configure metadata formats supported by this instance
+                            
+                    </h1>
+
+
+                    
+                    
+                <div id="dc-flash">
+                        
+                    </div>
+                    
+                    <div id="dc-success">
+                        
+                    </div>
+                        
+                        
+                
+                
+        <div class="SectionContent">
+            <a title="Configure Collection Metadata Formats" href="/admin/uiconfig.action?displayMetadataFormatList=">Configure Collection Metadata Formats</a>
+        </div>
+    
+               
+                        
+        </div><!-- end dc-content -->                
+</div><!-- end content-wrapper -->
+        </div><!-- end dc-body opened in header.jsp -->
+                <div id="dc-footer">
+                    
+                        
+
+
+
+<div id="footer">
+    <span>Build: Local</span>
+    <span>Timestamp: Local</span>
+    <span>Revision: Local</span>
+
+
+</div>
+                        <a title="TermsOfUse" href="/home/termsofuse.action?handle=">Terms of Use</a>
+                    
+                </div>
+  
+        </body>
+    </html>
+
+

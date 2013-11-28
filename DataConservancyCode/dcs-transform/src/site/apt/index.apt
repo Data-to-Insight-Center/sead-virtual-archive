@@ -1,0 +1,13 @@
+ ---
+ DC Transform proposal
+ ---
+ Aaron Birkland
+ ---
+ 2011--01-04
+ ---
+
+Data Conservancy Transform (Feature Extraction) proposal
+
+ The artifacts in dcs-transform contain stubs and associated javadoc that 
+sketch out a proposed core API, core utilities, and initial applications of
+the feature extraction framework.

@@ -1,0 +1,30 @@
+##
+## Copyright 2012 Johns Hopkins University
+##
+## Licensed under the Apache License, Version 2.0 (the "License");
+## you may not use this file except in compliance with the License.
+## You may obtain a copy of the License at
+##
+##    http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing, software
+## distributed under the License is distributed on an "AS IS" BASIS,
+## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+## See the License for the specific language governing permissions and
+## limitations under the License.
+##
+##
+##
+## Business map report template
+##
+## Edit this template to control a user sees when a business object map is emailed 
+## after successful deposit of a package.
+##
+## The objects provided to this template are
+##   1) An instance of org.dataconservancy.ui.model.Person, bound to
+##      the name 'person'.
+$person.firstNames,
+
+A package has been deposited successfully. Attached are maps from the new identifiers
+in the archive to the identifiers supplied in the package. Two maps are supplied for
+each toplevel object deposited. One is xml and the other is html.

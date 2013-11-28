@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadataScheme>
+  <name>A test resource</name>
+  <schemaVersion></schemaVersion>
+  <schemaUrl>http://a.fake.url/to/where/you/could/find/this/resource/online/testResource.xsd</schemaUrl>
+  <source>testResource.xsd</source>  
+</metadataScheme>

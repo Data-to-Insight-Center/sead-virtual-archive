@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <!-- an empty xsd schema; we just needed a resource at this location in the classpath for testing -->
+</xsd:schema>

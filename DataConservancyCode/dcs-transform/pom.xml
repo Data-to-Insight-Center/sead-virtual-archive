@@ -1,0 +1,125 @@
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.dataconservancy.dcs</groupId>
+  <artifactId>dcs-transform</artifactId>
+  <packaging>pom</packaging>
+  <name>dcs-transform</name>
+
+
+  <url>http://maven.dataconservancy.org/sites/transform/</url>
+
+  <parent>
+    <groupId>org.dataconservancy</groupId>
+    <artifactId>project-pom</artifactId>
+    <version>1.1.0-SNAPSHOT</version>
+  </parent>
+
+  <profiles>
+    <profile>
+      <id>default</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <modules>
+        <module>dcs-transform-api</module>
+        <module>dcs-transform-dcp</module>
+        <module>dcs-transform-index</module>
+        <module>dcs-transform-dcp-solr</module>
+        <module>dcs-transform-execution</module>
+        <module>dcs-transform-profile</module>
+        <module>dcs-transform-dry-valleys</module>
+        <module>dcs-transform-sdss</module>
+      </modules>
+    </profile>
+    
+    <profile>
+      <id>aggregate_release</id>
+      <modules>
+        <!-- Intentionally left empty -->
+      </modules>
+    </profile>
+  </profiles>
+
+  <reporting>
+
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <reportSets>
+          <reportSet>
+            <configuration>
+              <webAccessUrl>https://scm.dataconservancy.org/svn/dcs-transform/trunk</webAccessUrl>
+              <anonymousConnection>scm:svn:https://scm.dataconservancy.org/svn/dcs-transform/trunk</anonymousConnection>
+              <developerConnection>scm:svn:https://scm.dataconservancy.org/svn/dcs-transform/trunk</developerConnection>
+            </configuration>
+            <reports>
+              <report>mailing-list</report>
+              <report>cim</report>
+              <report>issue-tracking</report>
+              <report>scm</report>
+              <report>index</report>
+              <report>license</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <links>
+            <link>http://maven.dataconservancy.org/sites/model/apidocs/</link>
+	    <link>http://hadoop.apache.org/mapreduce/docs/r0.21.0/api/</link>
+            <link>http://maven.dataconservancy.org/sites/index/apidocs/</link>
+          </links>
+          <show>protected</show>
+        </configuration>
+        <reportSets>
+          <reportSet>
+            <id>aggregate-javadocs</id>
+            <reports>
+              <report>aggregate</report>
+            </reports>
+          </reportSet>
+          <reportSet>
+	    <id>javadocs</id>
+	    <reports>
+	      <report>javadoc</report>
+	    </reports>
+          </reportSet>
+        </reportSets>        
+      </plugin>
+      
+
+    </plugins>
+
+  </reporting>
+
+  <!-- SCM  ======================================================= -->
+
+  <scm>
+    <connection>scm:svn:${svn.base}/dcs-transform/trunk/</connection>
+    <developerConnection>scm:svn:${svn.base}/dcs-transform/trunk/</developerConnection>
+    <url>https://scm.dataconservancy.org/svn/dcs-transform/trunk/</url>
+  </scm>
+
+
+</project>

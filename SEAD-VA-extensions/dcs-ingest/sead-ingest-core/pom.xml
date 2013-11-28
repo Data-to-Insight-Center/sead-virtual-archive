@@ -1,0 +1,127 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.seadva.ingest</groupId>
+  <artifactId>sead-ingest-core</artifactId>
+  <name>Extended core ingest api</name>
+  <packaging>jar</packaging>
+
+  <parent>
+    <artifactId>dcs-ingest</artifactId>
+    <groupId>org.dataconservancy.dcs</groupId>
+    <version>1.1.0-SNAPSHOT</version>
+  </parent>
+  
+  <build>
+    
+    <plugins>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>jar</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <phase>package</phase>
+          </execution>
+        </executions>
+      </plugin>
+      
+    </plugins>
+    
+  </build>
+
+  <dependencies>
+      <dependency>
+          <groupId>org.dataconservancy.dcs</groupId>
+          <artifactId>dcs-id-api</artifactId>
+          <version>${parent.version}</version>
+      </dependency>
+
+      <dependency>
+          <groupId>org.seadva.model</groupId>
+          <artifactId>sead-model</artifactId>
+          <version>${parent.version}</version>
+      </dependency>
+
+      <dependency>
+          <groupId>org.seadva.model</groupId>
+          <artifactId>sead-model-builder-xstream</artifactId>
+          <version>${parent.version}</version>
+      </dependency>
+
+      <dependency>
+          <groupId>org.dataconservancy.dcs</groupId>
+          <artifactId>dcs-ingest-core</artifactId>
+          <version>${parent.version}</version>
+      </dependency>
+
+      <dependency>
+          <groupId>org.dataconservancy.dcs</groupId>
+          <artifactId>dcs-ingest-file</artifactId>
+          <version>${parent.version}</version>
+      </dependency>
+
+      <dependency>
+          <groupId>org.dataconservancy.query</groupId>
+          <artifactId>dcs-query-api</artifactId>
+          <version>${parent.version}</version>
+      </dependency>
+
+      <dependency>
+          <groupId>org.dataconservancy.index</groupId>
+          <artifactId>dcs-index-solr-support</artifactId>
+          <version>1.1.0-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-beans</artifactId>
+          <version>2.0</version>
+          <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+          <groupId>joda-time</groupId>
+          <artifactId>joda-time</artifactId>
+          <version>1.6</version>
+      </dependency>
+
+      <dependency>
+          <groupId>commons-codec</groupId>
+          <artifactId>commons-codec</artifactId>
+          <version>1.2</version>
+          <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+          <groupId>commons-io</groupId>
+          <artifactId>commons-io</artifactId>
+          <version>1.4</version>
+          <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+          <groupId>commons-collections</groupId>
+          <artifactId>commons-collections</artifactId>
+          <version>3.2.1</version>
+      </dependency>
+
+      <dependency>
+          <groupId>org.dataconservancy.archive</groupId>
+          <artifactId>dcs-archive-api</artifactId>
+          <version>1.1.0-SNAPSHOT</version>
+      </dependency>
+
+
+      <dependency>
+          <groupId>org.dataconservancy.archive</groupId>
+          <artifactId>dcs-archive-impl-elm</artifactId>
+          <version>1.1.0-SNAPSHOT</version>
+      </dependency>
+
+  </dependencies>
+</project>

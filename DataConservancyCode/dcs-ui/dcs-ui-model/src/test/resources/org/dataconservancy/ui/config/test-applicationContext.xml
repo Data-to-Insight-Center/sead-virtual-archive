@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2013 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <!-- Project implementations used in the interface test ProjectTest. -->
+  <bean id="projectTwo" class="org.dataconservancy.ui.model.Project"/>
+  <bean id="projectThree" class="org.dataconservancy.ui.model.Project"/>
+  <bean id="projectDuplicate" class="org.dataconservancy.ui.model.Project"/>
+
+  <!-- Collection implementations used in the interface test CollectionTest. -->
+  <bean id="collectionTwo" class="org.dataconservancy.ui.model.Collection"/>
+  <bean id="collectionThree" class="org.dataconservancy.ui.model.Collection"/>
+  
+  <!-- BusinessObjectMap implementations used in the interface test BusinessObjectMapTest -->
+  <bean id="mainBOM1" class="org.dataconservancy.ui.model.BusinessObjectMap">
+    <constructor-arg><value>id:mainBOM1</value></constructor-arg>
+  </bean>
+  <bean id="childBOM1" class="org.dataconservancy.ui.model.BusinessObjectMap">
+    <constructor-arg><value>id:childBOM1</value></constructor-arg>
+  </bean>
+  <bean id="childBOM2" class="org.dataconservancy.ui.model.BusinessObjectMap">
+    <constructor-arg><value>id:childBOM2</value></constructor-arg>
+  </bean>
+  
+  <!-- Loading properties files -->
+  <bean id="modelTestPlaceholderConfig"
+    class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+    <property name="ignoreResourceNotFound" value="true"/>
+    <property name="ignoreUnresolvablePlaceholders" value="true"/>
+    <property name="locations">
+      <list>
+        <value>${dcs.ui.users.defaultusersresource}</value>
+      </list>
+    </property>
+  </bean>
+
+  <!--
+    Bean definitions for users used throughout the unit tests of the dcs-ui.  The properties are
+    resolved and made available by the defaultUsersFactoryBean.
+  -->
+  <bean id="newUser" class="org.dataconservancy.ui.model.Person">
+    <property name="id" value="${user3.id}"/>
+    <property name="emailAddress" value="${user3.emailAddress}"/>
+    <property name="firstNames" value="${user3.firstNames}"/>
+    <property name="lastNames" value="${user3.lastNames}"/>
+    <property name="middleNames" value="${user3.middleNames}"/>
+    <property name="prefix" value="${user3.prefix}"/>
+    <property name="suffix" value="${user3.suffix}"/>
+    <property name="preferredPubName" value="${user3.preferredPubName}"/>
+    <property name="bio" value="${user3.bio}"/>
+    <property name="website" value="${user3.website}"/>
+    <property name="city" value="${user3.city}"/>
+    <property name="state" value="${user3.state}"/>
+    <property name="jobTitle" value="${user3.jobTitle}"/>
+    <property name="department" value="${user3.department}"/>
+    <property name="instCompany" value="${user3.instCompany}"/>
+    <property name="instCompanyWebsite" value="${user3.instCompanyWebsite}"/>    
+    <property name="password" value="${user3.password}"/>
+    <property name="phoneNumber" value="${user3.phoneNumber}"/>
+    <property name="externalStorageLinked" value="false"/>
+    <property name="dropboxAppKey" value="${user3.dropboxAppKey}"/>
+    <property name="dropboxAppSecret" value="${user3.dropboxAppSecret}"/>
+    <property name="roles" value="${user3.roles}"/>
+    <!-- This user purposfully lacks a registration status -->
+    <property name="readOnly" value="true"/>
+  </bean>
+
+  <alias name="adminUser" alias="defaultAdmin"/>
+
+  <bean id="adminUser" class="org.dataconservancy.ui.model.Person">
+    <property name="id" value="${admin3.id}"/>
+    <property name="emailAddress" value="${admin3.emailAddress}"/>
+    <property name="firstNames" value="${admin3.firstNames}"/>
+    <property name="lastNames" value="${admin3.lastNames}"/>
+    <property name="middleNames" value="${admin3.middleNames}"/>
+    <property name="prefix" value="${admin3.prefix}"/>
+    <property name="suffix" value="${admin3.suffix}"/>
+    <property name="preferredPubName" value="${admin3.preferredPubName}"/>
+    <property name="bio" value="${admin3.bio}"/>
+    <property name="website" value="${admin3.website}"/>
+    <property name="city" value="${admin3.city}"/>
+    <property name="state" value="${admin3.state}"/>
+    <property name="jobTitle" value="${admin3.jobTitle}"/>
+    <property name="department" value="${admin3.department}"/>
+    <property name="instCompany" value="${admin3.instCompany}"/>
+    <property name="instCompanyWebsite" value="${admin3.instCompanyWebsite}"/>    
+    <property name="password" value="${admin3.password}"/>
+    <property name="phoneNumber" value="${admin3.phoneNumber}"/>
+    <property name="roles" value="${admin3.roles}"/>
+    <property name="registrationStatus" value="${admin3.registrationStatus}"/>
+    <property name="readOnly" value="true"/>
+    <property name="externalStorageLinked" value="false"/>
+    <property name="dropboxAppKey" value="${admin3.dropboxAppKey}"/>
+    <property name="dropboxAppSecret" value="${admin3.dropboxAppSecret}"/>
+  </bean>
+
+  <bean id="adminOnlyUser" class="org.dataconservancy.ui.model.Person">
+    <property name="id" value="${admin2.id}"/>
+    <property name="emailAddress" value="${admin2.emailAddress}"/>
+    <property name="firstNames" value="${admin2.firstNames}"/>
+    <property name="lastNames" value="${admin2.lastNames}"/>
+    <property name="middleNames" value="${admin2.middleNames}"/>
+    <property name="prefix" value="${admin2.prefix}"/>
+    <property name="suffix" value="${admin2.suffix}"/>
+    <property name="preferredPubName" value="${admin2.preferredPubName}"/>
+    <property name="bio" value="${admin2.bio}"/>
+    <property name="website" value="${admin2.website}"/>
+    <property name="city" value="${admin2.city}"/>
+    <property name="state" value="${admin2.state}"/>
+    <property name="jobTitle" value="${admin2.jobTitle}"/>
+    <property name="department" value="${admin2.department}"/>
+    <property name="instCompany" value="${admin2.instCompany}"/>
+    <property name="instCompanyWebsite" value="${admin2.instCompanyWebsite}"/>    
+    <property name="password" value="${admin2.password}"/>
+    <property name="phoneNumber" value="${admin2.phoneNumber}"/>
+    <property name="roles" value="${admin2.roles}"/>
+    <property name="registrationStatus" value="${admin2.registrationStatus}"/>
+    <property name="externalStorageLinked" value="false"/>
+    <property name="dropboxAppKey" value="${admin2.dropboxAppKey}"/>
+    <property name="dropboxAppSecret" value="${admin2.dropboxAppSecret}"/>
+    <property name="readOnly" value="true"/>
+  </bean>
+
+  <bean id="unapprovedRegisteredUser" class="org.dataconservancy.ui.model.Person">
+    <property name="id" value="${user1.id}"/>
+    <property name="emailAddress" value="${user1.emailAddress}"/>
+    <property name="firstNames" value="${user1.firstNames}"/>
+    <property name="lastNames" value="${user1.lastNames}"/>
+    <property name="middleNames" value="${user1.middleNames}"/>
+    <property name="prefix" value="${user1.prefix}"/>
+    <property name="suffix" value="${user1.suffix}"/>
+    <property name="preferredPubName" value="${user1.preferredPubName}"/>
+    <property name="bio" value="${user1.bio}"/>
+    <property name="website" value="${user1.website}"/>
+    <property name="city" value="${user1.city}"/>
+    <property name="state" value="${user1.state}"/>
+    <property name="jobTitle" value="${user1.jobTitle}"/>
+    <property name="department" value="${user1.department}"/>
+    <property name="instCompany" value="${user1.instCompany}"/>
+    <property name="instCompanyWebsite" value="${user1.instCompanyWebsite}"/>    
+    <property name="password" value="${user1.password}"/>
+    <property name="phoneNumber" value="${user1.phoneNumber}"/>
+    <property name="roles" value="${user1.roles}"/>
+    <property name="registrationStatus" value="${user1.registrationStatus}"/>
+    <property name="externalStorageLinked" value="false"/>
+    <property name="dropboxAppKey" value="${user1.dropboxAppKey}"/>
+    <property name="dropboxAppSecret" value="${user1.dropboxAppSecret}"/>
+    <property name="readOnly" value="true"/>
+  </bean>
+
+  <bean id="defaultUser" class="org.dataconservancy.ui.model.Person">
+    <property name="id" value="${user.id}"/>
+    <property name="emailAddress" value="${user.emailAddress}"/>
+    <property name="firstNames" value="${user.firstNames}"/>
+    <property name="lastNames" value="${user.lastNames}"/>
+    <property name="middleNames" value="${user.middleNames}"/>
+    <property name="prefix" value="${user.prefix}"/>
+    <property name="suffix" value="${user.suffix}"/>
+    <property name="preferredPubName" value="${user.preferredPubName}"/>
+    <property name="bio" value="${user.bio}"/>
+    <property name="website" value="${user.website}"/>
+    <property name="city" value="${user.city}"/>
+    <property name="state" value="${user.state}"/>
+    <property name="jobTitle" value="${user.jobTitle}"/>
+    <property name="department" value="${user.department}"/>
+    <property name="instCompany" value="${user.instCompany}"/>
+    <property name="instCompanyWebsite" value="${user.instCompanyWebsite}"/>    
+    <property name="password" value="${user.password}"/>
+    <property name="phoneNumber" value="${user.phoneNumber}"/>
+    <property name="roles" value="${user.roles}"/>
+    <property name="registrationStatus" value="${user.registrationStatus}"/>
+    <property name="externalStorageLinked" value="false"/>
+    <property name="dropboxAppKey" value="${user.dropboxAppKey}"/>
+    <property name="dropboxAppSecret" value="${user.dropboxAppSecret}"/>
+    <property name="readOnly" value="true"/>    
+  </bean>
+
+  <bean id="approvedRegisteredUser" class="org.dataconservancy.ui.model.Person">
+    <property name="id" value="${user2.id}"/>
+    <property name="emailAddress" value="${user2.emailAddress}"/>
+    <property name="firstNames" value="${user2.firstNames}"/>
+    <property name="lastNames" value="${user2.lastNames}"/>
+    <property name="middleNames" value="${user2.middleNames}"/>
+    <property name="prefix" value="${user2.prefix}"/>
+    <property name="suffix" value="${user2.suffix}"/>
+    <property name="preferredPubName" value="${user2.preferredPubName}"/>
+    <property name="bio" value="${user2.bio}"/>
+    <property name="website" value="${user2.website}"/>
+    <property name="city" value="${user2.city}"/>
+    <property name="state" value="${user2.state}"/>
+    <property name="jobTitle" value="${user2.jobTitle}"/>
+    <property name="department" value="${user2.department}"/>
+    <property name="instCompany" value="${user2.instCompany}"/>
+    <property name="instCompanyWebsite" value="${user2.instCompanyWebsite}"/>    
+    <property name="password" value="${user2.password}"/>
+    <property name="phoneNumber" value="${user2.phoneNumber}"/>
+    <property name="roles" value="${user2.roles}"/>
+    <property name="registrationStatus" value="${user2.registrationStatus}"/>
+    <property name="readOnly" value="true"/>
+    <property name="externalStorageLinked" value="false"/>
+    <property name="dropboxAppKey" value="${user2.dropboxAppKey}"/>
+    <property name="dropboxAppSecret" value="${user2.dropboxAppSecret}"/>
+  </bean>
+  
+</beans>

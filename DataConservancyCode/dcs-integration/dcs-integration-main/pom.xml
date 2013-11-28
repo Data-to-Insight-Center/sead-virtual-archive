@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <artifactId>dcs-integration</artifactId>
+    <groupId>org.dataconservancy.dcs</groupId>
+    <version>1.1.0-SNAPSHOT</version>
+  </parent>
+
+  <properties>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+  </properties>
+
+  <artifactId>dcs-integration-main</artifactId>
+  <name>dcs-integration-main</name>
+  <packaging>war</packaging>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>pre-integration-test
+          </phase>
+            <configuration>
+
+              <tasks unless="maven.test.skip">
+                <delete dir="${java.io.tmpdir}${file.separator}dcs" />
+              </tasks>
+
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>jetty-maven-plugin</artifactId>
+        <configuration>
+          <scanIntervalSeconds>10</scanIntervalSeconds>
+          <stopKey>halt</stopKey>
+          <stopPort>8081</stopPort>
+          <webAppConfig>
+            <contextPath>/dcs</contextPath>
+          </webAppConfig>                    
+        </configuration>
+        <executions>
+          <execution>
+            <id>start-jetty-it</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <scanIntervalSeconds>0</scanIntervalSeconds>
+              <daemon>true</daemon>
+              <systemProperties>
+                <systemProperty>
+                  <name>dcs.home</name>
+                  <value>${project.build.directory}/dcs</value>
+                </systemProperty>
+                <systemProperty>
+                  <name>logback.configurationFile</name>
+                  <value>${project.basedir}/src/test/resources/logback-test.xml</value>
+                </systemProperty>
+              </systemProperties>
+            </configuration>
+          </execution>
+          <execution>
+            <id>stop-jetty-it</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>stop</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <configuration>
+         <systemPropertyVariables>
+           <dcs.home>${project.build.directory}/dcs</dcs.home>
+           <dcs.bootstrap.metadataformatregistry.disabled>${dcs.bootstrap.disabled}</dcs.bootstrap.metadataformatregistry.disabled>
+         </systemPropertyVariables>
+        </configuration>
+        <executions>
+          <execution>
+            <id>integration-test</id>
+            <goals>
+              <goal>integration-test</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>verify</id>
+            <goals>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>net.sf.alchim</groupId>
+        <artifactId>winstone-maven-plugin</artifactId>
+        <configuration>
+          <cmdLineOptions>
+            <property>
+              <name>prefix</name>
+              <value>/dcs-integration-main</value>
+            </property>
+            <property>
+              <name>useJasper</name>
+              <value>true</value>
+            </property>
+          </cmdLineOptions>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>embed</goal>
+            </goals>
+            <phase>package</phase>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.5</version>
+        <executions>
+          <execution>
+            <id>attach-artifacts</id>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <phase>package</phase>
+          </execution>
+        </executions>
+        <configuration>
+          <artifacts>
+            <artifact>
+	            <file>${project.build.directory}/${project.artifactId}-${version}-standalone.jar</file>
+              <type>jar</type>
+              <classifier>standalone</classifier>
+            </artifact>
+          </artifacts>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>2.2</version>
+        <configuration>
+          <packagingExcludes>WEB-INF/classes/META-INF/**</packagingExcludes>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-remote-resources-plugin</artifactId>
+        <configuration>
+          <outputDirectory>${project.build.directory}/dcs-integration-main-1.1.0-SNAPSHOT/</outputDirectory>
+          <resourceBundles>
+              <resourceBundle>org.dataconservancy.mhf:dcs-mhf-resources:${project.parent.version}</resourceBundle>
+          </resourceBundles>
+          <executions>
+            <execution>
+              <goals><goal>process</goal></goals>
+              <phase>pre-package</phase>
+            </execution>
+          </executions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>1.4</version>
+      <scope>compile</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.dataconservancy.dcs</groupId>
+      <artifactId>dcs-id-impl-hibernate</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.dataconservancy.dcs</groupId>
+      <artifactId>dcs-id-impl</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-dbcp</groupId>
+      <artifactId>commons-dbcp</artifactId>
+      <version>1.4</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.hsqldb</groupId>
+      <artifactId>hsqldb</artifactId>
+      <version>2.2.8</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>8.4-701.jdbc4</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.dcs</groupId>
+      <artifactId>dcs-ingest-file</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.dcs</groupId>
+      <artifactId>dcs-ingest-sip</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.dcs</groupId>
+      <artifactId>dcs-ingest-services</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.deposit</groupId>
+      <artifactId>dc-deposit-sword-server</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.archive</groupId>
+      <artifactId>dcs-archive-impl-elm-fs</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.archive</groupId>
+      <artifactId>dcs-archive-impl-fcrepo</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-orm</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.abdera</groupId>
+      <artifactId>abdera-spring</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.abdera</groupId>
+      <artifactId>abdera-parser</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.lineage</groupId>
+      <artifactId>dcs-lineage-api</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.lineage</groupId>
+      <artifactId>dcs-lineage-impl</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.lineage</groupId>
+      <artifactId>dcs-lineage-http</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.dcs</groupId>
+      <artifactId>dcs-ingest-client</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.dataconservancy.query</groupId>
+      <artifactId>dcs-query-dcs-datamodel-solr</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.dataconservancy.index</groupId>
+      <artifactId>dcs-index-dcp-solr</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.dataconservancy.index</groupId>
+      <artifactId>dcs-index-dcp-solr-resources</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.dataconservancy.dcs</groupId>
+      <artifactId>dcs-transform-index</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.dataconservancy.dcs</groupId>
+      <artifactId>dcs-transform-execution</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.dataconservancy.dcs</groupId>
+      <artifactId>dcs-id-cache-impl</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.dcs</groupId>
+      <artifactId>dcs-integration-support</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.dataconservancy.access</groupId>
+      <artifactId>dcs-access-http</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+      <classifier>classes</classifier>
+    </dependency>  
+        
+    <dependency>
+	  <groupId>org.dataconservancy.dcs</groupId>
+	  <artifactId>dcs-integration-bootstrap</artifactId>
+	  <version>${project.parent.version}</version>
+	  <scope>runtime</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.dataconservancy.mhf</groupId>
+      <artifactId>dcs-mhf-validators-impl</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.dataconservancy.registry</groupId>
+      <artifactId>dcs-registry-metadata-shared</artifactId>
+      <scope>runtime</scope>
+      <version>2.0.0-SNAPSHOT</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.dataconservancy.mhf</groupId>
+      <artifactId>dcs-mhf-resources</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.dataconservancy.registry</groupId>
+      <artifactId>dcs-registry-webapp</artifactId>
+      <version>2.0.0-SNAPSHOT</version>
+      <type>war</type>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>1.4</version>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+</project>

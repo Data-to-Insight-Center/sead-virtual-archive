@@ -1,0 +1,721 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <!-- 
+    $Id: pom.xml 6732 2013-09-05 15:05:19Z payam $
+    $URL: https://scm.dataconservancy.org/svn/dcs-ui/trunk/pom.xml $
+  -->
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.dataconservancy.ui</groupId>
+  <artifactId>dcs-ui</artifactId>
+  <packaging>pom</packaging>
+  <name>Data Conservancy Reference User Interface (parent pom)</name>
+  <description>A web-based front-end for the Data Conservancy, including HTTP APIs.</description>
+
+  <parent>
+    <groupId>org.dataconservancy</groupId>
+    <artifactId>project-pom</artifactId>
+    <version>1.1.0-SNAPSHOT</version>
+  </parent>
+
+  <!-- Modules  =================================================== -->
+
+  <profiles>
+
+    <profile>
+      <id>default</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <modules>
+        <module>stripes-dcwebapp</module>
+        <module>dcs-ui-quickstart</module>
+        <module>dcs-ui-archive-api</module>
+        <module>dcs-ui-archive-impl</module>
+        <module>dcs-ui-eventing-api</module>
+        <module>dcs-ui-eventing-events</module>
+        <module>dcs-ui-model</module>
+        <module>dcs-ui-model-builder</module>
+        <module>dcs-ui-model-builder-xstream</module>
+        <module>dcs-ui-policy-api</module>
+        <module>dcs-ui-policy-impl</module>
+        <module>dcs-ui-profile</module>
+        <module>dcs-ui-quickstart</module>
+        <module>dcs-ui-resources</module>
+        <module>dcs-ui-services-api</module>
+        <module>dcs-ui-services-dao</module>
+        <module>dcs-ui-services-impl</module>
+        <module>dcs-ui-test-resources</module>
+        <module>dcs-ui-test-support</module>
+        <module>dcs-ui-test-support-model</module>
+        <module>dcs-ui-util</module>
+        <module>dcs-ui-webapi</module>
+      </modules>
+    </profile>
+
+    <profile>
+      <id>aggregate_release</id>
+      <modules>
+        <!-- Intentionally left empty -->
+      </modules>
+    </profile>
+
+  </profiles>
+
+  <properties>
+    <spring.version>3.0.7.RELEASE</spring.version>
+  </properties>
+
+  <!-- Build ====================================================== -->
+
+  <build>
+
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-remote-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>process-test-resources</id>
+            <phase>process-test-resources</phase>
+            <goals>
+              <goal>process</goal>
+            </goals>
+            <configuration>
+              <!-- So resources don't get exploded into ${project.build.directory}/maven-shared-archive-resources -->
+              <attached>false</attached>
+              <resourceBundles>
+                <resourceBundle>org.dataconservancy.ui:dcs-ui-test-resources:${project.parent.version}</resourceBundle>
+              </resourceBundles>
+              <!-- put test resources on the test classpath -->
+              <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
+            </configuration>
+          </execution>
+          <execution>
+            <id>process-resources</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>process</goal>
+            </goals>
+            <configuration>
+              <!-- So resources don't get exploded into ${project.build.directory}/maven-shared-archive-resources -->
+              <attached>false</attached>
+              <resourceBundles>
+                <resourceBundle>org.dataconservancy.ui:dcs-ui-resources:${project.parent.version}</resourceBundle>
+              </resourceBundles>
+              <!-- put production resources on the production classpath -->
+              <outputDirectory>${project.build.directory}/classes</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+        <!-- Wish these could be un-commented, but Maven doesn't care for it: complains of a circular dep -->
+        <!--<dependencies>
+          <dependency>
+            <artifactId>dcs-ui-test-resources</artifactId>
+            <groupId>org.dataconservancy.ui</groupId>
+            <version>${project.parent.version}</version>
+          </dependency>
+          <dependency>
+            <artifactId>dcs-ui-resources</artifactId>
+            <groupId>org.dataconservancy.ui</groupId>
+            <version>${project.parent.version}</version>
+          </dependency>
+        </dependencies>-->
+      </plugin>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <runOrder>random</runOrder>
+          <argLine>-Xmx1024m -XX:MaxPermSize=512m</argLine>
+          <systemPropertyVariables>
+            <!-- Use in-memory archiveService for non-integration tests -->
+            <archiveService>org.dataconservancy.ui.services.InMemoryArchiveServiceImpl</archiveService>
+            <formatRegistry>formatRegistry</formatRegistry>
+            <schemeRegistry>schemeRegistry</schemeRegistry>
+            <dcs.ui.users.defaultusersresource>file:///${project.build.directory}/test-classes/defaultUsers-test.properties</dcs.ui.users.defaultusersresource>
+            <solr.solr.home>${project.build.testOutputDirectory}/org/dataconservancy/dcs/index/dcpsolr</solr.solr.home>
+            <dcs.mhf.registry.baseDir>${project.build.testOutputDirectory}</dcs.mhf.registry.baseDir>
+            <dcs.home>${project.build.directory}/dcs</dcs.home>
+            <dcs.ui.package.extraction.directory>${project.build.testOutputDirectory}/package-extraction</dcs.ui.package.extraction.directory>            
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <configuration>
+          <argLine>-Xmx1024m -XX:MaxPermSize=512m</argLine>
+        </configuration>
+      </plugin>
+
+      <!-- Create a jar containing test classes and resources for each module.  
+        Depend on these jars using <classifier>tests</classifier> -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
+
+  </build>
+
+  <!-- Dependencies =============================================== -->
+
+  <dependencyManagement>
+
+    <dependencies>
+
+      <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>servlet-api</artifactId>
+        <version>2.5</version>
+      </dependency>
+
+      <dependency>
+        <groupId>jstl</groupId>
+        <artifactId>jstl</artifactId>
+        <version>1.2</version>
+      </dependency>
+
+      <dependency>
+        <groupId>javax.activation</groupId>
+        <artifactId>activation</artifactId>
+        <version>1.1.1</version>
+      </dependency>
+
+      <dependency>
+        <groupId>javax.mail</groupId>
+        <artifactId>mail</artifactId>
+        <version>1.4.1</version>
+      </dependency>
+
+      <dependency>
+        <groupId>net.sourceforge.stripes</groupId>
+        <artifactId>stripes</artifactId>
+        <version>1.5.6</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jcl-over-slf4j</artifactId>
+        <version>1.6.1</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-core</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-web</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-config</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-beans</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-core</artifactId>
+        <version>${spring.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context-support</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-web</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-webmvc</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-jdbc</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-test</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-orm</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-aop</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-expression</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.quartz-scheduler</groupId>
+        <artifactId>quartz</artifactId>
+        <version>1.8.5</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.derby</groupId>
+        <artifactId>derby</artifactId>
+        <version>10.8.2.2</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.derby</groupId>
+        <artifactId>derbyclient</artifactId>
+        <version>10.8.2.2</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.tika</groupId>
+        <artifactId>tika-core</artifactId>
+        <version>1.0</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.tika</groupId>
+        <artifactId>tika-parsers</artifactId>
+        <version>1.0</version>
+        <exclusions>
+          <exclusion>
+            <groupId>asm</groupId>
+            <artifactId>asm</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.velocity</groupId>
+        <artifactId>velocity</artifactId>
+        <version>1.7</version>
+        <exclusions>
+          <exclusion>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>logkit</groupId>
+            <artifactId>logkit</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>commons-dbcp</groupId>
+        <artifactId>commons-dbcp</artifactId>
+        <version>1.4</version>
+      </dependency>
+
+      <dependency>
+        <groupId>commons-pool</groupId>
+        <artifactId>commons-pool</artifactId>
+        <version>1.5.6</version>
+      </dependency>
+
+      <dependency>
+        <groupId>commons-collections</groupId>
+        <artifactId>commons-collections</artifactId>
+        <version>3.2.1</version>
+      </dependency>
+
+      <dependency>
+        <groupId>commons-fileupload</groupId>
+        <artifactId>commons-fileupload</artifactId>
+        <version>1.2.2</version>
+      </dependency>
+
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>1.4</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.tomcat</groupId>
+        <artifactId>jsp-api</artifactId>
+        <version>6.0.33</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+      <!--  <version>4.1.2</version>-->
+        <version>4.2.1</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <!--version>1.0.4</version-->
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpmime</artifactId>
+        <version>4.1.2</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <!--version>1.0.4</version-->
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>joda-time</groupId>
+        <artifactId>joda-time</artifactId>
+        <version>2.0</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.dataconservancy.model</groupId>
+        <artifactId>dcs-model</artifactId>
+        <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.dataconservancy.storage.dropbox</groupId>
+        <artifactId>dcs-dropbox-model</artifactId>
+        <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.dataconservancy.storage.dropbox</groupId>
+        <artifactId>dcs-dropbox-api</artifactId>
+        <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.dataconservancy.storage.dropbox</groupId>
+        <artifactId>dcs-dropbox-impl</artifactId>
+        <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.dataconservancy.storage.dropbox</groupId>
+        <artifactId>dcs-dropbox-model-builder-xstream</artifactId>
+        <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.dataconservancy.access</groupId>
+        <artifactId>dcs-access-connector</artifactId>
+        <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.dataconservancy.dcs</groupId>
+        <artifactId>dcs-id-api</artifactId>
+        <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.dataconservancy.dcs</groupId>
+        <artifactId>dcs-id-impl-hibernate</artifactId>
+        <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+          <groupId>org.dataconservancy.mhf</groupId>
+          <artifactId>dcs-mhf-model-builder-impl</artifactId>
+          <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+          <groupId>org.dataconservancy.mhf</groupId>
+          <artifactId>dcs-mhf-representations-impl</artifactId>
+          <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.dataconservancy.packaging</groupId>
+        <artifactId>dcs-pkg-model</artifactId>
+        <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+          <groupId>org.dataconservancy.packaging</groupId>
+          <artifactId>dcs-pkg-model-impl</artifactId>
+          <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.dataconservancy.registry</groupId>
+        <artifactId>dcs-registry-api</artifactId>
+        <version>2.0.0-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.dataconservancy.registry</groupId>
+        <artifactId>dcs-registry-memory-support</artifactId>
+        <version>2.0.0-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.dataconservancy.registry</groupId>
+        <artifactId>dcs-registry-profile-support</artifactId>
+        <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.dataconservancy.registry</groupId>
+        <artifactId>dcs-registry-metadata-shared</artifactId>
+        <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.dataconservancy.dcs</groupId>
+        <artifactId>dcs-common-util</artifactId>
+        <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.thoughtworks.xstream</groupId>
+        <artifactId>xstream</artifactId>
+        <version>1.3.1</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.dataconservancy.model</groupId>
+        <artifactId>dcs-model-builder-xstream</artifactId>
+        <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.dataconservancy.model</groupId>
+        <artifactId>dcs-model-builder</artifactId>
+        <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.dataconservancy.model</groupId>
+        <artifactId>dcs-gqm-builder</artifactId>
+        <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.dataconservancy.model</groupId>
+        <artifactId>dcs-gqm-builder-xstream</artifactId>
+        <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.dataconservancy.deposit</groupId>
+        <artifactId>dc-deposit-core</artifactId>
+        <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.dataconservancy.dcs</groupId>
+        <artifactId>dcs-ingest-deposit</artifactId>
+        <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.dataconservancy.reporting</groupId>
+        <artifactId>dcs-pkg-ui-shared</artifactId>
+        <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>cglib</groupId>
+        <artifactId>cglib-nodep</artifactId>
+        <version>2.2.2</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-all</artifactId>
+        <version>1.8.5</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jsoup</groupId>
+        <artifactId>jsoup</artifactId>
+        <version>1.7.2</version>
+      </dependency>
+      
+      <!-- We need Xerces >= 2.10.0 to avoid https://issues.apache.org/jira/browse/XERCESJ-589 -->
+      <dependency>
+        <groupId>xerces</groupId>
+        <artifactId>xercesImpl</artifactId>
+        <version>2.10.0</version>
+      </dependency>
+      
+      <!-- Xerces 2.10.0 dependencies -->
+      
+      <dependency>
+        <groupId>xml-apis</groupId>
+        <artifactId>xml-apis</artifactId>
+        <version>1.4.01</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>xml-resolver</groupId>
+        <artifactId>xml-resolver</artifactId>
+        <version>1.2</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>com.googlecode.json-simple</groupId>
+        <artifactId>json-simple</artifactId>
+        <version>1.1</version>
+      </dependency>
+      
+    </dependencies>
+
+  </dependencyManagement>
+  
+  <!-- Reporting ================================================== -->
+
+  <reporting>
+
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>mailing-list</report>
+              <report>cim</report>
+              <report>issue-tracking</report>
+              <report>scm</report>
+              <report>index</report>
+              <report>license</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <reportSets>
+          <reportSet>
+            <id>default</id>
+            <reports>
+              <report>javadoc</report>
+            </reports>
+          </reportSet>
+          <reportSet>
+            <id>aggregate</id>
+            <reports>
+              <report>aggregate</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+
+    </plugins>
+
+  </reporting>
+
+  <!-- SCM  ======================================================= -->
+
+  <scm>
+    <connection>scm:svn:${svn.base}/dcs-ui/trunk/</connection>
+    <developerConnection>scm:svn:${svn.base}/dcs-ui/trunk/</developerConnection>
+    <url>https://scm.dataconservancy.org/svn/dcs-ui/trunk/</url>
+  </scm>
+
+  <modules>
+    <module>dcs-ui-mapper</module>
+    <module>dcs-ui-searchers</module>
+    <module>dcs-ui-archive-util</module>
+  </modules>
+</project>

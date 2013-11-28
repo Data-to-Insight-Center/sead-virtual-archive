@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<McMurdoDryValleys xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:fgdc="http://www.fgdc.gov/metadata/standards/">
+	<FieldPhotos>
+		<FieldPhoto>
+			<fileName>McDV_FieldPhoto_2000_00868.tif</fileName>
+			<fieldSeason>2000</fieldSeason>
+			<photographerLatitude>-77.46864</photographerLatitude>
+			<photographerLongitude>162.24459</photographerLongitude>
+			<dc:title>McDV_FieldPhoto_2000_00868</dc:title>
+			<dc:subject>Geology</dc:subject>
+			<dc:subject>Petrology</dc:subject>
+			<dc:subject>Igneous Petrology</dc:subject>
+			<dc:subject>Glaciology</dc:subject>
+			<dc:description>Looking southeast across Wright Valley from Olympus Range; Goodspeed Glacier (left), Hart Glacier (center), and Meserve Glacier (right).</dc:description>
+			<dc:creator>Marsh, Bruce D.</dc:creator>
+			<dc:publisher>The Data Conservancy, Sheridan Libraries, The Johns Hopkins University</dc:publisher>
+			<dc:date>2000-01</dc:date>
+			<dc:format>image/tif</dc:format>
+			<dc:rights>Copyright Bruce D. Marsh, licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported license.  http://creativecommons.org/licenses/by-nc-sa/3.0/</dc:rights>
+			<dc:identifier>McDV_FieldPhoto_2000_00868</dc:identifier>
+			<dc:coverage>Antarctica</dc:coverage>
+			<dc:coverage>McMurdo Dry Valleys</dc:coverage>
+			<USGS_ANTARCTIC_NAMES>
+				<ANTARCTICA_FEATURE_ID ID="5831">
+					<FEATURE_NAME>Goodspeed Glacier</FEATURE_NAME>
+					<FEATURE_CLASS>Glacier</FEATURE_CLASS>
+					<DESCRIPTION>A small hanging glacier on the south wall of Wright Valley, Victoria Land, between the Hart and Denton Glaciers.  Named by U.S. geologist Robert Nichols after Robert Goodspeed, geological assistant to Nichols at nearby Marble Point in the 1959-60 field season.</DESCRIPTION>
+					<PRIMARY_LATITUDE_DEC>-77.4833333</PRIMARY_LATITUDE_DEC>
+					<PRIMARY_LONGITUDE_DEC>162.45</PRIMARY_LONGITUDE_DEC>
+				</ANTARCTICA_FEATURE_ID>
+				<ANTARCTICA_FEATURE_ID ID="6437">
+					<FEATURE_NAME>Hart Glacier</FEATURE_NAME>
+					<FEATURE_CLASS>Glacier</FEATURE_CLASS>
+					<DESCRIPTION>A small hanging glacier on the south wall of Wright Valley, Victoria Land, between the Meserve and Goodspeed Glaciers.  Named by U.S. geologist Robert Nichols for Roger Hart, geological assistant to Nichols at nearby Marble Point in the 1959-60 field season.</DESCRIPTION>
+					<PRIMARY_LATITUDE_DEC>-77.5</PRIMARY_LATITUDE_DEC>
+					<PRIMARY_LONGITUDE_DEC>162.3833333</PRIMARY_LONGITUDE_DEC>
+				</ANTARCTICA_FEATURE_ID>
+				<ANTARCTICA_FEATURE_ID ID="9896">
+					<FEATURE_NAME>Meserve Glacier</FEATURE_NAME>
+					<FEATURE_CLASS>Glacier</FEATURE_CLASS>
+					<DESCRIPTION>A hanging glacier on the south wall of Wright Valley, Victoria Land, between Bartley Glacier and Hart Glacier.  Named by U.S. geologist Robert Nichols for William Meserve (geological assistant to Nichols) who did field work in Wright Valley during the 1959-60 field season.</DESCRIPTION>
+					<PRIMARY_LATITUDE_DEC>-77.5166667</PRIMARY_LATITUDE_DEC>
+					<PRIMARY_LONGITUDE_DEC>162.2833333</PRIMARY_LONGITUDE_DEC>
+				</ANTARCTICA_FEATURE_ID>
+				<ANTARCTICA_FEATURE_ID ID="11083">
+					<FEATURE_NAME>Olympus Range</FEATURE_NAME>
+					<FEATURE_CLASS>Range</FEATURE_CLASS>
+					<DESCRIPTION>A primarily ice-free mountain range of Victoria Land with peaks over 2,000 m, between Victoria and McKelvey Valleys on the north and Wright Valley on the south.  Mapped by the Victoria University&apos;s Antarctic Expeditions (VUWAE), 1958-59, and named for the mythological home of the Greek gods. Peaks in the range are named for figures in Greek mythology.</DESCRIPTION>
+					<PRIMARY_LATITUDE_DEC>-77.4833333</PRIMARY_LATITUDE_DEC>
+					<PRIMARY_LONGITUDE_DEC>161.5</PRIMARY_LONGITUDE_DEC>
+				</ANTARCTICA_FEATURE_ID>
+				<ANTARCTICA_FEATURE_ID ID="16818">
+					<FEATURE_NAME>Wright Valley</FEATURE_NAME>
+					<FEATURE_CLASS>Valley</FEATURE_CLASS>
+					<DESCRIPTION>Large E-W trending valley, formerly occupied by a glacier but now ice free except for Wright Upper Glacier at its head and Wright Lower Glacier at its mouth, in Victoria Land.  Named by the Victoria University&apos;s Antarctic Expeditions (VUWAE) (1958-59) for Sir Charles Wright, for whom the British Antarctic Expedition (BrAE) (1910-13) named the glacier at the mouth of this valley.</DESCRIPTION>
+					<PRIMARY_LATITUDE_DEC>-77.5166667</PRIMARY_LATITUDE_DEC>
+					<PRIMARY_LONGITUDE_DEC>161.8333333</PRIMARY_LONGITUDE_DEC>
+				</ANTARCTICA_FEATURE_ID>
+			</USGS_ANTARCTIC_NAMES> 
+			<fgdc:metadata>
+			  <fgdc:idinfo>
+			    <fgdc:datsetid>McDV_FieldPhoto_2000_00868</fgdc:datsetid>
+			    <fgdc:citation>
+			      <fgdc:citeinfo>
+			        <fgdc:origin>Marsh, Bruce D.</fgdc:origin>
+			        <fgdc:pubdate>2011-02-15</fgdc:pubdate>
+						<fgdc:title>Hart Glacier</fgdc:title>
+					<fgdc:edition></fgdc:edition>
+			        <fgdc:pubinfo>
+			          <fgdc:pubplace>Baltimore, MD  U.S.A.</fgdc:pubplace>
+			          <fgdc:publish>The Data Conservancy, Sheridan Libraries, The Johns Hopkins University</fgdc:publish>
+			        </fgdc:pubinfo>
+			        <fgdc:onlink></fgdc:onlink>
+			      </fgdc:citeinfo>
+			    </fgdc:citation>
+			    <fgdc:descript>
+			      <fgdc:abstract>Looking southeast across Wright Valley from Olympus Range; Goodspeed Glacier (left), Hart Glacier (center), and Meserve Glacier (right).</fgdc:abstract>
+			      <fgdc:purpose>scientific research</fgdc:purpose>
+				  <fgdc:supplinf>Other glaciers in the field of view: Goodspeed Glacier; Meserve Glacier</fgdc:supplinf>
+			      <fgdc:documnts>
+			        <fgdc:userguid>
+			          <fgdc:citeinfo>
+			            <fgdc:origin>Marsh, Bruce D.</fgdc:origin>
+			            <fgdc:pubdate>2000-01</fgdc:pubdate>
+							<fgdc:title>Hart Glacier</fgdc:title>
+			            <fgdc:pubinfo>
+			              <fgdc:pubplace>Baltimore, MD  U.S.A.</fgdc:pubplace>
+			              <fgdc:publish>The Data Conservancy, Sheridan Libraries, The Johns Hopkins University</fgdc:publish>
+			            </fgdc:pubinfo>
+			            <fgdc:onlink></fgdc:onlink>
+			          </fgdc:citeinfo>
+			        </fgdc:userguid>
+			      </fgdc:documnts>
+			    </fgdc:descript>
+			    <fgdc:timeperd>
+			      <fgdc:timeinfo>
+			        <fgdc:sngdate>
+			          <fgdc:caldate>2000-01</fgdc:caldate>
+			        </fgdc:sngdate>
+			      </fgdc:timeinfo>
+			      <fgdc:current></fgdc:current>
+			    </fgdc:timeperd>
+			    <fgdc:status>
+			      <fgdc:progress></fgdc:progress>
+			      <fgdc:update></fgdc:update>
+			    </fgdc:status>
+			    <fgdc:spdom>
+			      <fgdc:bounding>
+			        <fgdc:westbc>+162.2446</fgdc:westbc>
+			        <fgdc:eastbc>+162.2446</fgdc:eastbc>
+			        <fgdc:northbc>-77.4686</fgdc:northbc>
+			        <fgdc:southbc>-77.4686</fgdc:southbc>
+				  </fgdc:bounding>
+			    </fgdc:spdom>
+			    <fgdc:keywords>
+			      <fgdc:theme>
+			        <fgdc:themekt>ISO 19115 Topic Categories</fgdc:themekt>
+			        <fgdc:themekey>geoscientificInformation</fgdc:themekey>
+			      </fgdc:theme>
+			      <fgdc:theme>
+			        <fgdc:themekt>None</fgdc:themekt>
+			        <fgdc:themekey>Geology</fgdc:themekey>
+			        <fgdc:themekey>Petrology</fgdc:themekey>
+			        <fgdc:themekey>Igneous Petrology</fgdc:themekey>
+			        <fgdc:themekey>Glaciology</fgdc:themekey>
+			      </fgdc:theme>
+			      <fgdc:place>
+			        <fgdc:placekt>ISO3166-1</fgdc:placekt>
+			        <fgdc:placekey>ANTARCTICA</fgdc:placekey>
+			      </fgdc:place>
+			    </fgdc:keywords>
+			    <fgdc:plainsid>
+			      <fgdc:platflnm></fgdc:platflnm>
+			      <fgdc:platfsnm></fgdc:platfsnm>
+			      <fgdc:instflnm></fgdc:instflnm>
+			      <fgdc:instshnm></fgdc:instshnm>
+			    </fgdc:plainsid>
+			    <fgdc:thelayid>
+			      <fgdc:numthlay></fgdc:numthlay>
+			      <fgdc:layrname>
+			        <fgdc:theme>
+			          <fgdc:themekt></fgdc:themekt>
+			          <fgdc:themekey></fgdc:themekey>
+			        </fgdc:theme>
+			      </fgdc:layrname>
+			    </fgdc:thelayid>
+			    <fgdc:accconst></fgdc:accconst>
+			    <fgdc:useconst>Copyright Bruce D. Marsh, licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported license.  http://creativecommons.org/licenses/by-nc-sa/3.0/</fgdc:useconst>
+			    <fgdc:ptcontac>
+			      <fgdc:cntinfo>
+			        <fgdc:cntperp>
+			          <fgdc:cntper>Keith Kaneda</fgdc:cntper>
+			        </fgdc:cntperp>
+			        <fgdc:cntaddr>
+			          <fgdc:addrtype>mailing</fgdc:addrtype>
+			          <fgdc:address>The Sheridan Libraries</fgdc:address>
+			          <fgdc:address>Johns Hopkins University</fgdc:address>
+			          <fgdc:address>3400 North Charles Street</fgdc:address>
+			          <fgdc:city>Baltimore</fgdc:city>
+			          <fgdc:state>MD</fgdc:state>
+			          <fgdc:postal>21218</fgdc:postal>
+			          <fgdc:country>USA</fgdc:country>
+			        </fgdc:cntaddr>
+			        <fgdc:cntvoice></fgdc:cntvoice>
+			        <fgdc:cntfax></fgdc:cntfax>
+			        <fgdc:cntemail></fgdc:cntemail>
+			      </fgdc:cntinfo>
+			    </fgdc:ptcontac>
+			  </fgdc:idinfo>
+			  <fgdc:distinfo>
+			    <fgdc:distrib>
+			      <fgdc:cntinfo>
+			        <fgdc:cntorgp>
+			          <fgdc:cntorg>The Data Conservancy, Sheridan Libraries, The Johns Hopkins University</fgdc:cntorg>
+			          <fgdc:cntper>Keith Kaneda</fgdc:cntper>
+			        </fgdc:cntorgp>
+			        <fgdc:cntaddr>
+			          <fgdc:addrtype>mailing</fgdc:addrtype>
+			          <fgdc:address>The Sheridan Libraries</fgdc:address>
+			          <fgdc:address>Johns Hopkins University</fgdc:address>
+			          <fgdc:address>3400 North Charles Street</fgdc:address>
+			          <fgdc:city>Baltimore</fgdc:city>
+			          <fgdc:state>MD</fgdc:state>
+			          <fgdc:postal>21218</fgdc:postal>
+			          <fgdc:country>USA</fgdc:country>
+			        </fgdc:cntaddr>
+			        <fgdc:cntvoice></fgdc:cntvoice>
+			        <fgdc:cntfax></fgdc:cntfax>
+			        <fgdc:cntemail></fgdc:cntemail>
+			      </fgdc:cntinfo>
+			    </fgdc:distrib>
+			    <fgdc:resdesc></fgdc:resdesc>
+			    <fgdc:distliab></fgdc:distliab>
+			    <fgdc:stdorder>
+			      <fgdc:digform>
+			        <fgdc:digtinfo>
+			          <fgdc:formname>image/tif</fgdc:formname>
+			        </fgdc:digtinfo>
+			        <fgdc:digtopt>
+			          <fgdc:onlinopt>
+			            <fgdc:computer>
+			              <fgdc:networka>
+			                <fgdc:networkr></fgdc:networkr>
+			              </fgdc:networka>
+			            </fgdc:computer>
+			          </fgdc:onlinopt>
+			        </fgdc:digtopt>
+			      </fgdc:digform>
+			      <fgdc:fees></fgdc:fees>
+			    </fgdc:stdorder>
+			  </fgdc:distinfo>
+			  <fgdc:metainfo>
+			    <fgdc:metd></fgdc:metd>
+			    <fgdc:metrd></fgdc:metrd>
+			    <fgdc:metc>
+			      <fgdc:cntinfo>
+			        <fgdc:cntperp>
+			          <fgdc:cntper>Keith Kaneda</fgdc:cntper>
+			          <fgdc:cntorg>The Data Conservancy, Sheridan Libraries, The Johns Hopkins University</fgdc:cntorg>
+			        </fgdc:cntperp>
+			        <fgdc:cntaddr>
+			          <fgdc:addrtype>mailing</fgdc:addrtype>
+			          <fgdc:address>The Sheridan Libraries</fgdc:address>
+			          <fgdc:address>Johns Hopkins University</fgdc:address>
+			          <fgdc:address>3400 North Charles Street</fgdc:address>
+			          <fgdc:city>Baltimore</fgdc:city>
+			          <fgdc:state>MD</fgdc:state>
+			          <fgdc:postal>21218</fgdc:postal>
+			          <fgdc:country>USA</fgdc:country>
+			        </fgdc:cntaddr>
+			        <fgdc:cntvoice></fgdc:cntvoice>
+			        <fgdc:cntfax></fgdc:cntfax>
+			        <fgdc:cntemail></fgdc:cntemail>
+			      </fgdc:cntinfo>
+			    </fgdc:metc>
+			    <fgdc:metstdn>FGDC Content Standard for Digital Geospatial Metadata</fgdc:metstdn>
+			    <fgdc:metstdv>FGDC-STD-012-2002</fgdc:metstdv>
+			  </fgdc:metainfo>
+			</fgdc:metadata>
+		</FieldPhoto>
+	</FieldPhotos>
+</McMurdoDryValleys>

@@ -1,0 +1,2 @@
+# Module sead_access
+# RPC service class, partial path of RPC policy file

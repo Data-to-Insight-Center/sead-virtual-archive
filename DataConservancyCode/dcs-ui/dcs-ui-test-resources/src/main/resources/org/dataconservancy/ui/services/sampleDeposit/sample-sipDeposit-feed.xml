@@ -1,0 +1,152 @@
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <id>http://dataconservancy.org/ingest/status/426025</id>
+  <title type="text">Status event feed for ingest 426025</title>
+  <updated>2012-02-28T19:08:24.096Z</updated>
+  <author>
+    <name>DCS ingest service</name>
+  </author>
+  <entry>
+    <id>http://bamboo.mse.jhu.edu:8086/dcs/entity/426038</id>
+    <updated>2012-02-28T19:08:24.096Z</updated>
+    <title type="text">ingest.complete</title>
+    <content type="text">426025</content>
+    <summary type="text">Successfully completed ingest 426025</summary>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426023" rel="related"/>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426036" rel="related"/>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426022" rel="related"/>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426035" rel="related"/>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426037" rel="related"/>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426032" rel="related"/>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426027" rel="related"/>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426031" rel="related"/>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426026" rel="related"/>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426034" rel="related"/>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426033" rel="related"/>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426029" rel="related"/>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426028" rel="related"/>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426030" rel="related"/>
+  </entry>
+  <entry>
+    <id>http://bamboo.mse.jhu.edu:8086/dcs/entity/426037</id>
+    <updated>2012-02-28T19:08:19.486Z</updated>
+    <title type="text">archive</title>
+    <content type="text">13</content>
+    <summary type="text">Archived 13 entities</summary>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426023" rel="related"/>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426036" rel="related"/>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426022" rel="related"/>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426035" rel="related"/>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426027" rel="related"/>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426032" rel="related"/>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426026" rel="related"/>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426031" rel="related"/>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426034" rel="related"/>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426033" rel="related"/>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426029" rel="related"/>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426028" rel="related"/>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426030" rel="related"/>
+  </entry>
+  <entry>
+    <id>http://bamboo.mse.jhu.edu:8086/dcs/entity/426036</id>
+    <updated>2012-02-28T19:08:19.399Z</updated>
+    <title type="text">characterization.format</title>
+    <content type="text">http://www.iana.org/assignments/media-types/ text/xml</content>
+    <summary type="text">Characterized metadata.xml as text/xml</summary>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426033" rel="related"/>
+  </entry>
+  <entry>
+    <id>http://bamboo.mse.jhu.edu:8086/dcs/entity/426035</id>
+    <updated>2012-02-28T19:08:19.397Z</updated>
+    <title type="text">characterization.format</title>
+    <content type="text">http://www.iana.org/assignments/media-types/ application/xml</content>
+    <summary type="text">Characterized metadata.xml as application/xml</summary>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426033" rel="related"/>
+  </entry>
+  <entry>
+    <id>http://bamboo.mse.jhu.edu:8086/dcs/entity/426034</id>
+    <updated>2012-02-28T19:08:19.392Z</updated>
+    <title type="text">identifier.assignment</title>
+    <content type="text">file to http://bamboo.mse.jhu.edu:8086/dcs/entity/426033</content>
+    <summary type="text"
+      >Assigned identifier 'http://bamboo.mse.jhu.edu:8086/dcs/entity/426033' to File 'file'</summary>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426033" rel="related"/>
+  </entry>
+  <entry>
+    <id>http://bamboo.mse.jhu.edu:8086/dcs/entity/426032</id>
+    <updated>2012-02-28T19:08:19.365Z</updated>
+    <title type="text">identifier.assignment</title>
+    <content type="text">man to http://bamboo.mse.jhu.edu:8086/dcs/entity/426031</content>
+    <summary type="text"
+      >Assigned identifier 'http://bamboo.mse.jhu.edu:8086/dcs/entity/426031' to Manifestation 'man'</summary>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426031" rel="related"/>
+  </entry>
+  <entry>
+    <id>http://bamboo.mse.jhu.edu:8086/dcs/entity/426030</id>
+    <updated>2012-02-28T19:08:19.355Z</updated>
+    <title type="text">identifier.assignment</title>
+    <content type="text">du to http://bamboo.mse.jhu.edu:8086/dcs/entity/426029</content>
+    <summary type="text"
+      >Assigned identifier 'http://bamboo.mse.jhu.edu:8086/dcs/entity/426029' to DeliverableUnit 'du'</summary>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426029" rel="related"/>
+  </entry>
+  <entry>
+    <id>http://bamboo.mse.jhu.edu:8086/dcs/entity/426028</id>
+    <updated>2012-02-28T19:08:19.351Z</updated>
+    <title type="text">file.resolution</title>
+    <content type="text"
+      >urn:dataconservancy.org:file/426024 to file:///usr/local/dcs/files/44/85/448532d623aae5bd957bf2d067023f37f3571e73</content>
+    <summary type="text"
+      >Resolved staged content, and changed src from urn:dataconservancy.org:file/426024 to file:///usr/local/dcs/files/44/85/448532d623aae5bd957bf2d067023f37f3571e73</summary>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426033" rel="related"/>
+  </entry>
+  <entry>
+    <id>http://bamboo.mse.jhu.edu:8086/dcs/entity/426027</id>
+    <updated>2012-02-28T19:08:19.348Z</updated>
+    <title type="text">ingest.start</title>
+    <content type="text">426025</content>
+    <summary type="text">Ingest 426025 started</summary>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426029" rel="related"/>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426026" rel="related"/>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426031" rel="related"/>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426033" rel="related"/>
+  </entry>
+  <entry>
+    <id>http://bamboo.mse.jhu.edu:8086/dcs/entity/426026</id>
+    <updated>2012-02-28T19:08:19.341Z</updated>
+    <title type="text">deposit</title>
+    <summary type="text">426025</summary>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426031" rel="related"/>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426029" rel="related"/>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426033" rel="related"/>
+  </entry>
+  <entry>
+    <id>http://bamboo.mse.jhu.edu:8086/dcs/entity/426023</id>
+    <updated>2012-02-28T19:08:18.463Z</updated>
+    <title type="text">fixity.digest</title>
+    <content type="text">SHA-1 448532d623aae5bd957bf2d067023f37f3571e73</content>
+    <summary type="text">Calculated SHA-1 upon upload</summary>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426033" rel="related"/>
+  </entry>
+  <entry>
+    <id>http://bamboo.mse.jhu.edu:8086/dcs/entity/426022</id>
+    <updated>2012-02-28T19:08:18.461Z</updated>
+    <title type="text">file.upload</title>
+    <summary type="text">Content uploaded binary/octet-stream </summary>
+    <link href="http://bamboo.mse.jhu.edu:8086/dcs/entity/426033" rel="related"/>
+  </entry>
+</feed>

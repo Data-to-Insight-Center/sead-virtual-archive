@@ -1,0 +1,15 @@
+BagIt-Profile-Identifier: 
+   http://dataconservancy.org/formats/data-conservancy-pkg-0.9
+Contact-Name: Tim DiLauro
+Contact-Phone: 123-456-7890
+Contact-Email: timmo@jhu.edu
+External-Identifier: ELOKA002-pkg
+Bag-Count: 1 of 1
+Bag-Group-Identifier: ELOKA002
+BagIt-Profile-Identifier: 
+   http://dataconservancy.org/formats/data-conservancy-pkg-X5
+PKG-BAG-DIR: ELOKA002.bag/
+PKG-ORE-REM: ORE-REM/8CF61A5C-1EB1-4ED3-9AC6-C072CFA2471C-ReM.xml
+Payload-Oxum: 1190371083.25
+Bagging-Date: 2013-06-11
+Bag-Size: 1.1 GB

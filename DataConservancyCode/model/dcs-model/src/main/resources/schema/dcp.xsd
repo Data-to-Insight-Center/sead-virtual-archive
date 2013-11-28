@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<schema targetNamespace="http://dataconservancy.org/schemas/dcp/1.0"
+  elementFormDefault="qualified" attributeFormDefault="unqualified"
+  xmlns="http://www.w3.org/2001/XMLSchema" xmlns:dcp="http://dataconservancy.org/schemas/dcp/1.0"
+  xmlns:dc="http://purl.org/dc/elements/1.1/creator" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <!-- 
+    $Id: dcp.xsd 2954 2012-02-27 19:38:56Z hvu13 $
+    $URL: https://scm.dataconservancy.org/svn/model/trunk/dcs-model/src/main/resources/schema/dcp.xsd $
+  -->
+  
+  <element name="dcp" type="dcp:dcpContainerType">
+    <annotation>
+      <documentation> 
+          $Id: dcp.xsd 2954 2012-02-27 19:38:56Z hvu13 $
+          $URL: https://scm.dataconservancy.org/svn/model/trunk/dcs-model/src/main/resources/schema/dcp.xsd $
+      </documentation>
+    </annotation>
+  </element>
+
+  <complexType name="dcpContainerType">
+    <sequence>
+      <element name="DeliverableUnits" type="dcp:deliverableUnitContainerType"
+        maxOccurs="1" minOccurs="0">
+      </element>
+      <element name="Collections" type="dcp:collectionContainerType"
+        maxOccurs="1" minOccurs="0">
+      </element>
+      <element name="Manifestations" type="dcp:manifestationContainerType"
+        maxOccurs="1" minOccurs="0">
+      </element>
+      <element name="Files" type="dcp:fileContainerType"
+        maxOccurs="1" minOccurs="0">
+      </element>
+      <element name="Events" type="dcp:eventContainerType"
+        maxOccurs="1" minOccurs="0">
+      </element>
+    </sequence>
+  </complexType>
+
+  <complexType name="deliverableUnitType">
+    <complexContent>
+
+      <extension base="dcp:entityType">
+        <sequence>
+          <element name="collection" type="dcp:entityRef"
+            maxOccurs="unbounded" minOccurs="0">
+          </element>
+          <element name="parent" type="dcp:entityRef" maxOccurs="unbounded"
+            minOccurs="0">
+          </element>
+          <element name="type" type="string" maxOccurs="unbounded"
+            minOccurs="0">
+          </element>
+          <element name="title" type="string" maxOccurs="1"
+            minOccurs="1">
+          </element>
+          <element name="creator" type="string" maxOccurs="unbounded"
+            minOccurs="0">
+          </element>
+          <element name="subject" type="string" maxOccurs="unbounded"
+            minOccurs="0">
+          </element>
+          <element name="rights" type="string" maxOccurs="1"
+            minOccurs="0">
+          </element>
+          <element name="formerExternalRef" type="string"
+            maxOccurs="unbounded" minOccurs="0">
+            <annotation>
+              <documentation>
+                Any previous reference used to identify
+                the
+                Deliverable Unit before the it was
+                transfered to the
+                repository.
+							</documentation>
+            </annotation>
+          </element>
+          <element name="digitalSurrogate" type="boolean"
+            maxOccurs="1" minOccurs="0"></element>
+          <element name="metadata" type="dcp:metadataBlobType"
+            maxOccurs="unbounded" minOccurs="0">
+          </element>
+          <element name="relationship" type="dcp:relatedEntityType"
+            maxOccurs="unbounded" minOccurs="0">
+          </element>
+        </sequence>
+        <attribute name="lineageId" type="anyURI" use="optional"></attribute>
+      </extension>
+    </complexContent>
+  </complexType>
+
+  <complexType name="collectionContainerType">
+    <sequence>
+      <element name="Collection" type="dcp:collectionType"
+        maxOccurs="unbounded" minOccurs="0">
+      </element>
+    </sequence>
+  </complexType>
+
+  <complexType name="deliverableUnitContainerType">
+    <sequence>
+      <element name="DeliverableUnit" type="dcp:deliverableUnitType"
+        maxOccurs="unbounded" minOccurs="0">
+      </element>
+    </sequence>
+  </complexType>
+
+  <complexType name="collectionType">
+    <complexContent>
+      <extension base="dcp:entityType">
+        <sequence>
+          <element name="parent" type="dcp:entityRef" maxOccurs="1"
+            minOccurs="0">
+          </element>
+          <element name="type" type="string" maxOccurs="unbounded"
+            minOccurs="0">
+          </element>
+          <element name="title" type="string" maxOccurs="1"
+            minOccurs="1">
+          </element>
+          <element name="creator" type="string" maxOccurs="unbounded"
+            minOccurs="0">
+          </element>
+                    <element name="subject" type="string" maxOccurs="unbounded" minOccurs="0"></element>
+                    <element name="metadata" type="dcp:metadataBlobType"
+            maxOccurs="unbounded" minOccurs="0">
+          </element>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+
+  <complexType name="fileContainerType">
+    <sequence>
+      <choice maxOccurs="unbounded" minOccurs="0">
+        <element name="File" type="dcp:fileType" maxOccurs="unbounded"
+          minOccurs="0">
+        </element>
+        <element name="EmbeddedFile" type="dcp:embeddedFileType"
+          maxOccurs="unbounded" minOccurs="0">
+        </element>
+
+      </choice>
+    </sequence>
+  </complexType>
+
+  <complexType name="fileType">
+    <complexContent>
+      <extension base="dcp:entityType">
+
+        <sequence>
+          <element name="fileName" type="string" maxOccurs="1"
+            minOccurs="1">
+            <annotation>
+              <documentation>
+                The name of the file, outside of any path
+                context
+              </documentation>
+            </annotation>
+          </element>
+          <element name="extant" type="boolean" maxOccurs="1"
+            minOccurs="1">
+            <annotation>
+              <documentation>
+                Whether the file exists (or should) in the
+                dcs for
+                preservation
+              </documentation>
+            </annotation>
+          </element>
+          <element name="size" type="long" maxOccurs="1"
+            minOccurs="0">
+          </element>
+          <element name="fixity" type="dcp:fixityType"
+            maxOccurs="unbounded" minOccurs="0">
+          </element>
+          <element name="format" type="dcp:formatType"
+            maxOccurs="unbounded" minOccurs="0">
+          </element>
+          <element name="valid" type="boolean" maxOccurs="1"
+            minOccurs="0">
+          </element>
+          <element name="metadata" type="dcp:metadataBlobType"
+            maxOccurs="unbounded" minOccurs="0">
+          </element>         
+        </sequence>
+        <attribute name="src" type="anyURI" use="optional">
+          <annotation>
+            <documentation>
+              URL which locates the content of the file.
+              For
+              internally packaged files, this may be a
+              file URI (eg
+              file:///data/files/1.png)
+						</documentation>
+          </annotation>
+        </attribute>
+      </extension>
+    </complexContent>
+  </complexType>
+
+  <complexType name="manifestationContainerType">
+    <sequence>
+      <element name="Manifestation" type="dcp:manifestationType"
+        maxOccurs="unbounded" minOccurs="0">
+      </element>
+    </sequence>
+  </complexType>
+
+
+  <attributeGroup name="entityAttributes">
+    <attribute name="id" type="anyURI">
+      <annotation>
+        <documentation>
+          URI which uniquely identifies a DCS entity. It
+          must
+          not be assumed to be a resolvable URL. Elements
+          within the
+          DCP
+          document may refer to an entity
+          unambiguously by its id.
+        </documentation>
+      </annotation>
+    </attribute>
+  </attributeGroup>
+
+  <complexType name="entityRef">
+    <attribute name="ref" type="anyURI" use="required">
+      <annotation>
+        <documentation>
+          URI which unambiguously represents the identity
+          of
+          an
+          entity. This may refer an entity defined in the
+          DCP
+          document or
+          elsewhere (e.g. in the DCS)
+				</documentation>
+      </annotation>
+    </attribute>
+  </complexType>
+
+  <complexType name="metadataBlobType">
+    <sequence>
+      <any processContents="skip" minOccurs="0" maxOccurs="unbounded" />
+    </sequence>
+    <attribute name="schemaURI" type="anyURI" use="optional">
+      <annotation>
+        <documentation>
+          Schema URI of the contained or referenced
+          metadata,
+          if applicable.
+				</documentation>
+      </annotation>
+    </attribute>
+    <attribute name="ref" type="anyURI" use="optional">
+      <annotation>
+        <documentation>
+          If metadata is represented in a File entity, it
+          may
+          be referenced here as containing a blob of relevant
+          metadata
+				</documentation>
+      </annotation>
+    </attribute>
+  </complexType>
+
+  <complexType name="relatedEntityType">
+    <complexContent>
+      <extension base="dcp:entityRef">
+        <attribute name="rel" use="required">
+          <annotation>
+            <documentation>Relationship type</documentation>
+          </annotation>
+        </attribute>
+      </extension>
+    </complexContent>
+  </complexType>
+
+  <complexType name="alternateResourceIdentifierType">
+    <sequence>
+      <element name="authorityId" minOccurs="0" maxOccurs="1" />
+      <element name="typeId" minOccurs="0" maxOccurs="1"/>
+      <element name="idValue" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+  </complexType>
+  
+  <complexType name="entityType">
+    <sequence>
+      <element name="alternateIdentifier" type="dcp:alternateResourceIdentifierType" minOccurs="0" maxOccurs="unbounded"/>
+    </sequence>
+    <attribute name="id" type="anyURI" use="required"></attribute>
+  </complexType>
+
+  <complexType name="manifestationType">
+    <complexContent>
+      <extension base="dcp:entityType">
+        <sequence>
+          <element name="deliverableUnit" type="dcp:entityRef"
+            maxOccurs="1" minOccurs="1">
+          </element>
+          <element name="technicalEnvironment" type="string"
+            maxOccurs="unbounded" minOccurs="0">
+          </element>
+          <element name="type" type="string" maxOccurs="1"
+            minOccurs="0"></element>
+          <element name="manifestationFile" type="dcp:manifestationFileType"
+            maxOccurs="unbounded" minOccurs="0">
+          </element>
+          <element name="metadata" type="dcp:metadataBlobType"
+            maxOccurs="unbounded" minOccurs="0">
+          </element>        
+        </sequence>
+        <attribute name="dateCreated" type="string" use="optional">
+          <annotation>
+            <documentation>Date on which the manifestation is created</documentation>
+          </annotation>
+        </attribute>
+      </extension>
+    </complexContent>
+  </complexType>
+
+  <complexType name="fixityType">
+    <simpleContent>
+      <extension base="string">
+        <attribute name="algorithm" type="string"></attribute>
+      </extension>
+    </simpleContent>
+  </complexType>
+
+  <complexType name="formatType">
+    <sequence>
+      <element name="id" type="dcp:formatIdType" maxOccurs="1"
+        minOccurs="1">
+      </element>
+      <element name="name" type="string" maxOccurs="1"
+        minOccurs="0"></element>
+      <element name="version" type="string" maxOccurs="1"
+        minOccurs="0">
+      </element>
+    </sequence>
+  </complexType>
+
+  <complexType name="formatIdType">
+    <simpleContent>
+      <extension base="string">
+        <attribute name="scheme" type="anyURI"></attribute>
+      </extension>
+    </simpleContent>
+  </complexType>
+
+  <complexType name="eventContainerType">
+    <sequence>
+      <element name="Event" type="dcp:eventType" maxOccurs="unbounded"
+        minOccurs="0"></element>
+    </sequence>
+  </complexType>
+
+  <complexType name="eventType">
+    <complexContent>
+      <extension base="dcp:entityType">
+        <sequence>
+          <element name="eventType" type="string" maxOccurs="1"
+            minOccurs="1">
+          </element>
+          <element name="eventDate" type="dateTime" maxOccurs="1"
+            minOccurs="1">
+          </element>
+          <element name="eventTarget" type="dcp:entityRef"
+            maxOccurs="unbounded" minOccurs="1"></element>
+          <element name="eventDetail" type="string" maxOccurs="1"
+            minOccurs="0">
+          </element>
+          <element name="eventOutcome" type="string" maxOccurs="1"
+            minOccurs="0">
+          </element>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+
+  <complexType name="embeddedFileType">
+    <complexContent>
+      <extension base="dcp:fileType">
+        <sequence>
+          <element name="inFile" type="dcp:entityRef" maxOccurs="1"
+            minOccurs="1"></element>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+
+  <complexType name="manifestationFileType">
+    <complexContent>
+      <extension base="dcp:entityRef">
+        <sequence>
+          <element name="path" type="string" maxOccurs="1"
+            minOccurs="0"></element>
+          <element name="relationship" type="dcp:relatedEntityType"
+            maxOccurs="unbounded" minOccurs="0"></element>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+</schema>

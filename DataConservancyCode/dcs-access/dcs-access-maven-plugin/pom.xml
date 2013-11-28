@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  
+  <!-- 
+    $Id: pom.xml 4500 2012-08-31 15:44:02Z birkland $
+    $URL: https://scm.dataconservancy.org/svn/dcs-access/trunk/dcs-access-maven-plugin/pom.xml $
+  -->
+  
+  <modelVersion>4.0.0</modelVersion>  
+  <groupId>org.dataconservancy.access</groupId>
+  <artifactId>dcs-access-maven-plugin</artifactId>
+  <packaging>maven-plugin</packaging>
+  <name>Index and archiving Maven plugin</name>
+  <description>Seeds a DC archive and index with known entities, useful for testing.</description>
+  
+  <parent>
+    <artifactId>access-pom</artifactId>
+    <groupId>org.dataconservancy.access</groupId>
+    <version>1.1.0-SNAPSHOT</version>
+  </parent>
+  
+  <dependencies>
+    
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-plugin-api</artifactId>
+      <version>2.2.1</version>
+      <scope>compile</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-model</artifactId>
+      <version>2.2.1</version>
+      <scope>compile</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.dataconservancy.access</groupId>
+      <artifactId>dcs-access-impl-solr</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.dataconservancy.dcs</groupId>
+      <artifactId>dcs-common-util</artifactId>
+      <version>1.1.0-alpha</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.dataconservancy.archive</groupId>
+      <artifactId>dcs-archive-impl-elm</artifactId>
+      <version>1.1.0-alpha</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-simple</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.dataconservancy.archive</groupId>
+      <artifactId>dcs-archive-impl-elm-fs</artifactId>
+      <version>1.1.0-alpha</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-simple</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
+  </dependencies>
+  
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-plugin-plugin</artifactId>
+        <version>2.6</version>
+      </plugin>
+    </plugins>  
+  </reporting>
+  
+</project>

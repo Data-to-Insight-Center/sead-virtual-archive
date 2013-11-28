@@ -1,0 +1,100 @@
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:tx="http://www.springframework.org/schema/tx" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+  <bean id="featureExtraction"
+    class="org.dataconservancy.dcs.ingest.services.BasicFeatureExtraction">
+    <property name="ingestFramework"
+      ref="org.dataconservancy.dcs.ingest.IngestFramework" />
+    <property name="executionEnvironment"
+      ref="org.dataconservancy.dcs.ingest.services.BasicFeatureExtraction.BasicExecutionEnvironment" />
+    <property name="jobs">
+      <list>
+        <bean
+          class="org.dataconservancy.dcs.ingest.services.BasicFeatureExtraction$Job">
+          <property name="mapping">
+            <bean
+              class="org.dataconservancy.dcs.ingest.services.BasicFeatureExtractionTest$TestMapping">
+              <constructor-arg type="java.lang.Object"
+                value="0" />
+            </bean>
+          </property>
+          <property name="outputFactory" ref="output" />
+        </bean>
+        <bean
+          class="org.dataconservancy.dcs.ingest.services.BasicFeatureExtraction$Job">
+          <property name="mapping">
+            <bean
+              class="org.dataconservancy.dcs.ingest.services.BasicFeatureExtractionTest$TestMapping">
+              <constructor-arg type="java.lang.Object"
+                value="1" />
+            </bean>
+          </property>
+          <property name="outputFactory" ref="output" />
+        </bean>
+        <bean
+          class="org.dataconservancy.dcs.ingest.services.BasicFeatureExtraction$Job">
+          <property name="mapping">
+            <bean
+              class="org.dataconservancy.dcs.ingest.services.BasicFeatureExtractionTest$TestMapping">
+              <constructor-arg type="java.lang.Object"
+                value="2" />
+            </bean>
+          </property>
+          <property name="outputFactory" ref="output" />
+        </bean>
+        <bean
+          class="org.dataconservancy.dcs.ingest.services.BasicFeatureExtraction$Job">
+          <property name="mapping">
+            <bean
+              class="org.dataconservancy.dcs.ingest.services.BasicFeatureExtractionTest$TestMapping">
+              <constructor-arg type="java.lang.Object"
+                value="3" />
+            </bean>
+          </property>
+          <property name="outputFactory" ref="output" />
+        </bean>
+        <bean
+          class="org.dataconservancy.dcs.ingest.services.BasicFeatureExtraction$Job">
+          <property name="mapping">
+            <bean
+              class="org.dataconservancy.dcs.ingest.services.BasicFeatureExtractionTest$TestMapping">
+              <constructor-arg type="java.lang.Object"
+                value="4" />
+            </bean>
+          </property>
+          <property name="outputFactory" ref="output" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="output"
+    class="org.dataconservancy.dcs.ingest.services.BasicFeatureExtractionTest$SingularOutputFactory" />
+
+  <bean
+    id="org.dataconservancy.dcs.ingest.services.BasicFeatureExtraction.BasicExecutionEnvironment "
+    class="org.dataconservancy.transform.execution.BasicExecutionEnvironment">
+    <property name="executorService">
+      <bean class="org.dataconservancy.dcs.util.SynchronousExecutor" />
+    </property>
+  </bean>
+
+</beans>

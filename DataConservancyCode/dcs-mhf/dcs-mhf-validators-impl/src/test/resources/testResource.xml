@@ -1,0 +1,201 @@
+<zdef1206123777:dcp xmlns="" xmlns:zdef1206123777="http://dataconservancy.org/schemas/dcp/1.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://dataconservancy.org/schemas/dcp/1.0 http://dataconservancy.org/schemas/dcp/1.0">
+  <DeliverableUnits xmlns="http://dataconservancy.org/schemas/dcp/1.0">
+    <DeliverableUnit id="518acf87-d0fe-4095-bbac-5229f24cb00c">
+      <alternateIdentifier>
+        <typeId>dataconservancy.org:types:registry:entry</typeId>
+        <idValue>dataconservancy.org:registry:metadata-format:entry:id:2</idValue>
+      </alternateIdentifier>
+      <alternateIdentifier>
+        <typeId>dataconservancy.org:types:registry:entry</typeId>
+        <idValue>dataconservancy.org:formats:file:xsd:2004</idValue>
+      </alternateIdentifier>
+      <type>dataconservancy.org:types:registry:entry</type>
+      <title>XSD Schema (for XSD instance documents)</title>
+      <formerExternalRef>dataconservancy.org:registry:metadata-format:entry:id:2</formerExternalRef>
+      <digitalSurrogate>false</digitalSurrogate>
+      <relationship ref="030b9b7b-f28d-4a89-931d-b06d0663cc6d"
+        rel="urn:dataconservancy.org:rel/isRegistryEntryFor"/>
+    </DeliverableUnit>
+    <DeliverableUnit id="030b9b7b-f28d-4a89-931d-b06d0663cc6d">
+      <type>dataconservancy.types:registry-entry:metadataformat</type>
+      <title>XSD Schema</title>
+      <formerExternalRef>dataconservancy.org:formats:file:xsd:2004</formerExternalRef>
+      <relationship ref="518acf87-d0fe-4095-bbac-5229f24cb00c"
+        rel="urn:dataconservancy.org:rel/hasRegistryEntry"/>
+    </DeliverableUnit>
+    <DeliverableUnit id="60">
+      <parent ref="030b9b7b-f28d-4a89-931d-b06d0663cc6d"/>
+      <type>dataconservancy.types:registry-entry:metadatascheme</type>
+      <title>XSD Schema</title>
+      <formerExternalRef>http://www.w3.org/2001/XMLSchema.xsd</formerExternalRef>
+    </DeliverableUnit>
+    <DeliverableUnit id="65">
+      <parent ref="60"/>
+      <parent ref="030b9b7b-f28d-4a89-931d-b06d0663cc6d"/>
+      <type>dataconservancy.types:registry-entry:metadatascheme</type>
+      <title>XSD Schema: XML DTD</title>
+      <formerExternalRef>http://www.w3.org/2001/XMLSchema.dtd</formerExternalRef>
+    </DeliverableUnit>
+    <DeliverableUnit id="70">
+      <parent ref="60"/>
+      <parent ref="030b9b7b-f28d-4a89-931d-b06d0663cc6d"/>
+      <type>dataconservancy.types:registry-entry:metadatascheme</type>
+      <title>XSD Schema: XML XSD</title>
+      <formerExternalRef>http://www.w3.org/2001/xml.xsd</formerExternalRef>
+    </DeliverableUnit>
+    <DeliverableUnit id="75">
+      <parent ref="60"/>
+      <parent ref="030b9b7b-f28d-4a89-931d-b06d0663cc6d"/>
+      <type>dataconservancy.types:registry-entry:metadatascheme</type>
+      <title>XSD Schema: Datatypes DTD</title>
+      <formerExternalRef>http://www.w3.org/2001/datatypes.dtd</formerExternalRef>
+    </DeliverableUnit>
+  </DeliverableUnits>
+  <Manifestations xmlns="http://dataconservancy.org/schemas/dcp/1.0">
+    <Manifestation id="c02e3de2-2ae5-41ed-a396-fcf92fdf04e0" dateCreated="2013-03-05T13:04:38.909Z">
+      <deliverableUnit ref="518acf87-d0fe-4095-bbac-5229f24cb00c"/>
+      <type>dataconservancy.org:types:registry:entry:manifestation</type>
+      <manifestationFile ref="cead99e1-2965-42f3-af52-3ee9fd37e61d"/>
+    </Manifestation>
+    <Manifestation id="5b7c3ce8-fc9b-411d-9d13-425027b70e4f">
+      <deliverableUnit ref="030b9b7b-f28d-4a89-931d-b06d0663cc6d"/>
+      <technicalEnvironment>dataconservancy.types:registry-entry:metadataformat:1.0</technicalEnvironment>
+      <manifestationFile ref="808afb22-bf7d-4199-a8f0-777af82b270c">
+        <path>/</path>
+      </manifestationFile>
+    </Manifestation>
+    <Manifestation id="62">
+      <deliverableUnit ref="60"/>
+      <technicalEnvironment>dataconservancy.types:registry-entry:metadatascheme:1.0</technicalEnvironment>
+      <type>SchemeFileManifestation</type>
+      <manifestationFile ref="61">
+        <path>/</path>
+      </manifestationFile>
+    </Manifestation>
+    <Manifestation id="64">
+      <deliverableUnit ref="60"/>
+      <technicalEnvironment>dataconservancy.types:registry-entry:metadatascheme:1.0</technicalEnvironment>
+      <type>SchemeSerializationManifestation</type>
+      <manifestationFile ref="63">
+        <path>/</path>
+      </manifestationFile>
+    </Manifestation>
+    <Manifestation id="67">
+      <deliverableUnit ref="65"/>
+      <technicalEnvironment>dataconservancy.types:registry-entry:metadatascheme:1.0</technicalEnvironment>
+      <type>SchemeFileManifestation</type>
+      <manifestationFile ref="66">
+        <path>/</path>
+      </manifestationFile>
+    </Manifestation>
+    <Manifestation id="69">
+      <deliverableUnit ref="65"/>
+      <technicalEnvironment>dataconservancy.types:registry-entry:metadatascheme:1.0</technicalEnvironment>
+      <type>SchemeSerializationManifestation</type>
+      <manifestationFile ref="68">
+        <path>/</path>
+      </manifestationFile>
+    </Manifestation>
+    <Manifestation id="72">
+      <deliverableUnit ref="70"/>
+      <technicalEnvironment>dataconservancy.types:registry-entry:metadatascheme:1.0</technicalEnvironment>
+      <type>SchemeFileManifestation</type>
+      <manifestationFile ref="71">
+        <path>/</path>
+      </manifestationFile>
+    </Manifestation>
+    <Manifestation id="74">
+      <deliverableUnit ref="70"/>
+      <technicalEnvironment>dataconservancy.types:registry-entry:metadatascheme:1.0</technicalEnvironment>
+      <type>SchemeSerializationManifestation</type>
+      <manifestationFile ref="73">
+        <path>/</path>
+      </manifestationFile>
+    </Manifestation>
+    <Manifestation id="77">
+      <deliverableUnit ref="75"/>
+      <technicalEnvironment>dataconservancy.types:registry-entry:metadatascheme:1.0</technicalEnvironment>
+      <type>SchemeFileManifestation</type>
+      <manifestationFile ref="76">
+        <path>/</path>
+      </manifestationFile>
+    </Manifestation>
+    <Manifestation id="79">
+      <deliverableUnit ref="75"/>
+      <technicalEnvironment>dataconservancy.types:registry-entry:metadatascheme:1.0</technicalEnvironment>
+      <type>SchemeSerializationManifestation</type>
+      <manifestationFile ref="78">
+        <path>/</path>
+      </manifestationFile>
+    </Manifestation>
+  </Manifestations>
+  <Files xmlns="http://dataconservancy.org/schemas/dcp/1.0">
+    <File id="cead99e1-2965-42f3-af52-3ee9fd37e61d"
+      src="classpath:/org/dataconservancy/mhf/resources/registry/metadataformat/registryEntryMap8476977395062412722.tmp">
+      <fileName>java-entry-serialization</fileName>
+      <extant>true</extant>
+      <size>416</size>
+      <format>
+        <id scheme="http://www.iana.org/assignments/media-types/">application/xml</id>
+      </format>
+    </File>
+    <File id="808afb22-bf7d-4199-a8f0-777af82b270c"
+      src="classpath:/org/dataconservancy/mhf/resources/registry/metadataformat/serializedFormat1526438760468102025.tmp">
+      <fileName>java-format-serialization</fileName>
+      <extant>true</extant>
+      <format>
+        <id scheme="http://www.iana.org/assignments/media-types/">application/xml</id>
+      </format>
+    </File>
+    <File id="61" src="classpath:/org/dataconservancy/mhf/resources/schemas/xsd/XMLSchema.xsd">
+      <fileName>schema-source</fileName>
+      <extant>false</extant>
+    </File>
+    <File id="63"
+      src="classpath:/org/dataconservancy/mhf/resources/registry/metadataformat/serializedScheme8641907831217586050.tmp">
+      <fileName>java-scheme-serialization</fileName>
+      <extant>true</extant>
+      <format>
+        <id scheme="http://www.iana.org/assignments/media-types/">application/xml</id>
+      </format>
+    </File>
+    <File id="66" src="classpath:/org/dataconservancy/mhf/resources/schemas/xsd/XMLSchema.dtd">
+      <fileName>schema-source</fileName>
+      <extant>false</extant>
+    </File>
+    <File id="68"
+      src="classpath:/org/dataconservancy/mhf/resources/registry/metadataformat/serializedScheme998247673054917068.tmp">
+      <fileName>java-scheme-serialization</fileName>
+      <extant>true</extant>
+      <format>
+        <id scheme="http://www.iana.org/assignments/media-types/">application/xml</id>
+      </format>
+    </File>
+    <File id="71" src="classpath:/org/dataconservancy/mhf/resources/schemas/xsd/xml.xsd">
+      <fileName>schema-source</fileName>
+      <extant>false</extant>
+    </File>
+    <File id="73"
+      src="classpath:/org/dataconservancy/mhf/resources/registry/metadataformat/serializedScheme9043440997118318713.tmp">
+      <fileName>java-scheme-serialization</fileName>
+      <extant>true</extant>
+      <format>
+        <id scheme="http://www.iana.org/assignments/media-types/">application/xml</id>
+      </format>
+    </File>
+    <File id="76" src="classpath:/org/dataconservancy/mhf/resources/schemas/xsd/datatypes.dtd">
+      <fileName>schema-source</fileName>
+      <extant>false</extant>
+    </File>
+    <File id="78"
+      src="classpath:/org/dataconservancy/mhf/resources/registry/metadataformat/serializedScheme8724665417801908327.tmp">
+      <fileName>java-scheme-serialization</fileName>
+      <extant>true</extant>
+      <format>
+        <id scheme="http://www.iana.org/assignments/media-types/">application/xml</id>
+      </format>
+    </File>
+  </Files>
+</zdef1206123777:dcp>

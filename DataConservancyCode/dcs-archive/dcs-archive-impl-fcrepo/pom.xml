@@ -1,0 +1,207 @@
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.dataconservancy.archive</groupId>
+  <artifactId>dcs-archive-impl-fcrepo</artifactId>
+  <packaging>jar</packaging>
+  <name>DCS Archival Storage FCRepo Implementation</name>
+
+  <parent>
+    <groupId>org.dataconservancy.archive</groupId>
+    <artifactId>dcs-archive</artifactId>
+    <version>1.1.0-SNAPSHOT</version>
+  </parent>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <configuration>
+          <systemPropertyVariables>
+            <fedora.url>${fedora.url}</fedora.url>
+            <fedora.user>${fedora.user}</fedora.user>
+            <fedora.pass>${fedora.pass}</fedora.pass>
+          </systemPropertyVariables>
+        </configuration>
+        <executions>
+          <execution>
+            <id>integration-test</id>
+            <goals>
+              <goal>integration-test</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>verify</id>
+            <goals>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>jar</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <phase>package</phase>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <properties>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <skipITs>true</skipITs>
+  </properties>
+
+  <profiles>
+    <profile>
+      <id>local-fedora</id>
+      <properties>
+        <skipITs>false</skipITs>
+        <fedora.url>http://localhost:8080/fedora</fedora.url>
+        <fedora.user>fedoraAdmin</fedora.user>
+        <fedora.pass>fedoraAdmin</fedora.pass>
+      </properties>
+    </profile>
+  </profiles>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>xmlunit</groupId>
+      <artifactId>xmlunit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.thoughtworks.xstream</groupId>
+      <artifactId>xstream</artifactId>
+      <scope>compile</scope>
+      <version>1.3.1</version>
+      <exclusions>
+        <exclusion>
+          <!-- We use the Java Streaming API, no need for xpp3 -->
+          <groupId>xpp3</groupId>
+          <artifactId>xpp3_min</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.archive</groupId>
+      <artifactId>dcs-archive-api</artifactId>
+      <version>${project.parent.version}</version>
+      <type>jar</type>
+      <optional>false</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.model</groupId>
+      <artifactId>dcs-model-builder-xstream</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+      <type>jar</type>
+      <optional>false</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.openrdf</groupId>
+      <artifactId>rio</artifactId>
+      <version>1.0.10</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <version>4.0.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>r03</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.yourmediashelf.fedora.client</groupId>
+      <artifactId>fedora-client</artifactId>
+      <version>0.1.2</version>
+    </dependency>
+    
+    <!-- Uncomment if you ever need activemq with fedora-client.  
+      This will override the exclusion in <dependencyManagment>
+      of the project pom. -->
+    <!--<dependency>
+      <groupId>org.apache.activemq</groupId>
+      <artifactId>activemq-core</artifactId>
+      <version>5.3.2</version>
+    </dependency>-->
+
+  </dependencies>
+
+  <repositories>
+    <repository>
+      <id>duraspace-thirdparty</id>
+      <name>Duraspace Thirdparty Maven Repository</name>
+      <url>https://m2.duraspace.org/content/repositories/thirdparty</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
+</project>

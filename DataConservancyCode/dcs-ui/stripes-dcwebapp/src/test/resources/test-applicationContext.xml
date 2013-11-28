@@ -1,0 +1,200 @@
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:sec="http://www.springframework.org/schema/security"
+  xmlns:beans="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+  http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+  http://www.springframework.org/schema/security
+  http://www.springframework.org/schema/security/spring-security-3.0.xsd
+  http://www.springframework.org/schema/jdbc
+  http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd">
+  
+  <bean id="uiUrlConfig" class="org.dataconservancy.ui.it.support.UiUrlConfig">
+    <property name="scheme" value="${dcs.ui.scheme}"/>
+    <property name="hostname" value="${dcs.ui.hostname}"/>
+    <property name="port" value="${dcs.ui.port}"/>
+    <property name="contextPath" value="${dcs.ui.contextPath}"/>
+    <property name="homePath" value="${dcs.ui.url.homePath}"/>
+    <property name="loginPath" value="${dcs.ui.url.loginPath}"/>
+    <property name="loginPostPath" value="${dcs.ui.url.loginPostPath}"/>
+    <property name="profilePath" value="${dcs.ui.url.profilePath}"/>
+    <property name="registrationPath" value="${dcs.ui.url.registrationPath}"/>
+    <property name="editProfilePath" value="${dcs.ui.url.profileEditPath}"/>
+    <property name="projectPath" value="${dcs.ui.url.projectPath}"/>
+    <property name="projectApiPath" value="${dcs.ui.url.projectApiPath}"/>
+    <property name="adminPath" value="${dcs.ui.url.adminPath}"/>
+    <property name="uiConfigPath" value="${dcs.ui.url.uiConfigPath}"/>
+    <property name="addCollectionPath" value="${dcs.ui.url.addCollectionPath}"/>
+    <property name="logoutPath" value="${dcs.ui.url.logoutPath}"/>
+    <property name="viewCollectionPath" value="${dcs.ui.url.viewCollectionPath}"/>
+    <property name="depositPath" value="${dcs.ui.url.depositPath}"/>
+    <property name="listCollectionsPath" value="${dcs.ui.url.listCollectionsPath}"/>
+    <property name="userCollectionsPath" value="${dcs.ui.url.userCollectionsPath}"/>
+    <property name="listProjectCollectionsPath" value="${dcs.ui.url.listProjectCollectionsPath}"/>
+    <property name="depositStatusPath" value="${dcs.ui.url.depositStatusPath}"/>
+    <property name="collectionDataListPath" value="${dcs.ui.url.collectionDataListPath}"/>
+    <property name="listProjectActivityPath" value="${dcs.ui.url.listProjectActivityPath}"/>
+    <property name="adminRegistrationPath" value="${dcs.ui.url.adminRegistrationPath}"/>
+    <property name="dataItemSplashPath" value="${dcs.ui.url.dataItemSplashPath}"/>
+    <property name="collectionSplashPath" value="${dcs.ui.url.collectionSplashPath}"/>
+    <property name="createIdApiPath" value="${dcs.api.url.idCreationPath}"/>
+    <property name="metadataFilePath" value="${dcs.ui.url.metadataFilePath}"/>
+    <property name="updateCollectionPath" value="${dcs.ui.url.updateCollectionPath}"/>
+    <property name="citableLocatorPath" value="${dcs.ui.url.citableLocatorPath}"/>
+    <property name="adminValidatingMetadataFilePath" value="${dcs.ui.url.adminValidatingMetadataFilePath}"/>
+    <property name="listMetadataFormatPath" value="${dcs.ui.url.listMetadataFormatPath}"/>
+    <property name="ingestPackagePath" value="${dcs.ui.url.ingestPackagePath}"/>
+    <property name="ingestStatusPath" value="${dcs.ui.url.ingestStatusPath}"/>
+  </bean>
+
+  <bean id="requestFactory" class="org.dataconservancy.ui.it.support.RequestFactory">
+    <constructor-arg ref="uiUrlConfig"/>
+    <constructor-arg ref="userService"/>
+    <constructor-arg ref="loginForm"/>
+    <constructor-arg ref="businessObjectBuilder"/>
+  </bean>
+
+  <bean id="archiveSupport" class="org.dataconservancy.ui.it.support.ArchiveSupport">
+    <constructor-arg index="0" ref="dcsConnector"/>
+    <constructor-arg index="1" ref="dataItemProfile"/>
+    <constructor-arg index="2" ref="datasetMapper"/>
+    <constructor-arg index="3" ref="datasetMapper"/>
+    <constructor-arg index="4" ref="dataFileMapper"/>
+    <constructor-arg index="5" ref="collectionMapper"/>
+    <constructor-arg index="6" ref="dataItemBusinessObjectSearcher"/>
+    <constructor-arg index="7" ref="dataFileBusinessObjectSearcher"/>
+    <constructor-arg index="8" ref="metadataFileMapper"/>
+    <constructor-arg index="9" ref="metadataFileBusinessObjectSearcher"/>
+    <constructor-arg index="10" ref="ancestrySearcher"/>
+    <constructor-arg index="11" ref="parentSearcher"/>
+  </bean>
+
+  <bean id="loginForm" class="org.dataconservancy.ui.it.support.LoginForm">
+    <property name="usernameFieldName" value="j_username"/>
+    <property name="passwordFieldName" value="j_password"/>
+    <property name="actionPath" value="/j_spring_security_check"/>
+  </bean>
+
+  <bean id="logoutRequest" class="org.dataconservancy.ui.it.support.LogoutRequest">
+    <property name="href" value="/j_spring_security_logout"/>
+  </bean>
+
+  <bean id="depositRequest" class="org.dataconservancy.ui.it.support.DepositRequest">
+    <constructor-arg ref="uiUrlConfig"/>
+  </bean>
+
+  <bean id="createProjectRequest" class="org.dataconservancy.ui.it.support.CreateProjectRequest">
+    <constructor-arg ref="uiUrlConfig"/>
+    <constructor-arg ref="userService"/>
+  </bean>
+
+  <bean id="createCollectionRequest" class="org.dataconservancy.ui.it.support.CreateCollectionRequest">
+    <constructor-arg ref="uiUrlConfig"/>
+  </bean>
+
+  <bean id="projectAdminRequest" class="org.dataconservancy.ui.it.support.ProjectAdminRequest">
+  	<constructor-arg ref="uiUrlConfig" />
+  </bean>
+
+  <bean id="authorizedDepositorRequest" class="org.dataconservancy.ui.it.support.AuthorizedDepositorRequest">
+    <constructor-arg ref="uiUrlConfig"/>
+  </bean>
+
+  <bean id="listCollectionRequest" class="org.dataconservancy.ui.it.support.ListCollectionsRequest">
+    <constructor-arg ref="uiUrlConfig"/>
+  </bean>
+
+  <bean id="listProjectCollectionsRequest" class="org.dataconservancy.ui.it.support.ListProjectCollectionsRequest">
+    <constructor-arg ref="uiUrlConfig"/>
+  </bean>
+
+  <bean id="viewCollectionDetailsRequest" class="org.dataconservancy.ui.it.support.ViewCollectionDetailsRequest">
+    <constructor-arg ref="uiUrlConfig"/>
+  </bean>
+
+  <bean id="listProjectActivityRequest" class="org.dataconservancy.ui.it.support.ListProjectActivityRequest">
+    <constructor-arg ref="uiUrlConfig"/>
+  </bean>
+
+  <bean id="citableLocatorRequest" class="org.dataconservancy.ui.it.support.CitableLocatorRequest">
+    <constructor-arg ref="uiUrlConfig"/>
+  </bean>
+  
+  <bean id="validatingMetadataFileRequest" class="org.dataconservancy.ui.it.support.ValidatingMetadataFileRequest">
+    <constructor-arg ref="uiUrlConfig"/>
+  </bean>
+
+  <bean id="registrationForm" class="org.dataconservancy.ui.it.support.ProfileForm">
+  	<property name="firstNamesFieldName" value="user.firstNames"/>
+  	<property name="middleNamesFieldName" value="user.middleNames"/>
+  	<property name="lastNamesFieldName" value="user.lastNames"/>
+  	<property name="prefixFieldName" value="user.prefix"/>
+  	<property name="suffixFieldName" value="user.suffix"/>
+  	<property name="preferredPubNameFieldName" value="user.preferredPubName"/>
+  	<property name="emailFieldName" value="user.emailAddress"/>
+  	<property name="phoneNumberFieldName" value="user.phone"/>
+  	<property name="passwordFieldName" value="user.password"/>
+  	<property name="confirmedPasswordFieldName" value="confirmedPassword"/>
+  	<property name="oldPasswordFieldName" value="oldPassword"/>
+  	<property name="jobTitleFieldName" value="user.jobTitle"/>
+  	<property name="departmentFieldName" value="user.department"/>
+  	<property name="cityFieldName" value="user.city"/>
+  	<property name="stateFieldName" value="user.state"/>
+  	<property name="instCompanyFieldName" value="user.instCompany"/>
+  	<property name="instCompanyWebsiteFieldName" value="user.instCompanyWebsite"/>
+  	<property name="websiteFieldName" value="user.website"/>
+  	<property name="bioFieldName" value="user.bio"/>  
+  </bean>
+  
+  <bean id="editProfileForm" class="org.dataconservancy.ui.it.support.ProfileForm">
+  	<property name="firstNamesFieldName" value="user.firstNames"/>
+  	<property name="middleNamesFieldName" value="user.middleNames"/>
+  	<property name="lastNamesFieldName" value="user.lastNames"/>
+  	<property name="prefixFieldName" value="user.prefix"/>
+  	<property name="suffixFieldName" value="user.suffix"/>
+  	<property name="preferredPubNameFieldName" value="user.preferredPubName"/>
+  	<property name="emailFieldName" value="user.emailAddress"/>
+  	<property name="phoneNumberFieldName" value="user.phone"/>
+  	<property name="passwordFieldName" value="user.password"/>
+  	<property name="confirmedPasswordFieldName" value="confirmedPassword"/>
+  	<property name="oldPasswordFieldName" value="oldPassword"/>
+  	<property name="jobTitleFieldName" value="user.jobTitle"/>
+  	<property name="departmentFieldName" value="user.department"/>
+  	<property name="cityFieldName" value="user.city"/>
+  	<property name="stateFieldName" value="user.state"/>
+  	<property name="instCompanyFieldName" value="user.instCompany"/>
+  	<property name="instCompanyWebsiteFieldName" value="user.instCompanyWebsite"/>
+  	<property name="websiteFieldName" value="user.website"/>
+  	<property name="bioFieldName" value="user.bio"/>  
+  	<property name="actionPath" value="/userprofile/userprofile.action?editUserProfile"/>
+  </bean>
+
+  <bean id="anotherTestPlaceholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <property name="locations">
+      <list>
+        <value>classpath:/dcs-ui-test.properties</value>
+        <!--value>${dcs.ui.users.defaultusersresource}</value-->
+      </list>
+    </property>
+    <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+    <property name="ignoreUnresolvablePlaceholders" value="true"/>
+    <property name="ignoreResourceNotFound" value="false"/>
+  </bean>
+
+</beans>

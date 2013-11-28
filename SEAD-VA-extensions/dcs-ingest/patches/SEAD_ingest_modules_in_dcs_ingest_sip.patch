@@ -1,0 +1,84 @@
+Index: dcs-ingest-sip/pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- dcs-ingest-sip/pom.xml	(revision 2117)
++++ dcs-ingest-sip/pom.xml	(revision )
+@@ -21,6 +21,7 @@
+   <packaging>jar</packaging>
+   <name>SIP ingest utilities</name>
+   <description>Tools and utilities for processing SIP packages</description>
++    <version>1.1.1-SNAPSHOT</version>
+ 
+   <parent>
+     <artifactId>dcs-ingest</artifactId>
+@@ -29,9 +30,7 @@
+   </parent>
+   
+   <build>
+-    
+     <plugins>
+-      
+       <plugin>
+         <groupId>org.apache.maven.plugins</groupId>
+         <artifactId>maven-javadoc-plugin</artifactId>
+@@ -68,8 +67,18 @@
+       <groupId>org.dataconservancy.deposit</groupId>
+       <artifactId>dc-deposit-core</artifactId>
+     </dependency>
++      <dependency>
++          <groupId>org.seadva.model</groupId>
++          <artifactId>sead-model</artifactId>
++          <version>1.1.0-SNAPSHOT</version>
++      </dependency>
+ 
+-    <dependency>
++      <dependency>
++          <groupId>org.seadva.model</groupId>
++          <artifactId>sead-model-builder-xstream</artifactId>
++          <version>1.1.0-SNAPSHOT</version>
++      </dependency>
++    <dependency>
+       <groupId>org.dataconservancy.model</groupId>
+       <artifactId>dcs-model</artifactId>
+       <version>1.1.0-SNAPSHOT</version>
+@@ -132,7 +141,13 @@
+       <artifactId>dcs-id-impl</artifactId>
+       <version>1.1.0-SNAPSHOT</version>
+       <scope>test</scope>
++    </dependency>
++
++      <dependency>
++          <groupId>org.dataconservancy.index</groupId>
++          <artifactId>dcs-index-solr-support</artifactId>
++          <version>1.1.0-SNAPSHOT</version>
+-    </dependency>
++      </dependency>
+ 
+     <dependency>
+       <groupId>org.dataconservancy.dcs</groupId>
+Index: dcs-ingest-sip/src/main/java/org/dataconservancy/dcs/ingest/sip/DcpSipContentDocument.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- dcs-ingest-sip/src/main/java/org/dataconservancy/dcs/ingest/sip/DcpSipContentDocument.java	(revision 2117)
++++ dcs-ingest-sip/src/main/java/org/dataconservancy/dcs/ingest/sip/DcpSipContentDocument.java	(revision )
+@@ -24,6 +24,7 @@
+ import org.dataconservancy.model.builder.xstream.DcsXstreamStaxModelBuilder;
+ import org.dataconservancy.model.dcp.Dcp;
+ import org.dataconservancy.model.dcs.DcsEvent;
++import org.seadva.model.builder.xstream.SeadXstreamStaxModelBuilder;
+ 
+ /**
+  * Creates a dcp document containing the full ingest SIP, plus any additional
+@@ -32,7 +33,7 @@
+ public class DcpSipContentDocument
+         extends AbstractDepositDocument {
+ 
+-    private final DcsModelBuilder builder = new DcsXstreamStaxModelBuilder();
++    private final SeadXstreamStaxModelBuilder builder = new SeadXstreamStaxModelBuilder();
+ 
+     private final Dcp sip;
+ 

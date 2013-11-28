@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.dataconservancy.access</groupId>
+  <artifactId>dcs-access-http</artifactId>
+  <packaging>war</packaging>
+  <name>HTTP Access API</name>
+
+  <parent>
+    <groupId>org.dataconservancy.access</groupId>
+    <artifactId>access-pom</artifactId>
+    <version>1.1.0-SNAPSHOT</version>
+  </parent>
+
+  <properties>
+    <dcpquery.impl>org.dataconservancy.dcs.query.dcpsolr.DcsDataModelQueryService</dcpquery.impl>
+    <datastream.url>http://localhost:8080/dcs-integration-main/datastream/</datastream.url>
+  </properties>
+
+  <profiles>
+    <profile>
+      <id>gqm-database-test</id>
+      <activation>
+        <property>
+          <name>dc.gqm.db.uri</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <excludes>
+                <exclude>__FOO__</exclude>
+              </excludes>
+              <systemPropertyVariables>
+                <dc.gqm.db.uri>${dc.gqm.db.uri}</dc.gqm.db.uri>
+                <dc.gqm.db.user>${dc.gqm.db.user}</dc.gqm.db.user>
+                <dc.gqm.db.pass>${dc.gqm.db.pass}</dc.gqm.db.pass>
+              </systemPropertyVariables>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
+          <attachClasses>true</attachClasses>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>**/GQMQueryServletTest.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <!-- Dependencies =============================================== -->
+  
+  <dependencies>
+    
+    <!-- Provided ================================================= -->
+    
+    <dependency>
+      <artifactId>servlet-api</artifactId>
+      <groupId>javax.servlet</groupId>
+      <version>2.5</version>
+      <type>jar</type>
+      <scope>provided</scope>
+    </dependency>
+    
+    <!-- Runtime ================================================== -->
+    
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+      <scope>runtime</scope>
+      <optional>true</optional>
+    </dependency>
+    
+    <!-- Compile ================================================== -->
+    
+    <dependency>
+      <artifactId>dcs-model</artifactId>
+      <groupId>org.dataconservancy.model</groupId>
+      <version>1.1.0-SNAPSHOT</version>
+      <type>jar</type>
+      <scope>compile</scope>
+    </dependency>
+    
+    <dependency>
+      <artifactId>dcs-model-builder-xstream</artifactId>
+      <groupId>org.dataconservancy.model</groupId>
+      <version>1.1.0-SNAPSHOT</version>
+      <type>jar</type>
+      <scope>compile</scope>
+    </dependency>
+    
+    
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    
+    <dependency>
+      <artifactId>dcs-id-api</artifactId>
+      <groupId>org.dataconservancy.dcs</groupId>
+      <version>1.1.0-SNAPSHOT</version>
+      <type>jar</type>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-simple</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.dataconservancy.model</groupId>
+      <artifactId>dcs-gqm</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+      <type>jar</type>
+      <scope>compile</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.dataconservancy.model</groupId>
+      <artifactId>dcs-gqm-builder-xstream</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+      <type>jar</type>
+      <scope>compile</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.dataconservancy.query</groupId>
+      <artifactId>dcs-query-api</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+      <type>jar</type>
+      <scope>compile</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.dataconservancy.index</groupId>
+      <artifactId>dcs-index-dcp-solr</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+      <type>jar</type>
+      <scope>compile</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.dataconservancy.query</groupId>
+      <artifactId>dcs-query-dcs-datamodel-solr</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+      <type>jar</type>
+      <scope>compile</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.dataconservancy.index</groupId>
+      <artifactId>dcs-index-gqm-psql</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.dataconservancy.query</groupId>
+      <artifactId>dcs-query-gqm-psql</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>commons-httpclient</artifactId>
+          <groupId>commons-httpclient</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.dataconservancy.query.endpoints</groupId>
+      <artifactId>dcs-query-endpoint-utils</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+      <type>jar</type>
+      <scope>compile</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.dataconservancy.access</groupId>
+      <artifactId>dcs-access-api</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+      <type>jar</type>
+      <scope>compile</scope>
+    </dependency>    
+
+    <!-- Test ===================================================== --> 
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.archive</groupId>
+      <artifactId>dcs-archive-impl-elm-fs</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-simple</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.dcs</groupId>
+      <artifactId>dcs-common-util</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-simple</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jetty-servlet-tester</artifactId>
+      <version>6.1.24</version>
+      <scope>test</scope>
+    </dependency>
+    
+  </dependencies>
+  
+</project>

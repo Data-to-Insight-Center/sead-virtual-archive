@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2013 The Trustees of Indiana University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<wsdl:definitions targetNamespace="http://seadva.org/MatchMaker/Resource/Webservice" xmlns:impl="http://seadva.org/MatchMaker" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:impl2="http://seadva.org/MatchMaker/Resource/Webservice" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <wsdl:types>
+    <schema elementFormDefault="qualified" targetNamespace="http://seadva.org/MatchMaker" xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://seadva.org/MatchMaker" schemaLocation="ad.xsd"/>
+
+        </schema>
+    <schema elementFormDefault="qualified" targetNamespace="http://seadva.org/MatchMaker/Resource/Webservice" xmlns="http://www.w3.org/2001/XMLSchema">
+
+        <element name="GetResourcesRequest">
+                <sequence/>
+            </element>
+            <element name="GetResourcesResponse">
+                <complexType>
+                    <sequence>
+                        <element maxOccurs="unbounded" minOccurs="0" name="resourceClassAd" type="impl:classAdType"/>
+                    </sequence>
+                </complexType>
+            </element>
+        </schema>
+  </wsdl:types>
+  <wsdl:message name="GetResourcesRequestMessage">
+    <wsdl:part name="input" element="impl2:GetResourcesRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetResourcesResponseMessage">
+    <wsdl:part name="output" element="impl2:GetResourcesResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="ResourceAgentPortType">
+    <wsdl:operation name="GetResources" parameterOrder="input">
+      <wsdl:input name="GetResourcesRequestMessage" message="impl2:GetResourcesRequestMessage">
+    </wsdl:input>
+      <wsdl:output name="GetResourcesResponseMessage" message="impl2:GetResourcesResponseMessage">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ResourceAgentSoapBinding" type="impl2:ResourceAgentPortType">
+    <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="GetResources">
+      <wsdlsoap:operation soapAction="GetResources"/>
+      <wsdl:input>
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ResourceAgentService">
+    <wsdl:port name="ResourceAgent" binding="impl2:ResourceAgentSoapBinding">
+      <wsdlsoap:address location="http://localhost:8080/axis2/services/ResourceAgent/"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

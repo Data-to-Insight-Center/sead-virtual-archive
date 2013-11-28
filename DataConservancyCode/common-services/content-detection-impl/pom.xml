@@ -1,0 +1,213 @@
+<!--
+  ~ Copyright 2013 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.dataconservancy.dcs</groupId>
+    <artifactId>common-services</artifactId>
+    <version>1.1.0-SNAPSHOT</version>
+  </parent>
+
+  <groupId>org.dataconservancy.dcs</groupId>
+  <artifactId>dcs-content-detection-impl</artifactId>
+  <packaging>jar</packaging>
+  <name>dcs-content-detection-impl</name>
+
+  <dependencies>
+
+    <!-- Provided Dependencies ======================================== -->
+
+    <!-- Compile Dependencies ========================================= -->
+
+    <dependency>
+      <groupId>org.dataconservancy.dcs</groupId>
+      <artifactId>dcs-content-detection-api</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>uk.gov.nationalarchives</groupId>
+      <artifactId>droid-core-interfaces</artifactId>
+      <version>6.1.2</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>uk.gov.nationalarchives</groupId>
+      <artifactId>droid-core</artifactId>
+      <version>6.1.2</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>uk.gov.nationalarchives</groupId>
+      <artifactId>droid-container</artifactId>
+      <version>6.1.2</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+
+    <!-- Runtime Dependencies ========================================= -->
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    
+    <!-- this dependency is needed for its resource bundle to resolve the DROID version -->
+    <dependency>
+      <groupId>uk.gov.nationalarchives</groupId>
+      <artifactId>droid-command-line</artifactId>
+      <version>6.1.2</version>
+      <scope>runtime</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>uk.gov.nationalarchives</groupId>
+          <artifactId>droid-results</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+
+    <!-- Test Dependencies ============================================ -->
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
+  </dependencies>
+
+  <build>
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>jar</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <phase>package</phase>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.2-beta-5</version>
+        <configuration>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+          <archive>
+            <manifest>
+              <mainClass>org.dataconservancy.App</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-remote-resources-plugin</artifactId>
+        <executions>
+
+          <!-- Produce our bundle from resources in this module. -->
+          <execution>
+            <id>bundle-resources</id>
+            <goals>
+              <goal>bundle</goal>
+            </goals>
+            <configuration>
+              <includes>
+                <include>**/*</include>
+              </includes>
+            </configuration>
+          </execution>
+
+          <!--
+              Override the behavior of the MRRP defined in the parent POM.
+              The dcs-ui-*resources modules shouldn't run process-resources or
+              process-test-resources MRRP executions
+            -->
+          <execution>
+            <id>process-test-resources</id>
+            <goals/>
+            <phase>none</phase>
+          </execution>
+
+          <!--
+              Override the behavior of the MRRP defined in the parent POM.
+              The dcs-ui-*resources modules shouldn't run process-resources or
+              process-test-resources MRRP executions
+            -->
+          <execution>
+            <id>process-resources</id>
+            <goals/>
+            <phase>none</phase>
+          </execution>
+
+        </executions>
+      </plugin>
+
+    </plugins>
+  </build>
+
+</project>

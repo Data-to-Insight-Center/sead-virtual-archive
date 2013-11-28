@@ -1,0 +1,1177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <!-- 
+    $Id: pom.xml 6732 2013-09-05 15:05:19Z payam $
+    $URL: https://scm.dataconservancy.org/svn/dcs-ui/trunk/stripes-dcwebapp/pom.xml $
+  -->
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.dataconservancy.ui</groupId>
+  <artifactId>stripes-dcwebapp</artifactId>
+  <packaging>war</packaging>
+  <name>DC Reference UI</name>
+  <description>A web front-end for the Data Conservancy Service based on Stripes</description>
+
+  <parent>
+    <groupId>org.dataconservancy.ui</groupId>
+    <artifactId>dcs-ui</artifactId>
+    <version>1.1.0-SNAPSHOT</version>
+  </parent>
+
+  <properties>
+    <!-- These properties can be overridden on the command line.
+      mvn verify -Ddcs.ui.port=8081 -->
+    <dcs.ui.port>8080</dcs.ui.port>
+    <dcs.ui.contextPath>/</dcs.ui.contextPath>
+    <jetty.stop.port>8005</jetty.stop.port>
+    <dcs.ui.buildNumber>Local</dcs.ui.buildNumber>
+    <dcs.ui.buildTimeStamp>Local</dcs.ui.buildTimeStamp>
+    <dcs.ui.repository.revision.number>Local</dcs.ui.repository.revision.number>
+    <dcs.archive>org.dataconservancy.archive.impl.elm.ElmArchiveStore</dcs.archive>
+    <dcs.bootstrap.disabled>false</dcs.bootstrap.disabled>
+    <solr.solr.home>${project.build.directory}/org/dataconservancy/dcs/index/dcpsolr</solr.solr.home> 
+  </properties>
+
+  <!-- Profiles  ================================================== -->
+  
+  <profiles>
+
+    <!--  This will deploy fedora and configure the DCS to use this behind the archive impl.
+           It needs to be activated manually via -Pfedora from the maven command line
+    -->
+    <profile>
+      <id>fedora</id>
+
+      <properties>
+        <fedora.home>${project.build.directory}/dcs/fcrepo</fedora.home>
+        <tomcat.home>${fedora.home}/tomcat</tomcat.home>
+        <fedora.appServerContext>fedora</fedora.appServerContext>
+        <fedora.port>9280</fedora.port>
+        <tomcat.port.ssl>9246</tomcat.port.ssl>
+        <tomcat.port.shutdown>9205</tomcat.port.shutdown>
+        <fedora.install.properties>${project.build.directory}/classes/fedora-install.properties</fedora.install.properties>
+        <fedora.install.version>3.5</fedora.install.version>
+        
+
+
+        <dcs.archive>org.dataconservancy.archive.impl.fcrepo.FcrepoArchiveStore</dcs.archive>
+
+        <dcs.archive.fcrepo.url>http://localhost:${fedora.port}/fedora</dcs.archive.fcrepo.url>
+        <dcs.archive.fcrepo.user>fedoraAdmin</dcs.archive.fcrepo.user>
+        <dcs.archive.fcrepo.password>fedoraAdmin</dcs.archive.fcrepo.password>
+
+        <!-- antrun ant task does not handle properties sanely. System properties 
+          do not override default values. Re-defining the potentially overriden maven 
+          properties is a workaround -->
+        <mvn.env.opts>${env.MAVEN_OPTS}</mvn.env.opts>
+        <mvn.fedora.home>${fedora.home}</mvn.fedora.home>
+        <mvn.fedora.port>${fedora.port}</mvn.fedora.port>
+        <mvn.fedora.appServerContext>${fedora.appServerContext}</mvn.fedora.appServerContext>
+        <mvn.tomcat.home>${tomcat.home}</mvn.tomcat.home>
+      </properties>
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+
+            <!-- Place a physical copy of installer artifact in build dir -->
+            <executions>
+              <execution>
+                <id>copy-installer</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>copy</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>org.fcrepo</groupId>
+                      <artifactId>fcrepo-installer</artifactId>
+                      <version>3.5</version>
+                      <type>jar</type>
+                      <overWrite>true</overWrite>
+                      <outputDirectory>${project.build.directory}/ext/fcrepo-installer</outputDirectory>
+                    </artifactItem>
+                  </artifactItems>
+                </configuration>
+              </execution>
+
+              <!-- Put physical copy of fedora install/run ant scripts into build 
+                dir -->
+              <execution>
+                <id>unpack-scripts</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>org.fcrepo</groupId>
+                      <artifactId>fcrepo-integrationtest-core</artifactId>
+                      <version>3.5</version>
+                      <type>jar</type>
+                      <overWrite>true</overWrite>
+                      <outputDirectory>${project.build.directory}/ext/fcrepo-integrationtest-core/</outputDirectory>
+                      <includes>**/scripts/*.xml,**/test-policies/*.xml,**/fesl-test-policies/*.xml,**/config/spring/*.xml</includes>
+                    </artifactItem>
+                  </artifactItems>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>1.7</version>
+            <executions>
+              <execution>
+                <phase>pre-integration-test</phase>
+                <id>start-fedora</id>
+
+                <configuration>
+                  <target>
+                    <echo message="start-fedora"/>
+                    <ant antfile="target/ext/fcrepo-integrationtest-core/scripts/installer-run.xml"
+                      target="install" inheritrefs="true"/>
+                    <ant antfile="target/ext/fcrepo-integrationtest-core/scripts/installer-run.xml"
+                      target="clearSQL" inheritrefs="true"/>
+                    <ant antfile="target/ext/fcrepo-integrationtest-core/scripts/tomcat-run.xml"
+                      target="tomcat-start" inheritrefs="true"/>
+
+                  </target>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+
+              <execution>
+                <phase>post-integration-test</phase>
+                <id>stop-fedora</id>
+                <configuration>
+                  <target>
+                    <echo message="stop-fedora"/>
+                    <ant antfile="target/ext/fcrepo-integrationtest-core/scripts/tomcat-run.xml"
+                      target="tomcat-stop" inheritrefs="true"/>
+                  </target>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+        </plugins>
+
+        <resources>
+          <resource>
+            <directory>src/test/resources</directory>
+            <filtering>true</filtering>
+          </resource>
+        </resources>
+      </build>
+    </profile>
+  </profiles>
+
+  <!-- Build  ===================================================== -->
+
+  <build>
+
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <configuration>
+          <systemPropertyVariables>
+            <dcs.ui.port>${dcs.ui.port}</dcs.ui.port>
+            <dcs.connector.port>${dcs.ui.port}</dcs.connector.port>
+            <dcs.ui.contextPath>${dcs.ui.contextPath}</dcs.ui.contextPath>
+            <dcs.ui.users.defaultusersresource>file:///${project.build.directory}/test-classes/defaultUsers-test.properties</dcs.ui.users.defaultusersresource>
+            <dcs.mhf.registry.baseDir>${project.build.testOutputDirectory}</dcs.mhf.registry.baseDir>
+            <dcs.home>${project.build.directory}/dcs</dcs.home> 
+            <dcs.bootstrap.metadataformatregistry.disabled>${dcs.bootstrap.disabled}</dcs.bootstrap.metadataformatregistry.disabled>
+            <dcs.ui.package.extraction.directory>${project.build.testOutputDirectory}/package-extraction</dcs.ui.package.extraction.directory>
+          </systemPropertyVariables>
+        </configuration>
+        <executions>
+          <execution>
+            <id>failsafe-integration-test</id>
+            <phase>integration-test</phase>
+            <goals>
+              <goal>integration-test</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>failsafe-verify</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- We really only want the file path of the dcs war dependency in the jetty config.  
+            If that were directly available, as in maven 3: ${org.dataconservancy.dcs:dcs-integration-main:war},
+            this whole depencency copy would be unnecessary! -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy</id>
+            <phase>test-compile</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.dataconservancy.dcs</groupId>
+                  <artifactId>dcs-integration-main</artifactId>
+                  <version>${project.version}</version>
+                  <type>war</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/dcs</outputDirectory>
+                  <destFileName>dcs.war</destFileName>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.dataconservancy.dcs</groupId>
+            <artifactId>dcs-integration-main</artifactId>
+            <version>${project.version}</version>
+            <type>war</type>
+          </dependency>
+        </dependencies>
+      </plugin>
+
+      <plugin>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>jetty-maven-plugin</artifactId>
+        <configuration>
+          <stopKey>STOP</stopKey>
+          <stopPort>${jetty.stop.port}</stopPort>
+          <scanIntervalSeconds>2</scanIntervalSeconds>
+          <connectors>
+            <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
+              <port>${dcs.ui.port}</port>
+            </connector>
+          </connectors>
+          <webApp>
+            <contextPath>${dcs.ui.contextPath}</contextPath>
+          </webApp>
+          <webAppConfig>
+            <defaultsDescriptor>${project.build.directory}/classes/org/eclipse/jetty/webapp/webdefault.xml</defaultsDescriptor>
+          </webAppConfig>
+          <contextHandlers>
+            <contextHandler implementation="org.eclipse.jetty.webapp.WebAppContext">
+              <war>${project.build.directory}/dcs/dcs.war</war>
+              <contextPath>/dcs</contextPath>
+            </contextHandler>
+          </contextHandlers>
+          <systemProperties>
+            <systemProperty>
+              <name>logback.configurationFile</name>
+              <value>${project.basedir}/src/test/resources/logback-test.xml</value>
+            </systemProperty>
+
+            <!-- Use persistent filesystem databases for the UI -->
+            <systemProperty>
+              <name>derby.system.home</name>
+              <value>${project.build.directory}/dcs/derby</value>
+            </systemProperty>
+            <systemProperty>
+              <name>dcs.ui.db.url</name>
+              <value>jdbc:derby:directory:TEST_DCS_ADMIN;create=true</value>
+            </systemProperty>
+            <systemProperty>
+              <name>dcs.ui.db.clear</name>
+              <value>false</value>
+            </systemProperty>
+            <systemProperty>
+              <name>dcs.ui.id.hibernate.ddl</name>
+              <value>update</value>
+            </systemProperty>
+            
+            <!-- Load the UI default users from defaultUsers-text.properties -->
+            <systemProperty>
+              <name>dcs.ui.users.defaultusersresource</name>
+              <value>file:///${project.build.directory}/test-classes/defaultUsers-test.properties</value>
+            </systemProperty>
+            
+            <!-- Load the Terms of Use message from terms_of_use.properties -->
+            <systemProperty>
+              <name>dcs.ui.termsofuse</name>
+              <value>file:///${project.build.directory}/classes/terms_of_use.properties</value>
+            </systemProperty>
+            
+            <!--  Configuration for the DCS instance deployed alongside the UI -->
+            <systemProperty>
+              <name>dcs.home</name>
+              <value>${project.build.directory}/dcs</value>
+            </systemProperty>
+            <systemProperty>
+              <name>dcs.baseurl</name>
+              <value>http://localhost:${dcs.ui.port}/dcs</value>
+            </systemProperty>
+            <systemProperty>
+              <name>dcs.connector.port</name>
+              <value>${dcs.ui.port}</value>
+            </systemProperty>
+            <systemProperty>
+              <name>org.dataconservancy.archive.api.ArchiveStore</name>
+              <value>${dcs.archive}</value>
+            </systemProperty>
+
+            <!-- For disabling bootstrapping processes -->
+            <systemProperty>
+              <name>dcs.bootstrap.metadataformatregistry.disabled</name>
+              <value>${dcs.bootstrap.disabled}</value>
+            </systemProperty>
+
+            <!-- Package extraction temporary directory -->
+            <systemProperty>
+              <name>dcs.ui.package.extraction.directory</name>
+              <value>${project.build.testOutputDirectory}/package-extraction</value>
+            </systemProperty>
+            
+
+            <!--  These are necessary for the fedora archive impl, and only paid attention to when
+                  the FcrepoArchiveImpl is chosen.  They are ignored otherwise.
+            -->
+            <systemProperty>
+              <name>dcs.archive.fcrepo.url</name>
+              <value>${dcs.archive.fcrepo.url}</value>
+            </systemProperty>
+            <systemProperty>
+              <name>dcs.archive.fcrepo.user</name>
+              <value>${dcs.archive.fcrepo.user}</value>
+            </systemProperty>
+            <systemProperty>
+              <name>dcs.archive.fcrepo.password</name>
+              <value>${dcs.archive.fcrepo.password}</value>
+            </systemProperty>
+			<systemProperty>
+			  <name>dcs.mhf.registry.baseDir</name>
+			  <value>${project.build.testOutputDirectory}</value>
+			</systemProperty>  
+			<systemProperty>
+			  <name>solr.solr.home</name>
+			  <value>${project.build.directory}/org/dataconservancy/dcs/index/dcpsolr</value>
+			</systemProperty>      
+          </systemProperties>
+        </configuration>
+        <executions>
+          <execution>
+            <id>start-jetty</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <scanIntervalSeconds>0</scanIntervalSeconds>
+              <daemon>true</daemon>
+            </configuration>
+          </execution>
+          <execution>
+            <id>stop-jetty</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>stop</goal>
+            </goals>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.0.1</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+            <version>10.8.2.2</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derbyclient</artifactId>
+            <version>10.8.2.2</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-remote-resources-plugin</artifactId>
+        <version>1.4</version>
+        <executions>
+          <execution>
+            <id>process-remote-resources</id>
+            <goals>
+              <goal>process</goal>
+            </goals>
+            <configuration>
+              <resourceBundles>
+                <resourceBundle>org.dataconservancy.mhf:dcs-mhf-resources:${project.parent.version}</resourceBundle>
+                <resourceBundle>org.dataconservancy.index:dcs-index-dcp-solr-resources:${project.parent.version}</resourceBundle>
+              	<resourceBundle>org.dataconservancy.dcs:dcs-content-detection-impl:${project.parent.version}</resourceBundle>              	
+              </resourceBundles>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
+
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+        <excludes>
+          <exclude>**/applicationContext.xml</exclude>
+        </excludes>
+      </resource>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>false</filtering>
+        <includes>
+          <include>**/applicationContext.xml</include>
+        </includes>
+      </resource>
+    </resources>
+
+  </build>
+
+  <!-- Dependencies =============================================== -->
+
+  <dependencies>
+
+    <!-- Provided ================================================= -->
+
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Runtime ================================================== -->
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-dbcp</groupId>
+      <artifactId>commons-dbcp</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-pool</groupId>
+      <artifactId>commons-pool</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-config</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-orm</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aop</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-expression</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>jstl</groupId>
+      <artifactId>jstl</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>cglib</groupId>
+      <artifactId>cglib-nodep</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.dcs</groupId>
+      <artifactId>dcs-id-impl-hibernate</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+	
+    <dependency>
+      <groupId>org.dataconservancy.registry</groupId>
+      <artifactId>dcs-registry-memory-support</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.ui</groupId>
+      <artifactId>dcs-ui-mapper</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.ui</groupId>
+      <artifactId>dcs-ui-searchers</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.ui</groupId>
+      <artifactId>dcs-ui-archive-util</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>displaytag</groupId>
+      <artifactId>displaytag</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time-jsptags</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.dataconservancy.mhf</groupId>
+      <artifactId>dcs-mhf-validators-impl</artifactId>
+      <scope>runtime</scope>
+      <version>${project.parent.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.packaging</groupId>
+      <artifactId>dcs-pkg-ingest-impl</artifactId>
+      <scope>runtime</scope>
+      <version>${project.parent.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.packaging</groupId>
+      <artifactId>dcs-pkg-ingest-services</artifactId>
+      <scope>runtime</scope>
+      <version>${project.parent.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>eu.medsea.mimeutil</groupId>
+      <artifactId>mime-util</artifactId>
+      <version>2.1.3</version>
+      <scope>runtime</scope>
+    </dependency>
+
+
+    <!-- Compile ================================================== -->
+    
+    <dependency>
+      <groupId>org.dataconservancy.dcs</groupId>
+      <artifactId>dcs-id-impl-hibernate</artifactId>
+      <scope>compile</scope>
+    </dependency>    
+
+    <dependency>
+      <groupId>net.sourceforge.stripes</groupId>
+      <artifactId>stripes</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-jdbc</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-core</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-web</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-web</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-webmvc</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.mail</groupId>
+      <artifactId>mail</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.model</groupId>
+      <artifactId>dcs-model</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.thoughtworks.xstream</groupId>
+      <artifactId>xstream</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.access</groupId>
+      <artifactId>dcs-access-connector</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.registry</groupId>
+      <artifactId>dcs-registry-metadata-shared</artifactId>
+      <version>2.0.0-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.model</groupId>
+      <artifactId>dcs-model-builder-xstream</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.packaging</groupId>
+      <artifactId>dcs-pkg-model</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.packaging</groupId>
+      <artifactId>dcs-pkg-model-impl</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.dcs</groupId>
+      <artifactId>dcs-id-api</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.dcs</groupId>
+      <artifactId>dcs-id-impl-hibernate</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.registry</groupId>
+      <artifactId>dcs-registry-api</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.registry</groupId>
+      <artifactId>dcs-registry-profile-support</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.dcs</groupId>
+      <artifactId>dcs-common-util</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-fileupload</groupId>
+      <artifactId>commons-fileupload</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.googlecode.json-simple</groupId>
+      <artifactId>json-simple</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.velocity</groupId>
+      <artifactId>velocity</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.ui</groupId>
+      <artifactId>dcs-ui-model</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.ui</groupId>
+      <artifactId>dcs-ui-model-builder</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.ui</groupId>
+      <artifactId>dcs-ui-model-builder-xstream</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.ui</groupId>
+      <artifactId>dcs-ui-profile</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.ui</groupId>
+      <artifactId>dcs-ui-profile</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.ui</groupId>
+      <artifactId>dcs-ui-policy-api</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.ui</groupId>
+      <artifactId>dcs-ui-eventing-api</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.ui</groupId>
+      <artifactId>dcs-ui-eventing-events</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.ui</groupId>
+      <artifactId>dcs-ui-services-api</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.ui</groupId>
+      <artifactId>dcs-ui-services-dao</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.ui</groupId>
+      <artifactId>dcs-ui-services-impl</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.ui</groupId>
+      <artifactId>dcs-ui-util</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.ui</groupId>
+      <artifactId>dcs-ui-archive-api</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.ui</groupId>
+      <artifactId>dcs-ui-archive-impl</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.ui</groupId>
+      <artifactId>dcs-ui-webapi</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.storage.dropbox</groupId>
+      <artifactId>dcs-dropbox-model</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.storage.dropbox</groupId>
+      <artifactId>dcs-dropbox-api</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.storage.dropbox</groupId>
+      <artifactId>dcs-dropbox-impl</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.deposit</groupId>
+      <artifactId>dc-deposit-core</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.dataconservancy.packaging</groupId>
+      <artifactId>dcs-pkg-ingest-api</artifactId>
+      <scope>compile</scope>
+      <version>${project.parent.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.reporting</groupId>
+      <artifactId>dcs-pkg-ui-reporting-model</artifactId>
+      <scope>compile</scope>
+      <version>${project.parent.version}</version>
+    </dependency>
+
+    <!-- Test ===================================================== -->
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>jsp-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpmime</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.derby</groupId>
+      <artifactId>derby</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.derby</groupId>
+      <artifactId>derbyclient</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.ui</groupId>
+      <artifactId>dcs-ui-model</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>test</scope>
+      <classifier>tests</classifier>
+    </dependency>    
+  
+    <dependency>
+      <groupId>org.dataconservancy.ui</groupId>
+      <artifactId>dcs-ui-test-support</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.ui</groupId>
+      <artifactId>dcs-ui-test-support-model</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.dataconservancy.ui</groupId>
+      <artifactId>dcs-ui-services-impl</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>test</scope>
+      <classifier>tests</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.ui</groupId>
+      <artifactId>dcs-ui-archive-impl</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>test</scope>
+      <classifier>tests</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.ui</groupId>
+      <artifactId>dcs-ui-mapper</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>test</scope>
+      <classifier>tests</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.ui</groupId>
+      <artifactId>dcs-ui-searchers</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>test</scope>
+      <classifier>tests</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.ui</groupId>
+      <artifactId>dcs-ui-archive-util</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>test</scope>
+      <classifier>tests</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.mhf</groupId>
+      <artifactId>dcs-mhf-finders-impl</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.mhf</groupId>
+      <artifactId>dcs-mhf-extractors-impl</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.mhf</groupId>
+      <artifactId>dcs-mhf-validators-impl</artifactId>
+      <version>${project.parent.version}</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.mhf</groupId>
+      <artifactId>dcs-mhf-test-support</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.mhf</groupId>
+      <artifactId>dcs-mhf-resources</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.mhf</groupId>
+      <artifactId>dcs-mhf-resources</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>test</scope>
+      <classifier>tests</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.mhf</groupId>
+      <artifactId>dcs-mhf-model-builder-impl</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!--dependency>
+      <groupId>org.dataconservancy.registry</groupId>
+      <artifactId>dcs-registry-query-support</artifactId>
+      <version>2.0.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency-->
+    
+     <!-- Adding MHF and Registry dependencies for production -->
+
+    <dependency>
+      <groupId>org.dataconservancy.mhf</groupId>
+      <artifactId>dcs-mhf-finders-impl</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.mhf</groupId>
+      <artifactId>dcs-mhf-extractors-impl</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.mhf</groupId>
+      <artifactId>dcs-mhf-validators-impl</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.mhf</groupId>
+      <artifactId>dcs-mhf-test-support</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.mhf</groupId>
+      <artifactId>dcs-mhf-resources</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>compile</scope>
+      <classifier>tests</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.mhf</groupId>
+      <artifactId>dcs-mhf-model-builder-impl</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>compile</scope>
+    </dependency>
+     
+     <dependency>
+      <groupId>org.dataconservancy.registry</groupId>
+      <artifactId>dcs-registry-memory-support</artifactId>
+      <scope>compile</scope>
+     </dependency>
+     
+     <!--dependency>
+     	<groupId>org.dataconservancy.registry</groupId>
+     	<artifactId>dcs-registry-query-support</artifactId>
+     	<version>2.0.0-SNAPSHOT</version>
+     	<scope>compile</scope>
+     </dependency-->
+
+     <dependency>
+       <groupId>org.jsoup</groupId>
+       <artifactId>jsoup</artifactId>
+       <scope>test</scope>
+     </dependency>
+   
+     <dependency>
+       <groupId>org.dataconservancy.ui</groupId>
+       <artifactId>dcs-ui-test-resources</artifactId>
+       <version>${project.parent.version}</version>
+       <scope>test</scope>
+     </dependency>
+     
+  </dependencies>
+
+</project>

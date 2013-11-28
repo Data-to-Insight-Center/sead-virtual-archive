@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+		xmlns:bop="http://dataconservancy.org/schemas/bop/1.0"
+		targetNamespace="http://dataconservancy.org/schemas/bop/1.0"
+		elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+  <element name="bop" type="bop:businessObjectContainerType"/>
+
+  <complexType name="businessObjectContainerType">
+    <sequence>
+      <element name="projects" type="bop:projectContainerType" minOccurs="0" maxOccurs="1"/>
+      <element name="collections" type="bop:collectionContainerType" minOccurs="0" maxOccurs="1"/>
+      <element name="persons" type="bop:personContainerType" minOccurs="0"  maxOccurs="1"/>
+      <element name="dataItems" type="bop:dataItemContainerType" minOccurs="0" maxOccurs="1"/>
+      <element name="metadataFiles" type="bop:metadataFileContainerType" minOccurs="0" maxOccurs="1"/>
+    </sequence>
+  </complexType>
+
+  <complexType name="projectContainerType">
+    <sequence>
+      <element name="project" type="bop:projectType" maxOccurs="unbounded" minOccurs="0"/>
+    </sequence>
+  </complexType>
+
+  <complexType name="collectionContainerType">
+    <sequence>
+      <element name="collection" type="bop:collectionType" maxOccurs="unbounded" minOccurs="0"/>
+    </sequence>
+  </complexType>
+
+  <complexType name="personContainerType">
+    <sequence>
+      <element name="person" type="bop:personType" maxOccurs="unbounded" minOccurs="0"/>
+    </sequence>
+  </complexType>
+
+  <complexType name="projectType">
+    <complexContent>
+      <extension base="bop:genericObjectType">
+        <sequence>
+          <element name="name" type="string" minOccurs="1" maxOccurs="1"/>
+          <element name="number" type="string" minOccurs="1" maxOccurs="unbounded"/>
+          <element name="description" type="string" minOccurs="1" maxOccurs="1"/>
+          <element name="publisher" type="string" minOccurs="1" maxOccurs="1"/>
+          <element name="storageAllocated" type="long" minOccurs="0" maxOccurs="1"/>
+          <element name="storageUsed" type="long" minOccurs="0" maxOccurs="1"/>
+          <element name="startDate" type="bop:dateType" minOccurs="1" maxOccurs="1"/>
+          <element name="endDate" type="bop:dateType" minOccurs="1" maxOccurs="1"/>
+          <element name="piID" type="string" minOccurs="1" maxOccurs="unbounded"/>
+          <element name="fundingEntity" type="string" minOccurs="0" maxOccurs="1"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+
+  <complexType name="collectionType">
+    <complexContent>
+      <extension base="bop:genericObjectType">
+        <sequence>
+          <element name="alternateIds" type="bop:alternateIdContainerType" minOccurs="0" maxOccurs="1"/>
+          <element name="title" type="string" minOccurs="1" maxOccurs="1"/>
+          <element name="summary" type="string" minOccurs="1" maxOccurs="1"/>
+          <element name="citableLocator" type="string" minOccurs="0" maxOccurs="1"/>
+          <element name="contactInfos" type="bop:contactInfoContainerType" minOccurs="0" maxOccurs="1"/>
+          <element name="creators" type="bop:creatorContainerType" minOccurs="0" maxOccurs="1"/>
+          <element name="publicationDate" type="bop:dateType" minOccurs="0" maxOccurs="1"/>
+          <element name="depositDate" type="bop:dateType" minOccurs="0" maxOccurs="1"/>
+          <element name="depositor" type="string" minOccurs="0" maxOccurs="1"/>
+          <element name="childrenIds" type="bop:childrenIdContainerType" minOccurs="0" maxOccurs="1"/>
+          <element name="parentId" type="string" minOccurs="0" maxOccurs="1"/>
+          <element name="parentProjectId" type="string" minOccurs="0" maxOccurs="1"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+
+  <complexType name="creatorContainerType">
+      <sequence>
+          <element name="creator" type="bop:personNameType" minOccurs="1" maxOccurs="unbounded"/>
+      </sequence>
+  </complexType>
+  
+  <complexType name="personNameType">
+      <sequence>
+          <element name="givenNames" type="string" minOccurs="0" maxOccurs="1"/>
+          <element name="middleNames" type="string" minOccurs="0" maxOccurs="1"/>
+          <element name="familyNames" type="string" minOccurs="1" maxOccurs="1"/>
+          <element name="prefix" type="string" minOccurs="0" maxOccurs="1"/>
+          <element name="suffix" type="string" minOccurs="0" maxOccurs="1"/>
+      </sequence>
+  </complexType>
+
+  <complexType name="alternateIdContainerType">
+    <sequence>
+      <element name="alternateId" minOccurs="1" maxOccurs="unbounded"/>
+    </sequence>
+  </complexType>
+  
+  <complexType name="childrenIdContainerType">
+    <sequence>
+      <element name="childrenId" minOccurs="1" maxOccurs="unbounded"/>
+    </sequence>
+  </complexType>
+
+  
+  <complexType name="fileContainerType">
+    <sequence>
+      <element name="file" type="bop:fileType"/>
+    </sequence>
+  </complexType>
+  
+  <complexType name="dataItemContainerType">
+    <sequence>
+      <element name="dataItem" type="bop:dataItemType" maxOccurs="unbounded" minOccurs="1"/>
+    </sequence>
+  </complexType>
+  
+  <complexType name="fileType">
+    <complexContent>
+      <extension base="bop:genericObjectType">
+        <sequence>
+          <element name="parentId" type="string" minOccurs="0" maxOccurs="1"/>
+          <element name="source" type="string" minOccurs="1" maxOccurs="1"/>
+          <element name="format" type="string" minOccurs="0" maxOccurs="1"/>
+          <element name="name" type="string" minOccurs="1" maxOccurs="1"/>
+          <element name="path" type="string" minOccurs="1" maxOccurs="1"/>
+          <element name="fileSize" type="long" minOccurs="1" maxOccurs="1"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+
+ <complexType name="metadataFileContainerType">
+     <sequence>
+         <element name="metadataFile" type="bop:metadataFileType" maxOccurs="unbounded" minOccurs="1"/>
+     </sequence>
+ </complexType>
+
+ <complexType name="metadataFileType">
+   <complexContent>
+     <extension base="bop:genericObjectType">
+       <sequence>
+         <element name="parentId" type="string" minOccurs="1" maxOccurs="1"/>
+         <element name="source" type="string" minOccurs="1" maxOccurs="1"/>
+         <element name="format" type="string" minOccurs="0" maxOccurs="1"/>
+         <element name="name" type="string" minOccurs="1" maxOccurs="1"/>
+         <element name="path" type="string" minOccurs="1" maxOccurs="1"/>
+         <element name="metadataFormat" type="string" minOccurs="0" maxOccurs="1"/>
+       </sequence>
+     </extension>
+    </complexContent>
+ </complexType>
+
+  <complexType name="contactInfoContainerType">
+    <sequence>
+      <element name="contactInfo" type="bop:contactInfoType" maxOccurs="unbounded" minOccurs="0"/>
+    </sequence>
+  </complexType>
+  <complexType name="contactInfoType">
+    <sequence>
+      <element name="name" type="string" minOccurs="1" maxOccurs="1"/>
+      <element name="role" type="string" minOccurs="0" maxOccurs="1"/>
+      <element name="emailAddress" type="string" minOccurs="1" maxOccurs="1"/>
+      <element name="phoneNumber" type="string" minOccurs="0" maxOccurs="1"/>
+      <element name="physicalAddress" type="bop:physicalAddressType" minOccurs="0" maxOccurs="1"/>
+    </sequence>
+  </complexType>
+
+  <complexType name="physicalAddressType">
+      <sequence>
+          <element name="streetAddress" type="string" minOccurs="0" maxOccurs="1"/>
+          <element name="city" type="string" minOccurs="0" maxOccurs="1"/>
+          <element name="state" type="string" minOccurs="0" maxOccurs="1"/>
+          <element name="zipCode" type="string" minOccurs="0" maxOccurs="1"/>
+          <element name="country" type="string" minOccurs="0" maxOccurs="1"/>
+      </sequence>
+  </complexType>
+
+  <complexType name="personType">
+    <complexContent>
+      <extension base="bop:genericObjectType">
+        <sequence>
+          <element name="prefix" type="string" minOccurs="0" maxOccurs="1"/>
+          <element name="firstName" type="string" minOccurs="1" maxOccurs="1"/>
+          <element name="middleName" type="string" minOccurs="0" maxOccurs="1"/>
+          <element name="lastName" type="string" minOccurs="1" maxOccurs="1"/>
+          <element name="suffix" type="string" minOccurs="0" maxOccurs="1"/>
+          <element name="emailAddress" type="string" minOccurs="1" maxOccurs="1"/>
+          <element name="preferredPubName" type="string" minOccurs="0" maxOccurs="1"/>
+          <element name="bio" type="string" minOccurs="0" maxOccurs="1"/>
+          <element name="website" type="string" minOccurs="0" maxOccurs="1"/>
+          <element name="city" type="string" minOccurs="0" maxOccurs="1"/>
+          <element name="state" type="string" minOccurs="0" maxOccurs="1"/>
+          <element name="jobTitle" type="string" minOccurs="0" maxOccurs="1"/>
+          <element name="department" type="string" minOccurs="0" maxOccurs="1"/>
+          <element name="instCompany" type="string" minOccurs="0" maxOccurs="1"/>
+          <element name="instCompanyWebsite" type="string" minOccurs="0" maxOccurs="1"/>
+          <element name="phoneNumber" type="string" minOccurs="1" maxOccurs="1"/>
+          <element name="password" type="string" minOccurs="1" maxOccurs="1"/>
+          <element name="externalStorageLinked" type="string" minOccurs="0" maxOccurs="1"/>
+          <element name="dropboxAppKey" type="string" minOccurs="0" maxOccurs="1"/>
+          <element name="dropboxAppSecret" type="string" minOccurs="0" maxOccurs="1"/>
+          <element name="registrationStatus" type="bop:registrationStatusType" minOccurs="1" maxOccurs="1"/>
+          <element name="readOnly" type="string" minOccurs="0" maxOccurs="1"/>
+          <element name="role" type="bop:roleType" minOccurs="1" maxOccurs="unbounded"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  
+  <complexType name="dataItemType">
+    <complexContent>
+      <extension base="bop:genericObjectType">
+        <sequence>
+          <element name="name" type="string"/>
+          <element name="description" type="string"/>
+          <element name="depositor" type="bop:refType"/>
+          <element name="depositDate" type="bop:dateType"/>
+          <element name="files" type="bop:fileContainerType"/>    
+          <element name="parentId" type="string"/>      
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+
+  <complexType name="genericObjectType">
+    <attribute name="id" type="string" use="required"/>
+  </complexType>
+
+  <simpleType name="roleType">
+    <restriction base="string">
+      <enumeration value="ROLE_ADMIN"/>
+      <enumeration value="ROLE_USER"/>
+    </restriction>
+  </simpleType>
+
+  <simpleType name="registrationStatusType">
+    <restriction base="string">
+      <enumeration value="PENDING"/>
+      <enumeration value="APPROVED"/>
+      <enumeration value="BLACK_LISTED"/>
+    </restriction>
+  </simpleType>
+  
+  <complexType name="refType">    
+    <attribute name="ref" type="string" use="required"/>
+  </complexType>
+  
+  <complexType name="dateType">
+    <sequence>
+      <element name="date"/>      
+    </sequence>
+  </complexType>
+</schema>

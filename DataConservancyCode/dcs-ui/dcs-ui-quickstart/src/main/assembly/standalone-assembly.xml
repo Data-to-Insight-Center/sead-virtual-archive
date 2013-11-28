@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+-->
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+  
+  <id>standalone</id>
+  
+  <formats>
+    <format>jar</format>
+  </formats>
+  
+  <includeBaseDirectory>false</includeBaseDirectory>
+  
+  <!--
+    Builds an assembly for a self-executing jar, containing:
+    - winstone 0.9.10
+    - JSP api and impl (enables Jasper in winstone)
+    - SLF4J API, jcl-over-slf4j, slf4j-simple, tomcat juli (fulfills logging dependencies for winstone)
+    - stripes-dcwebapp (Reference UI webapp, the war to embed within winstone)
+  -->
+  
+  <dependencySets>
+    
+    <dependencySet>      
+      <includes>        
+        <!-- winstone -->
+        <include>net.sourceforge.winstone:winstone</include>
+        
+        <!-- JSP apis and impl -->
+        
+        <include>org.apache.tomcat:jsp-api</include>
+        <include>org.apache.tomcat:el-api</include>
+        <include>org.apache.tomcat:jasper</include>
+        <include>org.apache.tomcat:jasper-el</include>
+        <include>org.apache.tomcat:jasper-jdt</include>
+        
+        <!-- logging apis and impl -->
+        <include>org.slf4j:slf4j-api</include>
+        <include>org.slf4j:jcl-over-slf4j</include>
+        <include>org.slf4j:slf4j-simple</include>     
+        <include>org.apache.tomcat:juli</include>
+      </includes>
+      
+      <unpack>true</unpack>
+    </dependencySet>
+    
+    <dependencySet>      
+      <includes>        
+        <!-- DC Reference ui -->
+        <include>org.dataconservancy.ui:stripes-dcwebapp</include>        
+      </includes>
+      
+      <outputFileNameMapping>embedded.war</outputFileNameMapping>      
+    </dependencySet>
+    
+  </dependencySets>
+  
+  <fileSets>
+    
+    <fileSet>
+      <directory>src/main/resources</directory>
+      <outputDirectory>/</outputDirectory>
+      <includes>
+        <!-- configures winstone -->
+        <include>embedded.properties</include>
+        
+        <!-- configures the DC Reference UI -->
+        <include>ext.properties</include>
+      </includes>      
+    </fileSet>
+    
+  </fileSets>
+  
+</assembly>

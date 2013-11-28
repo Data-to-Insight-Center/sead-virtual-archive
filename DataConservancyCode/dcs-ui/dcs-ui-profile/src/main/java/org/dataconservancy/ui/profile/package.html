@@ -1,0 +1,48 @@
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<body bgcolor="white">
+
+Provides abstractions for Data Conservancy Package (DCP) profiles.
+
+<h2>Summary</h2>
+
+<p>
+    The Data Conservancy Package data model is very flexible, and can be applied in many different ways.  This is
+    problematic when an agent attempts to interpret the contents of a DCP that it did not create.  Profiles can be
+    used to improve the portability of DCPs.  If an agent determines which profile(s) a DCP conforms to, it will
+    be able to interpret the contents of the DCP appropriately, even if the agent did not create the DCP.  (This assumes
+    that the profiles are shared between the agents.)
+</p>
+
+<p>
+    There are two primary abstractions in this package: {@link org.dataconservancy.ui.profile.Profile} and
+    {@link org.dataconservancy.ui.profile.Profiler}.  The {@code Profile} abstraction exposes key properties of a DCP
+    profile (importantly the profile type and version).  Together, the type and version of a {@code Profile} should be
+    unique.  The {@code Profiler} abstracts the business logic used to interpret the DCP.  It is responsible for
+    determining if a candidate DCP conforms to the {@code Profile}, enumerating the business objects in a conforming
+    DCP, and retrieving identified business objects of a conforming DCP.  Because the identity of the profile (that is,
+    an instance of {@code Profile}) is necessarily coupled with its interpretation, the {@code Profiler} is accessible
+    from the {@code Profile}.
+</p>
+
+<!-- Put @see and @since tags down here. -->
+@link org.dataconservancy.transform.profile Feature Extraction Profiles
+@see "http://dataconservancy.org/schemas/dcp/1.0"
+
+</body>
+</html>

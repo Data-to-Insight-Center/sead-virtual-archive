@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<dcp xmlns="http://dataconservancy.org/schemas/dcp/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://dataconservancy.org/schemas/dcp/1.0 dcp.xsd ">
+
+  <DeliverableUnits>
+    <DeliverableUnit id="urn:sdss:12345">
+
+      <!--  The collection exists, and this is its DCS identifier -->
+      <collection ref="http://dataconservancy.org/collections/SDSS_run_5" />
+
+      <titular>SDSS file 12345</titular>
+      <creator>Astrophysical Research Consortium (ARC)</creator>
+      <subject>Astronomy</subject>
+      <formerExternalRef>http://das.sdss.org/blahblahblah...</formerExternalRef>
+
+      <!-- An example of metadata inline -->
+      <metadata schemaURI="http://sdss.org/metadata/astroSchema.example.xsd">
+        <md xmlns:astro="http://sdss.org/astro">
+          <astro:skyCoverage>all of it</astro:skyCoverage>
+          <astro:enfOfWorldFactor>-1</astro:enfOfWorldFactor>
+        </md>
+      </metadata>
+
+      <!--
+        An example of metadata that exists as a file, in this case it is
+        submitted in the SIP
+      -->
+      <metadata ref="urn:sdss:12345/metadata" />
+
+    </DeliverableUnit>
+  </DeliverableUnits>
+
+
+  <Collections>
+    <Collectroid id="http://tempuri.org">
+      <title>title</title>
+    </Collectroid>
+  </Collections>
+
+
+  <Manifestations>
+    <Manifestation id="urn:sdss:12345/manifestation">
+      <deliverableUnit ref="urn:sdss:12345" />
+      <manifestationFile ref="urn:sdss:12345/FITS_FILE">
+        <path>/scans/5/</path>
+      </manifestationFile>
+    </Manifestation>
+  </Manifestations>
+
+
+  <Files>
+
+    <!--
+      An example of an externally located file that will not be
+      preserved in the DCS archive (e.g. DCS will curate it, but not
+      transfer the bytes to the archive. It will remain an external
+      reference)
+    -->
+    <File id="urn:sdss:12345/FITS_FILE" src="http://sdss.org/files/fits/12345.fits">
+      <fileName>12345.fits</fileName>
+      <extant>false</extant>
+      <format>
+        <id scheme="http://www.nationalarchives.gov.uk/PRONOM/">x-fmt/383</id>
+        <name>FITS</name>
+        <version>3.0</version>
+      </format>
+    </File>
+
+    <!--
+      An example of a file that has been previously uploaded to the DCS
+      ingest API. The src value was returned by the ingest API and used
+      here.
+    -->
+    <File id="urn:sdss:12345/metadata" src="urn:dcs:uploads/0x440">
+      <fileName>fitsDerivedMetadata.csv</fileName>
+      <extant>true</extant>
+      <fixity algorithm="md5">fe5b3b4f78b9bf3ae21cd52c2f349174</fixity>
+      <format>
+        <id scheme="http://www.nationalarchives.gov.uk/PRONOM/">x-fmt/18</id>
+      </format>
+      <format>
+        <id scheme="http://www.iana.org/assignments/media-types/">text/csv</id>
+      </format>
+    </File>
+
+  </Files>
+</dcp>

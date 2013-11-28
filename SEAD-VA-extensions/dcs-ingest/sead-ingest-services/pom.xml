@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    
+  <!--
+    $Id: pom.xml 4482 2012-08-31 15:08:11Z birkland $
+    $URL: https://scm.dataconservancy.org/svn/model/trunk/dcs-model/pom.xml $
+  -->
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.dataconservancy.dcs</groupId>
+  <artifactId>sead-ingest-services</artifactId>
+  <packaging>jar</packaging>
+  <name>Research Object Model</name>
+  <description>The Java object model for SEAD Virtual Archive</description>
+  
+  <parent>
+    <groupId>org.dataconservancy.dcs</groupId>
+    <artifactId>dcs-ingest</artifactId>
+    <version>1.1.0-SNAPSHOT</version>
+  </parent>
+    
+  <!-- Dependencies =============================================== -->
+  
+  <dependencies>
+    
+    <!-- Provided ================================================= -->
+    
+    <!-- Runtime ================================================== -->     
+    
+    <!-- Compile ================================================== -->
+      <dependency>
+          <groupId>org.dataconservancy.dcs</groupId>
+          <artifactId>dcs-ingest-core</artifactId>
+          <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+          <groupId>org.dataconservancy.dcs</groupId>
+          <artifactId>dcs-ingest-services</artifactId>
+          <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+          <groupId>org.dataconservancy.dcs</groupId>
+          <artifactId>sead-id-extension</artifactId>
+          <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+          <groupId>org.seadva.model</groupId>
+          <artifactId>sead-model</artifactId>
+          <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+          <groupId>org.seadva.model</groupId>
+          <artifactId>sead-model-builder-xstream</artifactId>
+          <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+          <groupId>org.seadva</groupId>
+          <artifactId>sead-metadata-service-api</artifactId>
+          <version>${project.parent.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>org.dataconservancy.index</groupId>
+          <artifactId>dcs-index-solr-support</artifactId>
+          <version>1.1.0-SNAPSHOT</version>
+      </dependency>
+
+
+      <dependency>
+          <groupId>org.seadva</groupId>
+          <artifactId>sead-metadata-service-impl</artifactId>
+          <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+          <groupId>org.seadva.matchmaker</groupId>
+          <artifactId>sead-matchmaker-webservice</artifactId>
+          <version>1.1.0-SNAPSHOT</version>
+      </dependency>
+
+
+      <dependency>
+          <groupId>org.seadva.matchmaker</groupId>
+          <artifactId>sead-resource-webservice</artifactId>
+          <version>1.1.0-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+          <groupId>org.seadva.archive</groupId>
+          <artifactId>sead-archive-api</artifactId>
+          <version>1.1.0-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-context</artifactId>
+          <scope>test</scope>
+      </dependency>
+
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-beans</artifactId>
+          <version>2.0</version>
+          <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+          <groupId>xmlpull</groupId>
+          <artifactId>xmlpull</artifactId>
+          <version>1.1.3.1</version>
+      </dependency>
+
+      <dependency>
+          <groupId>xpp3</groupId>
+          <artifactId>xpp3</artifactId>
+          <version>1.1.3.4.O</version>
+      </dependency>
+
+      <dependency>
+          <groupId>org.apache.axis2</groupId>
+          <artifactId>axis2-transport-local</artifactId>
+          <version>1.6.2</version>
+      </dependency>
+
+      <dependency>
+          <groupId>org.apache.axis2</groupId>
+          <artifactId>axis2-transport-http</artifactId>
+          <version>1.6.2</version>
+      </dependency>
+
+      <dependency>
+          <groupId>org.apache.commons</groupId>
+          <artifactId>commons-exec</artifactId>
+          <version>1.1</version>
+      </dependency>
+  </dependencies>
+</project>

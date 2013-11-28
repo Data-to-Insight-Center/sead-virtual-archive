@@ -1,0 +1,71 @@
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<body bgcolor="white">
+
+Eventing API for the Data Conservancy Reference UI.
+
+<h2>Summary</h2>
+
+<p>
+    The Eventing API is based on a publish-subscribe model, where {@link org.dataconservancy.ui.eventing.api.Event}s are
+    published to the {@link org.dataconservancy.ui.eventing.api.EventManager}, and classes subscribe to {@code events}
+    by registering {@link org.dataconservancy.ui.eventing.api.EventListener}s with the {@code EventManager}.
+</p>
+
+<h3>Event Properties</h3>
+
+<p>
+    {@code Events} have four properties, which can be leveraged by {@code EventManagers} to filter events seen by
+    {@code EventListeners}, and used by {@code EventListeners} to act on the event appropriately.
+</p>
+
+<h4>Event Class</h4>
+
+<p>
+    Not to be confused with their Java Class, the Event Class represents one of two categories of events: <em>audit</em>
+    and <em>exception</em> events.  Audit events are meant to indicate that something happened in the system which
+    should be noted.  A user login, a file download, a user registration are all examples of audit events.  Exception
+    events are meant to indicate that something exceptional has happened, and the system should respond appropriately.
+    For example, the system has been requested to be shutdown, or a {@code java.lang.Exception} has been thrown.
+</p>
+
+<h4>Event Context</h4>
+
+<p>
+    The {@code EventContext} captures what the system was doing at the time the {@code Event} was constructed.  It
+    supplies information that would be useful for human interpretation of the {@code event}.
+</p>
+
+<h4>Event Object</h4>
+    This is often the object which triggered the {@code Event}; it represents the result of the system process that
+    produced the {@code event}.  For example, if a {@code NewUserRegistration} event is received, the object of the
+    event would be an instance of the {@code Person} that registered.  If a {@code ExceptionEvent} is received, the
+    object of the event would be the {@code Exception} that triggered the vent.
+<p>
+
+</p>
+
+<h4>Event Topic</h4>
+    Event topics are meant to be analogus to JMS topics.  See the
+    <a href="http://docs.oracle.com/javaee/6/tutorial/doc/bncdx.html">JMS Tutorial</a> for more information on topics.
+<p>
+
+</p>
+
+</body>
+</html>

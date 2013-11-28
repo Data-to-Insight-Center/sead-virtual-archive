@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/matchmaker.iml" filepath="$PROJECT_DIR$/matchmaker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sead-matchmaker-api/sead-matchmaker-api.iml" filepath="$PROJECT_DIR$/sead-matchmaker-api/sead-matchmaker-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sead-matchmaker-service/sead-matchmaker-service.iml" filepath="$PROJECT_DIR$/sead-matchmaker-service/sead-matchmaker-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sead-matchmaker-webservice/sead-matchmaker-webservice.iml" filepath="$PROJECT_DIR$/sead-matchmaker-webservice/sead-matchmaker-webservice.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sead-resource-webservice/sead-resource-webservice.iml" filepath="$PROJECT_DIR$/sead-resource-webservice/sead-resource-webservice.iml" />
+    </modules>
+  </component>
+</project>
+

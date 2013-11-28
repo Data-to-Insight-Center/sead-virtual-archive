@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+-->
+<configuration>
+
+  <!--
+    | Appenders
+    +-->
+  
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%-3p [%t]: %c{3}@%L %d %m %n</pattern>
+    </encoder>
+  </appender>
+  
+  <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <file>lineage.log</file>
+    <append>true</append>
+    <encoder>
+      <pattern>%-3p [%t]: %c{3}@%L %d %m %n</pattern>
+    </encoder>
+  </appender>
+  
+  <!--
+    | Loggers   
+    +-->
+  
+  <root level="ERROR" additivity="false">
+    <appender-ref ref="CONSOLE"/>
+    <appender-ref ref="FILE"/>
+  </root>
+  
+  <logger name="org.dataconservancy" additivity="false" level="WARN">
+    <appender-ref ref="CONSOLE"/>
+  </logger>
+  
+  <logger name="org.springframework" additivity="false" level="DEBUG">
+    <appender-ref ref="CONSOLE"/>
+    <appender-ref ref="FILE"/>
+  </logger>
+  
+  <!--
+    | "Useful" classes
+    | 
+    | Adusting the log level of these classes can be useful (e.g. to DEBUG or TRACE), 
+    | because they give specific insight into what the system is doing, without 
+    | requring you to set the entire package (like Spring Security) to DEBUG or TRACE.
+    +-->
+    
+  <!--
+    | "Noisy" classes
+    | 
+    | These classes are typically noisy at DEBUG or INFO levels, so we call them
+    | out here, and mute them by setting them to ERROR or WARN levels.
+    +-->
+  
+  <logger name="org.springframework.beans.factory.support.DefaultListableBeanFactory" additivity="false" level="ERROR">
+    <appender-ref ref="CONSOLE"/>
+  </logger>
+    
+</configuration>

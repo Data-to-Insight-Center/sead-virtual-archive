@@ -1,0 +1,721 @@
+<!--edited with XMLSpy v2008 sp1 (http://www.altova.com) by Systems Administrator (NCDDC)-->
+<xs:schema blockDefault="#all" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="citeinfo" type="citeinfoType">
+    <xs:annotation>
+      <xs:documentation>The recommended reference to be used for the data set.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Citation Information"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="citeinfoType">
+    <xs:sequence>
+      <xs:element ref="origin" maxOccurs="unbounded">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="88486b12-1d9f-4714-8b6f-bd23f674cfa2" parentId="c6e87836-f7c8-48ec-ba34-0e042a2389a0" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the name of an organization or individual that developed the data set. If the name of editors or</ann:description>
+                <ann:shortDescription>Originator</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="a862f1cb-e1fb-4fe8-971b-c4721a543792" parentId="48f6b07b-3c2f-44fc-80cb-82d92c69108e" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the name of an organization or individual that developed the data set. If the name of editors or</ann:description>
+                <ann:shortDescription>Originator</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="88486b12-1d9f-4714-8b6f-bd23f674cfa2" parentId="c6e87836-f7c8-48ec-ba34-0e042a2389a0" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the name of an organization or individual that developed the data set. If the name of editors or</ann:description>
+                <ann:shortDescription>Originator</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="79c323f0-899b-4a31-9c7a-ec2bc3c62866" parentId="12f62a33-5529-41b9-9bb0-adcdce71e01d" version="2128d281-1f66-4a19-bf28-d5b7ba5758ca" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="pubdate">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="192eddd5-28a8-4bd1-9191-16f2dade492b" parentId="12f62a33-5529-41b9-9bb0-adcdce71e01d" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the date when the data set is published or otherwise made available for release.</ann:description>
+                <ann:shortDescription>Publication Date</ann:shortDescription>
+                <ann:elementType>STRING</ann:elementType>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="64599097-9552-4e37-a5f3-b599573d574f" parentId="48f6b07b-3c2f-44fc-80cb-82d92c69108e" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="dbc524db-0e7b-4e44-8b2b-6580ad3f2e71" parentId="c6e87836-f7c8-48ec-ba34-0e042a2389a0" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="192eddd5-28a8-4bd1-9191-16f2dade492b" parentId="12f62a33-5529-41b9-9bb0-adcdce71e01d" version="2128d281-1f66-4a19-bf28-d5b7ba5758ca" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="pubtime" minOccurs="0">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="b999174b-2947-4c00-a74e-36702589cdf8" parentId="48f6b07b-3c2f-44fc-80cb-82d92c69108e" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the time of day when the data set is published or otherwise made available for release.</ann:description>
+                <ann:shortDescription>Publication Time</ann:shortDescription>
+                <ann:elementType>STRING</ann:elementType>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="b999174b-2947-4c00-a74e-36702589cdf8" parentId="48f6b07b-3c2f-44fc-80cb-82d92c69108e" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="c0980306-6c40-474a-b724-218d8289853b" parentId="c6e87836-f7c8-48ec-ba34-0e042a2389a0" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="02078a09-6076-4b1f-8d46-30efa70314cd" parentId="12f62a33-5529-41b9-9bb0-adcdce71e01d" version="2128d281-1f66-4a19-bf28-d5b7ba5758ca" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="title">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="fa78e227-acac-47dc-a40c-d1afe118a22a" parentId="48f6b07b-3c2f-44fc-80cb-82d92c69108e" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the name by which the data set is known.</ann:description>
+                <ann:shortDescription>Title</ann:shortDescription>
+                <ann:elementType>STRING</ann:elementType>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="fa78e227-acac-47dc-a40c-d1afe118a22a" parentId="48f6b07b-3c2f-44fc-80cb-82d92c69108e" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="09481970-502f-4652-8789-a38067c6f905" parentId="c6e87836-f7c8-48ec-ba34-0e042a2389a0" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="f5ae911f-6366-42da-8507-551815391314" parentId="12f62a33-5529-41b9-9bb0-adcdce71e01d" version="2128d281-1f66-4a19-bf28-d5b7ba5758ca" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="edition" minOccurs="0">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="0fc70224-5113-447e-9c30-6b0cd17c13cb" parentId="12f62a33-5529-41b9-9bb0-adcdce71e01d" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the version of the title.</ann:description>
+                <ann:shortDescription>Edition</ann:shortDescription>
+                <ann:elementType>STRING</ann:elementType>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="5b6d35ed-f77b-4e20-b777-2ddd06ede494" parentId="48f6b07b-3c2f-44fc-80cb-82d92c69108e" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="aedd041e-2b48-44b5-ab59-926d3baf97cc" parentId="c6e87836-f7c8-48ec-ba34-0e042a2389a0" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="0fc70224-5113-447e-9c30-6b0cd17c13cb" parentId="12f62a33-5529-41b9-9bb0-adcdce71e01d" version="2128d281-1f66-4a19-bf28-d5b7ba5758ca" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="geoform" minOccurs="0">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="6d2ceae7-942f-416e-8efa-73fdd7158ce4" parentId="48f6b07b-3c2f-44fc-80cb-82d92c69108e" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the mode in which the geospatial data are represented.</ann:description>
+                <ann:shortDescription>Geospatial Data Presentation Form</ann:shortDescription>
+                <ann:elementType>STRING</ann:elementType>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="6d2ceae7-942f-416e-8efa-73fdd7158ce4" parentId="48f6b07b-3c2f-44fc-80cb-82d92c69108e" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+              
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="dcf6e88b-94ac-4e0b-87de-90272584ec5a" parentId="c6e87836-f7c8-48ec-ba34-0e042a2389a0" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="6647463e-14bd-4f95-aa1b-6ca6328bb720" parentId="12f62a33-5529-41b9-9bb0-adcdce71e01d" version="2128d281-1f66-4a19-bf28-d5b7ba5758ca" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="serinfo" minOccurs="0">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="4a80852d-eb41-496e-ae6d-ce636ef29856" parentId="c6e87836-f7c8-48ec-ba34-0e042a2389a0" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the identification of the series publication of which the data set is a part</ann:description>
+                <ann:shortDescription>Series Information</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="ebc2296d-508b-4b23-a04f-8e0e6b0ad45a" parentId="48f6b07b-3c2f-44fc-80cb-82d92c69108e" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the identification of the series publication of which the data set is a part</ann:description>
+                <ann:shortDescription>Series Information</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="4a80852d-eb41-496e-ae6d-ce636ef29856" parentId="c6e87836-f7c8-48ec-ba34-0e042a2389a0" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the identification of the series publication of which the data set is a part</ann:description>
+                <ann:shortDescription>Series Information</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="eaef9ba6-1685-44a1-8641-fc9248840247" parentId="12f62a33-5529-41b9-9bb0-adcdce71e01d" version="86d1da16-98d3-4757-a83f-389e33da95d2" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the identification of the series publication of which the data set is a part</ann:description>
+                <ann:shortDescription>Series Information</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="pubinfo" minOccurs="0">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="6cd65b16-ba01-47c5-b509-f78d5ae6cf94" parentId="c6e87836-f7c8-48ec-ba34-0e042a2389a0" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>publication details for published data sets</ann:description>
+                <ann:shortDescription>Publication Information</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="9272019f-2829-468e-924d-43fb9800592d" parentId="48f6b07b-3c2f-44fc-80cb-82d92c69108e" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>publication details for published data sets</ann:description>
+                <ann:shortDescription>Publication Information</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="6cd65b16-ba01-47c5-b509-f78d5ae6cf94" parentId="c6e87836-f7c8-48ec-ba34-0e042a2389a0" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>publication details for published data sets</ann:description>
+                <ann:shortDescription>Publication Information</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="5b711c63-0adc-457c-ae8c-5afcf1e40710" parentId="12f62a33-5529-41b9-9bb0-adcdce71e01d" version="86d1da16-98d3-4757-a83f-389e33da95d2" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>publication details for published data sets</ann:description>
+                <ann:shortDescription>Publication Information</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="othercit" minOccurs="0">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="00f14171-1781-43b0-99a5-1c891715f08a" parentId="12f62a33-5529-41b9-9bb0-adcdce71e01d" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>other information required to complete the citation.</ann:description>
+                <ann:shortDescription>Other Citation Details</ann:shortDescription>
+                <ann:elementType>STRING</ann:elementType>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="dbe69aeb-a028-4faf-b0ba-d0d9310b4329" parentId="48f6b07b-3c2f-44fc-80cb-82d92c69108e" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="c98cee23-4f5b-4172-be23-0d17d06d4bf9" parentId="c6e87836-f7c8-48ec-ba34-0e042a2389a0" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="00f14171-1781-43b0-99a5-1c891715f08a" parentId="12f62a33-5529-41b9-9bb0-adcdce71e01d" version="2128d281-1f66-4a19-bf28-d5b7ba5758ca" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="onlink" minOccurs="0" maxOccurs="unbounded">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="0933d250-325a-41e9-82b9-5fe9b65fc815" parentId="12f62a33-5529-41b9-9bb0-adcdce71e01d" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept/>
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the name of an online computer resource that contains the data set</ann:description>
+                <ann:shortDescription>Online Linkage</ann:shortDescription>
+                <ann:elementType>STRING</ann:elementType>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="381f1871-db9e-48b7-98bf-1ef62f0bee85" parentId="48f6b07b-3c2f-44fc-80cb-82d92c69108e" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the name of an online computer resource that contains the metadata extension information</ann:description>
+                <ann:shortDescription>Online Linkage</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="ade1a425-9f9f-4f5e-8e07-18403baa152a" parentId="c6e87836-f7c8-48ec-ba34-0e042a2389a0" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the name of an online computer resource that contains the metadata extension information</ann:description>
+                <ann:shortDescription>Online Linkage</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="0933d250-325a-41e9-82b9-5fe9b65fc815" parentId="12f62a33-5529-41b9-9bb0-adcdce71e01d" version="2128d281-1f66-4a19-bf28-d5b7ba5758ca" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept/>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="lworkcit" minOccurs="0">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="eee47337-177e-434c-a205-a46336e21bbe" parentId="c6e87836-f7c8-48ec-ba34-0e042a2389a0" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the information identifying a larger work in which the data set is included.</ann:description>
+                <ann:shortDescription>Larger Work Citation</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="764127e5-98f3-4c9b-81d4-98ed6545cb58" parentId="48f6b07b-3c2f-44fc-80cb-82d92c69108e" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the information identifying a larger work in which the data set is included.</ann:description>
+                <ann:shortDescription>Larger Work Citation</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="eee47337-177e-434c-a205-a46336e21bbe" parentId="c6e87836-f7c8-48ec-ba34-0e042a2389a0" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the information identifying a larger work in which the data set is included.</ann:description>
+                <ann:shortDescription>Larger Work Citation</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="448a9d5a-7db6-4211-83d3-38df625c92b3" parentId="12f62a33-5529-41b9-9bb0-adcdce71e01d" version="86d1da16-98d3-4757-a83f-389e33da95d2" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the information identifying a larger work in which the data set is included.</ann:description>
+                <ann:shortDescription>Larger Work Citation</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="origin" type="originType">
+    <xs:annotation>
+      <xs:documentation>The name of an organization or individual that developed the data set.  If the name of editors or compilers are provided, the name must be followed by '(ed.)' or '(comp.)' respectively.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Originator"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="originType">
+    <xs:union memberTypes="FGDCstring">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="Unknown"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:element name="pubdate" type="pubdateType">
+    <xs:annotation>
+      <xs:documentation>The date when the data set is published or otherwise made available for release.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Publication Date"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+        <xs:attribute name="string-input-format" fixed="YYYY|YYYYMM|YYYYMMDD|bcYYYY|bcYYYYMM|bcYYYYMMDD|ccYYYYY...|cdYYYYY..."/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="pubdateType">
+    <xs:union memberTypes="FGDCdate">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="Unknown"/>
+          <xs:enumeration value="Unpublished material"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:element name="pubtime" type="pubtimeType">
+    <xs:annotation>
+      <xs:documentation>The time of day when the data set is published or otherwise made available for release.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Publication Time"/>
+        <xs:attribute name="use" fixed="Optional"/>
+        <xs:attribute name="string-input-format" fixed="HH|HHMM|HHMMSS|HHMMSSSS|HHMMSSSSZ|HHMMSSSSshhmm|Values must follow the 24-hour timekeeping system"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="pubtimeType">
+    <xs:union memberTypes="FGDCtime">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="Unknown"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:element name="title" type="titleType">
+    <xs:annotation>
+      <xs:documentation>The name by which the data set is known.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Title"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="titleType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="edition" type="editionType">
+    <xs:annotation>
+      <xs:documentation>The version of the title.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Edition"/>
+        <xs:attribute name="use" fixed="Mandatory-if-applicable"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="editionType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="geoform" type="geoformType">
+    <xs:annotation>
+      <xs:documentation>The mode in which the geospatial data are represented.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Geospatial Data Presentation Form"/>
+        <xs:attribute name="use" fixed="Mandatory-if-applicable"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="geoformType">
+    <xs:union memberTypes="FGDCstring">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="atlas"/>
+          <xs:enumeration value="audio"/>
+          <xs:enumeration value="diagram"/>
+          <xs:enumeration value="document"/>
+          <xs:enumeration value="globe"/>
+          <xs:enumeration value="map"/>
+          <xs:enumeration value="model"/>
+          <xs:enumeration value="multimedia presentation"/>
+          <xs:enumeration value="profile"/>
+          <xs:enumeration value="raster digital data"/>
+          <xs:enumeration value="remote-sensing image"/>
+          <xs:enumeration value="section"/>
+          <xs:enumeration value="spreadsheet"/>
+          <xs:enumeration value="tabular digital data"/>
+          <xs:enumeration value="vector digital data"/>
+          <xs:enumeration value="view"/>
+          <xs:enumeration value="video"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:element name="serinfo" type="serinfoType">
+    <xs:annotation>
+      <xs:documentation>The identification of the series publication of which the data set is a part.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Series Information"/>
+        <xs:attribute name="use" fixed="Mandatory-if-applicable"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="serinfoType">
+    <xs:sequence>
+      <xs:element ref="sername">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="cd6443f2-2795-46f2-bda3-17bac84ac054" parentId="ebc2296d-508b-4b23-a04f-8e0e6b0ad45a" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the name of the series publication of which the data set is a part.</ann:description>
+                <ann:shortDescription>Series Name</ann:shortDescription>
+                <ann:elementType>STRING</ann:elementType>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="cd6443f2-2795-46f2-bda3-17bac84ac054" parentId="ebc2296d-508b-4b23-a04f-8e0e6b0ad45a" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="944b8ef3-e006-4c08-89ee-03b6aa730263" parentId="4a80852d-eb41-496e-ae6d-ce636ef29856" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="ab15adc8-3c86-407f-9168-dccbf0be5840" parentId="d07f0951-36bf-4d63-afd8-93f8ae26b84a" version="2128d281-1f66-4a19-bf28-d5b7ba5758ca" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="5c006620-2b60-49db-84dc-ee6e1465fbeb" parentId="eaef9ba6-1685-44a1-8641-fc9248840247" version="86d1da16-98d3-4757-a83f-389e33da95d2" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="issue">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="cf870658-49a6-40a8-832e-c8b7d8511d1a" parentId="ebc2296d-508b-4b23-a04f-8e0e6b0ad45a" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>information identifying the issue of the series publication of which the data set is a part</ann:description>
+                <ann:shortDescription>Issue Identification</ann:shortDescription>
+                <ann:elementType>STRING</ann:elementType>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="cf870658-49a6-40a8-832e-c8b7d8511d1a" parentId="ebc2296d-508b-4b23-a04f-8e0e6b0ad45a" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="e43d9e3c-5ab5-4bfd-a915-44f7b6a15fd6" parentId="4a80852d-eb41-496e-ae6d-ce636ef29856" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="f90fde1f-9487-4f98-873d-f612b0fcd36b" parentId="d07f0951-36bf-4d63-afd8-93f8ae26b84a" version="2128d281-1f66-4a19-bf28-d5b7ba5758ca" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="637f0766-7a83-466d-ae86-80595c9055c9" parentId="eaef9ba6-1685-44a1-8641-fc9248840247" version="86d1da16-98d3-4757-a83f-389e33da95d2" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="sername" type="sernameType">
+    <xs:annotation>
+      <xs:documentation>The name of the series publication of which the data set is a part.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Series Name"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="sernameType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="issue" type="issueType">
+    <xs:annotation>
+      <xs:documentation>Information identifying the issue of the series publication of which the data set is a part.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Issue Identification"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="issueType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="pubinfo" type="pubinfoType">
+    <xs:annotation>
+      <xs:documentation>Publication details for published data sets.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Publication Information"/>
+        <xs:attribute name="use" fixed="Mandatory-if-applicable"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="pubinfoType">
+    <xs:sequence>
+      <xs:element ref="pubplace">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="61521ed3-b6c7-423d-8f95-1e08860636e1" parentId="9272019f-2829-468e-924d-43fb9800592d" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the name of the city (and state or province, and country, if needed to identify the city)</ann:description>
+                <ann:shortDescription>Publication Place</ann:shortDescription>
+                <ann:elementType>STRING</ann:elementType>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="61521ed3-b6c7-423d-8f95-1e08860636e1" parentId="9272019f-2829-468e-924d-43fb9800592d" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="99bada31-a689-4d15-88b3-fab6ef1dce71" parentId="6cd65b16-ba01-47c5-b509-f78d5ae6cf94" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="dffdc3a7-87e4-4402-a364-118a7fe72b8e" parentId="0c6062c5-60f8-4346-89f3-2b2765636841" version="2128d281-1f66-4a19-bf28-d5b7ba5758ca" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="3e4e39d6-2777-4e19-9e8a-daee99bbf4ef" parentId="5b711c63-0adc-457c-ae8c-5afcf1e40710" version="86d1da16-98d3-4757-a83f-389e33da95d2" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="publish">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="3d5c3e75-9ec7-4127-bae4-77bb80e371d9" parentId="9272019f-2829-468e-924d-43fb9800592d" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the name of the individual or organization that published the data set.</ann:description>
+                <ann:shortDescription>Publisher</ann:shortDescription>
+                <ann:elementType>STRING</ann:elementType>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="3d5c3e75-9ec7-4127-bae4-77bb80e371d9" parentId="9272019f-2829-468e-924d-43fb9800592d" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="064c1b4b-9184-4530-aa3b-73c3227128f4" parentId="6cd65b16-ba01-47c5-b509-f78d5ae6cf94" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="3402e473-2464-4e0a-810d-e1d361b73a5c" parentId="0c6062c5-60f8-4346-89f3-2b2765636841" version="2128d281-1f66-4a19-bf28-d5b7ba5758ca" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="74e5316a-0a80-4d2a-ac55-f7f986672020" parentId="5b711c63-0adc-457c-ae8c-5afcf1e40710" version="86d1da16-98d3-4757-a83f-389e33da95d2" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="pubplace" type="pubplaceType">
+    <xs:annotation>
+      <xs:documentation>The name of the city (and state or province, and country, if needed to identify the city) where the data set  as published or released.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Publication Place"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="pubplaceType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="publish" type="publishType">
+    <xs:annotation>
+      <xs:documentation>The name of the individual or organization that published the data set.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Publisher"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="publishType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="othercit" type="othercitType">
+    <xs:annotation>
+      <xs:documentation>Other information required to complete the citation.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Other Citation Details"/>
+        <xs:attribute name="use" fixed="Mandatory-if-applicable"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="othercitType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="onlink" type="onlinkType">
+    <xs:annotation>
+      <xs:documentation>The name of an online computer resource that contains the data set.  Entries should follow the Uniform Resource Locator convention of the Internet.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Online Linkage"/>
+        <xs:attribute name="use" fixed="Optional"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="onlinkType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="lworkcit" type="lworkcitType">
+    <xs:annotation>
+      <xs:documentation>The information identifying a larger work in which the data set is included.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Larger Work Citation"/>
+        <xs:attribute name="use" fixed="Mandatory-if-applicable"/>
+        <xs:attribute name="is-recursive" fixed="true"/>
+        <xs:attribute name="recursive-class-name" fixed="Citeinfo"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="lworkcitType">
+    <xs:sequence>
+      <xs:element ref="citeinfo">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="58d4d599-975f-4319-afd2-48a5a68335be" parentId="eee47337-177e-434c-a205-a46336e21bbe" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="b94873cf-9176-45bc-9bd7-43eb0f846ee5" parentId="764127e5-98f3-4c9b-81d4-98ed6545cb58" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="58d4d599-975f-4319-afd2-48a5a68335be" parentId="eee47337-177e-434c-a205-a46336e21bbe" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="0f4a17e3-313c-412e-83d5-e0a4237a15d9" parentId="b9d1cc68-7ab2-44b8-b08a-23c01a96bcb7" version="2128d281-1f66-4a19-bf28-d5b7ba5758ca" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="e03ffdb2-1f2a-4baf-95dc-0b8d01cfc56c" parentId="448a9d5a-7db6-4211-83d3-38df625c92b3" version="86d1da16-98d3-4757-a83f-389e33da95d2" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

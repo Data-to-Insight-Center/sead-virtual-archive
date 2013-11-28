@@ -1,0 +1,251 @@
+
+
+
+
+
+
+<script type="text/javascript">
+</script>
+
+
+    <!DOCTYPE html>
+        <head>
+            <title>
+                
+                
+                    Add Metadata
+                
+            </title>
+            <link rel="stylesheet"
+                  type="text/css"
+                  href="/styles/default/default.css"/>
+            <link rel="stylesheet"
+                  type="text/css"
+                  href="/styles/default/form.css"/>
+            <link rel="shortcut icon" href="/resources/images/DC-favicon.ico" >
+            
+            <!-- Using JQuery 1.8.3 specifically to make sure the logout overlay works.
+                 JQuery have deprecated the usage of .browser in the latest version of JQuery
+                 which breaks our local script. 
+             -->
+            <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+            <script src="/resources/scripts/jquery.tools.min.js"></script>
+            <script src="/resources/scripts/dc-custom.js"></script>
+           <script>
+		  /* $(function() {
+			$("input.tip").tooltip({ position: "center right"});
+			$(".user-menu-trigger[rel]").overlay({ fixed: false, top: 83, left: '80%'});
+			});
+			$(function(){
+   var path = location.pathname.substring(1);
+   if ( path )
+     $('.navleft li a[href$="' + path + '"]').attr('class', 'selected');
+ });
+ */
+		   </script>
+        </head>
+        
+        
+        
+        <body>
+
+	                    
+	                         
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div id="header">
+
+
+        
+    <nav id="user">
+    	    
+        
+        <a href="#" class="user-menu-trigger" rel="#user-menu">Welcome admin</a>
+        <div id="user-menu">
+        <ul>
+             <li><a title="Edit" href="/userprofile/userprofile.action?editUserProfile=">User profile</a></li>
+             <li><a href="/j_spring_security_logout">Logout</a></li>
+        </ul>
+        </div>
+        
+    
+    </nav>
+
+<a rel="home" title="Data Conservancy" href="http://dataconservancy.org/">
+<h1>Data Conservancy Software</h1>
+</a>
+
+</div>
+
+<div id="dc-body">
+
+<nav id="dc-default-navbar" title="DC Default Navbar Div">
+        <ul class="navleft">
+          <li><a title="Home" href="/home/home.action">Home</a></li>
+                                  
+         
+            <li>
+		    <a title="Profile" href="/userprofile/userprofile.action">Profile</a></li>
+            <li>
+		    <a title="Projects" href="/userprofile/project.action">Projects</a></li>
+	        <li>
+		    <a title="Collection" href="/usercollections/render/usercollections.action">Collections</a></li>
+            
+                <li>
+	            <a title="Admin" href="/admin/adminhome.action">Admin</a></li>
+            
+
+
+                                
+        </ul>
+
+</nav>
+
+  
+
+	                    
+	                   
+         <div class="content-wrapper">              
+         <div id="dc-content" class="pageContent"> 
+         				<div id="breadcrumb">
+         				    
+         				</div>
+                        <h1 id="page-title">
+                            
+                                Add Metadata
+                            
+	                    </h1>
+
+
+                    
+                    
+	        	        <div id="dc-flash">
+	                        
+	                    </div>
+	                    
+	                    <div id="dc-success">
+	                        
+	                    </div>
+                        
+                        
+		                
+		                
+
+        <h2 class="SectionHeader center-message">Metadata Ingest Preview</h2>
+        <div class="SectionContent">
+            <form action="/metadatafile/metadata_file.action" class="CollectionMetadataFileForm" method="post">
+                <fieldset>
+                    
+                        
+                    
+                    <div>
+                        <input style="display:none" name="parentID" value="http://localhost:8080/collection/2" type="text" />
+                        <input style="display:none" name="redirectUrl" value="viewCollectionDetails" type="text" />
+                        <div id="fileName">
+		        			<h3 class="metadataPreviewLeft">Filename:</h3>
+		        			<div class="metadataPreviewRight">sample2.xml<br></div>
+		        		</div>
+		        		
+		        			
+			        		
+				        		<div id="validation">
+		                            <h3 class="metadataPreviewLeft">Validation:</h3>
+		                            <div class="metadataPreviewRight">
+		                                
+		                                    
+		                                    
+		                                        <span class="error text-big">Failed</span> against schema.
+		                                    
+		                                
+		                            </div>
+		
+		                            
+					        		    <h3 class="metadataPreviewLeft">Validation Errors:</h3>
+		                                <div class="metadataPreviewRight">
+		                                    
+		                                        <span class="error">Validation failed: validation of an XML instance document with format id dataconservancy.org:formats:file:metadata:fgdc:xml failed against the schema http://www.fgdc.gov/schemas/metadata/fgdc-std-001-1998.xsd obtained from http://localhost:8080/dcs/datastream/http%3A%2F%2Flocalhost%3A8080%2Fdcs%2Fentity%2F1234: cvc-complex-type.2.4.a: Invalid content was found starting with element 'datsetid'. One of '{citation}' is expected.
+		                                        <br/><br/>
+		                                    
+		                                        cvc-complex-type.2.4.a: Invalid content was found starting with element 'datsetid'. One of '{citation}' is expected.
+		                                        <br/><br/>
+		                                    
+		                                        Validation failed: validation of an XML instance document with format id dataconservancy.org:formats:file:metadata:fgdc:xml failed against the schema http://www.fgdc.gov/schemas/metadata/fgdc-std-001-1998.xsd obtained from http://localhost:8080/dcs/datastream/http%3A%2F%2Flocalhost%3A8080%2Fdcs%2Fentity%2F1234: cvc-complex-type.2.4.a: Invalid content was found starting with element 'datsetid'. One of '{citation}' is expected.
+		                                        <br/><br/></span>
+		                                    
+		                                </div>
+					        		
+				        		</div>
+				        		<div id="indexing">
+				        		    
+				        			<div id="coverage">
+					        			<h3>Coverage:</h3>
+					        			<div id="spatial_coverage" class="metadataPreviewCoverage">
+						        			<h4>Spatial Coverage of Content:</h4>
+						        			<div class="metadataPreviewCoverageIndented">
+		                                        
+							        		</div>
+						        		</div>
+						        		<br>
+						        		<div id="temporal_coverage" class="metadataPreviewCoverage">
+						        			<h4>Time Period of Content:</h4>
+						        			<div class="metadataPreviewCoverageIndented">
+		                                        
+							        		</div>
+						        		</div>
+					        		</div>
+				        		</div>
+		        			
+	        			
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                	
+                        
+	                    
+	                    	<input name="displayMetadataFileForm()" value="Print Error Report" onclick="window.print()" type="submit" />
+	                    	<input name="displayMetadataFileForm()" value="Continue" type="submit" />
+                    	
+                	
+                </fieldset>
+            <div style="display: none;"><input type="hidden" name="_sourcePage" value="t7KRDrrtI7kd2LYouljjrEruZf9fO7TxUoMldmS-_bCM7qAWZBb5KAqLPOZ5umXf" /><input type="hidden" name="__fp" value="pr2Y_UKzIms=" /></div></form>
+        </div>
+
+    
+		               
+                        
+        </div><!-- end dc-content -->                
+		</div><!-- end content-wrapper -->
+        </div><!-- end dc-body opened in header.jsp -->
+	                <div id="dc-footer">
+	                    
+	                        
+
+
+
+<div id="footer">
+    <span>Build: Local</span>
+    <span>Timestamp: Local</span>
+    <span>Revision: Local</span>
+
+
+</div>
+	                        <a title="TermsOfUse" href="/home/termsofuse.action?handle=">Terms of Use</a>
+	                    
+	                </div>
+  
+        </body>
+    </html>

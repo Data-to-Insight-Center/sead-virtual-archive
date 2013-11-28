@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+  
+  <listener>
+    <display-name>Spring Context Loader Listener</display-name>    
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>classpath*:/org/dataconservancy/ui/config/applicationContext.xml,classpath:/applicationContext.xml,classpath*:/org/dataconservancy/mhf/config/applicationContext.xml,classpath*:/org/dataconservancy/config/applicationContext.xml,classpath*:/org/dataconservancy/registry/config/applicationContext.xml,classpath:/org/dataconservancy/model/config/applicationContext.xml,classpath:/org/dataconservancy/access/config/applicationContext.xml,classpath*:/org/dataconservancy/packaging/config/applicationContext.xml</param-value>
+  </context-param>
+  
+  <welcome-file-list>
+    <welcome-file>home/home.action</welcome-file>
+  </welcome-file-list>
+
+  <!--
+    *** IMPORTANT ***
+      The Spring Security Filter _must_ always be the first filter defined.
+      TODO: check if it must also be the first <filter-mapping/>
+  -->
+  <filter>
+    <display-name>Spring Security</display-name>
+    <filter-name>springSecurityFilterChain</filter-name>
+    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+  </filter>
+
+  <filter>
+    <display-name>Stripes Filter</display-name>
+    <filter-name>StripesFilter</filter-name>
+    <filter-class>net.sourceforge.stripes.controller.StripesFilter</filter-class>
+    <init-param>
+      <param-name>ActionResolver.Packages</param-name>
+      <param-value>org.dataconservancy.ui.stripes</param-value>
+    </init-param>
+    <init-param>
+      <param-name>Extension.Packages</param-name>
+      <param-value>org.dataconservancy.ui.stripes</param-value>
+    </init-param>
+    <init-param>
+      <param-name>Interceptor.Classes</param-name>
+      <param-value>
+        net.sourceforge.stripes.integration.spring.SpringInterceptor
+      </param-value>
+    </init-param>
+    <init-param>
+      <param-name>TypeConverterFactory.Class</param-name>
+      <param-value>
+        org.dataconservancy.ui.stripes.CustomTypeConverterFactory
+      </param-value>
+    </init-param>
+    <init-param>
+      <param-name>Extension.Packages</param-name>
+      <param-value>org.dataconservancy.ui.stripes.ext</param-value>
+    </init-param>
+    <init-param>
+      <param-name>ExceptionHandler.Class</param-name>
+      <param-value>org.dataconservancy.ui.stripes.UiExceptionHandler</param-value>
+    </init-param>
+    <init-param>
+      <param-name>FileUpload.MaximumPostSize</param-name>
+      <param-value>2G</param-value>
+    </init-param>
+  </filter>
+
+  <filter>
+    <display-name>Theme Filter</display-name>
+    <filter-name>ThemeFilter</filter-name>
+    <filter-class>org.dataconservancy.ui.stripes.ThemeFilter</filter-class>
+    <init-param>
+      <param-name>themeName</param-name>
+      <param-value>default</param-value>
+    </init-param>
+  </filter>
+
+  <!--
+    Spring Framework: Spring Security
+    
+    *** IMPORTANT ***
+      The Spring Security Filter _must_ always be the first filter defined.
+      TODO: check if it must also be the first <filter-mapping/>
+  -->
+  <filter-mapping>
+    <filter-name>springSecurityFilterChain</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+  </filter-mapping>
+
+  <!--
+    Stripes Framework: Stripes Filter
+
+    All requests that target JSPs must pass through the
+    StripesFilter, so that Stripes tags are properly
+    evaluated.
+  -->
+  <filter-mapping>
+    <filter-name>StripesFilter</filter-name>
+    <url-pattern>*.jsp</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+  </filter-mapping>
+
+  <!--
+    Stripes Framework: Stripes Filter
+
+    All requests that target Stripes Action Beans must pass through the
+    StripesFilter, so that the request is properly treated (e.g.
+    wrapped and certain request attributes set).
+  -->
+  <filter-mapping>
+    <filter-name>StripesFilter</filter-name>
+    <url-pattern>*.action</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+  </filter-mapping>
+
+  <!--
+    Data Conservancy: Theme Filter
+
+    The theme filter is responsible for setting request attributes that
+    identify the structure and style of the JSP pages.  It should be applied
+    to all requests (because some JSPs could be served outside of the Stripes
+    Framework, but yet should have access to the theme).
+  -->
+  <filter-mapping>
+    <filter-name>ThemeFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+  </filter-mapping>
+
+
+  <!--
+    Spring Framework: Spring MVC
+
+    This is the Spring Dispatcher Servlet, the main entry into the
+    Spring MVC framework.
+  -->
+  <servlet>
+    <servlet-name>SpringMVC</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <load-on-startup>2</load-on-startup>
+  </servlet>
+
+  <!--
+    Spring Framework: Spring MVC
+
+    Spring MVC should handle almost all requests:
+    - Stripes Action Beans
+    - API Requests
+
+    Spring MVC does _not_ handle JSP requests.  JSP requests
+    are handled by the default JSP servlet (and servlet mappings).
+  -->
+  <servlet-mapping>
+    <servlet-name>SpringMVC</servlet-name>
+    <url-pattern>/admin/*</url-pattern>
+    <url-pattern>/api/*</url-pattern>
+    <url-pattern>/adi/*</url-pattern>
+    <url-pattern>/collection/*</url-pattern>
+    <url-pattern>/deposit/*</url-pattern>
+    <url-pattern>/home/*</url-pattern>
+    <url-pattern>/login/*</url-pattern>
+    <url-pattern>/project/*</url-pattern>
+    <url-pattern>/person/*</url-pattern>
+    <url-pattern>/file/*</url-pattern>
+    <url-pattern>/registration/*</url-pattern>
+    <url-pattern>/usercollections/*</url-pattern>
+    <url-pattern>/userprofile/*</url-pattern>
+    <url-pattern>/item/*</url-pattern>
+    <url-pattern>/dataitem/*</url-pattern>
+    <url-pattern>/id/*</url-pattern>
+    <url-pattern>/metadatafile/*</url-pattern>
+    <url-pattern>/reset/*</url-pattern>
+    <url-pattern>/dropbox/*</url-pattern>
+    <url-pattern>/ingest/*</url-pattern>
+    <url-pattern>/package/*</url-pattern>
+  </servlet-mapping>
+
+</web-app>

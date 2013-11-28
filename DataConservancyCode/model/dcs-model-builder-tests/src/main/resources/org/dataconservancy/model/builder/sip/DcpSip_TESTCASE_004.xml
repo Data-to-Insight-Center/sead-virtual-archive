@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!--
+  Represents a minimal DCP SIP which is invalid according to the schema.
+-->
+<dcp xmlns="http://dataconservancy.org/schemas/dcp/1.0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://dataconservancy.org/schemas/dcp/1.0 file:/Users/esm/dc-svn/model/trunk/dcs-model/src/main/resources/schema/dcp.xsd">
+  
+  <DeliverableUnits>
+    <DeliverableUnit>
+      <collection ref="urn:Collection:1"/>
+      <title>Discovery: LP</title>
+      <type>music album</type>
+      <creator>Discovery</creator>
+      <subject>music</subject>
+      <formerExternalRef><![CDATA[http://www.amazon.com/LP/dp/B002EAP0FE/ref=sr_shvl_album_1?ie=UTF8&qid=1276130789&sr=301-1]]></formerExternalRef>
+      <digitalSurrogate>true</digitalSurrogate>
+      
+      <relationship rel="cover art" ref="http://www.amazon.com/gp/product/images/B002EAP0FE/ref=dp_image_0?ie=UTF8&amp;n=163856011&amp;s=dmusic"/>
+    </DeliverableUnit>
+  </DeliverableUnits>
+  
+</dcp>

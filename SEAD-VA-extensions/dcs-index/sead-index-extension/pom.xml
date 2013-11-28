@@ -1,0 +1,113 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <groupId>org.dataconservancy.index</groupId>
+    <artifactId>index-pom</artifactId>
+    <version>1.1.0-SNAPSHOT</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.dataconservancy.index</groupId>
+  <artifactId>sead-index-extension</artifactId>
+  <version>1.1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>sead-index-extension</name>
+
+  <build>
+    
+    <plugins>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-remote-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>process</goal>
+            </goals>
+            <configuration>
+              <resourceBundles>
+                <resourceBundle>org.dataconservancy.index:dcs-index-dcp-solr-resources:${project.parent.version}</resourceBundle>
+              </resourceBundles>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+      </plugin>
+      
+    </plugins>
+
+
+    
+  </build>
+  
+
+
+  <dependencies>
+      <dependency>
+          <artifactId>dcs-index-api</artifactId>
+          <groupId>org.dataconservancy.index</groupId>
+          <version>${project.parent.version}</version>
+          <type>jar</type>
+          <scope>compile</scope>
+      </dependency>
+
+      <dependency>
+          <artifactId>dcs-index-dcp-solr</artifactId>
+          <groupId>org.dataconservancy.index</groupId>
+          <version>${project.parent.version}</version>
+          <type>jar</type>
+          <scope>compile</scope>
+      </dependency>
+
+      <dependency>
+          <artifactId>dcs-ingest-core</artifactId>
+          <groupId>org.dataconservancy.dcs</groupId>
+          <version>${project.parent.version}</version>
+          <type>jar</type>
+          <scope>compile</scope>
+      </dependency>
+
+      <dependency>
+          <artifactId>sead-model</artifactId>
+          <groupId>org.seadva.model</groupId>
+          <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+          <groupId>org.jdom</groupId>
+          <artifactId>jdom</artifactId>
+          <version>1.1</version>
+          <type>jar</type>
+      </dependency>
+
+      <dependency>
+          <groupId>org.apache.commons</groupId>
+          <artifactId>commons-io</artifactId>
+          <version>1.3.2</version>
+      </dependency>
+
+      <dependency>
+          <groupId>d2i</groupId>
+          <artifactId>d2i-fgdc-schema</artifactId>
+          <version>1.0.0</version>
+      </dependency>
+
+      <dependency>
+          <groupId>org.apache.xmlbeans</groupId>
+          <artifactId>xmlbeans-xpath</artifactId>
+          <version>2.3.0</version>
+      </dependency>
+      <dependency>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+          <version>4.11</version>
+      </dependency>
+
+
+  </dependencies>
+</project>

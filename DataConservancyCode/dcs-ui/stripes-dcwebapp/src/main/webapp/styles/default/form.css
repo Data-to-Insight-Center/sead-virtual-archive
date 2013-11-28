@@ -1,0 +1,334 @@
+/*
+ * Copyright 2012 Johns Hopkins University
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/* basic styles */
+h1 {
+	font: bold 20px/21px Helvetica, Arial, sans-serif;
+	margin: 10px 0px;
+}
+
+li {
+	margin-left: 20px;
+}
+
+
+/* form styles */
+
+form {
+	position:
+	width: 774px;
+	text-align: left;
+}
+
+fieldset {
+	margin: 10px 0 20px 0;
+	border: 0;
+	padding: 0;
+}
+
+
+form h3 {
+	clear: both;
+	padding: 5px 0px 10px 0px;
+	font-size: 14px;
+}
+
+form label {
+	display: block;
+	width: 310px;
+	font-size: 12px;
+	line-height: 14px;
+	padding: 0px 0px 0px 0px;
+}
+
+form input,
+form select {
+	display: block;
+	margin-top: 3px;
+	margin-left: 0px;
+}
+
+
+
+form label input{
+	float: left;
+	width: 320px;
+	padding: 0px;
+}
+form label span{
+	float: left;
+	clear:both;
+	width: 320px;
+	padding: 0px;
+}
+
+.required-field-marker
+{
+	font-color: red;
+}
+
+.label-field-group,
+.tooltip-field-group
+{
+    position: relative;
+	width: 90%;
+	margin-bottom: 10px;
+}
+
+.label-field-group label,
+.label-field-group input,
+.label-field-group select,
+.tooltip-field-group input,
+.address-grouping-city label,
+.address-grouping-city input,
+.address-grouping-city p,
+.address-grouping-state label,
+.address-grouping-state select,
+.address-grouping-state p,
+.address-grouping-zip label,
+.address-grouping-zip input,
+.label-field-group p
+{
+	float: left;
+	display: block;
+	width: 100%;
+}
+
+.tooltip-field-group label
+{
+	float: left;
+	display: block;
+	width: 50%;
+}
+
+.help-icon
+{
+	float: right;
+	display: block;
+	width: 50%;
+}
+
+.help-icon2
+{
+	float: right;
+	display: block;
+	margin-top: -15px;
+	width: 75%;
+}
+
+.help-icon3
+{
+	float: right;
+	display: block;
+	margin-top: -15px;
+	width: 45%;
+}
+
+.help-icon4
+{
+    float: right;
+    display: block;
+    margin-top: -15px;
+    width: 50%;
+}
+
+.label-field-group label,
+.address-grouping-city label
+{
+	padding: 0px;
+}
+
+.label-field-group input,
+.label-field-group select,
+.tooltip-field-group input,
+.address-grouping-city input,
+.address-grouping-zip input,
+.address-grouping-state select
+{
+	margin-bottom: 10px;
+	height: 22px;
+}
+
+.label-field-group textarea,
+.tooltip-field-group textarea
+{
+	margin-bottom: 15px;
+	width: 100%;
+	min-height: 100px;
+}
+
+.address-grouping-city
+{
+	position: relative;
+	width: 47%;
+	margin: 0px 5px 10px 0px;
+	float:left;
+}
+
+.address-grouping-state
+{
+	position: relative;
+	width: 20%;
+	margin: 0px 5px 10px 0px;
+	float:left;
+}
+
+.address-grouping-zip
+{
+	position: relative;
+	width: 20%;
+	margin: 0px 0px 10px 0px;
+	float:left;
+}
+
+.checkbox-grouping
+{
+	clear:both;
+}
+.checkbox-grouping label
+{
+	margin-top: 3px;
+	margin-bottom:3px;
+}
+.checkbox-grouping label,
+.checkbox-grouping input
+{
+	float:left;
+	padding-left:5px;
+	padding-right:5px;
+}
+.creator-prefix
+{
+	position: relative;
+	width: 8%;
+	float: left;
+	margin: 0px 5px 10px 0px;
+	clear: left;
+}
+
+.creator-namefield
+{
+	position: relative;
+	width: 24%;
+	float: left;
+	margin: 0px 0px 10px 0px;
+}
+
+.creator-suffix
+{
+	position: relative;
+	width: 8%;
+	float: left;
+	margin: 0px 0px 10px 0px;
+}
+
+.creator-action
+{
+    position: relative;
+	width: 9%;
+	float: left;
+}
+.creator-textbox
+{
+	width: 95%;
+}
+.alternateIdTxtLnkCombo,
+.entityCreatorTxtLnkCombo,
+.creatorTxtLnkCombo 
+{
+	position:relative;
+	width: 100%;
+}
+.alternateIdTxt,
+.alternateIdRemoveLnk,
+.creatorTxt,
+.creatorRemoveLnk
+{
+	float:left;
+	width: 45%;
+	height: 27px;
+}
+
+.creatorTxt input
+{
+	width:100%;
+	clear:left;
+}
+.alternateIdRemoveLnk
+{
+	padding-top:5px;
+}
+.creatorRemoveLnk
+{
+	padding-top:5px;
+}
+
+.metadataPreviewLeft
+{
+	float: left;
+	width: 90%;
+}
+
+.metadataPreviewRight
+{
+	float: right;
+	width: 100%;
+	padding: 5px 0px 10px 0px;
+	word-wrap: break-word;
+}
+
+.statusSuccess
+{
+    float: right;
+    width: 100%;
+    padding: 5px 0px 10px 0px;
+    color: darkgreen;
+    word-wrap: break-word;
+}
+
+.statusWarning
+{
+    float: right;
+    width: 100%;
+	padding: 5px 0px 10px 0px;
+    color: darkorange;
+    word-wrap: break-word;
+}
+
+.statusError
+{
+    float: right;
+    width: 100%;
+    padding: 5px 0px 10px 0px;
+    color: red;
+    word-wrap: break-word;
+}
+
+.metadataPreviewCoverage
+{
+	padding-left: 20px;
+}
+
+.metadataPreviewCoverageIndented
+{
+	padding-left: 40px;
+}
+
+
+alidationResult
+{
+	width: 80%;
+}

@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<metadata>
+    <idinfo>
+        <datsetid>AE_DySno</datsetid>
+        <citation>
+            <citeinfo>
+                <origin>Tedesco, M., R. Kelly, J. L. Foster, and A. T.C. Chang. </origin>
+                <pubdate>20040101</pubdate>
+                <title>AMSR-E/Aqua Daily L3 Global Snow Water Equivalent EASE-Grids</title>
+                <pubinfo>
+                    <pubplace>Boulder, Colorado USA</pubplace>
+                    <publish>NSIDC: National Snow and Ice Data Center</publish>
+                </pubinfo>
+                <onlink>http://nsidc.org/data/ae_dysno.html</onlink>
+            </citeinfo>
+        </citation>
+        <descript>
+            <abstract>The Advanced Microwave Scanning Radiometer - Earth Observing System (AMSR-E) instrument on the NASA Earth Observing System (EOS) Aqua satellite provides global passive microwave measurements of terrestrial, oceanic, and atmospheric variables for the investigation of water and energy cycles.These Level-3 Snow Water Equivalent (SWE) data sets contain SWE data and quality assurance flags mapped to Northern and Southern Hemisphere 25 km Equal-Area Scalable Earth Grids (EASE-Grids). Data are stored in Hierarchical Data Format - Earth Observing System (HDF-EOS) format, and are available from 19 June 2002 to the present via FTP.</abstract>
+            <purpose>scientific research</purpose>
+            <documnts>
+                <userguid>
+                    <citeinfo>
+                        <origin>Tedesco, M., R. Kelly, J. L. Foster, and A. T.C. Chang. </origin>
+                        <pubdate>20040101</pubdate>
+                        <title>AMSR-E/Aqua Daily L3 Global Snow Water Equivalent EASE-Grids</title>
+                        <pubinfo>
+                            <pubplace>Boulder, Colorado USA</pubplace>
+                            <publish>NSIDC: National Snow and Ice Data Center</publish>
+                        </pubinfo>
+                        <onlink>http://nsidc.org/data/docs/daac/ae_swe_ease-grids.gd.html</onlink>
+                    </citeinfo>
+                </userguid>
+            </documnts>
+        </descript>
+        <timeperd>
+            <timeinfo>
+                <rngdates>
+                    <begdate>20020619</begdate>
+                    <enddate>Unknown</enddate>
+                </rngdates>
+            </timeinfo>
+            <current>publication date</current>
+        </timeperd>
+        <status>
+            <progress>In work</progress>
+            <update>Unknown</update>
+        </status>
+        <spdom>
+            <bounding>
+                <westbc>-180</westbc>
+                <eastbc>180</eastbc>
+                <northbc>90</northbc>
+                <southbc>-90</southbc>
+            </bounding>
+        </spdom>
+        <keywords>
+            <theme>
+                <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                <themekey>EARTH SCIENCE > Cryosphere > Snow/Ice > Snow Water Equivalent</themekey>
+                <themekey>EARTH SCIENCE > Terrestrial Hydrosphere > Snow/Ice > Snow Water Equivalent</themekey>
+            </theme>
+            <theme>
+                <themekt>NASA Global Change Master Directory (GCMD) Project Keywords</themekt>
+                <themekey>EOS > Earth Observing System</themekey>
+                <themekey>EOSDIS > Earth Observing System Data Information System Data and Information System</themekey>
+                <themekey>ESIP > Earth Science Information Partners</themekey>
+            </theme>
+            <theme>
+                <themekt>NASA Global Change Master Directory (GCMD) Instrument Keywords</themekt>
+                <themekey>AMSR-E > Advanced Microwave Scanning Radiometer-EOS</themekey>
+            </theme>
+            <theme>
+                <themekt>NASA Global Change Master Directory (GCMD) Platform Keywords</themekt>
+                <themekey>AQUA > Earth Observing System, AQUA</themekey>
+            </theme>
+            <theme>
+                <themekt>ISO 19115 Topic Categories</themekt>
+                <themekey>climatologyMeteorologyAtmosphere</themekey>
+            </theme>
+            <theme>
+                <themekt>None</themekt>
+                <themekey>AE_DySno</themekey>
+                <themekey>AMSR-E</themekey>
+                <themekey>Aqua</themekey>
+                <themekey>DAAC</themekey>
+                <themekey>EOSDIS</themekey>
+                <themekey>EOS PM-1</themekey>
+                <themekey>Imagery</themekey>
+                <themekey>NASA</themekey>
+                <themekey>NSIDC</themekey>
+                <themekey>Passive Microwave</themekey>
+                <themekey>Radiance</themekey>
+                <themekey>Remote Sensing</themekey>
+                <themekey>Snow pack</themekey>
+                <themekey>Snow Water Equivalent</themekey>
+                <themekey>SWE</themekey>
+                <themekey>SWEMAP</themekey>
+                <themekey>Water Resources</themekey>
+                <themekey>Water Storage</themekey>
+                <themekey>Water Supply</themekey>
+            </theme>
+            <place>
+                <placekt>NASA Global Change Master Directory (GCMD) Location Keywords</placekt>
+                <placekey>Geographic Region > Global</placekey>
+            </place>
+        </keywords>
+        <plainsid>
+            <platflnm>Earth Observing System, AQUA</platflnm>
+            <platfsnm>AQUA</platfsnm>
+            <instflnm>Advanced Microwave Scanning Radiometer-EOS</instflnm>
+            <instshnm>AMSR-E</instshnm>
+        </plainsid>
+        <thelayid>
+            <numthlay>2</numthlay>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE > Cryosphere > Snow/Ice > Snow Water Equivalent</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE > Terrestrial Hydrosphere > Snow/Ice > Snow Water Equivalent</themekey>
+                </theme>
+            </layrname>
+        </thelayid>
+        <accconst>None</accconst>
+        <useconst>None</useconst>
+        <ptcontac>
+            <cntinfo>
+                <cntperp>
+                    <cntper>NSIDC User Services</cntper>
+                    <cntorg>National Snow and Ice Data Center</cntorg>
+                </cntperp>
+                <cntaddr>
+                    <addrtype>mailing</addrtype>
+                    <address>CIRES, 449 UCB</address>
+                    <address>University of Colorado</address>
+                    <city>Boulder</city>
+                    <state>CO</state>
+                    <postal>80309-0449</postal>
+                    <country>USA</country>
+                </cntaddr>
+                <cntvoice>1 303 492-6199 x</cntvoice>
+                <cntfax>1 303  492-2468 x</cntfax>
+                <cntemail>nsidc@nsidc.org</cntemail>
+            </cntinfo>
+        </ptcontac>
+    </idinfo>
+    <distinfo>
+        <distrib>
+            <cntinfo>
+                <cntorgp>
+                    <cntorg>National Snow and Ice Data Center</cntorg>
+                    <cntper>NSIDC User Services</cntper>
+                </cntorgp>
+                <cntaddr>
+                    <addrtype>mailing</addrtype>
+                    <address>National Snow and Ice Data Center</address>
+                    <address>CIRES, 449 UCB</address>
+                    <address>University of Colorado</address>
+                    <city>Boulder</city>
+                    <state>CO</state>
+                    <postal>80309-0449</postal>
+                    <country>USA</country>
+                </cntaddr>
+                <cntvoice>1 303 492-6199 </cntvoice>
+                <cntfax>1 303  492-2468 </cntfax>
+                <cntemail>nsidc@nsidc.org</cntemail>
+            </cntinfo>
+        </distrib>
+        <resdesc>AE_DySno</resdesc>
+        <distliab>NSIDC cannot assume liability for any damages caused by any errors or omissions in the data, nor as a result of the failure of the data to function on a particular system. NSIDC makes no warranty, expressed or implied, nor does the fact of distribution constitute such a warranty.</distliab>
+        <stdorder>
+            <digform>
+                <digtinfo>
+                    <formname>HDF-EOS</formname>
+                </digtinfo>
+                <digtopt>
+                    <onlinopt>
+                        <computer>
+                            <networka>
+                                <networkr>http://nsidc.org/data/amsre/order.html</networkr>
+                            </networka>
+                        </computer>
+                    </onlinopt>
+                </digtopt>
+            </digform>
+            <fees>None</fees>
+        </stdorder>
+    </distinfo>
+    <metainfo>
+        <metd>20130122</metd>
+        <metrd>20130122</metrd>
+        <metc>
+            <cntinfo>
+                <cntperp>
+                    <cntper>NSIDC User Services</cntper>
+                    <cntorg>National Snow and Ice Data Center</cntorg>
+                </cntperp>
+                <cntaddr>
+                    <addrtype>mailing</addrtype>
+                    <address>National Snow and Ice Data Center</address>
+                    <address>CIRES, 449 UCB</address>
+                    <address>University of Colorado</address>
+                    <city>Boulder</city>
+                    <state>CO</state>
+                    <postal>80309-0449</postal>
+                    <country>USA</country>
+                </cntaddr>
+                <cntvoice>1 303 492-6199 </cntvoice>
+                <cntfax>1 303  492-2468 </cntfax>
+                <cntemail>nsidc@nsidc.org</cntemail>
+            </cntinfo>
+        </metc>
+        <metstdn>FGDC Content Standard for Digital Geospatial Metadata: Extensions for Remote Sensing Metadata</metstdn>
+        <metstdv>FGDC-STD-012-2002</metstdv>
+    </metainfo>
+</metadata>

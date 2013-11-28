@@ -1,0 +1,603 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    
+  <!-- 
+    $Id: pom.xml 5858 2013-04-23 15:03:51Z emetsger $
+    $URL: https://scm.dataconservancy.org/svn/dcs-clients/trunk/dcs-access-connector/pom.xml $
+  -->
+  
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.dataconservancy.access</groupId>
+  <artifactId>dcs-access-connector</artifactId>
+  <packaging>jar</packaging>
+  <name>Java Connector Library</name>
+  <description>Java connector library for the Data Conservancy</description>
+  
+  <parent>
+    <groupId>org.dataconservancy</groupId>
+    <artifactId>project-pom</artifactId>
+    <version>1.1.0-SNAPSHOT</version>
+    <!-- see: http://maven.apache.org/ref/3.0.4/maven-model/maven.html#parent -->
+    <relativePath />
+  </parent>    
+  
+  <!-- Build  ===================================================== -->
+  
+  <build>
+    
+    <plugins>      
+      
+      <!--
+        This plugin is still a work in progress, so you should only 
+        uncomment if you know what you are doing.
+        -->
+      <plugin>
+        <groupId>org.dataconservancy.access</groupId>
+        <artifactId>dcs-access-maven-plugin</artifactId>
+        <version>1.1.0-SNAPSHOT</version>      
+        <configuration>
+          <entities>
+            <directory>${dcs.fs.access.basedir}</directory>
+            <includes>
+              <include>**/*.xml</include>
+            </includes>
+          </entities>
+        </configuration>
+        <executions>
+          <execution>
+            <id>seed-archive</id>
+            <goals>
+              <goal>seed-archive</goal>
+            </goals>
+            <phase>pre-integration-test</phase>            
+          </execution>
+          <execution>
+            <id>seed-index</id>
+            <goals>
+              <goal>seed-index</goal>
+            </goals>
+            <phase>pre-integration-test</phase>
+            <configuration>
+              <solrHome>${solr.home}</solrHome>
+              <solrCoreConfig>${solr.configfile}</solrCoreConfig>
+              <solrContainerName>${solr.name}</solrContainerName>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+          </dependency>
+          <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.6.1</version>
+          </dependency>
+          <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.13</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-remote-resources-plugin</artifactId>        
+        <executions>
+          <execution>
+            <goals>
+              <goal>process</goal>
+            </goals>
+            <configuration>
+              <resourceBundles>
+                <resourceBundle>org.dataconservancy.index:dcs-index-dcp-solr-resources:${project.parent.version}</resourceBundle>
+              </resourceBundles>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <systemPropertyVariables>
+            <solr.solr.home>${solr.home}</solr.solr.home>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <configuration>
+          <systemPropertyVariables>
+            <local.access.port>${local.access.port}</local.access.port>
+          </systemPropertyVariables>
+        </configuration>
+        <executions>
+          <execution>
+            <id>integration-test</id>
+            <goals>
+              <goal>integration-test</goal>
+            </goals>
+            <configuration>
+              <excludes>
+                <exclude>**/Remote*</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>verify</id>
+            <goals>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+            
+      <!--<plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>prepare-access-http-war</id>
+            <goals>
+              <goal>exploded</goal>
+            </goals>
+            <phase>pre-integration-test</phase>
+            <configuration>
+              <overlays>
+                <overlay>
+                  <groupId>org.dataconservancy.access</groupId>
+                  <artifactId>dcs-access-http</artifactId>
+                </overlay>
+              </overlays>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin> -->     
+            
+      <plugin>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>jetty-maven-plugin</artifactId>
+        <configuration>
+          <stopPort>8005</stopPort>
+          <stopKey>STOP</stopKey>
+          <useTestClasspath>true</useTestClasspath>
+          <connectors>
+            <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
+              <port>${local.access.port}</port>
+            </connector>
+          </connectors>
+          <webAppConfig>
+            <overrideDescriptor>${project.build.testOutputDirectory}/web.xml</overrideDescriptor>            
+          </webAppConfig>
+          <systemProperties>
+            <systemProperty>
+              <name>solr.solr.home</name>
+              <value>${solr.home}</value>
+            </systemProperty>
+          </systemProperties>
+        </configuration>
+        <executions>
+          <execution>
+            <id>start-jetty-it</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <scanIntervalSeconds>0</scanIntervalSeconds>
+              <daemon>true</daemon>
+            </configuration>
+          </execution>
+          <execution>
+            <id>stop-jetty-it</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>stop</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      
+    </plugins>
+    
+    <testResources>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <includes>
+          <include>**/*.properties</include>
+          <include>solr-core-config.xml</include>
+          <include>**/test10.xml</include>
+          <include>**/test224.xml</include>
+        </includes>
+        <filtering>true</filtering>
+      </testResource>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <excludes>
+          <exclude>**/*.properties</exclude>
+          <exclude>solr-core-config.xml</exclude>
+          <exclude>**/test224.xml</exclude>
+        </excludes>
+        <filtering>false</filtering>
+      </testResource>
+    </testResources>
+    
+  </build>
+  
+  <profiles>
+    <profile>
+      <id>run-remote-its</id>
+        <build>
+          <plugins>        
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-failsafe-plugin</artifactId>
+              <executions>
+                <execution>
+                  <id>integration-test-remote</id>
+                  <goals>
+                    <goal>integration-test</goal>
+                  </goals>
+                  <configuration>
+                    <includes>
+                      <includes>**/Remote*</includes>
+                    </includes>
+                  </configuration>
+                </execution>
+                <execution>
+                  <id>verify</id>
+                  <goals>
+                    <goal>verify</goal>
+                  </goals>
+                </execution>
+              </executions>
+            </plugin>
+          </plugins>
+        </build>    
+    </profile>
+  </profiles>
+  
+  <properties>
+    <entity.store.basedir>${project.build.testOutputDirectory}/elm-archive-store/entities</entity.store.basedir>
+    <metadata.store.basedir>${project.build.testOutputDirectory}/elm-archive-store/metadata</metadata.store.basedir>
+    <solr.home>${project.build.outputDirectory}/org/dataconservancy/dcs/index/dcpsolr</solr.home>
+    <solr.instancedir>${solr.home}/${solr.name}</solr.instancedir>
+    <solr.name>default</solr.name>
+    <solr.configfile>${project.build.testOutputDirectory}/solr-core-config.xml</solr.configfile>
+    <solr.version>1.4.0</solr.version>
+    <dcs.fs.access.basedir>${project.build.testOutputDirectory}/entities</dcs.fs.access.basedir>
+    <local.access.port>8080</local.access.port>
+  </properties>
+  
+  <!-- Dependency Management ====================================== -->
+  
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.dataconservancy.model</groupId>
+        <artifactId>dcs-model-builder-xstream</artifactId>
+        <version>1.1.0-SNAPSHOT</version>
+      </dependency>      
+      <dependency>
+        <groupId>org.dataconservancy.model</groupId>
+        <artifactId>dcs-model</artifactId>
+        <version>1.1.0-SNAPSHOT</version>
+      </dependency>      
+      <dependency>
+        <groupId>org.dataconservancy.model</groupId>
+        <artifactId>dcs-model-builder</artifactId>
+        <version>1.1.0-SNAPSHOT</version>
+      </dependency>        
+      <dependency>
+        <groupId>org.dataconservancy.archive</groupId>
+        <artifactId>dcs-archive-api</artifactId>
+        <version>1.1.0-SNAPSHOT</version>
+      </dependency>           
+      <dependency>
+        <groupId>org.dataconservancy.archive</groupId>
+        <artifactId>dcs-archive-impl-elm</artifactId>
+        <version>1.1.0-SNAPSHOT</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>      
+      <dependency>
+        <groupId>org.dataconservancy.archive</groupId>
+        <artifactId>dcs-archive-impl-elm-fs</artifactId>
+        <version>1.1.0-SNAPSHOT</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.dataconservancy.dcs</groupId>
+        <artifactId>dcs-id-api</artifactId>
+        <version>${project.parent.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>1.2.12</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>1.4</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-beans</artifactId>
+        <version>3.0.5.RELEASE</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+        <version>3.0.5.RELEASE</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-core</artifactId>
+        <version>3.0.5.RELEASE</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-test</artifactId>
+        <version>3.0.5.RELEASE</version>
+      </dependency>
+      <dependency>
+        <artifactId>solr-solrj</artifactId>
+        <groupId>org.apache.solr</groupId>
+        <version>${solr.version}</version>
+      </dependency>      
+      <dependency>
+        <artifactId>solr-core</artifactId>
+        <groupId>org.apache.solr</groupId>
+        <version>${solr.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+        <version>4.0.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+        <version>4.0.1</version>
+        <classifier>tests</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.abdera</groupId>
+        <artifactId>abdera-i18n</artifactId>
+        <version>1.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-all</artifactId>
+        <version>1.8.5</version>
+      </dependency>
+      
+    </dependencies>      
+  </dependencyManagement>
+
+  <!-- Dependencies =============================================== -->
+  
+  <dependencies>
+    
+    <!-- Provided ================================================= -->
+    
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.4</version>
+      <scope>provided</scope>
+    </dependency>
+    
+    <!-- Runtime ================================================== -->    
+    
+    <!--dependency>
+      <groupId>org.dataconservancy.access</groupId>
+      <artifactId>dcs-access-http</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+      <type>war</type>
+      <scope>runtime</scope>
+    </dependency-->
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+        
+    <!-- Compile ================================================== -->            
+    
+    <dependency>
+      <groupId>org.dataconservancy.model</groupId>
+      <artifactId>dcs-model</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.dataconservancy.model</groupId>
+      <artifactId>dcs-model-builder</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.dataconservancy.model</groupId>
+      <artifactId>dcs-model-builder-xstream</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.dataconservancy.access</groupId>
+      <artifactId>dcs-access-api</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.apache.abdera</groupId>
+      <artifactId>abdera-i18n</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <!-- Test ===================================================== -->
+    
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.dataconservancy.access</groupId>
+      <artifactId>dcs-access-impl-solr</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>    
+    
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <scope>test</scope>
+      <optional>true</optional>
+    </dependency>
+    
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <scope>test</scope>
+      <optional>true</optional>
+    </dependency>                    
+    
+    <dependency>
+      <groupId>org.dataconservancy.archive</groupId>
+      <artifactId>dcs-archive-impl-elm</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.dataconservancy.archive</groupId>
+      <artifactId>dcs-archive-impl-elm-fs</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <artifactId>solr-solrj</artifactId>
+      <groupId>org.apache.solr</groupId>
+      <scope>test</scope>
+    </dependency>   
+    
+    <dependency>
+      <artifactId>solr-core</artifactId>
+      <groupId>org.apache.solr</groupId>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>      
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>      
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.dataconservancy.archive</groupId>
+      <artifactId>dcs-archive-api</artifactId>
+      <scope>test</scope>
+      <version>1.1.0-SNAPSHOT</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+    	<groupId>org.dataconservancy.query</groupId>
+    	<artifactId>dcs-query-dcs-datamodel-solr</artifactId>
+    	<version>1.1.0-SNAPSHOT</version>
+    	<scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.access</groupId>
+      <artifactId>dcs-access-http</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+      <type>war</type>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+</project>

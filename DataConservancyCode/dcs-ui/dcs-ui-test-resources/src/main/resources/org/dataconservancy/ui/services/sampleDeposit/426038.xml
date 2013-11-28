@@ -1,0 +1,16 @@
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+-->
+<dcp xmlns="http://dataconservancy.org/schemas/dcp/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://dataconservancy.org/schemas/dcp/1.0 http://dataconservancy.org/schemas/dcp/1.0"><Events><Event id="http://bamboo.mse.jhu.edu:8086/dcs/entity/426038"><eventType>ingest.complete</eventType><eventDate>2012-02-28T19:08:24.096Z</eventDate><eventTarget ref="http://bamboo.mse.jhu.edu:8086/dcs/entity/426036" /><eventTarget ref="http://bamboo.mse.jhu.edu:8086/dcs/entity/426023" /><eventTarget ref="http://bamboo.mse.jhu.edu:8086/dcs/entity/426022" /><eventTarget ref="http://bamboo.mse.jhu.edu:8086/dcs/entity/426035" /><eventTarget ref="http://bamboo.mse.jhu.edu:8086/dcs/entity/426037" /><eventTarget ref="http://bamboo.mse.jhu.edu:8086/dcs/entity/426027" /><eventTarget ref="http://bamboo.mse.jhu.edu:8086/dcs/entity/426032" /><eventTarget ref="http://bamboo.mse.jhu.edu:8086/dcs/entity/426031" /><eventTarget ref="http://bamboo.mse.jhu.edu:8086/dcs/entity/426026" /><eventTarget ref="http://bamboo.mse.jhu.edu:8086/dcs/entity/426034" /><eventTarget ref="http://bamboo.mse.jhu.edu:8086/dcs/entity/426033" /><eventTarget ref="http://bamboo.mse.jhu.edu:8086/dcs/entity/426029" /><eventTarget ref="http://bamboo.mse.jhu.edu:8086/dcs/entity/426028" /><eventTarget ref="http://bamboo.mse.jhu.edu:8086/dcs/entity/426030" /><eventDetail>Successfully completed ingest 426025</eventDetail><eventOutcome>426025</eventOutcome></Event></Events></dcp>

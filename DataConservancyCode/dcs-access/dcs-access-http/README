@@ -1,0 +1,11 @@
+
+In web.xml the context parameter 'access.impl' must be a class implementing
+the access api.
+
+The default is the solr implementation which requires the system property
+'solr.solr.home' to be set to the url of a solr server or a local path to
+a solr installation.
+
+In web.xml, the context parameter 'datastream.url' must be set to the public
+base url of the datastream servlet. That url will be used to construct
+File entity source attributes by appending the entity id.

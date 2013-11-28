@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    
+  <!-- 
+    $Id$
+    $URL$
+  -->
+  
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.dataconservancy.mhf</groupId>
+  <artifactId>dcs-mhf-representations-impl</artifactId>
+  <packaging>jar</packaging>
+  <name>Metadata Representations</name>
+  <description>Metadata Representations</description>
+  
+  <parent>
+    <groupId>org.dataconservancy.mhf</groupId>
+    <artifactId>dcs-mhf</artifactId>
+    <version>1.1.0-SNAPSHOT</version>
+  </parent>
+  
+  <!-- Build  ===================================================== -->
+  
+  <build>
+    
+  </build>
+
+  <!-- Dependencies =============================================== -->
+  
+  <dependencies>
+    
+    <!-- Provided ================================================= -->
+    
+    <!-- Runtime ================================================== -->    
+    
+    <!-- We need Xerces >= 2.10.0 to avoid https://issues.apache.org/jira/browse/XERCESJ-589 -->
+    
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    
+    <!-- Xerces 2.10.0 dependencies -->
+    
+    <dependency>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>xml-resolver</groupId>
+      <artifactId>xml-resolver</artifactId>
+      <scope>runtime</scope>
+    </dependency>    
+    
+    <!-- Compile ================================================== -->
+    
+    <dependency>
+      <groupId>org.dataconservancy.mhf</groupId>
+      <artifactId>dcs-mhf-representation-api</artifactId>
+      <scope>compile</scope>
+      <version>${project.parent.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.model</groupId>
+      <artifactId>dcs-gqm</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.ui</groupId>
+      <artifactId>dcs-ui-model</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    
+    <!-- Test ===================================================== -->
+        
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
+  </dependencies>
+
+</project>

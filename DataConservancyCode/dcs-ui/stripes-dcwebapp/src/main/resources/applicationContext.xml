@@ -1,0 +1,268 @@
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:sec="http://www.springframework.org/schema/security"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                      http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd">
+
+  <!--
+    Spring Security configuration    
+    http://static.springsource.org/spring-security/site/docs/3.1.x/reference/ns-config.html
+  -->
+
+  <sec:http auto-config='true'>
+    <sec:intercept-url pattern="/favicon.ico" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+    <sec:intercept-url pattern="/resources/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+    <sec:intercept-url pattern="/styles/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+    <sec:intercept-url pattern="/login/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+    <sec:intercept-url pattern="/registration/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+    <sec:intercept-url pattern="/reset/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+    <sec:intercept-url pattern="/home/home.action" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+    <sec:intercept-url pattern="/collection/collection_update.action" access="ROLE_USER"/>
+    <sec:intercept-url pattern="/collection/collection_add.action" access="ROLE_USER"/>
+    <sec:intercept-url pattern="/collection/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+    <sec:intercept-url pattern="/usercollections/viewCollectionDetails/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+    <sec:intercept-url pattern="/usercollections/render/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+    <sec:intercept-url pattern="/" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+    <sec:intercept-url pattern="/admin/**" access="ROLE_ADMIN" />
+    <sec:intercept-url pattern="/dcs/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+    <sec:intercept-url pattern="/project" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+    <sec:intercept-url pattern="/person" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+    <sec:intercept-url pattern="/file/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+    <sec:intercept-url pattern="/project/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+    <sec:intercept-url pattern="/project/**/collections" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+    <sec:intercept-url pattern="/item/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+    <sec:intercept-url pattern="/dataitem/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+    <sec:intercept-url pattern="/id/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+    <sec:intercept-url pattern="/**" access="ROLE_USER" />
+    <sec:form-login login-page='/login/login.action'/>
+    <sec:logout logout-success-url="/home/home.action" />
+  </sec:http>
+
+  <!--
+    TODO: UPDATE DOCO
+    Spring consults the following User Services in order:
+    - jdbcUserDetailsService: backed by the jdbc person DAO
+    - inMemoryUserDetailsService: backed by the in-memory person DAO
+    - Spring in-memory service: backed by the users in the defaultUsers.properties file
+
+    The first UserService that has a user (determined by the presence of the user's user id)
+    wins out, effectively shadowing the same user that might appear in the remaining user services.
+  -->
+  <sec:authentication-manager>
+    <sec:authentication-provider user-service-ref="delegatingUserDetailsService"/>
+  </sec:authentication-manager>
+
+  <bean id="delegatingUserDetailsService" class="org.dataconservancy.ui.services.UserDetailsServiceAdapter">
+      <constructor-arg ref="delegatingUserService"/>
+  </bean>
+
+  <bean id="baseNotificationEventListener" abstract="true"
+        class="org.dataconservancy.ui.eventing.listeners.NotificationServiceEventListener">
+    <constructor-arg ref="notificationService"/>
+    <constructor-arg ref="velocityTemplateHelper"/>
+    <property name="defaultSender" value="${fromAddress}"/>
+  </bean>
+
+  <bean id="eventManager" class="org.dataconservancy.ui.eventing.api.DefaultEventManager">
+    <constructor-arg ref="eventManagerExecutorService"/>
+    <constructor-arg>
+      <list>
+        <bean class="org.dataconservancy.ui.eventing.listeners.FilteringExceptionNotificationEventListener"
+                parent="baseNotificationEventListener">
+          <constructor-arg>
+            <set>
+              <!--
+                The following Throwable(s) and their subclasses will be filtered out
+                - that is, ignored - by this listener
+                  ...
+              -->
+              <value>org.eclipse.jetty.io.EofException</value>
+            </set>
+          </constructor-arg>
+          <!--
+              ...
+            If the any of the Throwable classes (or their subclasses) appear anywhere in the exception chain.
+          -->
+          <property name="considerChain" value="true"/>
+          <property name="emailRecipient" value="${exceptionNotificationTo}"/>
+          <property name="emailSender" value="${exceptionNotificationSender}"/>
+          <property name="emailSubject" value="${exceptionNotificationSubject}"/>
+          <property name="velocityTemplateName" value="${exceptionNotificationBody}"/>
+        </bean>
+        <bean class="org.dataconservancy.ui.eventing.listeners.RegistrationNotificationEventListener"
+                parent="baseNotificationEventListener">
+          <constructor-arg ref="userService"/>
+          <constructor-arg ref="dcsUiBaseUrlConfig"/>
+          <property name="emailSender" value="${registrationNotificationSender}"/>
+          <property name="emailSubject" value="${registrationNotificationSubject}"/>
+          <property name="velocityTemplateName" value="${registrationNotificationBody}"/>
+        </bean>
+        <bean class="org.dataconservancy.ui.eventing.listeners.RegistrationUserNotificationEventListener"
+                        parent="baseNotificationEventListener">
+            <constructor-arg ref="dcsUiBaseUrlConfig"/>
+            <property name="emailSender" value="${registrationUserNotificationSender}"/>
+            <property name="emailSubject" value="${registrationUserNotificationSubject}"/>
+            <property name="velocityTemplateName" value="${registrationUserNotificationBody}"/>
+        </bean>
+        <bean class="org.dataconservancy.ui.eventing.listeners.ApprovalNotificationEventListener">
+          <constructor-arg ref="notificationService"/>
+          <constructor-arg ref="velocityTemplateHelper"/>
+          <constructor-arg ref="dcsUiBaseUrlConfig"/>
+          <property name="emailSender" value="${approvalNotificationSender}"/>
+          <property name="emailSubject" value="${approvalNotificationSubject}"/>
+          <property name="velocityTemplateName" value="${approvalNotificationBody}"/>
+        </bean>
+       <bean class="org.dataconservancy.ui.eventing.listeners.DataItemDepositEventListener">
+          <constructor-arg ref="notificationService"/>
+          <constructor-arg ref="velocityTemplateHelper"/>
+          <constructor-arg ref="userService"/>
+          <constructor-arg ref="dcsUiBaseUrlConfig"/>
+          <property name="emailSender" value="${depositStatusNotificationSender}"/>
+          <property name="emailSubject" value="${depositStatusNotificationSubject}"/>
+          <property name="velocityTemplateName" value="${depositStatusNotificationBody}"/>
+        </bean>
+        <bean class="org.dataconservancy.ui.eventing.listeners.LoggingEventListener">
+          <!-- this is the _log level_ that messages are logged at.  It does _not_ control
+               whether or not messages are _logged_. -->
+          <property name="level" value="DEBUG"/>
+        </bean>
+      </list>
+    </constructor-arg>
+  </bean>
+
+  <!-- Test MetadataFormat Service -->
+  <!--
+  <bean id="inMemoryMetadataFormatService" class="org.dataconservancy.ui.services.MetadataFormatServiceRegistryImpl">
+    <constructor-arg ref="metadataFormatRegistry"/>
+  </bean>
+  -->
+
+  <!-- Loading properties files -->
+  <bean id="placeholderConfig"
+              class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+    <property name="ignoreUnresolvablePlaceholders" value="true"/>
+    <property name="ignoreResourceNotFound" value="true"/>
+    <property name="locations">
+      <list>
+        <value>classpath:int.properties</value>
+        <value>classpath:smtpServerSettings.properties</value>
+        <value>classpath:notificationEmailSettings.properties</value>
+        <value>classpath:revision.properties</value>
+        <value>classpath:ezid.properties</value>
+        <!--
+          ext.properties goes last, so properties defined here "win"
+        -->
+        <value>classpath:ext.properties</value>
+      </list>
+    </property>
+  </bean>
+
+	<!-- Email Service related beans -->
+  <!--
+  <bean id="smtpServerSettings" class="org.dataconservancy.ui.model.SMTPServerSettings">
+  	<property name="authenticationEnabled" value="${authenticationEnabled}"/>
+    <property name="emailServiceEnabled" value="${emailServiceEnabled}"/>
+  	<property name="sslEnabled" value="${sslEnabled}"/>
+  	<property name="smtpServer" value="${smtpServer}"/>
+  	<property name="portNumber" value="${portNumber}"/>
+  	<property name="username" value="${username}"/>
+  	<property name="password" value="${password}"/>
+  </bean>
+  -->
+
+  <bean id="registrationNotification" class="org.dataconservancy.ui.model.Email">
+    <property name="sender" value="${registrationNotificationSender}"/>
+    <property name="subject" value="${registrationNotificationSubject}"/>
+    <property name="notificationMessage" value="${registrationNotificationBody}"/>
+  </bean>
+
+  <bean id="approvalNotification" class="org.dataconservancy.ui.model.Email">
+    <property name="sender" value="${approvalNotificationSender}"/>
+    <property name="subject" value="${approvalNotificationSubject}"/>
+    <property name="notificationMessage" value="${approvalNotificationBody}"/>
+  </bean>
+
+  <bean id="depositStatusNotification" class="org.dataconservancy.ui.model.Email">
+    <property name="sender" value="${depositStatusNotificationSender}"/>
+    <property name="subject" value="${depositStatusNotificationSubject}"/>
+    <property name="notificationMessage" value="${depositStatusNotificationBody}"/>
+  </bean>
+
+  <bean id="passwordResetNotification" class="org.dataconservancy.ui.model.Email">
+    <property name="sender" value="${passwordResetNotificationSender}"/>
+    <property name="subject" value="${passwordResetNotificationSubject}"/>
+    <property name="notificationMessage" value="${passwordResetNotificationBody}"/>
+  </bean>
+
+  <bean id="dcsUiBaseUrlConfig" class="org.dataconservancy.ui.util.UiBaseUrlConfig">
+    <property name="scheme" value="${dcs.ui.scheme}"/>
+    <property name="hostname" value="${dcs.ui.hostname}"/>
+    <property name="port" value="${dcs.ui.port}"/>
+    <property name="contextPath" value="${dcs.ui.contextPath}"/>
+  </bean>
+
+  <!-- Status Context related beans -->
+
+  <bean id="statusPropertiesContext" class="org.dataconservancy.ui.model.StatusPropertiesContext">
+    <property name="buildNumber" value="${build.number}"/>
+    <property name="buildTimeStamp" value="${build.timeStamp}"/>
+    <property name="buildRevision" value="${build.revision}"/>
+  </bean>
+
+  <bean id="statusPropertiesLoader" class="org.dataconservancy.ui.stripes.StatusPropertiesLoader" init-method="init">
+    <property name="propertyHolder" ref="statusPropertiesContext" />
+  </bean>
+
+  <bean id="packageSelector" class="org.dataconservancy.ui.util.PackageSelectorImpl">
+  	<property name="extractors">
+      <map>
+        <entry key="ZIP" value-ref="zipPackageExtractor"/>
+        <entry key="GZIP" value-ref="gzipPackageExtractor"/>
+        <entry key="TAR" value-ref="tarPackageExtractor"/> 
+      </map>
+    </property>
+  </bean>
+
+  <bean id="bagItDepositManagerImpl" class="org.dataconservancy.packaging.ingest.impl.BagItDepositManagerImpl">
+    <property name="bootstrap" ref="packageIngestBootstrap"/>
+    <property name="idService" ref="uiIdService"/>
+    <property name="packageSelector" ref="packageSelector"/>
+    <property name="stateFactory" ref="packageIngestWorkflowStateFactory"/>
+    <property name="stateManager" ref="packageIngestDepositStateManager"/>
+    <property name="contentDetectionService" ref="org.dataconservancy.dcs.contentdetection.impl.droid.DroidContentDetectionServiceImpl"/>
+    <property name="preIngestReportService" ref="preIngestReportService"/>
+  </bean>
+
+  <bean id="zipPackageExtractor" class="org.dataconservancy.ui.util.ZipPackageExtractor">
+  	<property name="extractDirectory" ref="extractDirectory"/>
+  </bean>
+
+  <bean id="gzipPackageExtractor" class="org.dataconservancy.ui.util.GZipPackageExtractor">
+   	<property name="extractDirectory" ref="extractDirectory"/>
+  </bean>
+
+  <bean id="tarPackageExtractor" class="org.dataconservancy.ui.util.TarPackageExtractor">
+  	<property name="extractDirectory" ref="extractDirectory"/>
+  </bean>
+
+  <bean id="extractDirectory" class="java.lang.String">
+  	<constructor-arg type="java.lang.String" value="${dcs.ui.package.extraction.directory}"/>
+  </bean>
+
+</beans>

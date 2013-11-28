@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<org.dataconservancy.ui.model.Collection>
+  <id>http://localhost:8081/collection/4</id>
+  <alternateIds>
+    <string>Alt. Collection</string>
+  </alternateIds>
+  <title>Collection with data</title>
+  <summary>Long ago in a galaxy far far away...</summary>
+  <citableLocator>http://foo</citableLocator>
+  <contactInfoList>
+    <org.dataconservancy.ui.model.ContactInfo>
+      <name>Monkey See</name>
+      <role>bosses</role>
+      <emailAddress>iamevil@senate.gov</emailAddress>
+      <phoneNumber>5555555555</phoneNumber>
+      <physicalAddress>
+        <streetAddress>1 Empire Circle</streetAddress>
+        <city>Galactic Republic</city>
+        <country>Coruscant</country>
+      </physicalAddress>
+    </org.dataconservancy.ui.model.ContactInfo>
+    <org.dataconservancy.ui.model.ContactInfo>
+      <name>Mokey Do</name>
+      <role>chimp</role>
+      <emailAddress>contact@address.com</emailAddress>
+      <phoneNumber>0987654321</phoneNumber>
+    </org.dataconservancy.ui.model.ContactInfo>
+  </contactInfoList>
+  <creators>
+    <org.dataconservancy.ui.model.PersonName>
+      <givenNames>
+        <string>String</string>
+        <string>Blue</string>
+      </givenNames>
+      <familyNames>
+        <string>Beanert</string>
+        <string>McGee</string>
+      </familyNames>
+      <prefixes>Dr.</prefixes>
+      <suffixes>Jr.</suffixes>
+      <middleNames>
+        <string>Wrinkles</string>
+      </middleNames>
+    </org.dataconservancy.ui.model.PersonName>
+    <org.dataconservancy.ui.model.PersonName>
+      <givenNames>
+        <string>Pinto</string>
+      </givenNames>
+      <familyNames>
+        <string>Beanert</string>
+      </familyNames>
+      <prefixes>Dr.</prefixes>
+      <suffixes>Sr.</suffixes>
+      <middleNames>
+        <string>Brown</string>
+      </middleNames>
+    </org.dataconservancy.ui.model.PersonName>
+  </creators>
+  <publicationDate>
+    <iMillis>1366689600000</iMillis>
+    <iChronology class="org.joda.time.chrono.ISOChronology" resolves-to="org.joda.time.chrono.ISOChronology$Stub" serialization="custom">
+      <org.joda.time.chrono.ISOChronology_-Stub>
+        <org.joda.time.tz.CachedDateTimeZone resolves-to="org.joda.time.DateTimeZone$Stub" serialization="custom">
+          <org.joda.time.DateTimeZone_-Stub>
+            <string>America/New_York</string>
+          </org.joda.time.DateTimeZone_-Stub>
+        </org.joda.time.tz.CachedDateTimeZone>
+      </org.joda.time.chrono.ISOChronology_-Stub>
+    </iChronology>
+  </publicationDate>
+  <depositDate>
+    <iMillis>1366776000000</iMillis>
+    <iChronology class="org.joda.time.chrono.ISOChronology" reference="../../publicationDate/iChronology"/>
+  </depositDate>
+  <depositor>
+    <id>id:adminUser</id>
+    <firstName>Elliot</firstName>
+    <lastName>Metsger</lastName>
+    <password>foobar</password>
+    <emailAddress>emetsger@gmail.com</emailAddress>
+    <phoneNumber>5555555555</phoneNumber>
+    <registrationStatus>APPROVED</registrationStatus>
+    <readOnly>false</readOnly>
+    <roles>
+      <org.dataconservancy.ui.model.Role>ROLE_ADMIN</org.dataconservancy.ui.model.Role>
+      <org.dataconservancy.ui.model.Role>ROLE_USER</org.dataconservancy.ui.model.Role>
+    </roles>
+  </depositor>
+</org.dataconservancy.ui.model.Collection>

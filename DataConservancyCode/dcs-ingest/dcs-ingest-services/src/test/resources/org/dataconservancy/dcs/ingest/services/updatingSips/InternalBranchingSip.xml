@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<!--
+  Represents a simple DCP SIP. Updating existing DU by adding a new file.
+-->
+<dcp xmlns="http://dataconservancy.org/schemas/dcp/1.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://dataconservancy.org/schemas/dcp/1.0 file:/Users/esm/dc-svn/model/trunk/dcs-model/src/main/resources/schema/dcp.xsd">
+
+  <DeliverableUnits>
+    <!-- opaque ID for new DU -->
+    <DeliverableUnit id="urn:DU_01_Update">
+      <title>SDSS file 12345</title>
+    </DeliverableUnit>
+    <DeliverableUnit id="urn:DU_02_Update">
+      <title>SDSS file 12345b</title>
+      <relationship rel="urn:dataconservancy.org:rel/isSuccessorOf" ref="urn:DU_01_Update"/>
+    </DeliverableUnit>
+    <DeliverableUnit id="urn:DU_03_Update">
+      <title>SDSS file 12345c</title>
+      <relationship rel="urn:dataconservancy.org:rel/isSuccessorOf" ref="urn:DU_01_Update"/>
+    </DeliverableUnit>
+  </DeliverableUnits>
+
+  <Manifestations>
+    <Manifestation id="urn:DU_01_Update/manifestation1">
+       <deliverableUnit ref="urn:DU_01_Update" />
+       <manifestationFile ref="urn:file:02">
+       </manifestationFile>
+    </Manifestation>
+    <Manifestation id="urn:DU_01_Update/manifestation2">
+      <deliverableUnit ref="urn:DU_02_Update" />
+      <manifestationFile ref="urn:file:03">
+      </manifestationFile>
+    </Manifestation>
+    <Manifestation id="urn:DU_01_Update/manifestation3">
+      <deliverableUnit ref="urn:DU_03_Update" />
+      <manifestationFile ref="urn:file:04">
+      </manifestationFile>
+    </Manifestation>
+  </Manifestations>
+
+  <Files>
+    <File id="urn:file:02" src="http://www.uscis.gov/files/form/i-9.pdf">
+      <fileName>form/i-9.pdf</fileName>
+      <extant>true</extant>
+    </File>
+    <File id="urn:file:03" src="http://www.uscis.gov/files/form/i-9.pdf">
+      <fileName>form/i-9.pdf</fileName>
+      <extant>true</extant>
+    </File>
+    <File id="urn:file:04" src="http://www.uscis.gov/files/form/i-9.pdf">
+      <fileName>form/i-9.pdf</fileName>
+      <extant>true</extant>
+    </File>
+  </Files>
+
+</dcp>

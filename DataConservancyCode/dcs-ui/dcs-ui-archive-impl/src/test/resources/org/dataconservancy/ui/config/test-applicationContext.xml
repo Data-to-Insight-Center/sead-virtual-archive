@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2013 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+  <!-- Archive Service -->
+  <bean id="org.dataconservancy.ui.services.InMemoryArchiveServiceImpl" name="inMemoryArchiveService"
+    class="org.dataconservancy.ui.services.InMemoryArchiveServiceImpl">
+    <constructor-arg index="0" type="org.dataconservancy.ui.dcpmap.DcpMapper" ref="mockDatasetMapper"/>
+    <constructor-arg index="1" type="org.dataconservancy.ui.profile.Profile" ref="dataItemProfile"/>
+    <constructor-arg index="2" type="org.dataconservancy.ui.dcpmap.DcpMapper" ref="mockCollectionMapper"/>
+    <constructor-arg index="3" type="org.dataconservancy.ui.dcpmap.DcpMapper" ref="mockMetadataFileMapper"/>
+    <constructor-arg index="4" type="org.dataconservancy.ui.dcpmap.DcpMapper" ref="mockDataFileMapper"/>
+    <constructor-arg index="5" type="org.dataconservancy.profile.api.DcpMapper" ref="metadataFormatRegistryEntryMapper"/>
+    <constructor-arg index="6" type="org.dataconservancy.ui.services.DepositDocumentResolver"
+      ref="mockDepositDocumentResolver"/>
+    <constructor-arg index="7" type="org.dataconservancy.ui.services.MockArchiveUtil" ref="mockArchiveUtil"/>
+    <constructor-arg index="8" type="org.dataconservancy.dcs.id.api.IdService" ref="uiIdService"/>
+    <constructor-arg index="9" type="boolean" value="false"/>
+    <constructor-arg index="10" type="org.dataconservancy.ui.services.MockArchiveDepositInfoDAO" ref="mockArchiveDepositInfoDAO"/>
+  </bean>
+  
+  <bean id="AlwaysFailingInMemoryArchiveServiceImpl" name="alwaysFailingInMemoryArchiveService" class="org.dataconservancy.ui.services.InMemoryArchiveServiceImpl">
+    <constructor-arg ref="mockDatasetMapper"/>
+    <constructor-arg ref="dataItemProfile"/>
+    <constructor-arg ref="collectionMapper"/>
+    <constructor-arg ref="metadataFileMapper"/>
+    <constructor-arg ref="dataFileMapper"/>
+    <constructor-arg ref="metadataFormatRegistryEntryMapper"/>
+    <constructor-arg ref="mockDepositDocumentResolver"/>
+    <constructor-arg ref="mockArchiveUtil"/>
+    <constructor-arg ref="uiIdService"/>
+    <constructor-arg value="true"/>
+    <constructor-arg ref="mockArchiveDepositInfoDAO"/>
+  </bean>
+  
+  <bean id="mockArchiveDepositInfoDAO"
+   	class="org.dataconservancy.ui.services.MockArchiveDepositInfoDAO"/>
+
+</beans>

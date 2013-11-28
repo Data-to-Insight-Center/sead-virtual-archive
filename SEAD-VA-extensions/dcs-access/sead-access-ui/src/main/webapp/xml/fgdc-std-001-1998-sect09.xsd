@@ -1,0 +1,538 @@
+<!--edited with XMLSpy v2008 sp1 (http://www.altova.com) by Systems Administrator (NCDDC)-->
+<xs:schema blockDefault="#all" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="timeinfo" type="timeinfoType">
+    <xs:annotation>
+      <xs:documentation>Information about the date and time of an event.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Time Period Information"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+        <xs:attribute name="other-validation-rules" fixed="checkOr([sngdate,mdattim,rngdates])"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="timeinfoType">
+    <xs:choice>
+      <xs:element ref="sngdate">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="fd314f88-9ca3-4f23-a5ed-06a5464a994f" parentId="4462563a-3f8e-49a3-83a8-2eb00334596d" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>means of encoding a single date and time.</ann:description>
+                <ann:shortDescription>Single Date/Time</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="b488e374-eaf9-4747-8af7-3042e667e1c3" parentId="7238f063-21ea-47c6-a486-483241eca1c5" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>means of encoding a single date and time.</ann:description>
+                <ann:shortDescription>Single Date/Time</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="fd314f88-9ca3-4f23-a5ed-06a5464a994f" parentId="4462563a-3f8e-49a3-83a8-2eb00334596d" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>means of encoding a single date and time.</ann:description>
+                <ann:shortDescription>Single Date/Time</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="fcbfd850-deca-4b67-9d1c-1014971221ea" parentId="80657692-7a8c-4f27-967e-4c7325bd4040" version="86d1da16-98d3-4757-a83f-389e33da95d2" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>means of encoding a single date and time.</ann:description>
+                <ann:shortDescription>Single Date/Time</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="mdattim">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="4c0ff2a2-e39c-44ee-85d6-092b95ca1e55" parentId="4462563a-3f8e-49a3-83a8-2eb00334596d" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>means of encoding multiple individual dates</ann:description>
+                <ann:shortDescription>Multiple Dates/Times</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="e311bfa5-abe0-42b4-973c-1b1af3acd54a" parentId="7238f063-21ea-47c6-a486-483241eca1c5" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>means of encoding multiple individual dates</ann:description>
+                <ann:shortDescription>Multiple Dates/Times</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="4c0ff2a2-e39c-44ee-85d6-092b95ca1e55" parentId="4462563a-3f8e-49a3-83a8-2eb00334596d" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>means of encoding multiple individual dates</ann:description>
+                <ann:shortDescription>Multiple Dates/Times</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="a8cffc34-b667-4a07-930b-6659b430c9d4" parentId="80657692-7a8c-4f27-967e-4c7325bd4040" version="86d1da16-98d3-4757-a83f-389e33da95d2" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>means of encoding multiple individual dates</ann:description>
+                <ann:shortDescription>Multiple Dates/Times</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="rngdates">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="a1351a67-c9b8-43e7-a153-07ccc05ad589" parentId="4462563a-3f8e-49a3-83a8-2eb00334596d" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>means of encoding a range of date and time.</ann:description>
+                <ann:shortDescription>Range of Dates</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="cd7f0986-97b0-4ce9-940a-53fad53abe8e" parentId="7238f063-21ea-47c6-a486-483241eca1c5" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>means of encoding a range of date and time.</ann:description>
+                <ann:shortDescription>Range of Dates</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="a1351a67-c9b8-43e7-a153-07ccc05ad589" parentId="4462563a-3f8e-49a3-83a8-2eb00334596d" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>means of encoding a range of date and time.</ann:description>
+                <ann:shortDescription>Range of Dates</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="93b4aff9-6154-4bba-831b-df8a6779f180" parentId="80657692-7a8c-4f27-967e-4c7325bd4040" version="86d1da16-98d3-4757-a83f-389e33da95d2" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>means of encoding a range of date and time.</ann:description>
+                <ann:shortDescription>Range of Dates</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:choice>
+  </xs:complexType>
+  <xs:element name="sngdate" type="sngdateType">
+    <xs:annotation>
+      <xs:documentation>Means of encoding a single date and time.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Single Date/Time"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="sngdateType">
+    <xs:sequence>
+      <xs:element ref="caldate">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="a517673a-4158-48cd-a7f7-15970a3e51f5" parentId="11fa05b7-3347-4d70-bafb-100e2579468f" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the year (and optionally month, or month and day).</ann:description>
+                <ann:shortDescription>Calendar Date</ann:shortDescription>
+                <ann:elementType>STRING</ann:elementType>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="0b52c67a-e606-4ef4-bd9f-0ddeecef84a6" parentId="b488e374-eaf9-4747-8af7-3042e667e1c3" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="cb317a30-97f6-4427-a988-17f05f45c7e9" parentId="46314b6f-7898-4fef-a5c0-06b2a763e10e" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="66059c21-c505-4f82-a16e-22ce61955a12" parentId="022a9825-b1b2-49b4-ad22-26a00ce50823" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="159446ae-d1f2-4efc-b347-76e818624564" parentId="fd314f88-9ca3-4f23-a5ed-06a5464a994f" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="471d8b4f-dce6-4cdd-ae66-5e8afc49f02b" parentId="dadf38be-3806-4eaa-8529-ac0f44f78e01" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="20ccf2dd-d51a-42d6-b9a1-3f4c5cadcc7a" parentId="c7022931-697c-435e-8ac9-2ef8138cd31d" version="2128d281-1f66-4a19-bf28-d5b7ba5758ca" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="c7ccabe8-def8-49ce-8dcc-7b18ee551422" parentId="1d6d3686-d47d-4245-bc53-0b7d91cefb67" version="2128d281-1f66-4a19-bf28-d5b7ba5758ca" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="30729f7d-d172-47ec-bd2c-3b557f55d08d" parentId="fcbfd850-deca-4b67-9d1c-1014971221ea" version="86d1da16-98d3-4757-a83f-389e33da95d2" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="a517673a-4158-48cd-a7f7-15970a3e51f5" parentId="11fa05b7-3347-4d70-bafb-100e2579468f" version="86d1da16-98d3-4757-a83f-389e33da95d2" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="time" minOccurs="0">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="e656f100-ae2c-4b6f-966a-aac113460f01" parentId="11fa05b7-3347-4d70-bafb-100e2579468f" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the hour (and optionally minute, or minute and second) of the day.</ann:description>
+                <ann:shortDescription>Time of Day</ann:shortDescription>
+                <ann:elementType>STRING</ann:elementType>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="5cc37edd-17d8-476e-8701-60539482d77f" parentId="b488e374-eaf9-4747-8af7-3042e667e1c3" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="e24c093d-08ed-476a-9760-ca4385ec5e93" parentId="46314b6f-7898-4fef-a5c0-06b2a763e10e" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="b9f0b4d5-11d4-4cfd-bd9e-7a59b8bdc8a8" parentId="022a9825-b1b2-49b4-ad22-26a00ce50823" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="f8b6d014-c4f5-4939-a269-e6f05e64dd2d" parentId="fd314f88-9ca3-4f23-a5ed-06a5464a994f" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="6bba0dea-78f9-4567-ba6c-49218ee12918" parentId="dadf38be-3806-4eaa-8529-ac0f44f78e01" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="21a43d19-a9e7-4376-9e5d-4d70d05c1a1f" parentId="c7022931-697c-435e-8ac9-2ef8138cd31d" version="2128d281-1f66-4a19-bf28-d5b7ba5758ca" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="1cb441bf-5896-4160-a419-2891be20859b" parentId="1d6d3686-d47d-4245-bc53-0b7d91cefb67" version="2128d281-1f66-4a19-bf28-d5b7ba5758ca" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="d362a2a3-0e61-44f0-aad7-1d9082225274" parentId="fcbfd850-deca-4b67-9d1c-1014971221ea" version="86d1da16-98d3-4757-a83f-389e33da95d2" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="e656f100-ae2c-4b6f-966a-aac113460f01" parentId="11fa05b7-3347-4d70-bafb-100e2579468f" version="86d1da16-98d3-4757-a83f-389e33da95d2" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="caldate" type="caldateType">
+    <xs:annotation>
+      <xs:documentation>The year (and optionally month, or month and day).</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Calendar Date"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+        <xs:attribute name="string-input-format" fixed="YYYY|YYYYMM|YYYYMMDD|bcYYYY|bcYYYYMM|bcYYYYMMDD|ccYYYYY...|cdYYYYY..."/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="caldateType">
+    <xs:union memberTypes="FGDCdate">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="Unknown"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:element name="time" type="timeType">
+    <xs:annotation>
+      <xs:documentation>The hour (and optionally minute, or minute and second) of the day.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Time of Day"/>
+        <xs:attribute name="use" fixed="Optional"/>
+        <xs:attribute name="string-input-format" fixed="HH|HHMM|HHMMSS|HHMMSSSS|HHMMSSSSZ|HHMMSSSSshhmm|Values must follow the 24-hour timekeeping system"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="timeType">
+    <xs:union memberTypes="FGDCtime">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="Unknown"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:element name="mdattim" type="mdattimType">
+    <xs:annotation>
+      <xs:documentation>Means of encoding multiple individual dates and times.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Multiple Dates/Times"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="mdattimType">
+    <xs:sequence>
+      <xs:element ref="sngdate" minOccurs="2" maxOccurs="unbounded">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="dadf38be-3806-4eaa-8529-ac0f44f78e01" parentId="4c0ff2a2-e39c-44ee-85d6-092b95ca1e55" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:source>fgdc</ann:source>
+                <ann:description>means of encoding a single date and time.</ann:description>
+                <ann:shortDescription>Single Date/Time</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="022a9825-b1b2-49b4-ad22-26a00ce50823" parentId="e311bfa5-abe0-42b4-973c-1b1af3acd54a" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:source>fgdc</ann:source>
+                <ann:description>means of encoding a single date and time.</ann:description>
+                <ann:shortDescription>Single Date/Time</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="dadf38be-3806-4eaa-8529-ac0f44f78e01" parentId="4c0ff2a2-e39c-44ee-85d6-092b95ca1e55" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:source>fgdc</ann:source>
+                <ann:description>means of encoding a single date and time.</ann:description>
+                <ann:shortDescription>Single Date/Time</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="1d6d3686-d47d-4245-bc53-0b7d91cefb67" parentId="74759e54-254c-4eb3-a97e-44246b693c70" version="2128d281-1f66-4a19-bf28-d5b7ba5758ca" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept/>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="11fa05b7-3347-4d70-bafb-100e2579468f" parentId="a8cffc34-b667-4a07-930b-6659b430c9d4" version="86d1da16-98d3-4757-a83f-389e33da95d2" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept/>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="rngdates" type="rngdatesType">
+    <xs:annotation>
+      <xs:documentation>Means of encoding a range of dates and times.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Range of Dates/Times"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+        <xs:attribute name="other-validation-rules" fixed="checkChron([begdate,enddate])"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="rngdatesType">
+    <xs:sequence>
+      <xs:element ref="begdate">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="8d172e9b-f2b9-4a3a-85e6-0c006db7d876" parentId="93b4aff9-6154-4bba-831b-df8a6779f180" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the first year (and optionally month, or month and day) of the event.</ann:description>
+                <ann:shortDescription>Beginning Date</ann:shortDescription>
+                <ann:elementType>STRING</ann:elementType>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="2c15ba0d-7bc6-4371-9ac2-20d7c5c788f7" parentId="cd7f0986-97b0-4ce9-940a-53fad53abe8e" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="85ee7b82-4a2f-4e56-806a-815f06f9c926" parentId="a1351a67-c9b8-43e7-a153-07ccc05ad589" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="f1b123ef-f586-4282-8443-c7d66b6ee0a4" parentId="77efd07e-022a-4875-9e6e-91c4d8ffc898" version="2128d281-1f66-4a19-bf28-d5b7ba5758ca" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="8d172e9b-f2b9-4a3a-85e6-0c006db7d876" parentId="93b4aff9-6154-4bba-831b-df8a6779f180" version="86d1da16-98d3-4757-a83f-389e33da95d2" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="begtime" minOccurs="0">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="811dad0e-c993-4a3c-9ce2-753ff082b7b9" parentId="93b4aff9-6154-4bba-831b-df8a6779f180" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the first hour (and optionally minute, or minute and second) of the day for the event</ann:description>
+                <ann:shortDescription>Beginning Time</ann:shortDescription>
+                <ann:elementType>STRING</ann:elementType>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="a320b42e-1d81-4079-bf78-6dfbe5bc14ee" parentId="cd7f0986-97b0-4ce9-940a-53fad53abe8e" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="9c6b5695-8e2f-4669-aae0-46892178fc6d" parentId="a1351a67-c9b8-43e7-a153-07ccc05ad589" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="17a94d24-fef8-4605-9fbb-16aae6c42493" parentId="77efd07e-022a-4875-9e6e-91c4d8ffc898" version="2128d281-1f66-4a19-bf28-d5b7ba5758ca" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="811dad0e-c993-4a3c-9ce2-753ff082b7b9" parentId="93b4aff9-6154-4bba-831b-df8a6779f180" version="86d1da16-98d3-4757-a83f-389e33da95d2" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="enddate">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="fb9a13eb-3ea5-455b-9e04-48b59d88aa76" parentId="93b4aff9-6154-4bba-831b-df8a6779f180" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the last year (and optionally month, or month and day) for the event</ann:description>
+                <ann:shortDescription>Ending Date</ann:shortDescription>
+                <ann:elementType>STRING</ann:elementType>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="5a515085-1627-4958-942c-972774d2c86c" parentId="cd7f0986-97b0-4ce9-940a-53fad53abe8e" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="99aee3ef-6053-437f-b98d-a0af7b5debd0" parentId="a1351a67-c9b8-43e7-a153-07ccc05ad589" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="c309b186-6422-48e5-a389-e5d26913d419" parentId="77efd07e-022a-4875-9e6e-91c4d8ffc898" version="2128d281-1f66-4a19-bf28-d5b7ba5758ca" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="fb9a13eb-3ea5-455b-9e04-48b59d88aa76" parentId="93b4aff9-6154-4bba-831b-df8a6779f180" version="86d1da16-98d3-4757-a83f-389e33da95d2" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="endtime" minOccurs="0">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="50008be1-00d6-4d84-b637-3adbdb211d23" parentId="93b4aff9-6154-4bba-831b-df8a6779f180" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the last hour (and optionally minute, or minute and second) of the day
+          for the event</ann:description>
+                <ann:shortDescription>Ending Time</ann:shortDescription>
+                <ann:elementType>STRING</ann:elementType>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="26abd1cf-6687-4797-aad9-20521bc473a1" parentId="cd7f0986-97b0-4ce9-940a-53fad53abe8e" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="b7f4b108-423f-4e41-8cae-1f9b32b77faf" parentId="a1351a67-c9b8-43e7-a153-07ccc05ad589" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="3f0a698b-fc1c-4f75-a582-eeac335f95e7" parentId="77efd07e-022a-4875-9e6e-91c4d8ffc898" version="2128d281-1f66-4a19-bf28-d5b7ba5758ca" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="50008be1-00d6-4d84-b637-3adbdb211d23" parentId="93b4aff9-6154-4bba-831b-df8a6779f180" version="86d1da16-98d3-4757-a83f-389e33da95d2" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="begdate" type="begdateType">
+    <xs:annotation>
+      <xs:documentation>The first year (and optionally month, or month and day) of the event.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Beginning Date"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+        <xs:attribute name="string-input-format" fixed="YYYY|YYYYMM|YYYYMMDD|bcYYYY|bcYYYYMM|bcYYYYMMDD|ccYYYYY...|cdYYYYY...|Beginning Date &lt; Ending Date"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="begdateType">
+    <xs:union memberTypes="FGDCdate">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="Unknown"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:element name="begtime" type="begtimeType">
+    <xs:annotation>
+      <xs:documentation>The first hour (and optionally minute, or minute and second) of the day for the event.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Beginning Time"/>
+        <xs:attribute name="use" fixed="Optional"/>
+        <xs:attribute name="string-input-format" fixed="HH|HHMM|HHMMSS|HHMMSSSS|HHMMSSSSZ|HHMMSSSSshhmm|Values must follow the 24-hour timekeeping system"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="begtimeType">
+    <xs:union memberTypes="FGDCtime">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="Unknown"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:element name="enddate" type="enddateType">
+    <xs:annotation>
+      <xs:documentation>The last year (and optionally month, or month and day) for the event.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Ending Date"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+        <xs:attribute name="string-input-format" fixed="YYYY|YYYYMM|YYYYMMDD|bcYYYY|bcYYYYMM|bcYYYYMMDD|ccYYYYY...|cdYYYYY..."/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="enddateType">
+    <xs:union memberTypes="FGDCdate">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="Unknown"/>
+          <xs:enumeration value="Present"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:element name="endtime" type="endtimeType">
+    <xs:annotation>
+      <xs:documentation>The last hour (and optionally minute, or minute and  second) of the day for the event.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Ending Time"/>
+        <xs:attribute name="use" fixed="Optional"/>
+        <xs:attribute name="string-input-format" fixed="HH|HHMM|HHMMSS|HHMMSSSS|HHMMSSSSZ|HHMMSSSSshhmm|Values must follow the 24-hour timekeeping system"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="endtimeType">
+    <xs:union memberTypes="FGDCtime">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="Unknown"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+</xs:schema>

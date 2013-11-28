@@ -1,0 +1,38 @@
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<dcp xmlns="http://dataconservancy.org/schemas/dcp/1.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://dataconservancy.org/schemas/dcp/1.0 http://dataconservancy.org/schemas/dcp/1.0">
+  <Files>
+    <File id="http://dcservice.dataconservancy.org:8080/dcs/entity/2843069"
+      src="http://dcservice.dataconservancy.org:8080/dcs/datastream/http%3A%2F%2Fdcservice.dataconservancy.org%3A8080%2Fdcs%2Fentity%2F2843069">
+      <fileName>guinness.jpg</fileName>
+      <extant>true</extant>
+      <size>285099</size>
+      <fixity algorithm="MD5">1ec82c37bbaaab79df2fa8256759a415</fixity>
+      <fixity algorithm="SHA-1">a00015150e273eb64b63aa3c0afd90da680c8818</fixity>
+      <format>
+        <id scheme="http://www.iana.org/assignments/media-types/">image/png</id>
+      </format>
+      <format>
+        <id scheme="http://www.iana.org/assignments/media-types/">image/jpeg</id>
+      </format>
+      <format>
+        <id scheme="http://www.iana.org/assignments/media-types/">image/pjpeg</id>
+      </format>
+    </File>
+  </Files>
+</dcp>

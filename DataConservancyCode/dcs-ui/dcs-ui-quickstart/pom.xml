@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <!-- 
+    $Id$
+    $URL$
+  -->
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.dataconservancy.ui</groupId>
+  <artifactId>dcs-ui-quickstart</artifactId>
+  <packaging>jar</packaging>
+  <name>DC Reference UI Quickstart</name>
+  <description>Self-executing JAR which runs the DC Reference UI</description>
+
+  <parent>
+    <groupId>org.dataconservancy.ui</groupId>
+    <artifactId>dcs-ui</artifactId>
+    <version>1.1.0-SNAPSHOT</version>
+  </parent>
+
+  <!-- Build  ===================================================== -->
+
+  <properties>
+    <tomcat.version>6.0.28</tomcat.version>
+    <winstone.version>0.9.10</winstone.version>
+  </properties>
+
+  <build>
+
+    <plugins>
+
+      <!--
+        We can't use the winstone maven plugin because it's (near?) impossible to
+        modify the contents of the winstone jar.  The winstone jar needs to be modified
+        to support JSP compilation.  Adding this support in the embedded webapp is not possible;
+        winstone expects these jars to _not_ be in a webapp classloader.   
+        
+        As an alternative, we could update the embedded webapp with pre-compiled JSPs.
+        
+        Another alternative, chosen here, is to use the assemmbly plugin to do the same thing
+        as the winstone:embed goal.       
+      -->
+
+      <!--
+      <plugin>
+        <groupId>net.sf.alchim</groupId>
+        <artifactId>winstone-maven-plugin</artifactId>
+        <configuration>
+          <filename>${project.artifactId}-${project.version}.war</filename>          
+          <cmdLineOptions>
+            <property>
+              <name>prefix</name>
+              <value>/dcs-ui</value>
+            </property>
+            <property>
+              <name>useJasper</name>
+              <value>true</value>
+            </property>
+          </cmdLineOptions>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>embed</goal>
+            </goals>
+            <phase>package</phase>
+          </execution>
+        </executions>
+      </plugin>
+      -->
+
+      <!--
+        Use the assembly plugin to create our self-executing jar
+        - see src/main/resources/embedded.properties, used to configure winstone
+        - see src/main/resources/ext.properties, used to configure the DC Reference UI
+      -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.3</version>
+        <configuration>
+          <descriptors>
+            <descriptor>src/main/assembly/standalone-assembly.xml</descriptor>
+          </descriptors>
+          <archive>
+            <manifest>
+              <mainClass>winstone.Launcher</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+        <executions>
+          <execution>
+            <id>dcsui-quickstart</id>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <phase>package</phase>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.5</version>
+        <executions>
+          <execution>
+            <id>attach-artifacts</id>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <phase>package</phase>
+          </execution>
+        </executions>
+        <configuration>
+          <artifacts>
+            <artifact>
+              <file>${project.build.directory}/${project.artifactId}-${version}-standalone.jar</file>
+              <type>jar</type>
+              <classifier>standalone</classifier>
+            </artifact>
+          </artifacts>
+        </configuration>
+      </plugin>
+
+    </plugins>
+
+  </build>
+
+  <!-- Dependencies =============================================== -->
+
+  <dependencies>
+
+    <!-- Provided ================================================= -->
+
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Runtime ================================================== -->
+
+    <!--
+      The DC Reference UI war to be embedded
+    -->
+
+    <dependency>
+      <groupId>org.dataconservancy.ui</groupId>
+      <artifactId>stripes-dcwebapp</artifactId>
+      <version>${project.parent.version}</version>
+      <type>war</type>
+      <scope>runtime</scope>
+    </dependency>
+
+    <!--
+      Winstone, the embedded servlet container.  Would prefer to use Jetty.
+    -->
+
+    <dependency>
+      <groupId>net.sourceforge.winstone</groupId>
+      <artifactId>winstone</artifactId>
+      <version>${winstone.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <!--
+      Logging dependencies, including JULI (Tomcat hard-codes a dependency on JULI)
+    -->
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>juli</artifactId>
+      <version>${tomcat.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <!-- 
+      Jasper dependencies, supporting JSP compilation
+    -->
+
+    <dependency>
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>jsp-api</artifactId>
+      <version>${tomcat.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>jasper</artifactId>
+      <version>${tomcat.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>el-api</artifactId>
+      <version>${tomcat.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>jasper-el</artifactId>
+      <version>${tomcat.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>jasper-jdt</artifactId>
+      <version>${tomcat.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <!-- Compile ================================================== -->
+
+    <!-- Test ===================================================== -->
+
+  </dependencies>
+
+</project>

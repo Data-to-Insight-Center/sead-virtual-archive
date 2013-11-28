@@ -1,0 +1,1228 @@
+<!--edited with XMLSpy v2008 sp1 (http://www.altova.com) by Systems Administrator (NCDDC)-->
+<xs:schema blockDefault="#all" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="distinfo" type="distinfoType">
+    <xs:annotation>
+      <xs:documentation>Information about the distributor of and options for obtaining the data set.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Distribution Information"/>
+        <xs:attribute name="use" fixed="Mandatory-if-applicable"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="distinfoType">
+    <xs:sequence>
+      <xs:element ref="distrib">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="961078a7-d868-4011-a899-00d403e6d06e" parentId="e50db99a-ca4c-4528-8acc-10d3b1013c72" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="resdesc" minOccurs="0">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="91d1b859-df32-4342-a443-083a1216441c" parentId="e50db99a-ca4c-4528-8acc-10d3b1013c72" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the identifier by which the distributor knows the data set.</ann:description>
+                <ann:shortDescription>Resource Description</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="distliab">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="1a732527-686f-498b-af95-3fc7ebca9682" parentId="e50db99a-ca4c-4528-8acc-10d3b1013c72" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>statement of the liability assumed by the distributor.</ann:description>
+                <ann:shortDescription>Distribution Liability</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="stdorder" minOccurs="0" maxOccurs="unbounded">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="6fe3b7f8-fc20-4735-9349-69de85c41cdf" parentId="e50db99a-ca4c-4528-8acc-10d3b1013c72" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the common ways in which the data set may be obtained or received, and</ann:description>
+                <ann:shortDescription>Standard Order Process</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="custom" minOccurs="0">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="5fe490ad-5a1c-4322-9b92-604bbf3006ab" parentId="e50db99a-ca4c-4528-8acc-10d3b1013c72" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>description of custom distribution services available, and the terms and conditions for</ann:description>
+                <ann:shortDescription>Custom Order Process</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="techpreq" minOccurs="0">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="0f6557d1-1c2c-4c80-9460-8b3eacb207b5" parentId="e50db99a-ca4c-4528-8acc-10d3b1013c72" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>description of any technical capabilities that the consumer must have to use the data</ann:description>
+                <ann:shortDescription>Technical Prerequisites</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="availabl" minOccurs="0">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="e05d9836-d4f0-46c8-9dc2-32817b896ba5" parentId="e50db99a-ca4c-4528-8acc-10d3b1013c72" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="distrib" type="distribType">
+    <xs:annotation>
+      <xs:documentation>The party from whom the data set may be obtained.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Distributor"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="distribType">
+    <xs:sequence>
+      <xs:element ref="cntinfo">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="fd0ce079-3a42-487d-86cf-35593a211bc9" parentId="961078a7-d868-4011-a899-00d403e6d06e" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:source>fgdc</ann:source>
+                <ann:description>
+                  Identity of, and means to communicate with, person(s) and organization(s) associated with
+                  the data set
+                </ann:description>
+                <ann:shortDescription>Contact Information</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="resdesc" type="resdescType">
+    <xs:annotation>
+      <xs:documentation>The identifier by which the distributor knows the data set.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Resource Description"/>
+        <xs:attribute name="use" fixed="Mandatory-if-applicable"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="resdescType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="distliab" type="distliabType">
+    <xs:annotation>
+      <xs:documentation>Statement of the liability assumed by the distributor.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Distribution Liability"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="distliabType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="stdorder" type="stdorderType">
+    <xs:annotation>
+      <xs:documentation>The common ways in which the data set may be obtained or received, and related instructions and fee information.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Standard Order Process"/>
+        <xs:attribute name="use" fixed="Mandatory-if-applicable"/>
+        <xs:attribute name="other-validation-rules" fixed="checkOr([nondig,digform])"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="stdorderType">
+    <xs:sequence>
+      <xs:choice>
+        <xs:element ref="nondig">
+          <xs:annotation>
+            <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+              <ann:metadataNode nodeId="f6392feb-ab44-4d6d-88af-3acf89a7b574" parentId="6fe3b7f8-fc20-4735-9349-69de85c41cdf" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+                <ann:metadataElement>
+                  <ann:name/>
+                  <ann:source>fgdc</ann:source>
+                  <ann:description>the description of options for obtaining the data set on non-computer- compatible media.</ann:description>
+                  <ann:shortDescription>Non-digital Form</ann:shortDescription>
+                </ann:metadataElement>
+              </ann:metadataNode>
+            </xsd:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element ref="digform" maxOccurs="unbounded">
+          <xs:annotation>
+            <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+              <ann:metadataNode nodeId="92596362-4d63-490f-873d-6c5c6f4e1c23" parentId="6fe3b7f8-fc20-4735-9349-69de85c41cdf" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+                <ann:metadataConcept>
+                  <ann:name/>
+                  <ann:source>fgdc</ann:source>
+                  <ann:description>the description of options for obtaining the data set on computer-compatible media</ann:description>
+                  <ann:shortDescription>Digital Form</ann:shortDescription>
+                </ann:metadataConcept>
+              </ann:metadataNode>
+            </xsd:appinfo>
+          </xs:annotation>
+        </xs:element>
+      </xs:choice>
+      <xs:element ref="fees">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="178796c1-9a41-44ce-9483-56c5419ecf22" parentId="6fe3b7f8-fc20-4735-9349-69de85c41cdf" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the fees and terms for retrieving the data set.</ann:description>
+                <ann:shortDescription>Fees</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="ordering" minOccurs="0">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="e34780b2-efec-475d-b515-1623580d81f3" parentId="6fe3b7f8-fc20-4735-9349-69de85c41cdf" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>general instructions and advice about, and special terms and services provided for, the</ann:description>
+                <ann:shortDescription>Ordering Instructions</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="turnarnd" minOccurs="0">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="fa580d9e-cc47-4467-9670-b00727493a59" parentId="6fe3b7f8-fc20-4735-9349-69de85c41cdf" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>typical turnaround time for the filling of an order.</ann:description>
+                <ann:shortDescription>Turnaround</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="nondig" type="nondigType">
+    <xs:annotation>
+      <xs:documentation>The description of options for obtaining the data set on non-computer-compatible media.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Non-digital Form"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="nondigType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="digform" type="digformType">
+    <xs:annotation>
+      <xs:documentation>The description of options for obtaining the data set on computer-compatible media.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Digital Form"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="digformType">
+    <xs:sequence>
+      <xs:element ref="digtinfo">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="eedaa4b1-a116-45e5-9b59-0dfa0b6500ca" parentId="92596362-4d63-490f-873d-6c5c6f4e1c23" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="digtopt">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="1368e7da-65f5-42b2-838b-f77a30dbd2c7" parentId="92596362-4d63-490f-873d-6c5c6f4e1c23" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="digtinfo" type="digtinfoType">
+    <xs:annotation>
+      <xs:documentation>Description of the form of the data to be distributed.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Digital Transfer Information"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+        <xs:attribute name="other-validation-rules" fixed="checkOr([formverd,formvern]);checkRangeExcludeMin([transize,0.0]);checkForcedMandatory([formvern,formverd,formspec])"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="digtinfoType">
+    <xs:sequence>
+      <xs:element ref="formname">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="408a04bd-c323-499d-8227-127a55fb7d70" parentId="eedaa4b1-a116-45e5-9b59-0dfa0b6500ca" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the name of the data transfer format.</ann:description>
+                <ann:shortDescription>Format Name</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:sequence minOccurs="0">
+        <xs:choice>
+          <xs:element ref="formvern">
+            <xs:annotation>
+              <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+                <ann:metadataNode nodeId="853b07d8-e6c4-42a2-89fc-12181e1f0a51" parentId="eedaa4b1-a116-45e5-9b59-0dfa0b6500ca" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+                  <ann:metadataElement>
+                    <ann:name/>
+                    <ann:source>fgdc</ann:source>
+                    <ann:description>version number of the format.</ann:description>
+                    <ann:shortDescription>Format Version Number</ann:shortDescription>
+                  </ann:metadataElement>
+                </ann:metadataNode>
+              </xsd:appinfo>
+            </xs:annotation>
+          </xs:element>
+          <xs:element ref="formverd">
+            <xs:annotation>
+              <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+                <ann:metadataNode nodeId="ceb0eee5-c376-4153-8d12-cfa0d430e769" parentId="eedaa4b1-a116-45e5-9b59-0dfa0b6500ca" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+                  <ann:metadataElement>
+                    <ann:name/>
+                    <ann:source>fgdc</ann:source>
+                    <ann:description>date of the version of the format.</ann:description>
+                    <ann:shortDescription>Format Version Date</ann:shortDescription>
+                  </ann:metadataElement>
+                </ann:metadataNode>
+              </xsd:appinfo>
+            </xs:annotation>
+          </xs:element>
+        </xs:choice>
+        <xs:element ref="formspec" minOccurs="0">
+          <xs:annotation>
+            <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+              <ann:metadataNode nodeId="c5f49f2b-3c3c-4629-b49c-e2107ecd73f0" parentId="eedaa4b1-a116-45e5-9b59-0dfa0b6500ca" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+                <ann:metadataElement>
+                  <ann:name/>
+                  <ann:source>fgdc</ann:source>
+                  <ann:description>name of a subset, profile, or product specification of the format.</ann:description>
+                  <ann:shortDescription>Format Specification</ann:shortDescription>
+                </ann:metadataElement>
+              </ann:metadataNode>
+            </xsd:appinfo>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+      <xs:element ref="formcont" minOccurs="0">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="cd0ae391-86eb-431b-92f9-3ccd6b17e110" parentId="eedaa4b1-a116-45e5-9b59-0dfa0b6500ca" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>description of the content of the data encoded in a format.</ann:description>
+                <ann:shortDescription>Format Information Content</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="filedec" minOccurs="0">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="cb2e9e20-87bf-49a7-8439-3915a438ab4d" parentId="eedaa4b1-a116-45e5-9b59-0dfa0b6500ca" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>recommendations of algorithms or processes (including means of</ann:description>
+                <ann:shortDescription>File Decompression Technique</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="transize" minOccurs="0">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="bf5f60d3-3f99-4f71-ad6e-0168353ae293" parentId="eedaa4b1-a116-45e5-9b59-0dfa0b6500ca" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the size, or estimated size, of the transferred data set in megabytes.</ann:description>
+                <ann:shortDescription>Transfer Size</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="formname" type="formnameType">
+    <xs:annotation>
+      <xs:documentation>The name of the data transfer format.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Format Name"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="formnameType">
+    <xs:union memberTypes="FGDCstring">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="ARCE"/>
+          <xs:enumeration value="ARCG"/>
+          <xs:enumeration value="ASCII"/>
+          <xs:enumeration value="BIL"/>
+          <xs:enumeration value="BIP"/>
+          <xs:enumeration value="BSQ"/>
+          <xs:enumeration value="CDF"/>
+          <xs:enumeration value="CFF"/>
+          <xs:enumeration value="COORD"/>
+          <xs:enumeration value="DEM"/>
+          <xs:enumeration value="DFAD"/>
+          <xs:enumeration value="DGN"/>
+          <xs:enumeration value="DIGEST"/>
+          <xs:enumeration value="DLG"/>
+          <xs:enumeration value="DTED"/>
+          <xs:enumeration value="DWG"/>
+          <xs:enumeration value="DX90"/>
+          <xs:enumeration value="DXF"/>
+          <xs:enumeration value="ERDAS"/>
+          <xs:enumeration value="GRASS"/>
+          <xs:enumeration value="HDF"/>
+          <xs:enumeration value="IGDS"/>
+          <xs:enumeration value="IGES"/>
+          <xs:enumeration value="MOSS"/>
+          <xs:enumeration value="netCDF"/>
+          <xs:enumeration value="NITF"/>
+          <xs:enumeration value="RPF"/>
+          <xs:enumeration value="RVC"/>
+          <xs:enumeration value="RVF"/>
+          <xs:enumeration value="SDTS"/>
+          <xs:enumeration value="SIF"/>
+          <xs:enumeration value="SLF"/>
+          <xs:enumeration value="TIFF"/>
+          <xs:enumeration value="TGRLN"/>
+          <xs:enumeration value="VPF"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:element name="formvern" type="formvernType">
+    <xs:annotation>
+      <xs:documentation>Version number of the format.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Format Version Number"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="formvernType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="formverd" type="formverdType">
+    <xs:annotation>
+      <xs:documentation>Date of the version of the format.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Format Version Date"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+        <xs:attribute name="string-input-format" fixed="YYYY|YYYYMM|YYYYMMDD|bcYYYY|bcYYYYMM|bcYYYYMMDD|ccYYYYY...|cdYYYYY..."/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="formverdType">
+    <xs:restriction base="FGDCdate"/>
+  </xs:simpleType>
+  <xs:element name="formspec" type="formspecType">
+    <xs:annotation>
+      <xs:documentation>Name of a subset, profile, or product specification of the format.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Format Specification"/>
+        <xs:attribute name="use" fixed="Optional"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="formspecType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="formcont" type="formcontType">
+    <xs:annotation>
+      <xs:documentation>Description of the content of the data encoded in a format.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Format Information Content"/>
+        <xs:attribute name="use" fixed="Optional"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="formcontType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="filedec" type="filedecType">
+    <xs:annotation>
+      <xs:documentation>Recommendations of algorithms or processes (including means of obtaining these algorithms or processes) that can be applied to read or expand data sets to which data compression techniques have been applied.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="File Decompression Technique"/>
+        <xs:attribute name="use" fixed="Mandatory-if-applicable"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="filedecType">
+    <xs:union memberTypes="FGDCstring">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="No compression applied"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:element name="transize" type="transizeType">
+    <xs:annotation>
+      <xs:documentation>The size, or estimated size, of the transferred data set in megabytes.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Transfer Size"/>
+        <xs:attribute name="use" fixed="Optional"/>
+        <xs:attribute name="string-input-format" fixed="Transfer Size > 0.0"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="transizeType">
+    <xs:restriction base="xs:double">
+      <xs:minExclusive value="0.0"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="digtopt" type="digtoptType">
+    <xs:annotation>
+      <xs:documentation>The means and media by which a data set is obtained from the distributor.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Digital Transfer Option"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+        <xs:attribute name="other-validation-rules" fixed="checkForcedMandatory([offoptn,onlinopt])"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="digtoptType">
+    <xs:choice maxOccurs="unbounded">
+      <xs:element ref="onlinopt">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="2fe5a62e-d0f5-4cfb-aec2-6b73a1c3882a" parentId="1368e7da-65f5-42b2-838b-f77a30dbd2c7" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="offoptn">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="1d6d92f9-1c49-41bc-a48a-82a2809c90a6" parentId="1368e7da-65f5-42b2-838b-f77a30dbd2c7" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:choice>
+  </xs:complexType>
+  <xs:element name="onlinopt" type="onlinoptType">
+    <xs:annotation>
+      <xs:documentation>Information required to directly obtain the data set electronically.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Online Option"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="onlinoptType">
+    <xs:sequence>
+      <xs:element ref="computer" maxOccurs="unbounded">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="ef3e3269-9e05-43bd-a30a-a681d4bb05d0" parentId="2fe5a62e-d0f5-4cfb-aec2-6b73a1c3882a" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:source>fgdc</ann:source>
+                <ann:description>instructions for establishing communications with the distribution</ann:description>
+                <ann:shortDescription>Computer Contact Information</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="accinstr" minOccurs="0">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="8b43ef34-3e35-437c-82a1-fc58c9493f9d" parentId="2fe5a62e-d0f5-4cfb-aec2-6b73a1c3882a" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>instructions on the steps required to access the data set.</ann:description>
+                <ann:shortDescription>Access Instructions</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="oncomp" minOccurs="0">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="99a415df-0eb0-4620-9b70-5e7bc270a67e" parentId="2fe5a62e-d0f5-4cfb-aec2-6b73a1c3882a" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the brand of distribution computer and its operating system.</ann:description>
+                <ann:shortDescription>Online Computer and Operating System</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="computer" type="computerType">
+    <xs:annotation>
+      <xs:documentation>Instructions for establishing communications with the distribution computer.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Computer Contact Information"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+        <xs:attribute name="other-validation-rules" fixed="checkOr([networka,dialinst])"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="computerType">
+    <xs:choice>
+      <xs:element ref="networka">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="8623ed41-0cc9-452f-938e-4dda848312a2" parentId="ef3e3269-9e05-43bd-a30a-a681d4bb05d0" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="dialinst">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="d479316d-69c9-41de-8601-bd3e873c4fa0" parentId="ef3e3269-9e05-43bd-a30a-a681d4bb05d0" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:choice>
+  </xs:complexType>
+  <xs:element name="networka" type="networkaType">
+    <xs:annotation>
+      <xs:documentation>The electronic address from which the data set can be obtained from the distribution computer.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Network Address"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="networkaType">
+    <xs:sequence>
+      <xs:element ref="networkr" maxOccurs="unbounded">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="7e4820be-c299-432f-8f6c-f67c2223545d" parentId="8623ed41-0cc9-452f-938e-4dda848312a2" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the name of the file or service from which the data set can be obtained.</ann:description>
+                <ann:shortDescription>Network Resource Name</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="networkr" type="networkrType">
+    <xs:annotation>
+      <xs:documentation>The name of the file or service from which the data set can be obtained.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Network Resource Name"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="networkrType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="dialinst" type="dialinstType">
+    <xs:annotation>
+      <xs:documentation>Information required to access the distribution computer remotely through telephone lines.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Dialup Instructions"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+        <xs:attribute name="other-validation-rules" fixed="checkGreaterThan([highbps,lowbps])"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="dialinstType">
+    <xs:sequence>
+      <xs:element ref="lowbps">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="d0c8ae52-f5ba-44bb-903c-04c1b5fe63a8" parentId="d479316d-69c9-41de-8601-bd3e873c4fa0" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>lowest or only speed for the connection's communication, expressed in bits per second.</ann:description>
+                <ann:shortDescription>Lowest BPS</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="highbps" minOccurs="0">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="25bec605-5e8b-4b8a-8a8b-7a25af7f7558" parentId="d479316d-69c9-41de-8601-bd3e873c4fa0" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>highest speed for the connection's communication, expressed in bits per second. Used</ann:description>
+                <ann:shortDescription>Highest BPS</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="numdata">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="75863c84-0301-4a01-bbff-c5c6f50b65ad" parentId="d479316d-69c9-41de-8601-bd3e873c4fa0" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>number of data bits in each character exchanged in the communication.</ann:description>
+                <ann:shortDescription>Number DataBits</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="numstop">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="f8ddfff7-1813-4628-9d6c-c59d26f1c8d2" parentId="d479316d-69c9-41de-8601-bd3e873c4fa0" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>number of stop bits in each character exchanged in the communication.</ann:description>
+                <ann:shortDescription>Number StopBits</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="parity">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="b3e5dca8-6dbb-4cac-b6bc-879295a2add2" parentId="d479316d-69c9-41de-8601-bd3e873c4fa0" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>parity error checking used in each character exchanged in the communication.</ann:description>
+                <ann:shortDescription>Parity</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="compress" minOccurs="0">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="73a2a2b9-8e0f-4435-8fe4-0b366530249b" parentId="d479316d-69c9-41de-8601-bd3e873c4fa0" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>data compression available through the modem service to speed data transfer.</ann:description>
+                <ann:shortDescription>Compression Support</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="dialtel" maxOccurs="unbounded">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="179f2144-4e08-4f97-8c98-f05a32a92d08" parentId="d479316d-69c9-41de-8601-bd3e873c4fa0" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the telephone number of the distribution computer.</ann:description>
+                <ann:shortDescription>Dialup Telephone</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="dialfile" maxOccurs="unbounded">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="3ad1e697-e4a5-423f-9238-58c8676936fb" parentId="d479316d-69c9-41de-8601-bd3e873c4fa0" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the name of a file containing the data set on the distribution computer.</ann:description>
+                <ann:shortDescription>Dialup File Name</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:simpleType name="bpsType">
+    <xs:restriction base="xs:integer">
+      <xs:minInclusive value="110"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="lowbps" type="lowbpsType">
+    <xs:annotation>
+      <xs:documentation>Lowest or only speed for the connection's communication, expressed in bits per second.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Lowest BPS"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+        <xs:attribute name="string-input-format" fixed="Lowest BPS >= 110"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="lowbpsType">
+    <xs:restriction base="bpsType"/>
+  </xs:simpleType>
+  <xs:element name="highbps" type="highbpsType">
+    <xs:annotation>
+      <xs:documentation>Highest speed for the connection's communication, expressed in bits per second.  Used in cases when a range of rates are provided.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Highest BPS"/>
+        <xs:attribute name="use" fixed="Mandatory-if-applicable"/>
+        <xs:attribute name="string-input-format" fixed="Highest BPS > Lowest BPS"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="highbpsType">
+    <xs:restriction base="bpsType"/>
+  </xs:simpleType>
+  <xs:element name="numdata" type="numdataType">
+    <xs:annotation>
+      <xs:documentation>Number of data bits in each character exchanged in the communication.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Number DataBits"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+        <xs:attribute name="string-input-format" fixed="7 &lt;= Number DataBits &lt;= 8"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="numdataType">
+    <xs:restriction base="xs:integer">
+      <xs:minInclusive value="7"/>
+      <xs:maxInclusive value="8"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="numstop" type="numstopType">
+    <xs:annotation>
+      <xs:documentation>Number of stop bits in each character exchanged in the communication.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Number StopBits"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+        <xs:attribute name="string-input-format" fixed="1 &lt;= Number StopBits &lt;= 2"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="numstopType">
+    <xs:restriction base="xs:integer">
+      <xs:minInclusive value="1"/>
+      <xs:maxInclusive value="2"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="parity" type="parityType">
+    <xs:annotation>
+      <xs:documentation>Parity error checking used in each character exchanged in the communication.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Parity"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="parityType">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="None"/>
+      <xs:enumeration value="Odd"/>
+      <xs:enumeration value="Even"/>
+      <xs:enumeration value="Mark"/>
+      <xs:enumeration value="Space"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="compress" type="compressType">
+    <xs:annotation>
+      <xs:documentation>Data compression available through the modem service to speed data transfer.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Compression Support"/>
+        <xs:attribute name="use" fixed="Mandatory-if-applicable"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="compressType">
+    <xs:union memberTypes="FGDCstring">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="V.32"/>
+          <xs:enumeration value="V.32bis"/>
+          <xs:enumeration value="V.42"/>
+          <xs:enumeration value="V.42bis"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:element name="dialtel" type="dialtelType">
+    <xs:annotation>
+      <xs:documentation>The telephone number of the distribution computer.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Dialup Telephone"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="dialtelType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="dialfile" type="dialfileType">
+    <xs:annotation>
+      <xs:documentation>The name of a file containing the data set on the distribution computer.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Dialup File Name"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="dialfileType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="accinstr" type="accinstrType">
+    <xs:annotation>
+      <xs:documentation>Instructions on the steps required to access the data set.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Access Instructions"/>
+        <xs:attribute name="use" fixed="Optional"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="accinstrType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="oncomp" type="oncompType">
+    <xs:annotation>
+      <xs:documentation>The brand of distribution computer and its operating system.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Online Computer and Operating System"/>
+        <xs:attribute name="use" fixed="Optional"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="oncompType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="offoptn" type="offoptnType">
+    <xs:annotation>
+      <xs:documentation>Information about media-specific options for receiving the data set.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Offline Option"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="offoptnType">
+    <xs:sequence>
+      <xs:element ref="offmedia">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="25150600-7148-4000-8220-0cf909f9aeb4" parentId="1d6d92f9-1c49-41bc-a48a-82a2809c90a6" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>name of the media on which the data set can be received.</ann:description>
+                <ann:shortDescription>Offline Media</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="reccap" minOccurs="0">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="490c88b6-da88-49a8-b719-d335caacf369" parentId="1d6d92f9-1c49-41bc-a48a-82a2809c90a6" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="recfmt" maxOccurs="unbounded">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="c58f5228-f49e-4d5e-bb20-effe836a1c54" parentId="1d6d92f9-1c49-41bc-a48a-82a2809c90a6" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the options available or method used to write the data set to the medium.</ann:description>
+                <ann:shortDescription>Recording Format</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="compat" minOccurs="0">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="12a448bf-9ed6-4ce5-858f-a6f30b8ba544" parentId="1d6d92f9-1c49-41bc-a48a-82a2809c90a6" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>description of other limitations or requirements for using the medium.</ann:description>
+                <ann:shortDescription>Compatibility Information</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="offmedia" type="offmediaType">
+    <xs:annotation>
+      <xs:documentation>Name of the media on which the data set can be received.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Offline Media"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="offmediaType">
+    <xs:union memberTypes="FGDCstring">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="CD-ROM"/>
+          <xs:enumeration value="3.5-inch floppy disk"/>
+          <xs:enumeration value="5.25-inch floppy disk"/>
+          <xs:enumeration value="9-track tape"/>
+          <xs:enumeration value="4mm cartridge tape"/>
+          <xs:enumeration value="8mm cartridge tape"/>
+          <xs:enumeration value=".25-inch cartridge tape"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:element name="reccap" type="reccapType">
+    <xs:annotation>
+      <xs:documentation>The density of information to which data are written.  Used in cases where different recording capacities are possible.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Recording Capacity"/>
+        <xs:attribute name="use" fixed="Mandatory-if-applicable"/>
+        <xs:attribute name="other-validation-rules" fixed="checkRangeExcludeMin([recden,0.0])"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="reccapType">
+    <xs:sequence>
+      <xs:element ref="recden" maxOccurs="unbounded">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="52571a18-08e0-4165-8ad3-edc5138994d6" parentId="490c88b6-da88-49a8-b719-d335caacf369" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the density in which the data set can be recorded.</ann:description>
+                <ann:shortDescription>Recording Density</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="recdenu">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="fe999f5e-f1e8-4063-87b3-77f87fe618a5" parentId="490c88b6-da88-49a8-b719-d335caacf369" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the units of measure for the recording density.</ann:description>
+                <ann:shortDescription>Recording Density Units</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="recden" type="recdenType">
+    <xs:annotation>
+      <xs:documentation>The density in which the data set can be recorded.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Recording Density"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+        <xs:attribute name="string-input-format" fixed="Recording Density > 0.0"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="recdenType">
+    <xs:restriction base="xs:double">
+      <xs:minExclusive value="0.0"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="recdenu" type="recdenuType">
+    <xs:annotation>
+      <xs:documentation>The units of measure for the recording density.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Recording Density Units"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="recdenuType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="recfmt" type="recfmtType">
+    <xs:annotation>
+      <xs:documentation>The options available or method used to write the data set to the medium.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Recording Format"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+        <xs:attribute name="is-multiple-selection" fixed="true"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="recfmtType">
+    <xs:union memberTypes="FGDCstring">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="cpio"/>
+          <xs:enumeration value="High Sierra"/>
+          <xs:enumeration value="ISO 9960"/>
+          <xs:enumeration value="ISO 9960 with Rock Ridge extensions"/>
+          <xs:enumeration value="ISO 9660 with Apple HFS extensions"/>
+          <xs:enumeration value="tar"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:element name="compat" type="compatType">
+    <xs:annotation>
+      <xs:documentation>Description of other limitations or requirements for using the medium.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Compatibility Information"/>
+        <xs:attribute name="use" fixed="Mandatory-if-applicable"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="compatType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="fees" type="feesType">
+    <xs:annotation>
+      <xs:documentation>The fees and terms for retrieving the data set.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Fees"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="feesType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="ordering" type="orderingType">
+    <xs:annotation>
+      <xs:documentation>General instructions and advice about, and special terms and services provided for, the data set by the distributor.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Ordering Instructions"/>
+        <xs:attribute name="use" fixed="Optional"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="orderingType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="turnarnd" type="turnarndType">
+    <xs:annotation>
+      <xs:documentation>Typical turnaround time for the filling of an order.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Turnaround"/>
+        <xs:attribute name="use" fixed="Optional"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="turnarndType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="custom" type="customType">
+    <xs:annotation>
+      <xs:documentation>Description of custom distribution services available, and the terms and conditions for obtaining these services.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Custom Order Process"/>
+        <xs:attribute name="use" fixed="Mandatory-if-applicable"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="customType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="techpreq" type="techpreqType">
+    <xs:annotation>
+      <xs:documentation>Description of any technical capabilities that the consumer must have to use the data set in the form(s) provided by the distributor.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Technical Prerequisites"/>
+        <xs:attribute name="use" fixed="Optional"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="techpreqType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="availabl" type="availablType">
+    <xs:annotation>
+      <xs:documentation>The time period when the data set will be available from the distributor.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Available Time Period"/>
+        <xs:attribute name="use" fixed="Optional"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="availablType">
+    <xs:sequence>
+      <xs:element ref="timeinfo">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="7238f063-21ea-47c6-a486-483241eca1c5" parentId="e05d9836-d4f0-46c8-9dc2-32817b896ba5" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:source>fgdc</ann:source>
+                <ann:description>
+                  information about the date and time of an event.  (Note:  this section provides a means
+                  of stating temporal information, and is used by other sections of the metadata standard
+                </ann:description>
+                <ann:shortDescription>Time Period Information</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

@@ -1,0 +1,595 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE metadata SYSTEM "http://www.fgdc.gov/schemas/metadata/fgdc-std-001-1998.dtd">
+
+<metadata>
+    <idinfo>
+        <datsetid>ELOKA002</datsetid>
+        <citation>
+            <citeinfo>
+                <origin>Fleming, Miriam</origin>
+                <pubdate>20100401</pubdate>
+                <title>Sea Ice in the Belcher Islands, Nunavut, Canada</title>
+                <pubinfo>
+                    <pubplace>Boulder, Colorado USA</pubplace>
+                    <publish>NSIDC: National Snow and Ice Data Center</publish>
+                </pubinfo>
+                <onlink>http://nsidc.org/data/eloka002.html</onlink>
+            </citeinfo>
+        </citation>
+        <descript>
+            <abstract>This data set contains interviews of three hunters from Sanikiliaq, Belcher Islands, in the
+                territory of Nunavut, Canada. The hunters describe their observations of sea ice conditions around the
+                Belcher Islands gathered from their many hunting expeditions. The local and traditional knowledge (LTK)
+                gathered from these interviews reveals that the ice is changing and becoming more dangerous and less
+                predictable than it once was.
+
+                In addition to the three video interviews, the hunters drew important ice features and changes on maps
+                which are included as part of the data set. Photographs of ice conditions at specific places on the maps
+                are available. Two of the three interviews are in English; the third is in Inuktitut and English.
+
+                Data are available via the Product Web Site as edited video files, maps, and photographs. Full video
+                interviews, maps, and photographs are on ftp as a compressed file via the Access Data link.
+            </abstract>
+            <purpose>scientific research</purpose>
+        </descript>
+        <timeperd>
+            <timeinfo>
+                <rngdates>
+                    <begdate>20020619</begdate>
+                    <enddate>20031002</enddate>
+                </rngdates>
+            </timeinfo>
+            <current>publication date</current>
+        </timeperd>
+        <status>
+            <progress>Complete</progress>
+            <update>Unknown</update>
+        </status>
+        <spdom>
+            <bounding>
+                <westbc>-80.22399</westbc>
+                <eastbc>-78.78479</eastbc>
+                <northbc>56.93479</northbc>
+                <southbc>55.56779</southbc>
+            </bounding>
+        </spdom>
+        <keywords>
+            <theme>
+                <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                <themekey>EARTH SCIENCE &gt; Atmosphere &gt; Atmospheric Temperature &gt; Air Temperature</themekey>
+                <themekey>EARTH SCIENCE &gt; Atmosphere &gt; Atmospheric Winds</themekey>
+                <themekey>EARTH SCIENCE &gt; Atmosphere &gt; Atmospheric Winds &gt; Wind Chill</themekey>
+                <themekey>EARTH SCIENCE &gt; Atmosphere &gt; Precipitation &gt; Rain</themekey>
+                <themekey>EARTH SCIENCE &gt; Biological Classification &gt; Animals/Vertebrates &gt; Birds &gt;
+                    Ducks/Geese/Swans &gt; Eider Ducks
+                </themekey>
+                <themekey>EARTH SCIENCE &gt; Biological Classification &gt; Animals/Vertebrates &gt; Birds &gt;
+                    Ducks/Geese/Swans
+                </themekey>
+                <themekey>EARTH SCIENCE &gt; Biological Classification &gt; Animals/Vertebrates &gt; Mammals &gt;
+                    Carnivores &gt; Bears &gt; Polar Bears
+                </themekey>
+                <themekey>EARTH SCIENCE &gt; Biological Classification &gt; Animals/Vertebrates &gt; Mammals &gt;
+                    Carnivores &gt; Seals/Sea Lions/Walruses
+                </themekey>
+                <themekey>EARTH SCIENCE &gt; Cryosphere &gt; Sea Ice &gt; Ice Deformation</themekey>
+                <themekey>EARTH SCIENCE &gt; Cryosphere &gt; Sea Ice &gt; Ice Depth/Thickness</themekey>
+                <themekey>EARTH SCIENCE &gt; Cryosphere &gt; Sea Ice &gt; Ice Edges</themekey>
+                <themekey>EARTH SCIENCE &gt; Cryosphere &gt; Sea Ice &gt; Ice Floes</themekey>
+                <themekey>EARTH SCIENCE &gt; Cryosphere &gt; Sea Ice &gt; Ice Growth/Melt</themekey>
+                <themekey>EARTH SCIENCE &gt; Cryosphere &gt; Sea Ice &gt; Ice Roughness</themekey>
+                <themekey>EARTH SCIENCE &gt; Cryosphere &gt; Sea Ice &gt; Ice Types</themekey>
+                <themekey>EARTH SCIENCE &gt; Cryosphere &gt; Sea Ice &gt; Leads</themekey>
+                <themekey>EARTH SCIENCE &gt; Cryosphere &gt; Sea Ice &gt; Polynyas</themekey>
+                <themekey>EARTH SCIENCE &gt; Cryosphere &gt; Sea Ice &gt; Sea Ice Age</themekey>
+                <themekey>EARTH SCIENCE &gt; Cryosphere &gt; Sea Ice &gt; Snow Depth</themekey>
+                <themekey>EARTH SCIENCE &gt; Cryosphere &gt; Sea Ice &gt; Snow Melt</themekey>
+                <themekey>EARTH SCIENCE &gt; Cryosphere &gt; Snow/Ice</themekey>
+                <themekey>EARTH SCIENCE &gt; Cryosphere &gt; Snow/Ice &gt; Freeze/Thaw</themekey>
+                <themekey>EARTH SCIENCE &gt; Cryosphere &gt; Snow/Ice &gt; Lake Ice</themekey>
+                <themekey>EARTH SCIENCE &gt; Oceans &gt; Coastal Processes &gt; Erosion</themekey>
+                <themekey>EARTH SCIENCE &gt; Oceans &gt; Coastal Processes &gt; Longshore Currents</themekey>
+                <themekey>EARTH SCIENCE &gt; Oceans &gt; Ocean Circulation &gt; Ocean Currents</themekey>
+                <themekey>EARTH SCIENCE &gt; Oceans &gt; Ocean Winds</themekey>
+                <themekey>EARTH SCIENCE &gt; Oceans &gt; Ocean Winds &gt; Wind Chill</themekey>
+                <themekey>EARTH SCIENCE &gt; Oceans &gt; Sea Ice &gt; Ice Deformation</themekey>
+                <themekey>EARTH SCIENCE &gt; Oceans &gt; Sea Ice &gt; Ice Depth/Thickness</themekey>
+                <themekey>EARTH SCIENCE &gt; Oceans &gt; Sea Ice &gt; Ice Edges</themekey>
+                <themekey>EARTH SCIENCE &gt; Oceans &gt; Sea Ice &gt; Ice Floes</themekey>
+                <themekey>EARTH SCIENCE &gt; Oceans &gt; Sea Ice &gt; Ice Growth/Melt</themekey>
+                <themekey>EARTH SCIENCE &gt; Oceans &gt; Sea Ice &gt; Ice Roughness</themekey>
+                <themekey>EARTH SCIENCE &gt; Oceans &gt; Sea Ice &gt; Ice Types</themekey>
+                <themekey>EARTH SCIENCE &gt; Oceans &gt; Sea Ice &gt; Leads</themekey>
+                <themekey>EARTH SCIENCE &gt; Oceans &gt; Sea Ice &gt; Polynyas</themekey>
+                <themekey>EARTH SCIENCE &gt; Oceans &gt; Sea Ice &gt; Sea Ice Age</themekey>
+                <themekey>EARTH SCIENCE &gt; Oceans &gt; Sea Ice &gt; Snow Depth</themekey>
+                <themekey>EARTH SCIENCE &gt; Oceans &gt; Sea Ice &gt; Snow Melt</themekey>
+                <themekey>EARTH SCIENCE &gt; Oceans &gt; Tides</themekey>
+                <themekey>EARTH SCIENCE &gt; Terrestrial Hydrosphere &gt; Snow/Ice</themekey>
+                <themekey>EARTH SCIENCE &gt; Terrestrial Hydrosphere &gt; Snow/Ice &gt; Freeze/Thaw</themekey>
+                <themekey>EARTH SCIENCE &gt; Terrestrial Hydrosphere &gt; Snow/Ice &gt; Lake Ice</themekey>
+                <themekey>EARTH SCIENCE &gt; Terrestrial Hydrosphere &gt; Surface Water &gt; Rivers/Streams</themekey>
+            </theme>
+            <theme>
+                <themekt>NASA Global Change Master Directory (GCMD) Project Keywords</themekt>
+                <themekey>ELOKA &gt; Exchange for Local Observations and Knowledge of the Arctic</themekey>
+                <themekey>IPY &gt; INTERNATIONAL POLAR YEAR</themekey>
+            </theme>
+            <theme>
+                <themekt>NASA Global Change Master Directory (GCMD) Instrument Keywords</themekt>
+                <themekey>CAMERAS</themekey>
+                <themekey>VISUAL OBSERVATIONS</themekey>
+            </theme>
+            <theme>
+                <themekt>NASA Global Change Master Directory (GCMD) Platform Keywords</themekt>
+                <themekey>GROUND-BASED OBSERVATIONS</themekey>
+            </theme>
+            <theme>
+                <themekt>ISO 19115 Topic Categories</themekt>
+                <themekey>climatologyMeteorologyAtmosphere</themekey>
+            </theme>
+            <theme>
+                <themekt>None</themekt>
+                <themekey>Bakers Dozen Islands, Nunavut, Canada</themekey>
+                <themekey>Belcher Islands, Nunavut, Canada</themekey>
+                <themekey>Dew</themekey>
+                <themekey>Digital Mapping</themekey>
+                <themekey>ELOKA</themekey>
+                <themekey>Eskimo Harbor, Nunavut, Canada</themekey>
+                <themekey>Field Camps</themekey>
+                <themekey>FISHING ZONES</themekey>
+                <themekey>Hunting</themekey>
+                <themekey>Image Map</themekey>
+                <themekey>interviews</themekey>
+                <themekey>IPY</themekey>
+                <themekey>Johnson Island, Nunavut, Canada</themekey>
+                <themekey>Kuujjuuapic, Nunavut, Canada</themekey>
+                <themekey>Lillico Point, Nunavut, Canada</themekey>
+                <themekey>Manimani, Nunavut, Canada</themekey>
+                <themekey>Maninimaniq, Nunavut, Canada</themekey>
+                <themekey>MAPS/CHARTS</themekey>
+                <themekey>Photographs</themekey>
+                <themekey>Photos</themekey>
+                <themekey>Sanikiluaq , Nunavut, Canada</themekey>
+                <themekey>seals</themekey>
+                <themekey>Sleeper Islands, Nunavut, Canada</themekey>
+                <themekey>Travel Routes</themekey>
+                <themekey>Tukarak, Nunavut, Canada</themekey>
+                <themekey>Visual Observations</themekey>
+                <themekey>Weigand Island, Nunavut, Canada</themekey>
+            </theme>
+            <place>
+                <placekt>NASA Global Change Master Directory (GCMD) Location Keywords</placekt>
+                <placekey>Continent &gt; North America &gt; Canada &gt; Hudson Bay</placekey>
+                <placekey>Continent &gt; North America &gt; Canada &gt; Nunavut</placekey>
+            </place>
+        </keywords>
+        <thelayid>
+            <numthlay>45</numthlay>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Atmosphere &gt; Atmospheric Temperature &gt; Air Temperature</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Atmosphere &gt; Atmospheric Winds</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Atmosphere &gt; Atmospheric Winds &gt; Wind Chill</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Atmosphere &gt; Precipitation &gt; Rain</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Biological Classification &gt; Animals/Vertebrates &gt; Birds &gt;
+                        Ducks/Geese/Swans &gt; Eider Ducks
+                    </themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Biological Classification &gt; Animals/Vertebrates &gt; Birds &gt;
+                        Ducks/Geese/Swans
+                    </themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Biological Classification &gt; Animals/Vertebrates &gt; Mammals &gt;
+                        Carnivores &gt; Bears &gt; Polar Bears
+                    </themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Biological Classification &gt; Animals/Vertebrates &gt; Mammals &gt;
+                        Carnivores &gt; Seals/Sea Lions/Walruses
+                    </themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Cryosphere &gt; Sea Ice &gt; Ice Deformation</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Cryosphere &gt; Sea Ice &gt; Ice Depth/Thickness</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Cryosphere &gt; Sea Ice &gt; Ice Edges</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Cryosphere &gt; Sea Ice &gt; Ice Floes</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Cryosphere &gt; Sea Ice &gt; Ice Growth/Melt</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Cryosphere &gt; Sea Ice &gt; Ice Roughness</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Cryosphere &gt; Sea Ice &gt; Ice Types</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Cryosphere &gt; Sea Ice &gt; Leads</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Cryosphere &gt; Sea Ice &gt; Polynyas</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Cryosphere &gt; Sea Ice &gt; Sea Ice Age</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Cryosphere &gt; Sea Ice &gt; Snow Depth</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Cryosphere &gt; Sea Ice &gt; Snow Melt</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Cryosphere &gt; Snow/Ice</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Cryosphere &gt; Snow/Ice &gt; Freeze/Thaw</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Cryosphere &gt; Snow/Ice &gt; Lake Ice</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Oceans &gt; Coastal Processes &gt; Erosion</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Oceans &gt; Coastal Processes &gt; Longshore Currents</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Oceans &gt; Ocean Circulation &gt; Ocean Currents</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Oceans &gt; Ocean Winds</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Oceans &gt; Ocean Winds &gt; Wind Chill</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Oceans &gt; Sea Ice &gt; Ice Deformation</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Oceans &gt; Sea Ice &gt; Ice Depth/Thickness</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Oceans &gt; Sea Ice &gt; Ice Edges</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Oceans &gt; Sea Ice &gt; Ice Floes</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Oceans &gt; Sea Ice &gt; Ice Growth/Melt</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Oceans &gt; Sea Ice &gt; Ice Roughness</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Oceans &gt; Sea Ice &gt; Ice Types</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Oceans &gt; Sea Ice &gt; Leads</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Oceans &gt; Sea Ice &gt; Polynyas</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Oceans &gt; Sea Ice &gt; Sea Ice Age</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Oceans &gt; Sea Ice &gt; Snow Depth</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Oceans &gt; Sea Ice &gt; Snow Melt</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Oceans &gt; Tides</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Terrestrial Hydrosphere &gt; Snow/Ice</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Terrestrial Hydrosphere &gt; Snow/Ice &gt; Freeze/Thaw</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Terrestrial Hydrosphere &gt; Snow/Ice &gt; Lake Ice</themekey>
+                </theme>
+            </layrname>
+            <layrname>
+                <theme>
+                    <themekt>NASA Global Change Master Directory (GCMD) Science Keywords</themekt>
+                    <themekey>EARTH SCIENCE &gt; Terrestrial Hydrosphere &gt; Surface Water &gt; Rivers/Streams
+                    </themekey>
+                </theme>
+            </layrname>
+        </thelayid>
+        <accconst>None</accconst>
+        <useconst>None</useconst>
+        <ptcontac>
+            <cntinfo>
+                <cntperp>
+                    <cntper>NSIDC User Services</cntper>
+                    <cntorg>National Snow and Ice Data Center</cntorg>
+                </cntperp>
+                <cntaddr>
+                    <addrtype>mailing</addrtype>
+                    <address>CIRES, 449 UCB</address>
+                    <address>University of Colorado</address>
+                    <city>Boulder</city>
+                    <state>CO</state>
+                    <postal>80309-0449</postal>
+                    <country>USA</country>
+                </cntaddr>
+                <cntvoice>1 303 492-6199 x</cntvoice>
+                <cntfax>1 303 492-2468 x</cntfax>
+                <cntemail>nsidc@nsidc.org</cntemail>
+            </cntinfo>
+        </ptcontac>
+    </idinfo>
+    <distinfo>
+        <distrib>
+            <cntinfo>
+                <cntorgp>
+                    <cntorg>National Snow and Ice Data Center</cntorg>
+                    <cntper>NSIDC User Services</cntper>
+                </cntorgp>
+                <cntaddr>
+                    <addrtype>mailing</addrtype>
+                    <address>National Snow and Ice Data Center</address>
+                    <address>CIRES, 449 UCB</address>
+                    <address>University of Colorado</address>
+                    <city>Boulder</city>
+                    <state>CO</state>
+                    <postal>80309-0449</postal>
+                    <country>USA</country>
+                </cntaddr>
+                <cntvoice>1 303 492-6199</cntvoice>
+                <cntfax>1 303 492-2468</cntfax>
+                <cntemail>nsidc@nsidc.org</cntemail>
+            </cntinfo>
+        </distrib>
+        <resdesc>ELOKA002</resdesc>
+        <distliab>NSIDC cannot assume liability for any damages caused by any errors or omissions in the data, nor as a
+            result of the failure of the data to function on a particular system. NSIDC makes no warranty, expressed or
+            implied, nor does the fact of distribution constitute such a warranty.
+        </distliab>
+        <stdorder>
+            <digform>
+                <digtinfo>
+                    <formname>MPEG</formname>
+                </digtinfo>
+                <digtopt>
+                    <onlinopt>
+                        <computer>
+                            <networka>
+                                <networkr>ftp://sidads.colorado.edu/pub/DATASETS/eloka002_belcher_seaice_v01/</networkr>
+                            </networka>
+                        </computer>
+                    </onlinopt>
+                </digtopt>
+            </digform>
+            <fees>None</fees>
+        </stdorder>
+        <stdorder>
+            <digform>
+                <digtinfo>
+                    <formname>PDF</formname>
+                </digtinfo>
+                <digtopt>
+                    <onlinopt>
+                        <computer>
+                            <networka>
+                                <networkr>ftp://sidads.colorado.edu/pub/DATASETS/eloka002_belcher_seaice_v01/</networkr>
+                            </networka>
+                        </computer>
+                    </onlinopt>
+                </digtopt>
+            </digform>
+            <fees>None</fees>
+        </stdorder>
+        <stdorder>
+            <digform>
+                <digtinfo>
+                    <formname>HTML</formname>
+                </digtinfo>
+                <digtopt>
+                    <onlinopt>
+                        <computer>
+                            <networka>
+                                <networkr>ftp://sidads.colorado.edu/pub/DATASETS/eloka002_belcher_seaice_v01/</networkr>
+                            </networka>
+                        </computer>
+                    </onlinopt>
+                </digtopt>
+            </digform>
+            <fees>None</fees>
+        </stdorder>
+        <stdorder>
+            <digform>
+                <digtinfo>
+                    <formname>JPEG</formname>
+                </digtinfo>
+                <digtopt>
+                    <onlinopt>
+                        <computer>
+                            <networka>
+                                <networkr>ftp://sidads.colorado.edu/pub/DATASETS/eloka002_belcher_seaice_v01/</networkr>
+                            </networka>
+                        </computer>
+                    </onlinopt>
+                </digtopt>
+            </digform>
+            <fees>None</fees>
+        </stdorder>
+    </distinfo>
+    <metainfo>
+        <metd>20120816</metd>
+        <metrd>20120816</metrd>
+        <metc>
+            <cntinfo>
+                <cntperp>
+                    <cntper>NSIDC User Services</cntper>
+                    <cntorg>National Snow and Ice Data Center</cntorg>
+                </cntperp>
+                <cntaddr>
+                    <addrtype>mailing</addrtype>
+                    <address>National Snow and Ice Data Center</address>
+                    <address>CIRES, 449 UCB</address>
+                    <address>University of Colorado</address>
+                    <city>Boulder</city>
+                    <state>CO</state>
+                    <postal>80309-0449</postal>
+                    <country>USA</country>
+                </cntaddr>
+                <cntvoice>1 303 492-6199</cntvoice>
+                <cntfax>1 303 492-2468</cntfax>
+                <cntemail>nsidc@nsidc.org</cntemail>
+            </cntinfo>
+        </metc>
+        <metstdn>FGDC Content Standard for Digital Geospatial Metadata: Extensions for Remote Sensing Metadata</metstdn>
+        <metstdv>FGDC-STD-012-2002</metstdv>
+    </metainfo>
+</metadata>

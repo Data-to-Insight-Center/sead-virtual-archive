@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+  <bean id="projectController" class="org.dataconservancy.ui.api.ProjectController">
+    <constructor-arg ref="projectService"/>
+    <constructor-arg ref="projectBizService"/>
+    <constructor-arg ref="userService"/>
+    <constructor-arg ref="businessObjectBuilder"/>
+    <constructor-arg ref="requestUtil"/>
+    <constructor-arg ref="authorizationService"/>
+  </bean>
+
+  <bean id="personController" class="org.dataconservancy.ui.api.PersonController">
+    <constructor-arg ref="userService"/>
+    <constructor-arg ref="businessObjectBuilder"/>
+    <constructor-arg ref="requestUtil"/>
+  </bean>
+
+  <bean id="fileController" class="org.dataconservancy.ui.api.FileController">
+    <constructor-arg ref="userService"/>
+    <constructor-arg ref="fileBizService"/>
+    <constructor-arg ref="requestUtil"/>
+    <constructor-arg ref="archiveService"/>
+    <constructor-arg ref="metadataFileBizService"/>
+  </bean>
+                              
+  <bean id="dataItemController" class="org.dataconservancy.ui.api.DataItemController">
+  	<constructor-arg ref="userService"/>
+  	<constructor-arg ref="authorizationService"/>
+  	<constructor-arg ref="archiveService"/>
+  	<constructor-arg ref="businessObjectBuilder"/>
+  	<constructor-arg ref="requestUtil"/>
+  	<constructor-arg ref="dataItemBizService"/>
+  </bean>
+
+  <bean id="adiAjaxController" class="org.dataconservancy.ui.api.AdiAjaxController">
+    <constructor-arg ref="dataItemTransportService" />
+  </bean>
+
+  <bean id="collectionController" class="org.dataconservancy.ui.api.CollectionController">
+    <constructor-arg ref="userService"/>
+    <constructor-arg ref="authorizationService"/>
+    <constructor-arg ref="archiveService"/>
+    <constructor-arg ref="businessObjectBuilder"/>
+    <constructor-arg ref="requestUtil"/>
+    <constructor-arg ref="collectionBizService"/>
+  </bean>
+
+  <bean id="idServiceController" class="org.dataconservancy.ui.api.IdServiceController">
+    <constructor-arg ref="uiIdService"/>
+    <constructor-arg ref="userService"/>
+    <constructor-arg ref="requestUtil"/>
+  </bean>
+
+  <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
+
+  <!-- Request Util - used by multiple controllers -->
+  <bean id="requestUtil" class="org.dataconservancy.ui.api.support.RequestUtil">
+    <property name="alwaysIncludePort" value="true"/>
+  </bean>
+
+  <!--+
+      | Spring Handler Mappings
+      |
+      |   Handler mappings are responsible for mapping a web request to a request handler.  Once a request
+      |   handler is determined capable of handling a request, it is used to process the request, and remaining handlers
+      |   are not considered; therefore the ordering of the request handlers matter, because multiple handlers could
+      |   potentially match a request (but the first one matched will be used, and the rest will be ignored).
+      |
+      |   Request Handlers can be any kind of object.  Classes annotated with @Controller are considered
+      |   handlers.  Instances of HttpRequestHandler are considered handlers.  Because handlers can be any
+      |   type of object, the Spring DispatcherServlet uses a handler's corresponding HandlerAdapter to
+      |   handle the request.  For example, the Dispatcher Servlet will use the AnnotationMethodHandlerAdapter to
+      |   execute handlers returned by the DefaultAnnotationHandlerMapping.
+      +-->
+
+  <!--+
+      | Stripes Handler Mapping
+      |
+      |  This Handler Mapping is responsible for mapping HTTP requests that target Action Beans to the
+      |  Stripes Framework.  It uses the URL path of the request to determine if an Action Bean is being
+      |  targeted, and returns the Stripes Request Handler.
+      |
+      |  Note that URLs meant to target Stripes Action Beans must be configured in the web.xml to target Spring MVC,
+      |  _not_ Stripes.  See the 'stripesRequestHandler' documentation for more info.
+      |
+      |  This is the first Handler consulted, per the 'order' property.  If this Handler mapping matches, then
+      |  no other Handlers are consulted.
+      +-->
+  <bean id="stripesHandlerMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+    <property name="order" value="1"/>
+    <property name="urlMap">
+      <map>
+        <entry key="**/*.action" value="stripesRequestHandler"/>
+      </map>
+    </property>
+  </bean>
+
+  <!--+
+      | Default Spring Annotation Handler Mapping
+      |
+      |  This is the default Handler Mapping used by Spring MVC, when no other Handler Mappings are defined.  It uses
+      |  annotations on classes in combination with the properties of the HTTP request to determine if the annotated
+      |  class is being targeted by the request.
+      |
+      |  This is the second Handler consulted, per the 'order' property.
+      |
+      |  The 'alwaysUseFullPath' property needs to be set to 'true' so that the full URL path is considered
+      |  when evaluating URL paths in type-level @RequestMapping annotations.
+      +-->
+  <bean id="annotationHandlerMapping" class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+    <property name="order" value="10"/>
+    <property name="alwaysUseFullPath" value="true"/>
+  </bean>
+
+  <!--+
+      | Stripes Request Handler
+      |
+      |  This request handler delegates the processing of the HTTP request and response to the Stripes Framework, via
+      |  the Stripes Dispatcher Servlet.  It is important to understand that Spring is invoking the Stripes Framework,
+      |  not the Servlet Container.  We take this approach because Spring's approach (Handler Mapping) is more flexible
+      |  than the Servlet specification's approach (via <url-pattern>).
+      |
+      |  This approach has some consequences.  First, it is important that the @UrlBindings of the Stripes Action Beans
+      |  map to the Spring MVC framework in web.xml; therefore the Spring Dispatcher servlet must have <url-pattern>
+      |  elements that include all the Stripes Action Beans.  Second, while the Stripes Dispatcher servlet is
+      |  instantiated here, by Spring, other components of Stripes (notably the StripesFilter) are still configured in
+      |  the web.xml.  Requests processed by the StripesRequestHandler must be filtered by the StripesFilter.
+      +-->
+  <bean id="stripesRequestHandler" class="org.dataconservancy.ui.stripes.StripesRequestHandler">
+    <property name="stripesDispatcher">
+      <bean class="net.sourceforge.stripes.controller.DispatcherServlet"/>
+    </property>
+  </bean>
+
+
+  <!--+
+      | Spring Annotation Method Handler Adapter
+      |
+      |  This is the Handler Adapter used by the Spring Dispatcher Servlet to execute handlers that are
+      |  mapped by the DefaultAnnotationHandlerMapping (i.e. @Controller annotated classes).
+      |
+      |  The 'alwaysUseFullPath' attribute needs to be set to 'true' so that the full URL path is considered
+      |  when evaluating URL paths in the @RequestMapping annotation.
+      +-->
+  <bean id="annotationHandlerAdapter" class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+    <property name="alwaysUseFullPath" value="true"/>
+  </bean>
+
+  <!--+
+      | Spring Http Request Handler Adapter
+      |
+      |  This is the Handler Adapter used by the Spring Dispatcher Servlet to execute handlers that are
+      |  mapped by the StripesRequestHandler (an instance of HttpRequestHandlerMapper) Mapping.
+      |
+      |  This needs to be defined because we have overridden Spring defaults (by defining the annotationHandlerAdapter
+      |  'alwaysUseFullPath' property).
+      +-->
+  <bean id="httpRequestHandlerAdapter" class="org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter"/>
+
+</beans>

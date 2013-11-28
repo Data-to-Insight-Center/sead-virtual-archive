@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    
+  <!-- 
+    $Id$
+    $URL$
+  -->
+  
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.dataconservancy.mhf</groupId>
+  <artifactId>dcs-mhf-representation-api</artifactId>
+  <packaging>jar</packaging>
+  <name>Metadata Representation API</name>
+  <description>Metadata Representation API</description>
+  
+  <parent>
+    <groupId>org.dataconservancy.mhf</groupId>
+    <artifactId>dcs-mhf</artifactId>
+    <version>1.1.0-SNAPSHOT</version>
+  </parent>
+    
+  <!-- Build  ===================================================== -->
+  
+  <build>
+    
+  </build>
+
+  <!-- Dependencies =============================================== -->
+  
+  <dependencies>
+    
+    <!-- Provided ================================================= -->
+    
+    <!-- Runtime ================================================== -->     
+    
+    <!-- Compile ================================================== -->
+    
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    
+    <!-- Test ===================================================== -->      
+    
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
+  </dependencies>
+
+</project>

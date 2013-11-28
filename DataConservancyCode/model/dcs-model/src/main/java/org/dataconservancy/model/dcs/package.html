@@ -1,0 +1,45 @@
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<body>
+The Data Conservancy Java object model.
+<p>
+For more information on the Data Conservancy data model, please see the <a href="https://wiki.library.jhu.edu/x/ooCo">SIP specification</a> of the
+data model and other <a href="https://wiki.library.jhu.edu/x/jgWi">related</a> wiki pages.
+</p>
+<h2>Implementation Notes</h2>
+<p>
+The goal of the object model design is to prevent accidental mutation of the objects in the model.  Any time an
+object is returned by an accessor method (whether that object is a <code>Collection</code> or a DCS model object), it
+will have been defensively copied.  Mutating the returned object will not mutate the original object.  Likewise, when
+an object is passed to an accessor method, it will be defensively copied before it is assigned as a member of the model
+object.  This may change in the future, because defensively copying objects impacts performance, especially as it
+pertains to memory use.  You can add elements to the model by calling the appropriate <code>set...</code> or <code>add...</code>
+methods, but you cannot remove elements from the model.
+</p>
+<p>
+The initial state of Strings are <code>null</code> and the initial state of Collections will be empty.  Code that interrogates
+model should be prepared to handle <code>null</code> values.  Even if the model has been validated (e.g. a validator
+may check to ensure that all 'ref' attributes have non-null values), optional elements of the model that are in their
+default state will return <code>null</code>.    
+
+In general, passing <code>null</code> references to accessor methods will result in <code>java.lang.IllegalArgumentException</code>
+being thrown.  Exceptions to this are <code>setParent(...)</code> methods, which use a <code>null</code> value to indicate
+there is no parent.
+</p>
+</body>
+</html>

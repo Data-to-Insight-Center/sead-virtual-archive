@@ -1,0 +1,16 @@
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<dcp xmlns="http://dataconservancy.org/schemas/dcp/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://dataconservancy.org/schemas/dcp/1.0 http://dataconservancy.org/schemas/dcp/1.0"><DeliverableUnits><DeliverableUnit id="http://localhost:8080/entity/test138"><collection ref="http://localhost:8080/entity/test114" /><parent ref="qqh" /><type>vpzd</type><title>wlmlpklh</title><creator>jy</creator><subject>okc</subject><subject>lzh</subject><formerExternalRef>mbltnjvxgp</formerExternalRef><formerExternalRef>dizxkjvbru</formerExternalRef><formerExternalRef>eaziuwrcwc</formerExternalRef><formerExternalRef>gtmravndxw</formerExternalRef><metadata><root xmlns=""><elkv>ke</elkv><elkv bi="zuczd">bwldsbbcrb</elkv><elwk>xe</elwk><elwk kv="mffkc">okjsfcygkj</elwk><elnc>ul</elnc><elnc xk="mvyoy">nekvwuosqg</elnc></root></metadata><metadata ref="kkqqjkdktn" /><relationship ref="qfldzgsjio" rel="pubjyqcubg" /></DeliverableUnit></DeliverableUnits></dcp>

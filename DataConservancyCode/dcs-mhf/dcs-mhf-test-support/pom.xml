@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <!-- 
+    $Id$
+    $URL$
+  -->
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.dataconservancy.mhf</groupId>
+  <artifactId>dcs-mhf-test-support</artifactId>
+  <packaging>jar</packaging>
+  <name>Test Support</name>
+  <description>Shared utility classes for tests</description>
+
+  <parent>
+    <groupId>org.dataconservancy.mhf</groupId>
+    <artifactId>dcs-mhf</artifactId>
+    <version>1.1.0-SNAPSHOT</version>
+  </parent>
+
+  <!-- Build  ===================================================== -->
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <systemPropertyVariables>
+            <dcs.mhf.registry.baseDir>${project.build.testOutputDirectory}</dcs.mhf.registry.baseDir>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <!-- Dependencies =============================================== -->
+
+  <dependencies>
+
+    <!-- Provided ================================================= -->
+
+    <!-- Runtime ================================================== -->
+
+    <!-- Compile ================================================== -->
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.thoughtworks.xstream</groupId>
+      <artifactId>xstream</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.mhf</groupId>
+      <artifactId>dcs-mhf-representations-impl</artifactId>
+      <scope>compile</scope>
+      <version>${project.parent.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.mhf</groupId>
+      <artifactId>dcs-mhf-instance-api</artifactId>
+      <scope>compile</scope>
+      <version>${project.parent.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.mhf</groupId>
+      <artifactId>dcs-mhf-model-builder-api</artifactId>
+      <scope>compile</scope>
+      <version>${project.parent.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.mhf</groupId>
+      <artifactId>dcs-mhf-model-builder-impl</artifactId>
+      <scope>compile</scope>
+      <version>${project.parent.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.mhf</groupId>
+      <artifactId>dcs-mhf-resources</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.ui</groupId>
+      <artifactId>dcs-ui-model</artifactId>
+      <scope>compile</scope>
+      <version>${project.parent.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.registry</groupId>
+      <artifactId>dcs-registry-api</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.registry</groupId>
+      <artifactId>dcs-registry-metadata-shared</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.registry</groupId>
+      <artifactId>dcs-registry-memory-support</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>      
+      <scope>compile</scope>
+    </dependency>
+
+    <!-- Test ===================================================== -->
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
+  </dependencies>
+
+</project>

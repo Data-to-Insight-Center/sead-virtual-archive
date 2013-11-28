@@ -1,0 +1,44 @@
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+-->
+<bop xmlns="http://dataconservancy.org/schemas/bop/1.0"      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://dataconservancy.org/schemas/bop/1.0">
+  <persons>
+    <person id="id:approvedRegisteredUser" xmlns="http://dataconservancy.org/schemas/bop/1.0">
+        <foo>prefix</foo>
+        <invalid>Foo</invalid>
+        <middleName>middle</middleName>
+        <lastName>Bar</lastName>
+        <suffix>suffix</suffix>
+        <preferredPubName>preferredPubName</preferredPubName>
+        <bio>someBio</bio>
+        <website>www.website.com</website>
+        <city>city</city>
+        <state>state</state>
+        <jobTitle>jobTitle</jobTitle>
+        <department>department</department>
+        <instCompany>institutionCompany</instCompany>
+        <instCompanyWebsite>www.institutionCompany.com</instCompanyWebsite>
+        <password>foobar</password>
+        <emailAddress>chunkymonkey@benandjerrys.com</emailAddress>
+        <phoneNumber>5555555555</phoneNumber>
+        <registrationStatus>APPROVED</registrationStatus>
+        <readOnly>true</readOnly>
+        <roles>
+            <role>ROLE_USER</role>
+        </roles>
+    </person>
+ </persons>
+</bop>

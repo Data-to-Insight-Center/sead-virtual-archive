@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:p="http://www.springframework.org/schema/p" 
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                      http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                      http://www.springframework.org/schema/context 
+                      http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<bean id="collectionDetector" class="org.dataconservancy.transform.dryvalleys.DryValleyCollectionDetector"/>
+	
+	<bean id="fieldPhotoDetector" class="org.dataconservancy.transform.dryvalleys.FieldPhotoProfileDetector"/>
+	
+	<bean id="rockSampleDetector" class="org.dataconservancy.transform.dryvalleys.RockSampleProfileDetector"/>
+	
+	<bean id="profileEmitter" class="org.dataconservancy.transform.profile.DcpProfileEmitter">
+		<property name="detectorMap">
+			<map>
+				<entry key="dataconservancy:transform:profile-entry:dryValleyCollection" value-ref="collectionDetector"/>
+				<entry key="dataconservancy:transform:profile-entry:dryValleyFieldPhoto" value-ref="fieldPhotoDetector"/>
+				<entry key="dataconservancy:transform:profile-entry:dryValleyRockSample" value-ref="rockSampleDetector"/>
+			</map>
+		</property>
+	</bean>
+	
+	<bean id="collectionMapping" class="org.dataconservancy.transform.dryvalleys.DryValleyCollectionMapping"/>
+	
+	<bean id="fieldPhotoMapping" class="org.dataconservancy.transform.dryvalleys.FieldPhotoMapping"/>
+	
+	<bean id="rockSampleMapping" class="org.dataconservancy.transform.dryvalleys.RockSampleMapping"/>
+	
+	<bean id="collectionMappingRegistryEntry" class="org.dataconservancy.registry.api.support.BasicRegistryEntryImpl">
+		<constructor-arg name="name" value="dryValleyCollectionMapping"/>
+		<constructor-arg name="id" value="dataconservancy:transform:profile-entry:dryValleyCollection"/>
+		<constructor-arg name="entry" ref="collectionMapping"/>
+		<constructor-arg name="entryType" value="dryValleyMappings"/>
+	</bean>
+	
+	<bean id="fieldPhotoMappingRegistryEntry" class="org.dataconservancy.registry.api.support.BasicRegistryEntryImpl">
+		<constructor-arg name="name" value="fieldPhotoMapping"/>
+		<constructor-arg name="id" value="dataconservancy:transform:profile-entry:dryValleyFieldPhoto"/>
+		<constructor-arg name="entry" ref="fieldPhotoMapping"/>
+		<constructor-arg name="entryType" value="dryValleyMappings"/>
+	</bean>
+	
+	<bean id="rockSampleMappingRegistryEntry" class="org.dataconservancy.registry.api.support.BasicRegistryEntryImpl">
+		<constructor-arg name="name" value="rockSampleMapping"/>
+		<constructor-arg name="id" value="dataconservancy:transform:profile-entry:dryValleyRockSample"/>
+		<constructor-arg name="entry" ref="rockSampleMapping"/>
+		<constructor-arg name="entryType" value="dryValleyMappings"/>
+	</bean>
+	
+	<bean id="mappingRegistry" class="org.dataconservancy.registry.shared.memory.InMemoryRegistry">
+		<constructor-arg value="dryValleyMappings"/>
+		<property name="entries">
+			<map>
+				<entry key="dataconservancy:transform:profile-entry:dryValleyCollection" value-ref="collectionMappingRegistryEntry"/>
+				<entry key="dataconservancy:transform:profile-entry:dryValleyFieldPhoto" value-ref="fieldPhotoMappingRegistryEntry"/>
+				<entry key="dataconservancy:transform:profile-entry:dryValleyRockSample" value-ref="rockSampleMappingRegistryEntry"/>
+			</map>
+		</property>
+	</bean>
+	
+	<bean id="registryProfileMapper" class="org.dataconservancy.transform.profile.RegistryBasedDcpProfileMapper">
+		 <property name="registry" ref="mappingRegistry"/>
+	</bean> 
+	
+	<bean id="mappingChain" class="org.dataconservancy.transform.execution.MappingChain">
+		<property name="chain">
+			<list>
+				<ref bean="profileEmitter"/>
+				<ref bean="registryProfileMapper"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="gqmIndexService" class="org.dataconservancy.index.gqmpsql.GqmIndexService"/>
+        
+    <bean id="indexOutputFactory" class="org.dataconservancy.dcs.transform.index.IndexOutputFactory">
+    	<property name="indexService">
+    		<ref bean="gqmIndexService"/>
+    	</property>
+    </bean>                
+</beans>

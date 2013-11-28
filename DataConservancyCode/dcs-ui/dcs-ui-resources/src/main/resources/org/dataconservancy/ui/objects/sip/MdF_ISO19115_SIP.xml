@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<dcp xmlns="http://dataconservancy.org/schemas/dcp/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://dataconservancy.org/schemas/dcp/1.0 dcp.xsd ">
+
+  <DeliverableUnits>
+    <DeliverableUnit id="http://dataconservancy.org/dcs-reserved:22345">
+
+      <type>dc:profile:type\metadataFormat</type>
+      <title>ISO 19115</title>
+      <creator>Data Conservancy</creator>
+      <subject>Metadata Format Definition</subject>
+      <formerExternalRef>dc:format:metadata\ISO19115</formerExternalRef>
+
+      <!--
+        An example of metadata that exists as a file. This can be used but there is no current need.
+      -->
+      <!-- <metadata ref="urn:sdss:12345/metadata" /> -->
+
+    </DeliverableUnit>
+  </DeliverableUnits>
+
+
+  <!-- Format Definitions can be placed in a system collection but there is no current need.
+  <Collections>
+    <Collection id="http://dataconservancy.org/dcs-reserved:12344">
+      <title>title</title>
+    </Collection>
+  </Collections>
+  -->
+
+
+  <Manifestations>
+    <Manifestation id="http://dataconservancy.org/dcs-reserved:22343">
+      <deliverableUnit ref="http://dataconservancy.org/dcs-reserved:22345" />
+      <manifestationFile ref="http://dataconservancy.org/dcs-reserved:22346/FORMAT_DEFINITION_FILE">
+        <!-- <path>/scans/5/</path> -->
+      </manifestationFile>
+    </Manifestation>
+  </Manifestations>
+
+
+  <Files>
+
+    <!--
+      An example of a format used for seeding the DCS that is original to the DCS
+      or may be a wrapper for a format defined somewhere else. Only the registration
+      is required but additional information may be stored in the associated file.
+    -->
+    <File id="http://dataconservancy.org/dcs-reserved:12346/FORMAT_DEFINITION_FILE" src="object005">
+      <fileName>MdF_ISO19115_FILE_1.xml</fileName>
+      <extant>true</extant>
+      <fixity algorithm="md5">fe5b3b4f78b9bf3ae21cd52c2f349174</fixity>
+      <!-- Fails to parse when there is exactly one dc:xxxx in the content. It thinks its a namespace.
+      <format>
+        <id scheme="http://www.dataconservancy.org/formats/">dc:format</id>
+      </format>
+      -->
+      <format>
+        <id scheme="http://www.dataconservancy.org/formats/">dc:format:metaformat:1</id>
+      </format>
+      <format>
+        <id scheme="http://www.iana.org/assignments/media-types/">text/xml</id>
+      </format>
+    </File>
+
+  </Files>
+</dcp>

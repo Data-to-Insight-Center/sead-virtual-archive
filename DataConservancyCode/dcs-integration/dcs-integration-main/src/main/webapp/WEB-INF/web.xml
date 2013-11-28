@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+  version="2.5">
+
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>
+      /WEB-INF/applicationContext.xml,
+      classpath*:org/dataconservancy/config/applicationContext.xml,
+      classpath*:org/dataconservancy/mhf/config/applicationContext.xml,
+      classpath*:org/dataconservancy/registry/config/applicationContext.xml,
+      classpath*:org/dataconservancy/model/config/applicationContext.xml
+    </param-value>
+  </context-param>
+
+  <servlet>
+    <servlet-name>SWORD_deposit</servlet-name>
+    <servlet-class>org.apache.abdera.spring.SpringAbderaServlet</servlet-class>
+    <init-param>
+      <param-name>providerBeanName</param-name>
+      <param-value>swordProvider</param-value>
+    </init-param>
+  </servlet>
+
+  <servlet>
+    <servlet-name>content_document</servlet-name>
+    <servlet-class>org.dataconservancy.deposit.status.BeanServletRunner</servlet-class>
+    <init-param>
+      <param-name>delegateBeanName</param-name>
+      <param-value>contentResourceLocator</param-value>
+    </init-param>
+  </servlet>
+
+  <servlet>
+    <servlet-name>status_document</servlet-name>
+    <servlet-class>org.dataconservancy.deposit.status.BeanServletRunner</servlet-class>
+    <init-param>
+      <param-name>delegateBeanName</param-name>
+      <param-value>statusResourceLocator</param-value>
+    </init-param>
+  </servlet>
+
+  <servlet>
+    <servlet-name>entityServlet</servlet-name>
+    <servlet-class>org.dataconservancy.dcs.access.http.EntityServlet</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>datastreamServlet</servlet-name>
+    <servlet-class>org.dataconservancy.dcs.access.http.DatastreamServlet</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>queryServlet</servlet-name>
+    <servlet-class>org.dataconservancy.dcs.access.http.QueryServlet</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>lineage</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>
+        classpath*:org/dataconservancy/config/lineage-servlet.xml
+      </param-value>
+    </init-param>    
+  </servlet>
+
+  <servlet>
+    <servlet-name>registry</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>
+        classpath*:/registry-servlet.xml
+      </param-value>
+    </init-param>    
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>SWORD_deposit</servlet-name>
+    <url-pattern>/deposit/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>content_document</servlet-name>
+    <url-pattern>/content/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>status_document</servlet-name>
+    <url-pattern>/status/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>entityServlet</servlet-name>
+    <url-pattern>/entity/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>datastreamServlet</servlet-name>
+    <url-pattern>/datastream/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>queryServlet</servlet-name>
+    <url-pattern>/query/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>lineage</servlet-name>
+    <url-pattern>/lineage/*</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>registry</servlet-name>
+    <url-pattern>/registry/*</url-pattern>
+  </servlet-mapping>
+
+  <listener>
+    <listener-class>
+      org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+
+</web-app>

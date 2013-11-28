@@ -1,0 +1,27 @@
+ ---
+ Data Conservancy Java Object Model
+ ---
+ Elliot Metsger
+ ---
+ 2010-06-18
+ ---
+
+Data Conservancy Models
+
+
+* Data Model
+
+ This is some text about the data model.  
+ 
+ And here is a picture with a caption:
+  
+[./images/dcs-server.png] This is a picture caption.
+ 
+ 
+* Object Model
+ 
+  After discussing the data model, we talk about the object model.
+
+* Model Builder
+
+  Here is some information about the model builder

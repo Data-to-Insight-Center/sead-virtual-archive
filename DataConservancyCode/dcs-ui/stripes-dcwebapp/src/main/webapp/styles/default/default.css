@@ -1,0 +1,520 @@
+/*
+ * Copyright 2012 Johns Hopkins University
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
+/* NEW STYLES      */
+
+
+/* Default CSS styles go here */
+
+html, body, body div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp, small, strong, sub, sup, var, b, i, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary, time, mark, audio, video {
+    border: 0 none;
+    margin: 0;
+    padding: 0;
+    vertical-align: baseline;
+}
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+    display: block;
+}
+body {
+	color: #444444;
+	font: 13px/1.231 sans-serif;
+	background-color: #f2f2f2;
+	width: 100%;
+}
+button, input, select, textarea {
+    font-family: sans-serif;
+    font-size: 100%;
+    overflow: visible;
+    vertical-align: baseline;
+    width: auto;
+}
+p {
+	margin: 0px;
+}
+a {
+	font-weight: bold;
+	color: #5C5C5C;
+}
+a:hover {
+	color: #00766c;
+}
+h1 {
+	font-size: 1.8em;
+	margin: 10px 0px;
+}
+
+li {
+	margin-left: 20px;
+}
+
+.error {
+    color: #b72222;
+}
+
+.success {
+    color: green;
+}
+
+.warning {
+    color: darkorange;
+}
+
+.text-big {
+  font-size: 14px;
+}
+
+#dc-flash {
+	padding-top: 10px;
+	color: red;
+}
+
+#dc-success {
+	padding-top: 10px;
+	color: green;
+}
+
+nav ul, nav li {
+    list-style: none outside none;
+    margin: 0;
+}
+#dc-default-navbar a { 
+	color:#fff;
+	text-decoration:none;
+}
+#dc-default-navbar a:hover {
+	text-decoration:underline;
+}
+
+
+nav#dc-default-navbar { 
+	display: block;
+    float: left;
+    width: 20%;
+}
+
+nav#dc-default-navbar a {
+    color: #444444;
+}
+
+nav#dc-default-navbar ul.navleft a {
+    border-bottom: 1px solid #CCCCCC;
+    display: block;
+    padding: 10px 0 10px 8px;
+    text-decoration: none;
+    width: 100%;
+}
+
+nav#dc-default-navbar ul.navleft a:hover, nav#dc-default-navbar ul.navleft .selected {
+	background: none repeat scroll 0 0 #48A79C;
+	color: #fff;
+}
+#page-title {
+	color: #48A79C;
+}
+
+#dc-content {
+	display: block;
+    float: left;
+	width: 90%;
+    padding: 5%;
+	box-shadow: 0 3px 6px #CCCCCC;
+    margin-bottom: 3%;
+	background: #fff;
+	min-height:500px;
+}
+#dc-content p, #dc-content li {
+	line-height: 1.5;
+	margin-bottom: 10px;
+}
+.content-wrapper {
+	position: relative;
+	float: left;
+    margin-right: 1.8%;
+    width: 78%;
+}
+.content-one-col
+{
+	width: 100%;
+	position: relative;
+	clear: both;
+	float: left;
+}
+.content-left-col
+{
+	top:0;
+	left:0;
+	width: 50%;
+	float:left;
+	position: relative;
+}
+.content-right-col
+{
+	top:0;
+	right:0;
+	width: 50%;
+	float:right;
+	position:relative;
+}
+.center-message
+{
+	margin-bottom:10px; 
+	margin-left:auto; 
+	margin-right:auto; 
+	width:40%;
+	position:relative;
+	font-size:125%;
+}
+.breadcrumb
+{
+	margin-bottom:60px;
+	font-size:125%;
+}
+.breadcrumb-link
+{
+	margin-right:8px;
+}
+.dataset-list-item-left
+{
+	margin-top:0;
+	margin-left:0;
+	width: 50%;
+	float:left;
+	position: relative;
+	margin-bottom:25px;
+}
+.dataset-list-item-right
+{
+	margin-top:0;
+	margin-right:0;
+	width: 50%;
+	float:right;
+	position:relative;
+	margin-bottom:25px;
+}
+.footer-page-link-left
+{
+	margin-top:50px; 
+	font-size:150%; 
+	position:relative; 
+	float:left; 
+	left:25px;
+}
+.footer-page-link-right
+{
+	margin-top:50px; 
+	font-size:150%; 
+	position:relative; 
+	float:right; 
+	right:25px;
+}
+
+#dc-footer {
+	clear: both;
+    background: #FFFFFF;
+    width: 100%;
+	padding-bottom: 20px;
+	text-align: center;
+}
+#footer {
+	width: 960px;
+	margin: 20px auto 0 auto;
+	padding-top: 15px;
+}
+
+#footer p {
+	font-size: 11px;
+}
+
+.SectionHeader {
+	font-size: 1.3em;
+	font-weight: bold;
+	margin-top: 15px;
+	clear: left;
+}
+
+.SectionContent {
+	margin: 0;
+	padding:10px 20px;
+}
+
+.activity-icon{
+   height: 16px;
+   width: 16px;
+   border: 0;
+}
+
+/* collection_view classes */
+.contactInfoDetails {
+    display:none
+}
+/* end collection_view classes*/
+
+/* TABLE STYLING */
+table{
+    border-collapse:collapse;
+}
+
+table, th, td {
+	font: 13px/1.231 sans-serif;
+    border: 1px solid #cccccc;
+	margin: 0;
+}
+
+table th {
+    font:weight: bold;
+    padding: 8px 5px;
+    background-color: #f2f2f2;
+}
+
+table td {
+    background-color: #fff;
+    padding: 8px 5px;
+    word-wrap: break-word;
+}
+table th.vertical{
+    text-align:right;
+}
+
+.center{
+    text-align:center;
+    vertical-align: middle;
+}
+/* END TABLE STYLING */
+
+/* Link button */
+input.linkButton{
+	color:#5C5C5C;
+	padding:0px;
+	font-weight: bold;
+	background:none;
+	border:none;
+	display:block;
+	text-decoration:underline;
+	cursor: pointer;
+	float:left;
+	text-align:left;
+}
+/* End Link button */
+
+/* Contact Info table */
+#contactInfoList{
+    width: 98%;
+}
+
+#contactInfoList #infoColumn{
+    width: 45%;
+    vertical-align: top;
+}
+#contactInfoList #actionColumn{
+    width: 10%;
+    vertical-align: top;
+}
+/* End Contact Info form */
+
+/* Edit depositor table */
+#depositorsTable{
+    width: 80%;
+}
+#depositorsTable #remove{
+    width: 10%;
+}
+#depositorsTable #depositorId{
+    width: 50%;
+}
+#depositorsTable input{
+    width: 100%;
+}
+
+#depositorsTable #depositorLastName,
+#depositorsTable #depositorFirstName{
+    width:20%;   
+}
+/* END Edit depositor table */
+/* Metadata Format table */
+#metadataFormatTable th{
+    align: center;
+}
+#metadataFormatTable td{
+    vertical-align: top;
+}
+#metadataFormatTable label{
+    width: 100%;
+}
+#disciplineHeader {
+    width: 120px;
+    display: block;
+    border-style: none;
+}
+#metadataFormatTable input[type="text"],
+#metadataFormatTable input[type="select"]
+ {
+    width: 97%;
+    vertical-align: text-bottom;
+}
+#metadataFormatTable input[type="checkbox"]
+{
+    float: left;
+    width: 15%;
+}
+#metadataFormatTable .checkboxLabel{
+    width: 70%;
+    clear: right;
+    float: left;
+    margin-bottom: 3px;
+    margin-left: 0px;
+    margin-right: 3px;
+    margin-top: 3px;
+}
+#metadataFormatTable select {
+    vertical-align: text-bottom;
+}
+
+
+
+
+
+/* END Metadata Format table */
+
+#activitiesTable {
+    width: 100%;
+}
+
+
+#activitiesTable #date{
+    width: 15%;
+}
+    text-align: center;
+}
+#activitiesTable #type{
+    width: 5%;
+}
+
+#activitiesTable #description{
+
+}
+#activitiesTable #actor{
+    width: 15%;
+}
+#dc-body {
+	width: 960px;
+	margin: 20px auto;
+	display: block;
+	clear: both;
+	zoom: 1;
+}
+
+#header {
+	display: block;
+	width: 1012px;
+	margin: 0 auto 12px auto;
+	padding-bottom: 10px;
+	height: 62px;
+	zoom: 1;
+}
+#user {
+	float: right;
+    margin-right: 44px;
+    margin-top: 68px;
+    width: 178px;
+}
+#user a {
+	text-decoration: none;
+}
+#header h1 {
+    background-attachment: scroll;
+    background-color: transparent;
+    background-image: url("../../resources/images/dataconservancy-logo.png");
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    display: block;
+    float: left;
+    height: 62px;
+    margin-left: 29px;
+    margin-top: 20px;
+    text-indent: -90000px;
+    width: 450px;
+}
+
+.tooltip {
+    background-color:none;
+	background-image: url(../../resources/images/tooltip-bkg.png);
+	background-position:left center;
+	background-repeat: no-repeat;
+    padding:10px 15px 10px 28px;
+    width:200px;
+    display:none;
+    color:#fff;
+    text-align:left;
+    font-size:12px;
+ 
+    /* outline radius for mozilla/firefox only */
+    -moz-box-shadow:0 0 10px #000;
+    -webkit-box-shadow:0 0 10px #000;
+}
+#user-menu {
+	background: none repeat scroll 0 0 #F9F9F9;
+    border: 1px solid #CCCCCC;
+    line-height: 30px;
+	margin-left: 58px;
+    min-height: 72px;
+    padding: 10px;
+    width: 100px;
+    z-index: 10000;
+	display: none;
+}
+#user-menu .close {
+    background: url(../../resources/images/close-user-menu.png) no-repeat;
+    position:absolute;
+    right:-20px;
+    top:78px;
+    cursor:pointer;
+    height:35px;
+    width:35px;
+	
+}
+a.user-menu-trigger {
+	text-decoration: none;
+	background:url(../../resources/images/arrow-down-sm.png) no-repeat right center;
+	padding-right: 10px;
+	float:right;
+}
+nav#user p {
+	float: right;
+}
+
+.dropbox-nav * {
+  padding-right: 1em;
+}
+
+/* Rows in list of dropbox activities */
+/* Becase we have styles directly set on table elements, these styles cannot just be set on the tr class. */
+
+.dropbox-activity-error td {
+  background-color: red;  
+}
+
+.dropbox-activity-warning td {
+  background-color: orange;  
+}
+
+.dropbox-activity-success td {
+  background-color: green;  
+}
+
+.dropbox-activity-info td {
+
+}

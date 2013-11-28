@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+  <!--
+    Sample Maven 2 settings.xml file for use with the Data Conservancy.  Typically installed in ~/.m2/settings.xml.
+  -->
+
+  <!-- 
+    $Id: settings.xml 268 2010-06-18 15:50:36Z emetsger $
+    $URL: https://scm.dataconservancy.org/svn/maven/settings/settings.xml $
+  -->
+
+  <servers>
+
+    <!-- For deploying to Data Conservancy Maven repositories using
+         SSH public key authentication.  It is important to 
+         use the <*Permissions> elements so that multiple users can
+         deploy to the repository without stomping on each other. -->
+    <server>
+      <id>dc.public.snapshots</id>
+      <username><!-- username --></username>
+      <privateKey><!-- abs path to private key file --></privateKey>
+      <filePermissions>664</filePermissions>
+      <directoryPermissions>775</directoryPermissions>
+    </server>
+    <server>
+      <id>dc.public.releases</id>
+      <username><!-- username --></username>
+      <privateKey><!-- abs path to private key file --></privateKey>
+      <filePermissions>664</filePermissions>
+      <directoryPermissions>775</directoryPermissions>
+    </server>
+    <server>
+      <id>dc.private.snapshots</id>
+      <username><!-- username --></username>
+      <privateKey><!-- abs path to private key file --></privateKey>
+      <filePermissions>664</filePermissions>
+      <directoryPermissions>775</directoryPermissions>
+    </server>
+    <server>
+      <id>dc.private.releases</id>
+      <username><!-- username --></username>
+      <privateKey><!-- abs path to private key file --></privateKey>
+      <filePermissions>664</filePermissions>
+      <directoryPermissions>775</directoryPermissions>
+    </server>
+    <server>
+      <id>dc.public.sites</id>
+      <username><!-- username --></username>
+      <privateKey><!-- abs path to private key file --></privateKey>
+      <filePermissions>664</filePermissions>
+      <directoryPermissions>775</directoryPermissions>
+    </server>
+
+    <!-- For connecting to and downloading Maven artifacts from 
+         the private Data Conservancy repositories -->
+    <server>
+      <id>dc.maven.private.releases</id>
+      <username>dcsmaven</username>
+      <password>curation4life</password>
+    </server>
+    <server>
+      <id>dc.maven.private.snapshots</id>
+      <username>dcsmaven</username>
+      <password>curation4life</password>
+    </server>
+  </servers>
+
+  <profiles>
+    <profile>
+      <id>dataconservancy-repositories</id>
+      <activation>
+        <!-- modify activation as appropriate for your environment -->
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <repositories>
+        <repository>
+          <id>dc.maven.releases</id>
+          <name>Data Conservancy Public Maven 2 Repository (releases)</name>
+          <layout>default</layout>
+          <url>http://maven.dataconservancy.org/public/releases/</url>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </repository>
+
+        <repository>
+          <id>dc.maven.snapshots</id>
+          <name>Data Conservancy Public Maven 2 Repository (snapshots)</name>
+          <layout>default</layout>
+          <url>http://maven.dataconservancy.org/public/snapshots/</url>
+          <releases>
+            <enabled>false</enabled>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+        </repository>
+
+        <repository>
+          <id>dc.maven.private.releases</id>
+          <name>Data Conservancy Private Maven 2 Repository (releases)</name>
+          <layout>default</layout>
+          <url>http://maven.dataconservancy.org/private/releases/</url>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </repository>
+
+        <repository>
+          <id>dc.maven.private.snapshots</id>
+          <name>Data Conservancy Private Maven 2 Repository (snapshots)</name>
+          <layout>default</layout>
+          <url>http://maven.dataconservancy.org/private/snapshots/</url>
+          <releases>
+            <enabled>false</enabled>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+        </repository>
+        
+        <repository>
+          <id>seadva-release</id>
+          <name>seadva-releases</name>
+          <url>http://seadva-test.d2i.indiana.edu:8081/artifactory/ext-release-local</url>
+        </repository>
+        <repository>
+          <id>seadva-snapshot</id>
+          <name>seadva-snapshots</name>
+          <url>http://seadva-test.d2i.indiana.edu:8081/artifactory/ext-snapshot-local</url>
+        </repository>
+      </repositories>
+    </profile>
+  </profiles>
+
+</settings>

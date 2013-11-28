@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jms="http://www.springframework.org/schema/jms"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+	http://www.springframework.org/schema/jms 
+	http://www.springframework.org/schema/jms/spring-jms-2.5.xsd">
+			
+		<bean id="connectionFactory"
+		class="org.apache.activemq.ActiveMQConnectionFactory">
+		<property name="brokerURL" value="tcp://localhost:61616"/>
+		</bean>
+				
+		<!-- ************************************************************************************ -->
+		<!-- ************************************************************************************ -->
+		<!-- List the TOPICS in this section -->
+
+		<bean id="jmsTemplate-newDcsEntity"
+		class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="messageConverter" ref="newDcsEntityConverter" />
+		</bean>
+
+		<bean id="newDcsEntityTopic" class="org.apache.activemq.command.ActiveMQTopic">
+		<constructor-arg index="0" value="TOPIC.NEWDCSENTITY"/>
+		</bean>
+		
+		<bean id="jmsTemplate-generalEvent"
+		class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="messageConverter" ref="generalEventConverter" />
+		</bean>
+		
+		<bean id="generalEventTopic" class="org.apache.activemq.command.ActiveMQTopic">
+		<constructor-arg index="0" value="TOPIC.GENERALEVENT"/>
+		</bean>
+		
+		<!-- ************************************************************************************ -->
+		<!-- ************************************************************************************ -->
+		<!--  List the PUBLISHERS in this section -->
+
+		<bean id="newDcsEntityPublisher" 
+		class="org.dataconservancy.dcs.notify.impl.PublishNewDcsEntity">
+			<property name="jmsTemplate" ref="jmsTemplate-newDcsEntity" />
+			<property name="topic" ref="newDcsEntityTopic" />
+		</bean>
+		
+		
+		<bean id="generalEventPublisher" 
+		class="org.dataconservancy.dcs.notify.impl.PublishGeneralEvent">
+			<property name="jmsTemplate" ref="jmsTemplate-generalEvent" />
+			<property name="topic" ref="generalEventTopic" />
+		</bean>
+		
+		<!-- ************************************************************************************ -->
+		<!-- ************************************************************************************ -->
+		<!-- List the MESSAGE CONVERTERS in this section -->
+		
+		<bean id="generalEventConverter"
+			class="org.dataconservancy.dcs.notify.impl.GeneralEventConverter" />
+			
+		<bean id="newDcsEntityConverter"
+			class="org.dataconservancy.dcs.notify.impl.NewDcsEntityConverter" />
+		
+		
+		<!-- ************************************************************************************ -->
+		<!-- ************************************************************************************ -->
+		<!--  List the application's topic SUBSCRIBERS in this section -->
+		
+		<!--  List the test topic Subscribers in this section -->
+		
+		<!--  NB: Spring eagerly instantiates all its configured beans when the application context is started. -->
+		
+		<bean id="testEventListenerGeneralEvent" class="org.dataconservancy.dcs.notify.impl.MockEventListener">
+		<constructor-arg index="0" value="testEventListenerGeneralEvent"/>
+		</bean>
+		
+		<bean id="testEventListenerNewDcsEntity" class="org.dataconservancy.dcs.notify.impl.MockEventListener">
+		<constructor-arg index="0" value="testEventListenerNewDcsEntity"/>
+		</bean>
+		
+		<!--  Setting the bean's scope attribute to prototype forces Spring to produce a new bean instance each time.
+			  I'm not using it here but you could! -->
+		<bean id="testEventListenerAll" class="org.dataconservancy.dcs.notify.impl.MockEventListener">
+		<constructor-arg index="0" value="testEventListenerAll"/>
+		</bean>
+		
+		<!-- ************************************************************************************ -->
+		<!-- ************************************************************************************ -->
+		<!-- Wire the listeners to the topic destinations in this section -->
+
+		<!--  Wire up topic subscribers to receive messages from the General Event Topic -->
+		<jms:listener-container connection-factory="connectionFactory" cache="none"
+		destination-type="topic" message-converter="generalEventConverter">
+				<jms:listener destination="TOPIC.GENERALEVENT" ref="testEventListenerGeneralEvent"
+				method="onNotification"/>
+				<jms:listener destination="TOPIC.GENERALEVENT" ref="testEventListenerAll"
+				method="onNotification"/>
+		</jms:listener-container>
+		
+		<!--  Wire up topic subscribers to receive messages from the New Dcs Entity Topic -->
+		<jms:listener-container connection-factory="connectionFactory" cache="none"
+		destination-type="topic" message-converter="newDcsEntityConverter">
+				<jms:listener destination="TOPIC.NEWDCSENTITY" ref="testEventListenerNewDcsEntity"
+				method="onNotification"/>
+				<jms:listener destination="TOPIC.NEWDCSENTITY" ref="testEventListenerAll"
+				method="onNotification"/>
+		</jms:listener-container>
+
+		
+</beans>

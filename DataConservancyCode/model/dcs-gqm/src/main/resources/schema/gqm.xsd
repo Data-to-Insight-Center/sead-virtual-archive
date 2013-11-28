@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<schema targetNamespace="http://dataconservancy.org/schemas/gqm/1.0"
+  elementFormDefault="qualified" attributeFormDefault="unqualified"
+  xmlns="http://www.w3.org/2001/XMLSchema" xmlns:gqm="http://dataconservancy.org/schemas/gqm/1.0"
+  xmlns:dc="http://purl.org/dc/elements/1.1/creator" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  
+  <element name="gqm" type="gqm:gqmContainerType">
+  <annotation>
+      <documentation> 
+          $URL: https://scm.dataconservancy.org/svn/model/trunk/dcs-gqm/src/main/resources/schema/gqm.xsd $
+      </documentation>
+    </annotation>
+  </element>
+  
+  <complexType name="gqmContainerType">
+  	<sequence>
+  		<element name="Relations" type="gqm:relationContainerType"
+  			maxOccurs="1" minOccurs="0">
+  		</element>
+  		<element name="Locations" type="gqm:locationContainerType"
+  			maxOccurs="1" minOccurs="0">
+  		</element>
+  		<element name="DateTimeIntervals" type="gqm:dateTimeIntervalContainerType"
+  			maxOccurs="1" minOccurs="0">
+  		</element>  		
+  	</sequence>
+	<attribute name="EntityId" type="string" use="required">
+	</attribute>
+  </complexType>
+  
+  <complexType name="relationContainerType">
+  	<sequence>
+  		<choice maxOccurs="unbounded" minOccurs="0">
+	        <element name="Relation" type="gqm:relationType" maxOccurs="unbounded"
+	         	minOccurs="0">
+	        </element>      
+      </choice>
+  	</sequence>
+  </complexType>
+  
+  <complexType name="relationType">
+	<attribute name="predicate" type="anyURI" use="required">
+	</attribute>
+	<attribute name="object" type="string" use="required">
+	</attribute>
+  </complexType>
+  
+  <complexType name="locationContainerType">
+  	<sequence>
+  		<choice maxOccurs="unbounded" minOccurs="0">
+	  		<element name="Location" type="gqm:locationType" maxOccurs="unbounded"
+	  			minOccurs="0">
+	  		</element>
+  		</choice>
+  	</sequence>
+  </complexType>
+  
+  <complexType name="locationType">
+  	<sequence>
+  		<element name="geometry" type="gqm:geometryType" maxOccurs="unbounded"
+  			minOccurs="1">
+  		</element>
+  		<element name="srid" type="anyURI" maxOccurs="1"
+  			minOccurs="1">
+  		</element>
+  	</sequence>
+  </complexType>
+  
+  <complexType name="dateTimeIntervalContainerType">
+  	<sequence>
+  		<choice maxOccurs="unbounded" minOccurs="0">
+  			<element name="DateTimeInterval" type="gqm:dateTimeIntervalType"
+  				maxOccurs="unbounded" minOccurs="0">
+  			</element>
+  		</choice>
+  	</sequence>
+  </complexType>
+  
+  <complexType name="dateTimeIntervalType">
+  	<attribute name="start" type="long" use="required">
+  	</attribute>
+	<attribute name="end" type="long" use="required">
+	</attribute>
+  </complexType>
+  
+  <complexType name="geometryType">
+  	<sequence>
+  		<element name="type" type="gqm:geometryTypes" maxOccurs="1"
+  			minOccurs="1">
+  		</element>
+  		<element name="point" type="gqm:pointType" maxOccurs="unbounded"
+  			minOccurs="0">
+  		</element>
+  	</sequence>
+  </complexType>
+  
+  <simpleType name="geometryTypes">
+  	<restriction base="string">
+  		<enumeration value="Point"></enumeration>
+  		<enumeration value="Line"></enumeration>
+  		<enumeration value="Polygon"></enumeration>  	
+  	</restriction>
+  </simpleType>
+  
+  <complexType name="pointType">
+  	<sequence>
+  		<element name="coordinates" type="double" maxOccurs="unbounded"
+  			minOccurs="1">
+  		</element>
+  	</sequence>
+  </complexType>
+  
+  
+</schema>

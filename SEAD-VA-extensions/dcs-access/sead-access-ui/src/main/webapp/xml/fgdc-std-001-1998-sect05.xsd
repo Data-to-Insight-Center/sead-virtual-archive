@@ -1,0 +1,893 @@
+<!--edited with XMLSpy v2008 sp1 (http://www.altova.com) by Systems Administrator (NCDDC)-->
+<xs:schema blockDefault="#all" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="eainfo" type="eainfoType">
+    <xs:annotation>
+      <xs:documentation>Details about the information content of the data set, including the entity types, their attributes, and the domains from which attribute values may be assigned.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Entity and Attribute Information"/>
+        <xs:attribute name="use" fixed="Mandatory-if-applicable"/>
+        <xs:attribute name="other-validation-rules" fixed="checkAndOr([detailed,overview])"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="eainfoType">
+    <xs:choice>
+      <xs:sequence>
+        <xs:element ref="detailed" maxOccurs="unbounded">
+          <xs:annotation>
+            <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+              <ann:metadataNode nodeId="9010c00b-b354-4ce7-b255-6728cd88b4e3" parentId="ddff070c-615d-47de-885a-c7380898f675" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+                <ann:metadataConcept>
+                  <ann:source>fgdc</ann:source>
+                  <ann:description>description of the entities, attributes, attribute values, and related characteristics encoded</ann:description>
+                  <ann:shortDescription>Detailed Description</ann:shortDescription>
+                </ann:metadataConcept>
+              </ann:metadataNode>
+            </xsd:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element ref="overview" minOccurs="0" maxOccurs="unbounded">
+          <xs:annotation>
+            <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+              <ann:metadataNode nodeId="03b651e8-db10-40df-ad85-42d47d3e7645" parentId="ddff070c-615d-47de-885a-c7380898f675" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+                <ann:metadataConcept>
+                  <ann:name/>
+                  <ann:source>fgdc</ann:source>
+                  <ann:description>summary of, and citation to detailed description of, the information content of the data</ann:description>
+                  <ann:shortDescription>Overview Description</ann:shortDescription>
+                </ann:metadataConcept>
+              </ann:metadataNode>
+            </xsd:appinfo>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+      <xs:element ref="overview" maxOccurs="unbounded">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="a8d64845-37a9-43b1-ad88-e061891da8f2" parentId="ddff070c-615d-47de-885a-c7380898f675" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:source>fgdc</ann:source>
+                <ann:description>summary of, and citation to detailed description of, the information content of the data</ann:description>
+                <ann:shortDescription>Overview Description</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:choice>
+  </xs:complexType>
+  <xs:element name="detailed" type="detailedType">
+    <xs:annotation>
+      <xs:documentation>Description of the entities, attributes, attribute values, and related characteristics encoded in the data set.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Detailed Description"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="detailedType">
+    <xs:sequence>
+      <xs:element ref="enttyp">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="3737bf29-5211-4c8b-9517-50aad96c9526" parentId="9010c00b-b354-4ce7-b255-6728cd88b4e3" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the definition and description of a set into which similar entity instances are classified</ann:description>
+                <ann:shortDescription>Entity Type</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="attr" minOccurs="0" maxOccurs="unbounded">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="fb3b37a5-1d57-4d9a-9c15-ae9f80865825" parentId="9010c00b-b354-4ce7-b255-6728cd88b4e3" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:source>fgdc</ann:source>
+                <ann:description>a defined characteristic of an entity.</ann:description>
+                <ann:shortDescription>Attribute</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="enttyp" type="enttypType">
+    <xs:annotation>
+      <xs:documentation>The definition and description of a set into which similar entity instances are classified.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Entity Type"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="enttypType">
+    <xs:sequence>
+      <xs:element ref="enttypl">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="a48b7fd6-c15a-44ee-b1c2-f6e67ab38222" parentId="3737bf29-5211-4c8b-9517-50aad96c9526" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the name of the entity type.</ann:description>
+                <ann:shortDescription>Entity Type Label</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="enttypd">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="569a6f82-f01e-4a83-9a68-716986437d09" parentId="3737bf29-5211-4c8b-9517-50aad96c9526" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the description of the entity type.</ann:description>
+                <ann:shortDescription>Entity Type Definition</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="enttypds">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="4a8331e4-0f9e-47c3-a0c7-6eb436fd9c6f" parentId="3737bf29-5211-4c8b-9517-50aad96c9526" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the authority of the definition.</ann:description>
+                <ann:shortDescription>Entity Type Definition Source</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="enttypl" type="enttyplType">
+    <xs:annotation>
+      <xs:documentation>The name of the entity type.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Entity Type Label"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="enttyplType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="enttypd" type="enttypdType">
+    <xs:annotation>
+      <xs:documentation>The description of the entity type.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Entity Type Definition"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="enttypdType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="enttypds" type="enttypdsType">
+    <xs:annotation>
+      <xs:documentation>The authority of the definition.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Entity Type Definition Source"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="enttypdsType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="attr" type="attrType">
+    <xs:annotation>
+      <xs:documentation>A defined characteristic of an entity.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Attribute"/>
+        <xs:attribute name="use" fixed="Mandatory-if-applicable"/>
+        <xs:attribute name="is-recursive" fixed="false"/>
+        <xs:attribute name="other-validation-rules" fixed="checkChron([begdatea,enddatea])"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="attrType">
+    <xs:sequence>
+      <xs:element ref="attrlabl">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="ab72dd91-dde6-46de-8b34-b15e64f2fec4" parentId="fb3b37a5-1d57-4d9a-9c15-ae9f80865825" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the name of the attribute.</ann:description>
+                <ann:shortDescription>Attribute Label</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="attrdef">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="a78d1835-0200-424a-a9ec-c40da6448515" parentId="fb3b37a5-1d57-4d9a-9c15-ae9f80865825" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the description of the attribute.</ann:description>
+                <ann:shortDescription>Attribute Definition</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="attrdefs">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="d118d70b-4809-4ac2-8822-5829e56a2174" parentId="fb3b37a5-1d57-4d9a-9c15-ae9f80865825" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the authority of the definition.</ann:description>
+                <ann:shortDescription>Attribute Definition Source</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="attrdomv" maxOccurs="unbounded">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="3eb1723b-77aa-4042-bd51-dc28dc4ad0ed" parentId="fb3b37a5-1d57-4d9a-9c15-ae9f80865825" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the valid values that can be assigned for an attribute.</ann:description>
+                <ann:shortDescription>Attribute Domain Values</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:sequence minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="begdatea">
+          <xs:annotation>
+            <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+              <ann:metadataNode nodeId="2ccd3be6-7ee7-42a7-9b5b-b05b9ac2f84b" parentId="fb3b37a5-1d57-4d9a-9c15-ae9f80865825" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+                <ann:metadataElement>
+                  <ann:name/>
+                  <ann:source>fgdc</ann:source>
+                  <ann:description>earliest or only date for which the attribute</ann:description>
+                  <ann:shortDescription>Beginning Date of Attribute Values</ann:shortDescription>
+                </ann:metadataElement>
+              </ann:metadataNode>
+            </xsd:appinfo>
+          </xs:annotation>
+        </xs:element>
+        <xs:element ref="enddatea" minOccurs="0">
+          <xs:annotation>
+            <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+              <ann:metadataNode nodeId="703049d0-69a0-4acb-ad0c-642ad85ce5e4" parentId="fb3b37a5-1d57-4d9a-9c15-ae9f80865825" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+                <ann:metadataElement>
+                  <ann:name/>
+                  <ann:source>fgdc</ann:source>
+                  <ann:description>latest date for which the information is current. Used in cases when a</ann:description>
+                  <ann:shortDescription>Ending Date of Attribute Values</ann:shortDescription>
+                </ann:metadataElement>
+              </ann:metadataNode>
+            </xsd:appinfo>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+      <xs:element ref="attrvai" minOccurs="0">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="0936a168-2704-4cc0-99c8-eef51a14a843" parentId="fb3b37a5-1d57-4d9a-9c15-ae9f80865825" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="attrmfrq" minOccurs="0">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="c1be4c6a-31a8-4a9f-a843-bdbdd55ae056" parentId="fb3b37a5-1d57-4d9a-9c15-ae9f80865825" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the frequency with which attribute values are added.</ann:description>
+                <ann:shortDescription>Attribute Measurement Frequency</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="attrlabl" type="attrlablType">
+    <xs:annotation>
+      <xs:documentation>The name of the attribute.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Attribute Label"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="attrlablType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="attrdef" type="attrdefType">
+    <xs:annotation>
+      <xs:documentation>The description of the attribute.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Attribute Definition"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="attrdefType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="attrdefs" type="attrdefsType">
+    <xs:annotation>
+      <xs:documentation>The authority of the definition.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Attribute Definition Source"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="attrdefsType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="attrdomv" type="attrdomvType">
+    <xs:annotation>
+      <xs:documentation>The valid values that can be assigned for an attribute.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Attribute Domain Values"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+        <xs:attribute name="other-validation-rules" fixed="checkOr([edom,rdom,udom,codesetd])"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="attrdomvType">
+    <xs:choice>
+      <xs:element ref="edom">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="ccfedfda-ff00-4301-a6ce-b972b33d8fbd" parentId="3eb1723b-77aa-4042-bd51-dc28dc4ad0ed" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="rdom">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="dc9729cb-0aa1-4f38-9727-2eca0f4ab245" parentId="3eb1723b-77aa-4042-bd51-dc28dc4ad0ed" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="codesetd">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="af70c5bc-fb07-44ac-aa10-54b908c90a25" parentId="3eb1723b-77aa-4042-bd51-dc28dc4ad0ed" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="udom">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="41af000a-9170-491f-8b50-81f429ed20d0" parentId="3eb1723b-77aa-4042-bd51-dc28dc4ad0ed" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>description of the values and reasons why they cannot be represented.</ann:description>
+                <ann:shortDescription>Unrepresentable Domain</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:choice>
+  </xs:complexType>
+  <xs:element name="edom" type="edomType">
+    <xs:annotation>
+      <xs:documentation>The members of an established set of valid values.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Enumerated Domain"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+        <xs:attribute name="is-recursive" fixed="true"/>
+        <xs:attribute name="recursive-class-name" fixed="attr"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="edomType">
+    <xs:sequence maxOccurs="unbounded">
+      <xs:element ref="edomv">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="1a24493f-3155-4847-9785-86f6f79f433f" parentId="ccfedfda-ff00-4301-a6ce-b972b33d8fbd" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the name or label of a member of the set.</ann:description>
+                <ann:shortDescription>Enumerated Domain Value</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="edomvd">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="56492dc3-0fb2-473c-ba32-95f4fa0e3b3d" parentId="ccfedfda-ff00-4301-a6ce-b972b33d8fbd" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the description of the value.</ann:description>
+                <ann:shortDescription>Enumerated Domain Value Definition</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="edomvds">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="ac9e4221-1258-423b-be25-dfa1ad20927b" parentId="ccfedfda-ff00-4301-a6ce-b972b33d8fbd" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the authority of the definition.</ann:description>
+                <ann:shortDescription>Enumerated Domain Value Definition Source</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="attr" minOccurs="0" maxOccurs="unbounded">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="a9dd47be-f65d-4c2c-a235-a2ff094862b2" parentId="ccfedfda-ff00-4301-a6ce-b972b33d8fbd" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="edomv" type="edomvType">
+    <xs:annotation>
+      <xs:documentation>The name or label of a member of the set.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Enumerated Domain Value"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="edomvType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="edomvd" type="edomvdType">
+    <xs:annotation>
+      <xs:documentation>The description of the value.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Enumerated Domain Value Definition"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="edomvdType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="edomvds" type="edomvdsType">
+    <xs:annotation>
+      <xs:documentation>The authority of the definition.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Enumerated Domain Value Definition Source"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="edomvdsType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="rdom" type="rdomType">
+    <xs:annotation>
+      <xs:documentation>The minimum and maximum values of a continuum of valid  values.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Range Domain"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+        <xs:attribute name="is-recursive" fixed="true"/>
+        <xs:attribute name="recursive-class-name" fixed="attr"/>
+        <xs:attribute name="other-validation-rules" fixed="checkRangeExcludeMin([attrmres,0.0])"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="rdomType">
+    <xs:sequence>
+      <xs:element ref="rdommin">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="dc8354ee-474a-4d22-bf29-a80b3ff9484f" parentId="dc9729cb-0aa1-4f38-9727-2eca0f4ab245" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the least value that the attribute can be assigned.</ann:description>
+                <ann:shortDescription>Range Domain Minimum</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="rdommax">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="e6e57d17-a22a-4503-b794-1e460e2f3705" parentId="dc9729cb-0aa1-4f38-9727-2eca0f4ab245" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the greatest value that the attribute can be assigned.</ann:description>
+                <ann:shortDescription>Range Domain Maximum</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="attrunit" minOccurs="0">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="200d443e-faca-4e21-9f5f-1221e1c6dda5" parentId="dc9729cb-0aa1-4f38-9727-2eca0f4ab245" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the standard of measurement for an attribute value.</ann:description>
+                <ann:shortDescription>Attribute Units of Measure</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="attrmres" minOccurs="0">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="7c449100-e7c6-43b5-8daf-2755446a49eb" parentId="dc9729cb-0aa1-4f38-9727-2eca0f4ab245" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the smallest unit increment to which an attribute value is measured.</ann:description>
+                <ann:shortDescription>Attribute Measurement Resolution</ann:shortDescription>
+                <ann:elementType>STRING</ann:elementType>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="attr" minOccurs="0" maxOccurs="unbounded">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="01540ae5-e7c3-4e6d-92d6-81efa2d23b05" parentId="dc9729cb-0aa1-4f38-9727-2eca0f4ab245" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="rdommin" type="rdomminType">
+    <xs:annotation>
+      <xs:documentation>The least value that the attribute can be assigned.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Range Domain Minimum"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="rdomminType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="rdommax" type="rdommaxType">
+    <xs:annotation>
+      <xs:documentation>The greatest value that the attribute can be assigned.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Range Domain Maximum"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="rdommaxType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="attrunit" type="attrunitType">
+    <xs:annotation>
+      <xs:documentation>The standard of measurement for an attribute value.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Attribute Units of Measure"/>
+        <xs:attribute name="use" fixed="Mandatory-if-applicable"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="attrunitType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="attrmres" type="attrmresType">
+    <xs:annotation>
+      <xs:documentation>The smallest unit increment to which an attribute value is measured.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Attribute Measurement Resolution"/>
+        <xs:attribute name="use" fixed="Optional"/>
+        <xs:attribute name="string-input-format" fixed="Attribute Measurement Resolution > 0.0"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="attrmresType">
+    <xs:restriction base="xs:double">
+      <xs:minExclusive value="0.0"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="codesetd" type="codesetdType">
+    <xs:annotation>
+      <xs:documentation>Reference to a standard or list which contains the members of an established set of valid values.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Codeset Domain"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="codesetdType">
+    <xs:sequence>
+      <xs:element ref="codesetn">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="8faa85ec-7e5c-433a-83f8-af7402599360" parentId="af70c5bc-fb07-44ac-aa10-54b908c90a25" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the title of the codeset.</ann:description>
+                <ann:shortDescription>Codeset Name</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="codesets">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="245be028-ac43-46cd-8456-c9399f850a72" parentId="af70c5bc-fb07-44ac-aa10-54b908c90a25" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the authority for the codeset.</ann:description>
+                <ann:shortDescription>Codeset Source</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="codesetn" type="codesetnType">
+    <xs:annotation>
+      <xs:documentation>The title of the codeset.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Codeset Name"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="codesetnType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="codesets" type="codesetsType">
+    <xs:annotation>
+      <xs:documentation>The authority for the codeset.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Codeset Source"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="codesetsType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="udom" type="udomType">
+    <xs:annotation>
+      <xs:documentation>Description of the values and reasons why they cannot be represented.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Unrepresentable Domain"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="udomType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="begdatea" type="begdateaType">
+    <xs:annotation>
+      <xs:documentation>Earliest or only date for which the attribute values are current.  In cases when a range of dates are provided, this is the earliest date for which the information is valid.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Beginning Date of Attribute Values"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+        <xs:attribute name="string-input-format" fixed="YYYY|YYYYMM|YYYYMMDD|bcYYYY|bcYYYYMM|bcYYYYMMDD|ccYYYYY...|cdYYYYY..."/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="begdateaType">
+    <xs:restriction base="FGDCdate"/>
+  </xs:simpleType>
+  <xs:element name="enddatea" type="enddateaType">
+    <xs:annotation>
+      <xs:documentation>Latest date for which the information is current.  Used in cases when a range of dates are provided.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Ending Date of Attribute Values"/>
+        <xs:attribute name="use" fixed="Mandatory-if-applicable"/>
+        <xs:attribute name="string-input-format" fixed="YYYY|YYYYMM|YYYYMMDD|bcYYYY|bcYYYYMM|bcYYYYMMDD|ccYYYYY...|cdYYYYY..."/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="enddateaType">
+    <xs:restriction base="FGDCdate"/>
+  </xs:simpleType>
+  <xs:element name="attrvai" type="attrvaiType">
+    <xs:annotation>
+      <xs:documentation>An assessment of the accuracy of the assignment of attribute values.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Attribute Value Accuracy Information"/>
+        <xs:attribute name="use" fixed="Optional"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="attrvaiType">
+    <xs:sequence>
+      <xs:element ref="attrva">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="bde24099-a0b7-4ecc-a34d-5f56a0aefc65" parentId="0936a168-2704-4cc0-99c8-eef51a14a843" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>an estimate of the accuracy of the assignment of attribute values.</ann:description>
+                <ann:shortDescription>Attribute Value Accuracy</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="attrvae">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="d1cb90b4-7f2a-4c7b-b8d3-2aeb9c02018d" parentId="0936a168-2704-4cc0-99c8-eef51a14a843" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataElement>
+                <ann:name/>
+                <ann:source>fgdc</ann:source>
+                <ann:description>the definition of the Attribute Value Accuracy measure and units,</ann:description>
+                <ann:shortDescription>Attribute Value Accuracy Exp lanation</ann:shortDescription>
+              </ann:metadataElement>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="attrva" type="attrvaType">
+    <xs:annotation>
+      <xs:documentation>An estimate of the accuracy of the assignment of attribute values.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Attribute Value Accuracy"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="attrvaType">
+    <xs:restriction base="xs:double"/>
+  </xs:simpleType>
+  <xs:element name="attrvae" type="attrvaeType">
+    <xs:annotation>
+      <xs:documentation>The definition of the Attribute Value Accuracy measure and units, and a description of how the estimate was derived.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Attribute Value Accuracy Explanation"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="attrvaeType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="attrmfrq" type="attrmfrqType">
+    <xs:annotation>
+      <xs:documentation>The frequency with which attribute values are added.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Attribute Measurement Frequency"/>
+        <xs:attribute name="use" fixed="Optional"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="attrmfrqType">
+    <xs:union memberTypes="FGDCstring">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="Unknown"/>
+          <xs:enumeration value="As needed"/>
+          <xs:enumeration value="Irregular"/>
+          <xs:enumeration value="None planned"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:element name="overview" type="overviewType">
+    <xs:annotation>
+      <xs:documentation>Summary of, and citation to detailed description of, the information content of the data set.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Overview Description"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+        <xs:attribute name="is-recursive" fixed="false"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="overviewType">
+    <xs:sequence>
+      <xs:element ref="eaover">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="cc768cad-f0aa-4069-9778-14d1c1a13427" parentId="03b651e8-db10-40df-ad85-42d47d3e7645" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="cc768cad-f0aa-4069-9778-14d1c1a13427" parentId="03b651e8-db10-40df-ad85-42d47d3e7645" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="60881de3-58a9-42ed-ba91-76ef247f7836" parentId="a8d64845-37a9-43b1-ad88-e061891da8f2" version="2128d281-1f66-4a19-bf28-d5b7ba5758ca" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations"/>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element ref="eadetcit" maxOccurs="unbounded">
+        <xs:annotation>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="feff12e8-893e-443d-9302-54d6784a3ca3" parentId="03b651e8-db10-40df-ad85-42d47d3e7645" version="1a61ac21-e96b-408b-aeba-1477edcc95da" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:source>fgdc</ann:source>
+                <ann:description>reference to the complete description of the entity types, attributes, and</ann:description>
+                <ann:shortDescription>Entity and Attribute Detail Citation</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="feff12e8-893e-443d-9302-54d6784a3ca3" parentId="03b651e8-db10-40df-ad85-42d47d3e7645" version="1ad868e9-c8ed-4859-a947-ddea718fef43" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept>
+                <ann:source>fgdc</ann:source>
+                <ann:description>reference to the complete description of the entity types, attributes, and</ann:description>
+                <ann:shortDescription>Entity and Attribute Detail Citation</ann:shortDescription>
+              </ann:metadataConcept>
+            </ann:metadataNode>
+          </xsd:appinfo>
+          <xsd:appinfo source="http://edu.indiana.dde/catalog" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <ann:metadataNode nodeId="94d85e72-00dc-464c-93e3-08ce266a76a7" parentId="a8d64845-37a9-43b1-ad88-e061891da8f2" version="2128d281-1f66-4a19-bf28-d5b7ba5758ca" xmlns:ann="http://www.cs.indiana.edu/dde/catalogbuilder/2008/08/annotations">
+              <ann:metadataConcept/>
+            </ann:metadataNode>
+          </xsd:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="eaover" type="eaoverType">
+    <xs:annotation>
+      <xs:documentation>Detailed summary of the information contained in a data set.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Entity and Attribute Overview"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="eaoverType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+  <xs:element name="eadetcit" type="eadetcitType">
+    <xs:annotation>
+      <xs:documentation>Reference to the complete description of the entity types, attributes, and attribute values for the data set.</xs:documentation>
+      <xs:appinfo>
+        <xs:attribute name="mdname" fixed="Entity and Attribute Detail Citation"/>
+        <xs:attribute name="use" fixed="Mandatory"/>
+      </xs:appinfo>
+    </xs:annotation>
+  </xs:element>
+  <xs:simpleType name="eadetcitType">
+    <xs:restriction base="FGDCstring"/>
+  </xs:simpleType>
+</xs:schema>

@@ -1,0 +1,6 @@
+Access UI is a GWT app running entirely on the client web browser.
+
+The access service url can be set by editing src/main/resources/org/dataconservancy/dcs/access/ui/public/Config.properties before compilation or app/Config.properties in the deployed war. Additionally the default can be overridden by passing a parameter 'accessurl' to the web application.
+
+A test access service can be started from the dcs-access connector by running:
+mvn generate-test-resources process-test-resources org.dataconservancy.access:dcs-access-maven-plugin:seed-archive org.dataconservancy.access:dcs-access-maven-plugin:seed-index jetty:run

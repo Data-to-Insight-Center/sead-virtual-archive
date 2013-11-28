@@ -1,0 +1,529 @@
+<zdef1799893791:dcp xmlns="" xmlns:zdef1799893791="http://dataconservancy.org/schemas/dcp/1.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://dataconservancy.org/schemas/dcp/1.0 http://dataconservancy.org/schemas/dcp/1.0">
+  <DeliverableUnits xmlns="http://dataconservancy.org/schemas/dcp/1.0">
+    <DeliverableUnit id="d805f95e-0391-45fe-92e6-16927d5d4951">
+      <alternateIdentifier>
+        <typeId>dataconservancy.org:types:registry:entry</typeId>
+        <idValue>dataconservancy.org:formats:file:metadata:fgdc:xml</idValue>
+      </alternateIdentifier>
+      <alternateIdentifier>
+        <typeId>dataconservancy.org:types:registry:entry</typeId>
+        <idValue>dataconservancy.org:registry:metadata-format:entry:id:1</idValue>
+      </alternateIdentifier>
+      <type>dataconservancy.org:types:registry:entry</type>
+      <title>FGDC 1998 XSD Schema</title>
+      <formerExternalRef>dataconservancy.org:registry:metadata-format:entry:id:1</formerExternalRef>
+      <digitalSurrogate>false</digitalSurrogate>
+      <relationship ref="493b2cb5-9337-44cf-a3ba-2462034084a9"
+        rel="urn:dataconservancy.org:rel/isRegistryEntryFor"/>
+    </DeliverableUnit>
+    <DeliverableUnit id="493b2cb5-9337-44cf-a3ba-2462034084a9">
+      <type>dataconservancy.types:registry-entry:metadataformat</type>
+      <title>FGDC 1998</title>
+      <formerExternalRef>dataconservancy.org:formats:file:metadata:fgdc:xml</formerExternalRef>
+      <relationship ref="d805f95e-0391-45fe-92e6-16927d5d4951"
+        rel="urn:dataconservancy.org:rel/hasRegistryEntry"/>
+    </DeliverableUnit>
+    <DeliverableUnit id="0">
+      <parent ref="493b2cb5-9337-44cf-a3ba-2462034084a9"/>
+      <type>dataconservancy.types:registry-entry:metadatascheme</type>
+      <title>FGDC 1998</title>
+      <formerExternalRef>http://www.fgdc.gov/schemas/metadata/fgdc-std-001-1998.xsd</formerExternalRef>
+    </DeliverableUnit>
+    <DeliverableUnit id="5">
+      <parent ref="0"/>
+      <parent ref="493b2cb5-9337-44cf-a3ba-2462034084a9"/>
+      <type>dataconservancy.types:registry-entry:metadatascheme</type>
+      <title>FGDC 1998</title>
+      <formerExternalRef>http://www.fgdc.gov/schemas/metadata/fgdc-std-001-1998.xsd</formerExternalRef>
+    </DeliverableUnit>
+    <DeliverableUnit id="10">
+      <parent ref="0"/>
+      <parent ref="493b2cb5-9337-44cf-a3ba-2462034084a9"/>
+      <type>dataconservancy.types:registry-entry:metadatascheme</type>
+      <title>FGDC 1998, section 1</title>
+      <formerExternalRef>http://www.fgdc.gov/schemas/metadata/fgdc-std-001-1998-sect01.xsd</formerExternalRef>
+    </DeliverableUnit>
+    <DeliverableUnit id="15">
+      <parent ref="0"/>
+      <parent ref="493b2cb5-9337-44cf-a3ba-2462034084a9"/>
+      <type>dataconservancy.types:registry-entry:metadatascheme</type>
+      <title>FGDC 1998, section 2</title>
+      <formerExternalRef>http://www.fgdc.gov/schemas/metadata/fgdc-std-001-1998-sect02.xsd</formerExternalRef>
+    </DeliverableUnit>
+    <DeliverableUnit id="20">
+      <parent ref="0"/>
+      <parent ref="493b2cb5-9337-44cf-a3ba-2462034084a9"/>
+      <type>dataconservancy.types:registry-entry:metadatascheme</type>
+      <title>FGDC 1998, section 3</title>
+      <formerExternalRef>http://www.fgdc.gov/schemas/metadata/fgdc-std-001-1998-sect03.xsd</formerExternalRef>
+    </DeliverableUnit>
+    <DeliverableUnit id="25">
+      <parent ref="0"/>
+      <parent ref="493b2cb5-9337-44cf-a3ba-2462034084a9"/>
+      <type>dataconservancy.types:registry-entry:metadatascheme</type>
+      <title>FGDC 1998, section 4</title>
+      <formerExternalRef>http://www.fgdc.gov/schemas/metadata/fgdc-std-001-1998-sect04.xsd</formerExternalRef>
+    </DeliverableUnit>
+    <DeliverableUnit id="30">
+      <parent ref="0"/>
+      <parent ref="493b2cb5-9337-44cf-a3ba-2462034084a9"/>
+      <type>dataconservancy.types:registry-entry:metadatascheme</type>
+      <title>FGDC 1998, section 5</title>
+      <formerExternalRef>http://www.fgdc.gov/schemas/metadata/fgdc-std-001-1998-sect05.xsd</formerExternalRef>
+    </DeliverableUnit>
+    <DeliverableUnit id="35">
+      <parent ref="0"/>
+      <parent ref="493b2cb5-9337-44cf-a3ba-2462034084a9"/>
+      <type>dataconservancy.types:registry-entry:metadatascheme</type>
+      <title>FGDC 1998, section 6</title>
+      <formerExternalRef>http://www.fgdc.gov/schemas/metadata/fgdc-std-001-1998-sect06.xsd</formerExternalRef>
+    </DeliverableUnit>
+    <DeliverableUnit id="40">
+      <parent ref="0"/>
+      <parent ref="493b2cb5-9337-44cf-a3ba-2462034084a9"/>
+      <type>dataconservancy.types:registry-entry:metadatascheme</type>
+      <title>FGDC 1998, section 7</title>
+      <formerExternalRef>http://www.fgdc.gov/schemas/metadata/fgdc-std-001-1998-sect07.xsd</formerExternalRef>
+    </DeliverableUnit>
+    <DeliverableUnit id="45">
+      <parent ref="0"/>
+      <parent ref="493b2cb5-9337-44cf-a3ba-2462034084a9"/>
+      <type>dataconservancy.types:registry-entry:metadatascheme</type>
+      <title>FGDC 1998, section 8</title>
+      <formerExternalRef>http://www.fgdc.gov/schemas/metadata/fgdc-std-001-1998-sect08.xsd</formerExternalRef>
+    </DeliverableUnit>
+    <DeliverableUnit id="50">
+      <parent ref="0"/>
+      <parent ref="493b2cb5-9337-44cf-a3ba-2462034084a9"/>
+      <type>dataconservancy.types:registry-entry:metadatascheme</type>
+      <title>FGDC 1998, section 9</title>
+      <formerExternalRef>http://www.fgdc.gov/schemas/metadata/fgdc-std-001-1998-sect09.xsd</formerExternalRef>
+    </DeliverableUnit>
+    <DeliverableUnit id="55">
+      <parent ref="0"/>
+      <parent ref="493b2cb5-9337-44cf-a3ba-2462034084a9"/>
+      <type>dataconservancy.types:registry-entry:metadatascheme</type>
+      <title>FGDC 1998, section 10</title>
+      <formerExternalRef>http://www.fgdc.gov/schemas/metadata/fgdc-std-001-1998-sect10.xsd</formerExternalRef>
+    </DeliverableUnit>
+    <DeliverableUnit id="60">
+      <parent ref="0"/>
+      <parent ref="493b2cb5-9337-44cf-a3ba-2462034084a9"/>
+      <type>dataconservancy.types:registry-entry:metadatascheme</type>
+      <title>FGDC 1998 DTD</title>
+      <formerExternalRef>http://www.fgdc.gov/schemas/metadata/fgdc-std-001-1998.dtd</formerExternalRef>
+    </DeliverableUnit>
+  </DeliverableUnits>
+  <Manifestations xmlns="http://dataconservancy.org/schemas/dcp/1.0">
+    <Manifestation id="517e337e-0140-4cc0-8edb-db0a0251870a" dateCreated="2013-04-29T19:50:15.296Z">
+      <deliverableUnit ref="d805f95e-0391-45fe-92e6-16927d5d4951"/>
+      <type>dataconservancy.org:types:registry:entry:manifestation</type>
+      <manifestationFile ref="8090f825-2f2f-4104-b9e8-1f24b06fa790"/>
+    </Manifestation>
+    <Manifestation id="d2c369ac-eb6d-4e47-8a6d-924a0d296d0d">
+      <deliverableUnit ref="493b2cb5-9337-44cf-a3ba-2462034084a9"/>
+      <technicalEnvironment>dataconservancy.types:registry-entry:metadataformat:1.0</technicalEnvironment>
+      <manifestationFile ref="1f5fe0b7-1ebe-4602-95ad-f948b4a077ed">
+        <path>/</path>
+      </manifestationFile>
+    </Manifestation>
+    <Manifestation id="2">
+      <deliverableUnit ref="0"/>
+      <technicalEnvironment>dataconservancy.types:registry-entry:metadatascheme:1.0</technicalEnvironment>
+      <type>SchemeFileManifestation</type>
+      <manifestationFile ref="1">
+        <path>/</path>
+      </manifestationFile>
+    </Manifestation>
+    <Manifestation id="4">
+      <deliverableUnit ref="0"/>
+      <technicalEnvironment>dataconservancy.types:registry-entry:metadatascheme:1.0</technicalEnvironment>
+      <type>SchemeSerializationManifestation</type>
+      <manifestationFile ref="3">
+        <path>/</path>
+      </manifestationFile>
+    </Manifestation>
+    <Manifestation id="7">
+      <deliverableUnit ref="5"/>
+      <technicalEnvironment>dataconservancy.types:registry-entry:metadatascheme:1.0</technicalEnvironment>
+      <type>SchemeFileManifestation</type>
+      <manifestationFile ref="6">
+        <path>/</path>
+      </manifestationFile>
+    </Manifestation>
+    <Manifestation id="9">
+      <deliverableUnit ref="5"/>
+      <technicalEnvironment>dataconservancy.types:registry-entry:metadatascheme:1.0</technicalEnvironment>
+      <type>SchemeSerializationManifestation</type>
+      <manifestationFile ref="8">
+        <path>/</path>
+      </manifestationFile>
+    </Manifestation>
+    <Manifestation id="12">
+      <deliverableUnit ref="10"/>
+      <technicalEnvironment>dataconservancy.types:registry-entry:metadatascheme:1.0</technicalEnvironment>
+      <type>SchemeFileManifestation</type>
+      <manifestationFile ref="11">
+        <path>/</path>
+      </manifestationFile>
+    </Manifestation>
+    <Manifestation id="14">
+      <deliverableUnit ref="10"/>
+      <technicalEnvironment>dataconservancy.types:registry-entry:metadatascheme:1.0</technicalEnvironment>
+      <type>SchemeSerializationManifestation</type>
+      <manifestationFile ref="13">
+        <path>/</path>
+      </manifestationFile>
+    </Manifestation>
+    <Manifestation id="17">
+      <deliverableUnit ref="15"/>
+      <technicalEnvironment>dataconservancy.types:registry-entry:metadatascheme:1.0</technicalEnvironment>
+      <type>SchemeFileManifestation</type>
+      <manifestationFile ref="16">
+        <path>/</path>
+      </manifestationFile>
+    </Manifestation>
+    <Manifestation id="19">
+      <deliverableUnit ref="15"/>
+      <technicalEnvironment>dataconservancy.types:registry-entry:metadatascheme:1.0</technicalEnvironment>
+      <type>SchemeSerializationManifestation</type>
+      <manifestationFile ref="18">
+        <path>/</path>
+      </manifestationFile>
+    </Manifestation>
+    <Manifestation id="22">
+      <deliverableUnit ref="20"/>
+      <technicalEnvironment>dataconservancy.types:registry-entry:metadatascheme:1.0</technicalEnvironment>
+      <type>SchemeFileManifestation</type>
+      <manifestationFile ref="21">
+        <path>/</path>
+      </manifestationFile>
+    </Manifestation>
+    <Manifestation id="24">
+      <deliverableUnit ref="20"/>
+      <technicalEnvironment>dataconservancy.types:registry-entry:metadatascheme:1.0</technicalEnvironment>
+      <type>SchemeSerializationManifestation</type>
+      <manifestationFile ref="23">
+        <path>/</path>
+      </manifestationFile>
+    </Manifestation>
+    <Manifestation id="27">
+      <deliverableUnit ref="25"/>
+      <technicalEnvironment>dataconservancy.types:registry-entry:metadatascheme:1.0</technicalEnvironment>
+      <type>SchemeFileManifestation</type>
+      <manifestationFile ref="26">
+        <path>/</path>
+      </manifestationFile>
+    </Manifestation>
+    <Manifestation id="29">
+      <deliverableUnit ref="25"/>
+      <technicalEnvironment>dataconservancy.types:registry-entry:metadatascheme:1.0</technicalEnvironment>
+      <type>SchemeSerializationManifestation</type>
+      <manifestationFile ref="28">
+        <path>/</path>
+      </manifestationFile>
+    </Manifestation>
+    <Manifestation id="32">
+      <deliverableUnit ref="30"/>
+      <technicalEnvironment>dataconservancy.types:registry-entry:metadatascheme:1.0</technicalEnvironment>
+      <type>SchemeFileManifestation</type>
+      <manifestationFile ref="31">
+        <path>/</path>
+      </manifestationFile>
+    </Manifestation>
+    <Manifestation id="34">
+      <deliverableUnit ref="30"/>
+      <technicalEnvironment>dataconservancy.types:registry-entry:metadatascheme:1.0</technicalEnvironment>
+      <type>SchemeSerializationManifestation</type>
+      <manifestationFile ref="33">
+        <path>/</path>
+      </manifestationFile>
+    </Manifestation>
+    <Manifestation id="37">
+      <deliverableUnit ref="35"/>
+      <technicalEnvironment>dataconservancy.types:registry-entry:metadatascheme:1.0</technicalEnvironment>
+      <type>SchemeFileManifestation</type>
+      <manifestationFile ref="36">
+        <path>/</path>
+      </manifestationFile>
+    </Manifestation>
+    <Manifestation id="39">
+      <deliverableUnit ref="35"/>
+      <technicalEnvironment>dataconservancy.types:registry-entry:metadatascheme:1.0</technicalEnvironment>
+      <type>SchemeSerializationManifestation</type>
+      <manifestationFile ref="38">
+        <path>/</path>
+      </manifestationFile>
+    </Manifestation>
+    <Manifestation id="42">
+      <deliverableUnit ref="40"/>
+      <technicalEnvironment>dataconservancy.types:registry-entry:metadatascheme:1.0</technicalEnvironment>
+      <type>SchemeFileManifestation</type>
+      <manifestationFile ref="41">
+        <path>/</path>
+      </manifestationFile>
+    </Manifestation>
+    <Manifestation id="44">
+      <deliverableUnit ref="40"/>
+      <technicalEnvironment>dataconservancy.types:registry-entry:metadatascheme:1.0</technicalEnvironment>
+      <type>SchemeSerializationManifestation</type>
+      <manifestationFile ref="43">
+        <path>/</path>
+      </manifestationFile>
+    </Manifestation>
+    <Manifestation id="47">
+      <deliverableUnit ref="45"/>
+      <technicalEnvironment>dataconservancy.types:registry-entry:metadatascheme:1.0</technicalEnvironment>
+      <type>SchemeFileManifestation</type>
+      <manifestationFile ref="46">
+        <path>/</path>
+      </manifestationFile>
+    </Manifestation>
+    <Manifestation id="49">
+      <deliverableUnit ref="45"/>
+      <technicalEnvironment>dataconservancy.types:registry-entry:metadatascheme:1.0</technicalEnvironment>
+      <type>SchemeSerializationManifestation</type>
+      <manifestationFile ref="48">
+        <path>/</path>
+      </manifestationFile>
+    </Manifestation>
+    <Manifestation id="52">
+      <deliverableUnit ref="50"/>
+      <technicalEnvironment>dataconservancy.types:registry-entry:metadatascheme:1.0</technicalEnvironment>
+      <type>SchemeFileManifestation</type>
+      <manifestationFile ref="51">
+        <path>/</path>
+      </manifestationFile>
+    </Manifestation>
+    <Manifestation id="54">
+      <deliverableUnit ref="50"/>
+      <technicalEnvironment>dataconservancy.types:registry-entry:metadatascheme:1.0</technicalEnvironment>
+      <type>SchemeSerializationManifestation</type>
+      <manifestationFile ref="53">
+        <path>/</path>
+      </manifestationFile>
+    </Manifestation>
+    <Manifestation id="57">
+      <deliverableUnit ref="55"/>
+      <technicalEnvironment>dataconservancy.types:registry-entry:metadatascheme:1.0</technicalEnvironment>
+      <type>SchemeFileManifestation</type>
+      <manifestationFile ref="56">
+        <path>/</path>
+      </manifestationFile>
+    </Manifestation>
+    <Manifestation id="59">
+      <deliverableUnit ref="55"/>
+      <technicalEnvironment>dataconservancy.types:registry-entry:metadatascheme:1.0</technicalEnvironment>
+      <type>SchemeSerializationManifestation</type>
+      <manifestationFile ref="58">
+        <path>/</path>
+      </manifestationFile>
+    </Manifestation>
+    <Manifestation id="62">
+      <deliverableUnit ref="60"/>
+      <technicalEnvironment>dataconservancy.types:registry-entry:metadatascheme:1.0</technicalEnvironment>
+      <type>SchemeFileManifestation</type>
+      <manifestationFile ref="61">
+        <path>/</path>
+      </manifestationFile>
+    </Manifestation>
+    <Manifestation id="64">
+      <deliverableUnit ref="60"/>
+      <technicalEnvironment>dataconservancy.types:registry-entry:metadatascheme:1.0</technicalEnvironment>
+      <type>SchemeSerializationManifestation</type>
+      <manifestationFile ref="63">
+        <path>/</path>
+      </manifestationFile>
+    </Manifestation>
+  </Manifestations>
+  <Files xmlns="http://dataconservancy.org/schemas/dcp/1.0">
+    <File id="8090f825-2f2f-4104-b9e8-1f24b06fa790"
+      src="classpath:/org/dataconservancy/mhf/resources/registry/metadataformat/registryEntryMap5373024239145618414.tmp">
+      <fileName>java-entry-serialization</fileName>
+      <extant>true</extant>
+      <size>406</size>
+      <format>
+        <id scheme="http://www.iana.org/assignments/media-types/">application/xml</id>
+      </format>
+    </File>
+    <File id="1f5fe0b7-1ebe-4602-95ad-f948b4a077ed"
+      src="classpath:/org/dataconservancy/mhf/resources/registry/metadataformat/serializedFormat6678936308866613701.tmp">
+      <fileName>java-format-serialization</fileName>
+      <extant>true</extant>
+      <format>
+        <id scheme="http://www.iana.org/assignments/media-types/">application/xml</id>
+      </format>
+    </File>
+    <File id="1"
+      src="classpath:/org/dataconservancy/mhf/resources/schemas/fgdc1998/fgdc-std-001-1998.xsd">
+      <fileName>schema-source</fileName>
+      <extant>true</extant>
+    </File>
+    <File id="3"
+      src="classpath:/org/dataconservancy/mhf/resources/registry/metadataformat/serializedScheme5558225999358357219.tmp">
+      <fileName>java-scheme-serialization</fileName>
+      <extant>true</extant>
+      <format>
+        <id scheme="http://www.iana.org/assignments/media-types/">application/xml</id>
+      </format>
+    </File>
+    <File id="6"
+      src="classpath:/org/dataconservancy/mhf/resources/schemas/fgdc1998/fgdc-std-001-1998.xsd">
+      <fileName>schema-source</fileName>
+      <extant>true</extant>
+    </File>
+    <File id="8"
+      src="classpath:/org/dataconservancy/mhf/resources/registry/metadataformat/serializedScheme5216171937949846198.tmp">
+      <fileName>java-scheme-serialization</fileName>
+      <extant>true</extant>
+      <format>
+        <id scheme="http://www.iana.org/assignments/media-types/">application/xml</id>
+      </format>
+    </File>
+    <File id="11"
+      src="classpath:/org/dataconservancy/mhf/resources/schemas/fgdc1998/fgdc-std-001-1998-sect01.xsd">
+      <fileName>schema-source</fileName>
+      <extant>true</extant>
+    </File>
+    <File id="13"
+      src="classpath:/org/dataconservancy/mhf/resources/registry/metadataformat/serializedScheme669762451462520327.tmp">
+      <fileName>java-scheme-serialization</fileName>
+      <extant>true</extant>
+      <format>
+        <id scheme="http://www.iana.org/assignments/media-types/">application/xml</id>
+      </format>
+    </File>
+    <File id="16"
+      src="classpath:/org/dataconservancy/mhf/resources/schemas/fgdc1998/fgdc-std-001-1998-sect02.xsd">
+      <fileName>schema-source</fileName>
+      <extant>true</extant>
+    </File>
+    <File id="18"
+      src="classpath:/org/dataconservancy/mhf/resources/registry/metadataformat/serializedScheme1879117389965037914.tmp">
+      <fileName>java-scheme-serialization</fileName>
+      <extant>true</extant>
+      <format>
+        <id scheme="http://www.iana.org/assignments/media-types/">application/xml</id>
+      </format>
+    </File>
+    <File id="21"
+      src="classpath:/org/dataconservancy/mhf/resources/schemas/fgdc1998/fgdc-std-001-1998-sect03.xsd">
+      <fileName>schema-source</fileName>
+      <extant>true</extant>
+    </File>
+    <File id="23"
+      src="classpath:/org/dataconservancy/mhf/resources/registry/metadataformat/serializedScheme9188041899829212281.tmp">
+      <fileName>java-scheme-serialization</fileName>
+      <extant>true</extant>
+      <format>
+        <id scheme="http://www.iana.org/assignments/media-types/">application/xml</id>
+      </format>
+    </File>
+    <File id="26"
+      src="classpath:/org/dataconservancy/mhf/resources/schemas/fgdc1998/fgdc-std-001-1998-sect04.xsd">
+      <fileName>schema-source</fileName>
+      <extant>true</extant>
+    </File>
+    <File id="28"
+      src="classpath:/org/dataconservancy/mhf/resources/registry/metadataformat/serializedScheme1572170336994915067.tmp">
+      <fileName>java-scheme-serialization</fileName>
+      <extant>true</extant>
+      <format>
+        <id scheme="http://www.iana.org/assignments/media-types/">application/xml</id>
+      </format>
+    </File>
+    <File id="31"
+      src="classpath:/org/dataconservancy/mhf/resources/schemas/fgdc1998/fgdc-std-001-1998-sect05.xsd">
+      <fileName>schema-source</fileName>
+      <extant>true</extant>
+    </File>
+    <File id="33"
+      src="classpath:/org/dataconservancy/mhf/resources/registry/metadataformat/serializedScheme8443910093743264995.tmp">
+      <fileName>java-scheme-serialization</fileName>
+      <extant>true</extant>
+      <format>
+        <id scheme="http://www.iana.org/assignments/media-types/">application/xml</id>
+      </format>
+    </File>
+    <File id="36"
+      src="classpath:/org/dataconservancy/mhf/resources/schemas/fgdc1998/fgdc-std-001-1998-sect06.xsd">
+      <fileName>schema-source</fileName>
+      <extant>true</extant>
+    </File>
+    <File id="38"
+      src="classpath:/org/dataconservancy/mhf/resources/registry/metadataformat/serializedScheme4833163867792771803.tmp">
+      <fileName>java-scheme-serialization</fileName>
+      <extant>true</extant>
+      <format>
+        <id scheme="http://www.iana.org/assignments/media-types/">application/xml</id>
+      </format>
+    </File>
+    <File id="41"
+      src="classpath:/org/dataconservancy/mhf/resources/schemas/fgdc1998/fgdc-std-001-1998-sect07.xsd">
+      <fileName>schema-source</fileName>
+      <extant>true</extant>
+    </File>
+    <File id="43"
+      src="classpath:/org/dataconservancy/mhf/resources/registry/metadataformat/serializedScheme1892079153716954651.tmp">
+      <fileName>java-scheme-serialization</fileName>
+      <extant>true</extant>
+      <format>
+        <id scheme="http://www.iana.org/assignments/media-types/">application/xml</id>
+      </format>
+    </File>
+    <File id="46"
+      src="classpath:/org/dataconservancy/mhf/resources/schemas/fgdc1998/fgdc-std-001-1998-sect08.xsd">
+      <fileName>schema-source</fileName>
+      <extant>true</extant>
+    </File>
+    <File id="48"
+      src="classpath:/org/dataconservancy/mhf/resources/registry/metadataformat/serializedScheme1654273710032422054.tmp">
+      <fileName>java-scheme-serialization</fileName>
+      <extant>true</extant>
+      <format>
+        <id scheme="http://www.iana.org/assignments/media-types/">application/xml</id>
+      </format>
+    </File>
+    <File id="51"
+      src="classpath:/org/dataconservancy/mhf/resources/schemas/fgdc1998/fgdc-std-001-1998-sect09.xsd">
+      <fileName>schema-source</fileName>
+      <extant>true</extant>
+    </File>
+    <File id="53"
+      src="classpath:/org/dataconservancy/mhf/resources/registry/metadataformat/serializedScheme1401254654596405606.tmp">
+      <fileName>java-scheme-serialization</fileName>
+      <extant>true</extant>
+      <format>
+        <id scheme="http://www.iana.org/assignments/media-types/">application/xml</id>
+      </format>
+    </File>
+    <File id="56"
+      src="classpath:/org/dataconservancy/mhf/resources/schemas/fgdc1998/fgdc-std-001-1998-sect10.xsd">
+      <fileName>schema-source</fileName>
+      <extant>true</extant>
+    </File>
+    <File id="58"
+      src="classpath:/org/dataconservancy/mhf/resources/registry/metadataformat/serializedScheme6440260313828640887.tmp">
+      <fileName>java-scheme-serialization</fileName>
+      <extant>true</extant>
+      <format>
+        <id scheme="http://www.iana.org/assignments/media-types/">application/xml</id>
+      </format>
+    </File>
+    <File id="61"
+      src="classpath:/org/dataconservancy/mhf/resources/schemas/fgdc1998/fgdc-std-001-1998.dtd">
+      <fileName>schema-source</fileName>
+      <extant>true</extant>
+    </File>
+    <File id="63"
+      src="classpath:/org/dataconservancy/mhf/resources/registry/metadataformat/serializedScheme1096791889484538104.tmp">
+      <fileName>java-scheme-serialization</fileName>
+      <extant>true</extant>
+      <format>
+        <id scheme="http://www.iana.org/assignments/media-types/">application/xml</id>
+      </format>
+    </File>
+  </Files>
+</zdef1799893791:dcp>

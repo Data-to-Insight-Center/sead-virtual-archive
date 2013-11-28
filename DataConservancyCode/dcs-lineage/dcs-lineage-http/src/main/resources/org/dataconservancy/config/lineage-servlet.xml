@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+
+  <bean id="lineageServicePropertyPlaceholderConfigurer" parent="propertyPlaceholderConfigurer"/>
+
+  <bean id="lineageServiceServletContextPropertyPlaceholderConfigurer" parent="servletContextPropertyPlaceholderConfigurer"/>
+
+  <bean id="lineageServicePropertyOverrideConfigurer" parent="propertyOverrideConfigurer"/>
+
+  <!--
+   | Spring Web MVC Setup
+   +-->
+  <context:component-scan base-package="org.dataconservancy.dcs.lineage.http"/>
+  
+  <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+    <property name="interceptors">
+      <list>
+        <ref bean="exposeModelInterceptor"/>
+      </list>
+    </property>
+    <property name="alwaysUseFullPath" value="true"/>
+  </bean>
+
+  <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+    <property name="alwaysUseFullPath" value="true"/>
+  </bean>
+
+  <bean id="exposeModelInterceptor" class="org.dataconservancy.dcs.lineage.http.view.ExposeModelHandleInterceptor"/>
+
+  <bean class="org.dataconservancy.dcs.lineage.http.view.LineageViewResolver">
+    <constructor-arg>
+      <bean class="org.dataconservancy.dcs.lineage.http.view.RequestContextHolderRequestAttributesSource"/>
+    </constructor-arg>
+    <property name="modelBuilder" ref="dcsModelBuilder" />
+    <property name="defaultView" ref="lineageXmlView" />
+  </bean>
+  
+  <!--
+   |
+   | Data Conservancy Setup
+   | - Spring uses the ControllerClassNameHandlerMapping to map the '/lineage*' URL space to the didLineageController
+   | - After a handler method is selected and executed, a view name is generated using
+   |   DefaultRequestToViewNameTranslator (resulting in a view name of 'lineage/something'
+   | - The ContentNegotiatingViewResolver is consulted which iterates over its configured 'viewResolvers', obtaining the
+   |   View, and seeing if they accept the content type
+   |
+   +-->
+
+  <!--
+   | Data Conservancy externally defined beans
+   +-->
+  <alias name="${lineageService}" alias="lineageService"/>
+  <alias name="${lookupQueryService}" alias="lookupQueryService"/>
+
+  <!--
+   | Lineage Controller
+   +-->
+  <bean id="lineageController" class="org.dataconservancy.dcs.lineage.http.LineageController">
+    <constructor-arg ref="lineageService"/>
+    <constructor-arg ref="${dcs.idservice}"/>
+    <constructor-arg ref="lookupQueryService"/>
+  </bean>
+
+  <!--
+   | DCP Views
+   | - XML View
+   | - JSON View (TODO: inject correctly configured builder)
+   +-->
+  <bean id="lineageXmlView"
+        class="org.dataconservancy.dcs.lineage.http.view.XmlLineageView">
+    <constructor-arg ref="dcsModelBuilder"/>
+  </bean>
+
+</beans>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+  <bean id="metadataFormatLoader" class="org.dataconservancy.mhf.validators.util.MetadataFormatLoader">
+    <constructor-arg ref="metadataFormatMapper"/>
+    <constructor-arg ref="dcsModelBuilder"/>
+  </bean>
+
+  <bean id="formatRegistry" class="org.dataconservancy.mhf.validators.registry.impl.FormatRegistryImpl">
+    <constructor-arg value="org.dataconservancy:registry:metadataformat"/>
+    <constructor-arg value="Registry of Metadata Formats"/>
+    <constructor-arg ref="metadataFormatLoader"/>
+  </bean>
+
+  <bean id="schemeRegistry" class="org.dataconservancy.mhf.validators.registry.impl.SchemaRegistryImpl">
+    <constructor-arg value="org.dataconservancy:registry:metadatascheme"/>
+    <constructor-arg value="Registry of Metadata Schemes"/>
+    <constructor-arg ref="metadataFormatLoader"/>
+  </bean>
+
+  <bean id="schemaFactory" class="javax.xml.validation.SchemaFactory" factory-method="newInstance">
+    <constructor-arg value="http://www.w3.org/2001/XMLSchema"/>
+  </bean>
+
+  <bean id="formatResolver" class="org.dataconservancy.mhf.validators.util.DcsMetadataFormatResourceResolver">
+    <constructor-arg ref="formatRegistry"/>
+  </bean>
+
+  <bean id="schemeResolver" class="org.dataconservancy.mhf.validators.util.DcsMetadataSchemeResourceResolver">
+    <constructor-arg ref="schemeRegistry"/>
+  </bean>
+
+</beans>

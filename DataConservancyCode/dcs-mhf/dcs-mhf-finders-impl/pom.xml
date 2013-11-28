@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    
+  <!-- 
+    $Id$
+    $URL$
+  -->
+  
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.dataconservancy.mhf</groupId>
+  <artifactId>dcs-mhf-finders-impl</artifactId>
+  <packaging>jar</packaging>
+  <name>Metadata Finders</name>
+  <description>Metadata Finders</description>
+  
+  <parent>
+    <groupId>org.dataconservancy.mhf</groupId>
+    <artifactId>dcs-mhf</artifactId>
+    <version>1.1.0-SNAPSHOT</version>
+  </parent>
+      
+  <!-- Build  ===================================================== -->
+  
+  <build>
+    <!-- Create a jar containing test classes and resources for each module.  
+        Depend on these jars using <classifier>test-jar</classifier> -->
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+    
+  </build>  
+
+  <!-- Dependencies =============================================== -->
+  
+  <dependencies>
+    
+    <!-- Provided ================================================= -->
+    
+    <!-- Runtime ================================================== --> 
+
+    <!-- We need Xerces >= 2.10.0 to avoid https://issues.apache.org/jira/browse/XERCESJ-589 -->
+    
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    
+    <!-- Xerces 2.10.0 dependencies -->
+    
+    <dependency>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>xml-resolver</groupId>
+      <artifactId>xml-resolver</artifactId>
+      <scope>runtime</scope>
+    </dependency>    
+    
+    <!-- Compile ================================================== -->
+    
+    <dependency>
+      <groupId>org.dataconservancy.mhf</groupId>
+      <artifactId>dcs-mhf-finder-api</artifactId>
+      <scope>compile</scope>
+      <version>${project.parent.version}</version>
+    </dependency>
+        
+    <dependency>
+      <groupId>org.dataconservancy.mhf</groupId>
+      <artifactId>dcs-mhf-instance-api</artifactId>
+      <scope>compile</scope>
+      <version>${project.parent.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.dataconservancy.mhf</groupId>
+      <artifactId>dcs-mhf-instances-impl</artifactId>
+      <scope>compile</scope>
+      <version>${project.parent.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.mhf</groupId>
+      <artifactId>dcs-mhf-representations-impl</artifactId>
+      <scope>compile</scope>
+      <version>${project.parent.version}</version>
+    </dependency>
+
+   <dependency>
+      <groupId>org.dataconservancy.mhf</groupId>
+      <artifactId>dcs-mhf-representation-api</artifactId>
+      <scope>compile</scope>
+      <version>${project.parent.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.packaging</groupId>
+      <artifactId>dcs-pkg-model</artifactId>
+      <scope>compile</scope>
+      <version>${project.parent.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.mhf</groupId>
+      <artifactId>dcs-mhf-model-builder-api</artifactId>
+      <scope>compile</scope>
+      <version>${project.parent.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.dataconservancy.ui</groupId>
+      <artifactId>dcs-ui-model</artifactId>
+      <scope>compile</scope>
+      <version>${project.parent.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    
+    <!-- Test ===================================================== -->
+        
+    <dependency>
+      <groupId>org.dataconservancy.mhf</groupId>
+      <artifactId>dcs-mhf-model-builder-impl</artifactId>
+      <scope>test</scope>
+      <version>${project.parent.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.dataconservancy.mhf</groupId>
+      <artifactId>dcs-mhf-test-support</artifactId>
+      <scope>test</scope>
+      <version>${project.parent.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dataconservancy.mhf</groupId>
+      <artifactId>dcs-mhf-resources</artifactId>
+      <scope>test</scope>
+      <version>${project.parent.version}</version>
+    </dependency>
+    
+  </dependencies>
+
+</project>

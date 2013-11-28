@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2013 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+  <!--
+    JDBC Datasource which should be used by all JDBC templates
+  -->
+  <bean id="uiDataSource" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
+    <property name="driverClassName" value="${dcs.ui.db.driverClassName}"/>
+    <property name="url" value="${dcs.ui.db.url}"/>
+    <property name="username" value="${dcs.ui.db.username}"/>
+    <property name="password" value="${dcs.ui.db.password}"/>
+  </bean>
+
+  <!--
+    JDBC Datasource which should be used by Hibernate.  Having separate DataSources for Hibernate
+    and JDBC allows a Spring-managed Hibernate Transaction to co-exist with a Spring-managed JDBC
+    Transaction.  (e.g. a outer JDBC transaction for a service method, and an inner Hibernate transaction
+    for creating an identifier).  Unfortunately it doesn't seem that transactions from two different
+    transaction managers can play nicely together when using the same datasource.
+  -->
+  <bean id="uiHibernateDataSource" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
+    <property name="driverClassName" value="${dcs.ui.db.driverClassName}"/>
+    <property name="url" value="${dcs.ui.db.url}"/>
+    <property name="username" value="${dcs.ui.db.username}"/>
+    <property name="password" value="${dcs.ui.db.password}"/>
+  </bean>
+
+  <!--
+    Spring JDBC Template which should be used by all DAOs
+  -->
+  <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+    <constructor-arg ref="uiDataSource"/>
+  </bean>
+
+  <!-- Project DAO implementations -->
+  <bean id="projectDao" class="org.dataconservancy.ui.dao.ProjectDAOJdbcImpl">
+    <constructor-arg ref="uiDataSource"/>
+  </bean>
+
+  <!-- ProjectPI DAO implementations -->
+  <bean id="projectPIDao" class="org.dataconservancy.ui.dao.ProjectPIDAOJdbcImpl">
+    <constructor-arg ref="uiDataSource"/>
+    <constructor-arg ref="delegatingPersonDao"/>
+    <constructor-arg ref="projectDao"/>
+  </bean>
+  
+  <!-- ProjectAwardDAO implementations -->
+  <bean id="projectAwardDao" class="org.dataconservancy.ui.dao.ProjectAwardDAOJdbcImpl">
+    <constructor-arg ref="uiDataSource"/>
+    <constructor-arg ref="projectDao"/>
+  </bean>
+
+  <!-- ArchiveDepositInfo DAO implementations -->
+  <bean id="archiveDepositInfoDao" class="org.dataconservancy.ui.dao.ArchiveDepositInfoDAOJdbcImpl">
+    <constructor-arg ref="uiDataSource"/>
+  </bean>
+
+  <!-- RelationshipDAO implementations -->
+  <bean id="relationshipDao" class="org.dataconservancy.ui.dao.RelationshipDAOJdbcImpl">
+    <constructor-arg ref="jdbcTemplate"/>
+  </bean>
+
+  <bean id="disciplineDao" class="org.dataconservancy.ui.dao.DisciplineDAOJdbcImpl">
+    <constructor-arg ref="jdbcTemplate"/>
+  </bean>
+
+  <!-- Package DAO Implementations -->
+  <bean id="packageDao" class="org.dataconservancy.ui.dao.PackageDAOJdbcImpl">
+    <constructor-arg ref="uiDataSource"/>
+  </bean>
+
+  <bean id="propertiesPersonDao" class="org.dataconservancy.ui.dao.PropertiesPersonDao">
+    <constructor-arg ref="defaultUsersFactoryBean"/>
+  </bean>
+
+  <!-- Password Reset Request DAO Implementations -->
+  <bean id="passwordResetRequestDao" class="org.dataconservancy.ui.dao.PasswordResetRequestDAOJdbcImpl">
+    <constructor-arg ref="jdbcTemplate"/>
+  </bean>
+
+  <!--
+    The bare JDBC Person DAO.  If the dataSource refers to something other than an in-memory
+    database, then the users stored here will be persisted across application restarts.
+  -->
+  <bean id="personDao" class="org.dataconservancy.ui.dao.PersonDAOJbdcImpl">
+    <constructor-arg ref="uiDataSource"/>
+  </bean>
+
+  <bean id="delegatingPersonDao" class="org.dataconservancy.ui.dao.DelegatingPersonDaoImpl">
+    <constructor-arg>
+      <list>
+        <ref bean="wrappedPropertiesPersonDao"/>
+        <ref bean="wrappedJdbcPersonDao"/>
+      </list>
+    </constructor-arg>
+  </bean>
+
+  <!--
+    A writable instance of the JDBC Person DAO.
+  -->
+  <bean id="wrappedJdbcPersonDao" class="org.dataconservancy.ui.dao.PersonDaoWrapper">
+    <constructor-arg ref="personDao"/>
+    <property name="readOnly" value="false"/>
+  </bean>
+
+  <!--
+    A read-only instance of the PropertiesPersonDAO.
+  -->
+  <bean id="wrappedPropertiesPersonDao" class="org.dataconservancy.ui.dao.PersonDaoWrapper">
+    <constructor-arg ref="propertiesPersonDao"/>
+    <property name="readOnly" value="true"/>
+  </bean>
+
+  <bean id="metadataFormatPropertiesDao" class="org.dataconservancy.ui.dao.MetadataFormatPropertiesDaoJdbcImpl">
+    <constructor-arg ref="jdbcTemplate"/>
+  </bean>
+
+  <!--
+    Spring JDBC database initialization
+
+    There are two separately configurable stages to this: clearing the
+    tables, and creating/bootstrapping them.  Clearing will occur when ${dcs.ui.db.clear} is set to true,
+    and initialization will occur with ${dcs.ui.db.init} is set to true
+  -->
+
+  <bean id="clear_tables" class="org.springframework.jdbc.datasource.init.DataSourceInitializer">
+    <property name="enabled" value="${dcs.ui.db.clear}"/>
+    <property name="dataSource" ref="uiDataSource"/>
+    <property name="databasePopulator" ref="clear_tables_populator"/>
+  </bean>
+
+  <bean id="clear_tables_populator" class="org.springframework.jdbc.datasource.init.ResourceDatabasePopulator">
+    <property name="ignoreFailedDrops" value="true"/>
+    <property name="continueOnError" value="true"/>
+    <property name="scripts">
+      <list>
+        <value>classpath:/org/dataconservancy/ui/dao/Drop.sql</value>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="initialize_tables" class="org.springframework.jdbc.datasource.init.DataSourceInitializer"
+        depends-on="clear_tables">
+    <property name="enabled" value="${dcs.ui.db.init}"/>
+    <property name="dataSource" ref="uiDataSource"/>
+    <property name="databasePopulator" ref="initialize_tables_populator"/>
+  </bean>
+
+  <!-- Dropbox DAO implementations -->
+  <bean id="dropboxDao" class="org.dataconservancy.ui.dao.DropboxDAOJdbcImpl">
+    <constructor-arg ref="uiDataSource"/>
+  </bean>
+
+  <bean id="initialize_tables_populator" class="org.springframework.jdbc.datasource.init.ResourceDatabasePopulator">
+    <property name="ignoreFailedDrops" value="true"/>
+    <property name="continueOnError" value="true"/>
+    <property name="scripts">
+      <list>
+        <value>classpath:/org/dataconservancy/ui/dao/PersonDAOJdbcImpl.sql</value>
+        <value>classpath:/org/dataconservancy/ui/dao/ProjectDAOJdbcImpl.sql</value>
+        <value>classpath:/org/dataconservancy/ui/dao/DisciplineDAOJdbcImpl.sql</value>
+        <value>classpath:/org/dataconservancy/ui/dao/ArchiveDepositInfoDaoImpl.sql</value>
+        <value>classpath:/org/dataconservancy/ui/dao/PackageDAOJdbcImpl.sql</value>
+        <value>classpath:/org/dataconservancy/ui/dao/ProjectPIDAOJdbcImpl.sql</value>
+        <value>classpath:/org/dataconservancy/ui/dao/ProjectAwardDAOJdbcImpl.sql</value>
+        <value>classpath:/org/dataconservancy/ui/dao/RelationshipDAOJdbcImpl.sql</value>
+        <value>classpath:/org/dataconservancy/ui/dao/PasswordResetRequestDAOJdbcImpl.sql</value>
+        <value>classpath:/org/dataconservancy/ui/dao/MetadataFormatPropertiesDaoJdbcImpl.sql</value>
+        <value>classpath:/org/dataconservancy/ui/dao/DropboxDAOJdbcImpl.sql</value>
+        <!-- This SQL should always go last; insures that other tables are already
+             created before bootstrap data is loaded -->
+        <value>classpath:/BootstrapData.sql</value>
+      </list>
+    </property>
+  </bean>
+
+</beans>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<foxml:digitalObject PID="dcstest:d41d8cd98f00b204e9800998ecf8427e" VERSION="1.1"
+  xmlns:foxml="info:fedora/fedora-system:def/foxml#"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="info:fedora/fedora-system:def/foxml# http://www.fedora.info/definitions/1/0/foxml1-1.xsd">
+  <foxml:objectProperties>
+    <foxml:property NAME="info:fedora/fedora-system:def/model#state" VALUE="Active"/>
+    <foxml:property NAME="info:fedora/fedora-system:def/model#label" VALUE="Data Object for a DCS Demo Collection Entity"/>
+    <foxml:property NAME="info:fedora/fedora-system:def/model#ownerId" VALUE="fedoraAdmin"/>
+    <foxml:property NAME="info:fedora/fedora-system:def/model#createdDate" VALUE="2010-07-07T05:09:42.015Z"/>
+    <foxml:property NAME="info:fedora/fedora-system:def/view#lastModifiedDate" VALUE="2010-07-07T05:09:42.015Z"/>
+  </foxml:objectProperties>
+  <foxml:datastream CONTROL_GROUP="X" ID="DC" STATE="A" VERSIONABLE="true">
+    <foxml:datastreamVersion CREATED="2010-07-07T05:09:43.312Z"
+      FORMAT_URI="http://www.openarchives.org/OAI/2.0/oai_dc/" ID="DC1.0"
+      LABEL="Dublin Core Record for this object" MIMETYPE="text/xml">
+      <foxml:xmlContent>
+        <oai_dc:dc xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/">
+          <dc:title>A DCS Demo Collection Object</dc:title>
+          <dc:creator>Daniel Davis</dc:creator>
+          <dc:creator>Chris Wilper</dc:creator>
+          <dc:subject>DCS Collection Object</dc:subject>
+          <dc:subject>Entities</dc:subject>
+          <dc:description>An initial dummy version of a DCS collection entity.</dc:description>
+          <dc:publisher>JHU</dc:publisher>
+          <dc:date>2010-07-07</dc:date>
+          <dc:format>application/pdf</dc:format>
+          <dc:identifier>dcstest:d41d8cd98f00b204e9800998ecf8427e</dc:identifier>
+          <dc:relation>http://www.dataconservancy.org</dc:relation>
+          <dc:rights>unrestricted</dc:rights>
+        </oai_dc:dc>
+      </foxml:xmlContent>
+    </foxml:datastreamVersion>
+  </foxml:datastream>
+  <foxml:datastream CONTROL_GROUP="X" ID="RELS-EXT" STATE="A" VERSIONABLE="true">
+    <foxml:datastreamVersion CREATED="2010-07-07T05:09:42.484Z"
+      FORMAT_URI="info:fedora/fedora-system:FedoraRELSExt-1.0" ID="RELS-EXT1.0"
+      LABEL="RDF Statements about this object" MIMETYPE="application/rdf+xml">
+      <foxml:xmlContent>
+        <rdf:RDF
+            xmlns:dcs="http://dataconservancy.org/ontologies/dcs/1.0/"
+            xmlns:fedora-model="info:fedora/fedora-system:def/model#"
+            xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+          <rdf:Description rdf:about="info:fedora/dcstest:d41d8cd98f00b204e9800998ecf8427e">
+            <dcs:id>http://dataconservancy.org/test/collection-demo</dcs:id>
+            <fedora-model:hasModel rdf:resource="info:fedora/dcs:Collection"/>
+          </rdf:Description>
+        </rdf:RDF>
+      </foxml:xmlContent>
+    </foxml:datastreamVersion>
+  </foxml:datastream>
+  <foxml:datastream CONTROL_GROUP="E" ID="CE" STATE="A" VERSIONABLE="false">
+    <foxml:datastreamVersion CREATED="2010-07-07T05:09:43.312Z" ID="CE1.0"
+      LABEL="Demo DC Collection Content" MIMETYPE="application/pdf">
+      <foxml:contentLocation
+        REF="http://local.fedora.server/fedora-demo/simple-document-demo/UseCases.pdf" TYPE="INTERNAL_ID"/>
+    </foxml:datastreamVersion>
+  </foxml:datastream>
+</foxml:digitalObject>

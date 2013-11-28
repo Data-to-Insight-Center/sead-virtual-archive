@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!--
+  Represents a Deliverable Unit with optional attributes and elements present.
+  
+  Uses <![CDATA[..]> to handle reserved XML characters.
+-->
+<DeliverableUnit xmlns="http://dataconservancy.org/schemas/dcp/1.0" id="urn:DeliverableUnit:2">
+  
+  <collection ref="urn:Collection:4"/>
+  <collection ref="urn:Collection:5"/>
+  
+  <parent ref="urn:DeliverableUnit:54"/>
+  <parent ref="urn:DeliverableUnit:100"/>
+  
+  <type>music</type>  
+  <title>The Twilight Saga: Eclipse (Original Motion Picture Soundtrack) [Deluxe] [+digital booklet]</title>
+  <creator>Amazon.com</creator>
+  <subject>music</subject>
+  <subject>soundtracks</subject>
+  <subject>twilight</subject>
+  <formerExternalRef><![CDATA[http://www.amazon.com/Twilight-Saga-Eclipse-Original-Soundtrack/dp/B003P8BB5W/ref=pd_ts_zgc_dmusic_digital_music_album_display_on_website_4?ie=UTF8&s=dmusic&pf_rd_p=1264325582&pf_rd_s=right-3&pf_rd_t=101&pf_rd_i=163856011&pf_rd_m=ATVPDKIKX0DER&pf_rd_r=0Z1QZ9YA0GP2ZE7VRHEW]]></formerExternalRef>  
+  <digitalSurrogate>false</digitalSurrogate>
+  
+  <metadata schemaURI="http://amazon.com/schema.xsd">
+    <amzn:md xmlns:amzn="http://www.amazon.com">
+      <amzn:origReleaseDate>Original Release Date: May 25, 2010</amzn:origReleaseDate>
+      <amzn:releaseDate>Release Date: May 25, 2010</amzn:releaseDate>
+      <amzn:releaseLabel>Label: Chop Shop/Atlantic</amzn:releaseLabel>
+      <amzn:copyright><![CDATA[TM & 2010 Summit Entertainment, LLC. All rights reserved]]></amzn:copyright>
+      <amzn:totalLength>1:18:29</amzn:totalLength>
+      <amzn:genre>Soundtracks</amzn:genre>
+      <amzn:genre>General</amzn:genre>
+      <amzn:asin>B003P8BB5W</amzn:asin>
+    </amzn:md>
+  </metadata>
+  
+  <relationship ref="urn:DeliverableUnit:221" rel="urn:dataconservancy.org:rel/hasMetadata"/>
+  
+</DeliverableUnit>

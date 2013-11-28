@@ -1,0 +1,243 @@
+Index: dcs-index-dcp-solr/pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- dcs-index-dcp-solr/pom.xml	(revision 2117)
++++ dcs-index-dcp-solr/pom.xml	(revision )
+@@ -23,7 +23,7 @@
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.dataconservancy.index</groupId>
+   <artifactId>dcs-index-dcp-solr</artifactId>
+-  <version>1.1.0-SNAPSHOT</version>
++  <version>1.1.1-SNAPSHOT</version>
+   <packaging>jar</packaging>
+ 
+   <name>dcs-index-dcp-solr</name>
+@@ -147,7 +147,7 @@
+     <dependency>
+       <artifactId>dcs-index-dcp-solr-resources</artifactId>
+       <groupId>org.dataconservancy.index</groupId>
+-      <version>${project.parent.version}</version>
++      <version>1.1.1-SNAPSHOT</version>
+       <scope>runtime</scope>
+     </dependency>
+ 
+Index: dcs-index-dcp-solr-resources/src/main/resources/org/dataconservancy/dcs/index/dcpsolr/default/conf/schema.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- dcs-index-dcp-solr-resources/src/main/resources/org/dataconservancy/dcs/index/dcpsolr/default/conf/schema.xml	(revision 2117)
++++ dcs-index-dcp-solr-resources/src/main/resources/org/dataconservancy/dcs/index/dcpsolr/default/conf/schema.xml	(revision )
+@@ -25,6 +25,8 @@
+       sortMissingLast="true" omitNorms="true" />
+     <fieldType name="string" class="solr.StrField"
+       sortMissingLast="true" omitNorms="true" />
++    <fieldType name="tdouble" class="solr.TrieDoubleField"
++      precisionStep="8" omitNorms="true" positionIncrementGap="0"/>
+     <fieldType name="tdate" class="solr.TrieDateField"
+       omitNorms="true" precisionStep="6" positionIncrementGap="0" />
+     <fieldType name="tlong" class="solr.TrieLongField"
+@@ -105,6 +107,31 @@
+     <field name="entityType" type="string" indexed="true" stored="true"
+       required="true" />
+ 
++      <!--Added by SEAD-->
++
++    <field name="abstract" type="text" indexed="true" stored="true"
++      multiValued="false" />
++
++      <field name="pubdate" type="string" indexed="true" stored="true"
++             multiValued="true" />
++
++      <field name="metadataUpdateDate" type="tdate" indexed="true" stored="true"
++             multiValued="false" />
++
++      <field name="location" type="string" indexed="true" stored="true"
++             multiValued="true" />
++
++      <field name="fileNo" type="string" indexed="true" stored="true"
++             multiValued="false" />
++
++      <field name="contact" type="text" indexed="true" stored="true"
++             multiValued="true" />
++
++      <!--Applied to: File, stored the parent deliverable unit for a file (Added by Kavitha) -->
++    <field name="parentdu" type="string" indexed="true" stored="true"
++      multiValued="true" />
++      <!--Above added by SEAD-->
++
+     <!--
+       ID of any direct parent object. Applies to Collection, DU.
+     -->
+@@ -114,6 +141,12 @@
+     <field name="ancestry" type="string" indexed="true" stored="true"
+       multiValued="true" />
+ 
++    <field name="immediateancestry" type="string" indexed="true" stored="true"
++      multiValued="true" />
++
++
++
++
+     <!--
+       ID of external metadata. Applies to Collection, DU
+     -->
+@@ -161,13 +194,7 @@
+     <field name="deliverableunit" type="string" indexed="true" stored="true"
+       multiValued="true" />
+ 
+-	<!-- 
++    <!--
+-		Applies to: DeliverableUnit
+-	 -->
+-	 <field name="lineage" type="string" indexed="true" stored="true"
+-	 	multiValued="true"/>
+-	 	
+-    <!--
+       Applies to: ManifestationFile
+     -->
+     <field name="fileRef" type="string" indexed="true" stored="true"
+@@ -184,8 +211,28 @@
+       Applies to: Collection, DU.
+     -->
+     <field name="creator" type="text" indexed="true" stored="true"
++      multiValued="true" />        <!--Tokenized-->
++
++    <field name="creatorId" type="text" indexed="true" stored="true"
+       multiValued="true" />
+ 
++    <field name="creatorIdType" type="string" indexed="true" stored="true"
++      multiValued="true" />
++
++      <field name="submitter" type="text" indexed="true" stored="true"
++             multiValued="true" />        <!--Tokenized-->
++
++      <field name="submitterId" type="text" indexed="true" stored="true"
++             multiValued="true" />
++
++      <field name="submitterIdType" type="string" indexed="true" stored="true"
++             multiValued="true" />
++
++
++    <field name="author" type="string" indexed="true" stored="true"
++      multiValued="true" />        <!--Non Tokenized-->
++
++    <copyField source="creator" dest="author" />
+     <!--
+       Whether a DU was born digital, or represents a physical
+       object/document. Applies to: DU.
+@@ -213,7 +260,16 @@
+     <field name="eventOutcome" type="string" indexed="true" stored="true"
+       multiValued="true" />
+ 
++    <field name="eventIpAddress" type="string" indexed="true" stored="true"
++      multiValued="false" />
++    <field name="eventUserAgent" type="string" indexed="true" stored="true"
++      multiValued="false" />
++    <field name="eventSubject" type="string" indexed="true" stored="true"
++      multiValued="false" />
++    <field name="eventNodeIdentifier" type="string" indexed="true" stored="true"
++      multiValued="false" />
+ 
++
+     <!--
+       Indicates that a file is preserved in DCS. Applies to:
+       Manifestation, File
+@@ -265,6 +321,10 @@
+     <field name="formatName" type="string" indexed="true" stored="true"
+       multiValued="true" />
+ 
++
++
++
++
+     <!--
+       Former identity DU had before accessioning into DCS (DCS core
+       metadata). Applies to: Collection, DU.
+@@ -304,6 +364,9 @@
+     <field name="subject" type="string" indexed="true" stored="true"
+       multiValued="true" />
+ 
++  <field name="keyword" type="string" indexed="true" stored="true"
++         multiValued="true" />
++
+     <!--
+       "Type" an entity declares itself to be (DCS core metadata),
+       Applies to: Collection, DU.
+@@ -317,7 +380,27 @@
+     -->
+     <field name="rights" type="string" indexed="true" stored="true"
+            multiValued="false" />
+-  
++
++    <!--Added by SEAD-->
++
++      <field name="primaryDataLocationName" type="string" indexed="true" stored="true"
++             multiValued="true" />
++
++      <field name="primaryDataLocationType" type="string" indexed="true" stored="true"
++             multiValued="true" />
++
++      <field name="primaryDataLocationValue" type="string" indexed="true" stored="true"
++             multiValued="true" />
++
++      <field name="dataLocationName" type="string" indexed="true" stored="true"
++             multiValued="true" />
++
++      <field name="dataLocationType" type="string" indexed="true" stored="true"
++             multiValued="true" />
++
++      <field name="dataLocationValue" type="string" indexed="true" stored="true"
++             multiValued="true" />
++      <!--Above Added by SEAD-->
+ 	<!-- 
+ 		"Representation of DcsResourceIdentifier
+ 	 -->
+@@ -329,14 +412,28 @@
+       
+      <field name="resourceValue" type="string" indexed="true" stored="true"
+       multiValued="true" />
+-      
++
++
++      <!--FGDC fields-->
++
++      <field name="fgdc.publisher" type="text" indexed="true" stored="true" multiValued="false"/>
++      <field name="fgdc.origin" type="text" indexed="true" stored="true" multiValued="false"/>
++      <field name="fgdc.location" type="string" indexed="true" stored="true" multiValued="false"/>
++      <field name="fgdc.abstract" type="text" indexed="true" stored="true" multiValued="false"/>
++
++      <field name="fgdc.westbc" type="tdouble" indexed="true" stored="true" multiValued="false"/>
++      <field name="fgdc.eastbc" type="tdouble" indexed="true" stored="true" multiValued="false"/>
++      <field name="fgdc.northbc" type="tdouble" indexed="true" stored="true" multiValued="false"/>
++      <field name="fgdc.southbc" type="tdouble" indexed="true" stored="true" multiValued="false"/>
++
++      <!--End of FGDC fields -->
+     <!--
+       Event info indexed with objects having the event. Applies to: All
+       except Event.
+       TODO
+     -->
+     <dynamicField name="event_date_*" type="tdate" indexed="true"
+-      stored="true" multiValued="false" />
++      stored="true" multiValued="true" />
+ 
+     <!--
+       External/extension metadata field. Applies to: Collection, DU,
+Index: dcs-index-dcp-solr-resources/pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- dcs-index-dcp-solr-resources/pom.xml	(revision 2117)
++++ dcs-index-dcp-solr-resources/pom.xml	(revision )
+@@ -19,6 +19,7 @@
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.dataconservancy.index</groupId>
+   <artifactId>dcs-index-dcp-solr-resources</artifactId>
++  <version>1.1.1-SNAPSHOT</version>
+   <name>Shared Solr configuration resources</name>
+   
+   <parent>

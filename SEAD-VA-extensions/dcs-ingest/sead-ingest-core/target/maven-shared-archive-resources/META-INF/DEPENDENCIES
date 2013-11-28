@@ -1,0 +1,103 @@
+// ------------------------------------------------------------------
+// Transitive dependencies of this project determined from the
+// maven pom organized by organization.
+// ------------------------------------------------------------------
+
+Extended core ingest api
+
+
+From: 'an unknown organization'
+  - Unnamed - xerces:xercesImpl:jar:2.6.2  xerces:xercesImpl:jar:2.6.2
+
+  - Unnamed - xml-apis:xml-apis:jar:1.3.02 (http://xml.apache.org/commons/#external) xml-apis:xml-apis:jar:1.3.02
+
+  - XMLUnit for Java (http://xmlunit.sourceforge.net/) xmlunit:xmlunit:jar:1.3
+    License: BSD License  (http://xmlunit.svn.sourceforge.net/viewvc/*checkout*/xmlunit/trunk/xmlunit/LICENSE.txt)
+
+From: 'Apache Software Foundation' (http://www.apache.org)
+  - Activation 1.1 (http://geronimo.apache.org/specs/geronimo-activation_1.1_spec) org.apache.geronimo.specs:geronimo-activation_1.1_spec:jar:1.0.2
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Streaming API for XML (STAX API 1.0) (http://geronimo.apache.org/specs/geronimo-stax-api_1.0_spec) org.apache.geronimo.specs:geronimo-stax-api_1.0_spec:bundle:1.0.1
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+From: 'Apache Software Foundation' (http://www.apache.org/)
+  - Abdera Core (http://abdera.apache.org/abdera-core) org.apache.abdera:abdera-core:bundle:1.1.2
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - I18N Libraries (http://abdera.apache.org) org.apache.abdera:abdera-i18n:bundle:1.1.2
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Abdera Parser (http://abdera.apache.org/abdera-parser) org.apache.abdera:abdera-parser:bundle:1.1.2
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Activation (http://geronimo.apache.org/geronimo-activation_1.0.2_spec) org.apache.geronimo.specs:geronimo-activation_1.0.2_spec:jar:1.1
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+From: 'Codehaus' (http://codehaus.org)
+  - jaxen (http://jaxen.codehaus.org/) jaxen:jaxen:jar:1.1.1
+
+
+From: 'Codehaus' (http://www.codehaus.org/)
+  - Woodstox (http://woodstox.codehaus.org) org.codehaus.woodstox:wstx-asl:jar:3.2.6
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+From: 'Data Conservancy' (http://dataconservancy.org)
+  - DCS Archival Storage API (http://maven.dataconservancy.org/sites/archive/dcs-archive-api) org.dataconservancy.archive:dcs-archive-api:jar:1.1.0-SNAPSHOT
+    License: Apache License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.html)
+  - ELM (Entity and Link Metadata) archive impl framework (http://maven.dataconservancy.org/sites/archive/dcs-archive-impl-elm) org.dataconservancy.archive:dcs-archive-impl-elm:jar:1.1.0-SNAPSHOT
+    License: Apache License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.html)
+  - Common DCS utilities (http://maven.dataconservancy.org/sites/common-util/) org.dataconservancy.dcs:dcs-common-util:jar:1.1.0-SNAPSHOT
+    License: Apache License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.html)
+  - dcs-id-api (http://maven.dataconservancy.org/sites/common-services/dcs-id-api) org.dataconservancy.dcs:dcs-id-api:jar:1.1.0-SNAPSHOT
+    License: Apache License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.html)
+  - Core ingest api (http://maven.dataconservancy.org/sites/ingest/dcs-ingest-core) org.dataconservancy.dcs:dcs-ingest-core:jar:1.1.0-SNAPSHOT
+    License: Apache License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.html)
+  - General DCS deposit utilities (http://maven.dataconservancy.org/sites/ingest/dcs-ingest-deposit) org.dataconservancy.dcs:dcs-ingest-deposit:jar:1.1.0-SNAPSHOT
+    License: Apache License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.html)
+  - File ingest utilities (http://maven.dataconservancy.org/sites/ingest/dcs-ingest-file) org.dataconservancy.dcs:dcs-ingest-file:jar:1.1.0-SNAPSHOT
+    License: Apache License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.html)
+  - Deposit core (http://maven.dataconservancy.org/sites/deposit/dc-deposit-core) org.dataconservancy.deposit:dc-deposit-core:jar:1.1.0-SNAPSHOT
+    License: Apache License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.html)
+  - Solr Support Utility Classes (http://maven.dataconservancy.org/sites/index/dcs-index-solr-support) org.dataconservancy.index:dcs-index-solr-support:jar:1.1.0-SNAPSHOT
+    License: Apache License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.html)
+  - Object Model (http://maven.dataconservancy.org/sites/model/dcs-model) org.dataconservancy.model:dcs-model:jar:1.1.0-SNAPSHOT
+    License: Apache License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.html)
+  - Model Builder (http://maven.dataconservancy.org/sites/model/dcs-model-builder) org.dataconservancy.model:dcs-model-builder:jar:1.1.0-SNAPSHOT
+    License: Apache License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.html)
+  - XStream Builder Impl (http://maven.dataconservancy.org/sites/model/dcs-model-builder-xstream) org.dataconservancy.model:dcs-model-builder-xstream:jar:1.1.0-SNAPSHOT
+    License: Apache License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.html)
+  - dcs-query-api (http://maven.dataconservancy.org/sites/query/dcs-query-api) org.dataconservancy.query:dcs-query-api:jar:1.1.0-SNAPSHOT
+    License: Apache License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.html)
+  - Research Object Model (http://maven.dataconservancy.org/sites/model/sead-model) org.seadva.model:sead-model:jar:1.1.0-SNAPSHOT
+    License: Apache License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.html)
+  - Research Object Model Xstream builder (http://maven.dataconservancy.org/sites/model/sead-model-builder-xstream) org.seadva.model:sead-model-builder-xstream:jar:1.1.0-SNAPSHOT
+    License: Apache License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.html)
+
+From: 'Joda.org' (http://www.joda.org)
+  - Joda time (http://joda-time.sourceforge.net) joda-time:joda-time:jar:1.6
+    License: Apache 2  (http://www.apache.org/licenses/)
+
+From: 'QOS.ch' (http://www.qos.ch)
+  - JCL 1.1.1 implemented over SLF4J (http://www.slf4j.org) org.slf4j:jcl-over-slf4j:jar:1.6.1
+    License: MIT License  (http://www.opensource.org/licenses/mit-license.php)
+  - SLF4J API Module (http://www.slf4j.org) org.slf4j:slf4j-api:jar:1.6.1
+    License: MIT License  (http://www.opensource.org/licenses/mit-license.php)
+
+From: 'The Apache Software Foundation' (http://www.apache.org)
+  - JavaMail 1.4 (http://geronimo.apache.org/maven/specs/geronimo-javamail_1.4_spec/1.6) org.apache.geronimo.specs:geronimo-javamail_1.4_spec:bundle:1.6
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+From: 'The Apache Software Foundation' (http://www.apache.org/)
+  - Commons Collections (http://commons.apache.org/collections/) commons-collections:commons-collections:jar:3.2.1
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Commons Pool (http://commons.apache.org/pool/) commons-pool:commons-pool:jar:1.6
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Axiom API (http://ws.apache.org/axiom/axiom-api) org.apache.ws.commons.axiom:axiom-api:bundle:1.2.10
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Axiom Impl (http://ws.apache.org/axiom/axiom-impl) org.apache.ws.commons.axiom:axiom-impl:bundle:1.2.10
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+From: 'XStream' (http://xstream.codehaus.org)
+  - XStream Core  com.thoughtworks.xstream:xstream:jar:1.3.1
+    License: BSD style  (http://xstream.codehaus.com/license.html)
+
+
+
+

@@ -1,0 +1,647 @@
+<?xml version="1.0"?>
+
+<!--<!DOCTYPE metadata PUBLIC "http://www.esri.com/metadata/esriprof80.dtd">-->
+<metadata xml:lang="en">
+    <Esri>
+        <CreaDate>20120621</CreaDate>
+        <CreaTime>15392100</CreaTime>
+        <SyncOnce>FALSE</SyncOnce>
+        <SyncDate>20120705</SyncDate>
+        <SyncTime>14473800</SyncTime>
+        <ModDate>20120705</ModDate>
+        <ModTime>14473800</ModTime>
+        <MetaID>{FEEDB40C-9A7D-452F-8E48-72D5FF1F05F4}</MetaID>
+    </Esri>
+    <idinfo>
+        <native>ESRI ArcMap</native>
+        <descript>
+            <langdata Sync="TRUE">en</langdata>
+            <abstract>This dataset contains Adopted Total Maximum Daily Loads (TMDLs) in the State of Florida. A Total
+                Maximum Daily Load (TMDL) is a scientific determination of the maximum amount of a given pollutant that
+                a surface water can absorb and still meet the water quality standards that protect human health and
+                aquatic life. Water bodies that do not meet water quality standards are identified as "impaired" for the
+                particular pollutants of concern--nutrients, bacteria, mercury, etc.--and TMDLs must be developed,
+                adopted and implemented for those pollutants to reduce pollutants and restore the water body so that
+                designated uses are attained. The threshold limits on pollutants in surface waters--Florida's surface
+                water quality standards on which TMDLs are based--are set forth primarily in rules 62-302 and 62-303,
+                Florida Administrative Code (FAC), and the associated table of water quality criteria. For assessment
+                purposes, the Florida Department of Environmental Protection (Department) has divided the State of
+                Florida into water assessment polygons with a unique waterbody identification (WBID) number for each
+                water segment. 1) Dissolved Oxygen (DO) and Nutrient TMDLs include TMDLs for the following impaired
+                parameters Dissolved Oxygen, BOD, Nutrients, and Un-ionized Ammonia. 2) Bacteria TMDLs include TMDLs
+                that are Fecal Coliform impaired. 3) Other TMDLs include TMDLs for pollutants other than Dissolved
+                Oxygen, Nutrients, and Bacteria, such as Iron, Lead, and Turbidity.
+            </abstract>
+            <purpose>Provide a spatial distribution of the State of Florida’s Adopted TMDLs.
+                Adopted TMDLs are separated into three layers.
+            </purpose>
+            <supplinf>Locations of the Department's Adopted TMDLs</supplinf>
+        </descript>
+        <citation>
+            <citeinfo>
+                <origin>Florida Department of Environmental Protection, Watershed Assessment Section</origin>
+                <pubdate>20120118</pubdate>
+                <title>ADOPTED TOTAL MAXIMUM DAILY LOADS (TMDLS) IN FLORIDA - JANUARY 2012</title>
+                <ftname Sync="TRUE">ETAT.ADOPTED_TMDLS_JAN12</ftname>
+                <geoform Sync="TRUE">vector digital data</geoform>
+                <onlink>http://waterwebprod.dep.state.fl.us/basin411/downloads/</onlink>
+                <pubinfo>
+                    <pubplace>Tallahassee, FL</pubplace>
+                    <publish>Florida Department of Environmental Protection, Watershed Assessment Section</publish>
+                </pubinfo>
+                <othercit>State of Florida</othercit>
+            </citeinfo>
+        </citation>
+        <timeperd>
+            <current>publication date</current>
+            <timeinfo>
+                <sngdate>
+                    <caldate>20120118</caldate>
+                </sngdate>
+            </timeinfo>
+        </timeperd>
+        <status>
+            <progress>Complete</progress>
+            <update>As needed</update>
+        </status>
+        <spdom>
+            <bounding>
+                <westbc Sync="TRUE">-87.404892</westbc>
+                <eastbc Sync="TRUE">-79.947145</eastbc>
+                <northbc Sync="TRUE">31.006068</northbc>
+                <southbc Sync="TRUE">25.776943</southbc>
+            </bounding>
+            <lboundng>
+                <leftbc Sync="TRUE">74932.230000</leftbc>
+                <rightbc Sync="TRUE">786970.310000</rightbc>
+                <bottombc Sync="TRUE">203061.760000</bottombc>
+                <topbc Sync="TRUE">777525.810000</topbc>
+            </lboundng>
+        </spdom>
+        <keywords>
+            <theme>
+                <themekt>NONE</themekt>
+                <themekey>Total Maximum Daily Load</themekey>
+                <themekey>Total Maximum Daily Load Impairment</themekey>
+                <themekey>TMDL</themekey>
+                <themekey>surface water</themekey>
+                <themekey>pollutant</themekey>
+                <themekey>water quality</themekey>
+                <themekey>nutrients</themekey>
+                <themekey>bacteria</themekey>
+                <themekey>mercury</themekey>
+                <themekey>heavy metals</themekey>
+                <themekey>surface water quality standards</themekey>
+                <themekey>62-302, Florida Administrative Code</themekey>
+                <themekey>Final, State Rule 62-304</themekey>
+            </theme>
+            <place>
+                <placekey>Florida</placekey>
+            </place>
+            <temporal>
+                <tempkey>2012</tempkey>
+            </temporal>
+            <theme>
+                <themekey>inlandWaters</themekey>
+                <themekt>ISO 19115 Topic Category</themekt>
+                <themekey>environment</themekey>
+            </theme>
+        </keywords>
+        <accconst>None</accconst>
+        <useconst>none</useconst>
+        <natvform Sync="TRUE">SDE Feature Class</natvform>
+        <ptcontac>
+            <cntinfo>
+                <cntaddr>
+                    <address>Total Maximum Daily Load Program</address>
+                    <addrtype>mailing and physical address</addrtype>
+                    <address>2600 Blair Stone Road - Mail Station 3555</address>
+                    <city>Tallahassee</city>
+                    <state>FL</state>
+                    <postal>32399-2400</postal>
+                    <country>USA</country>
+                </cntaddr>
+                <cntorgp>
+                    <cntorg>Florida Department of Environmental Protection, Watershed Assessment Section</cntorg>
+                    <cntper>Kristina Bridger</cntper>
+                </cntorgp>
+                <cntvoice>850-245-8023</cntvoice>
+                <cntemail>Kristina.Bridger@dep.state.fl.us</cntemail>
+            </cntinfo>
+        </ptcontac>
+        <crossref>
+            <citeinfo>
+                <othercit>Total Maximum Daily Loads Program
+                    http://www.dep.state.fl.us/water/tmdl/index.htm
+
+                    Watershed Management Basin Rotation Project - Basin Downloads
+                    http://www.dep.state.fl.us/water/basin411/download.htm
+
+                    Final, State Rule 62-304 Florida Administrative Code F.A.C.
+                    http://waterwebprod.dep.state.fl.us/basin411/downloads/Florida-Adopted-TMDLs.pdf
+
+                    US EPA TMDL Web Page
+                    http://water.epa.gov/lawsregs/lawsguidance/cwa/tmdl/
+                </othercit>
+            </citeinfo>
+        </crossref>
+        <datacred>Kristina Bridger, Janis Paulsen</datacred>
+    </idinfo>
+    <dataIdInfo>
+        <envirDesc Sync="TRUE">Microsoft Windows Vista Version 6.1 (Build 7601) Service Pack 1; ESRI ArcCatalog
+            9.3.1.4000
+        </envirDesc>
+        <dataLang>
+            <languageCode Sync="TRUE" value="en"></languageCode>
+        </dataLang>
+        <idCitation>
+            <resTitle Sync="TRUE">ETAT.ADOPTED_TMDLS_JAN12</resTitle>
+            <presForm>
+                <PresFormCd Sync="TRUE" value="005"></PresFormCd>
+            </presForm>
+        </idCitation>
+        <spatRpType>
+            <SpatRepTypCd Sync="TRUE" value="001"></SpatRepTypCd>
+        </spatRpType>
+        <dataExt>
+            <geoEle>
+                <GeoBndBox esriExtentType="native">
+                    <westBL Sync="TRUE">74932.23</westBL>
+                    <eastBL Sync="TRUE">786970.31</eastBL>
+                    <northBL Sync="TRUE">777525.81</northBL>
+                    <southBL Sync="TRUE">203061.76</southBL>
+                    <exTypeCode Sync="TRUE">1</exTypeCode>
+                </GeoBndBox>
+            </geoEle>
+        </dataExt>
+        <geoBox esriExtentType="decdegrees">
+            <westBL Sync="TRUE">-87.404892</westBL>
+            <eastBL Sync="TRUE">-79.947145</eastBL>
+            <northBL Sync="TRUE">31.006068</northBL>
+            <southBL Sync="TRUE">25.776943</southBL>
+            <exTypeCode Sync="TRUE">1</exTypeCode>
+        </geoBox>
+    </dataIdInfo>
+    <metainfo>
+        <langmeta Sync="TRUE">en</langmeta>
+        <metstdn Sync="TRUE">FGDC Content Standards for Digital Geospatial Metadata</metstdn>
+        <metstdv Sync="TRUE">FGDC-STD-001-1998</metstdv>
+        <mettc Sync="TRUE">local time</mettc>
+        <metc>
+            <cntinfo>
+                <cntorgp>
+                    <cntper>Kristina Bridger</cntper>
+                    <cntorg>Florida Department of Environmental Protection, Watershed Assessment Section</cntorg>
+                </cntorgp>
+                <cntaddr>
+                    <addrtype>mailing and physical address</addrtype>
+                    <city>Tallahassee</city>
+                    <state>FL</state>
+                    <postal>32399-2400</postal>
+                    <address>Total Maximum Daily Load Program</address>
+                    <address>2600 Blair Stone Road - Mail Station 3555</address>
+                    <country>USA</country>
+                </cntaddr>
+                <cntvoice>(850) 245-8023</cntvoice>
+                <cntpos>Environmental Specialist</cntpos>
+                <cntemail>Kristina.Bridger@dep.state.fl.us</cntemail>
+            </cntinfo>
+        </metc>
+        <metd>20120613</metd>
+        <metextns>
+            <onlink Sync="TRUE">http://www.esri.com/metadata/esriprof80.html</onlink>
+            <metprof Sync="TRUE">ESRI Metadata Profile</metprof>
+        </metextns>
+    </metainfo>
+    <mdLang>
+        <languageCode Sync="TRUE" value="en"></languageCode>
+    </mdLang>
+    <mdStanName Sync="TRUE">ISO 19115 Geographic Information - Metadata</mdStanName>
+    <mdStanVer Sync="TRUE">DIS_ESRI1.0</mdStanVer>
+    <mdChar>
+        <CharSetCd Sync="TRUE" value="004"></CharSetCd>
+    </mdChar>
+    <mdHrLv>
+        <ScopeCd Sync="TRUE" value="005"></ScopeCd>
+    </mdHrLv>
+    <mdHrLvName Sync="TRUE">dataset</mdHrLvName>
+    <distinfo>
+        <resdesc Sync="TRUE">Downloadable Data</resdesc>
+        <stdorder>
+            <digform>
+                <digtinfo>
+                    <transize Sync="TRUE">1.853</transize>
+                    <dssize Sync="TRUE">1.853</dssize>
+                </digtinfo>
+            </digform>
+        </stdorder>
+        <distliab>The Florida Geographic Data Library is a collection of Geospatial Data
+            compiled by the University of Florida GeoPlan Center with support from
+            the Florida Department of Transportation. GIS data available in FGDL is
+            collected from various state, federal, and other agencies (data sources)
+            who are data stewards, producers, or publishers. The data available in
+            FGDL may not be the most current version of the data offered by the
+            data source. University of Florida GeoPlan Center makes no guarantees
+            about the currentness of the data and suggests that data users check
+            with the data source to see if more recent versions of the data exist.
+
+            Furthermore, the GIS data available in the FGDL are provided 'as is'.
+            The University of Florida GeoPlan Center makes no warranties, guaranties
+            or representations as to the truth, accuracy or completeness of the data
+            provided by the data sources. The University of Florida GeoPlan Center
+            makes no representations or warranties about the quality or suitability
+            of the materials, either expressly or implied, including but not limited
+            to any implied warranties of merchantability, fitness for a particular
+            purpose, or non-infringement. The University of Florida GeoPlan Center
+            shall not be liable for any damages suffered as a result of using,
+            modifying, contributing or distributing the materials.
+
+            A note about data scale:
+
+            Scale is an important factor in data usage. Certain scale datasets
+            are not suitable for some project, analysis, or modeling purposes.
+            Please be sure you are using the best available data.
+
+            1:24000 scale datasets are recommended for projects that are at the
+            county level.
+            1:24000 data should NOT be used for high accuracy base mapping such
+            as property parcel boundaries.
+            1:100000 scale datasets are recommended for projects that are at the
+            multi-county or regional level.
+            1:125000 scale datasets are recommended for projects that are at the
+            regional or state level or larger.
+
+            Vector datasets with no defined scale or accuracy should be
+            considered suspect. Make sure you are familiar with your data
+            before using it for projects or analysis. Every effort has been
+            made to supply the user with data documentation. For additional
+            information, see the References section and the Data Source Contact
+            section of this documentation. For more information regarding
+            scale and accuracy, see our webpage at:
+            http://geoplan.ufl.edu/education.html
+        </distliab>
+        <techpreq>This data is intended for use with a Geographic Information Systems or Remote Sensing software
+            package.
+        </techpreq>
+    </distinfo>
+    <distInfo>
+        <distributor>
+            <distorTran>
+                <transSize Sync="TRUE">1.853</transSize>
+            </distorTran>
+            <distorFormat>
+                <formatName Sync="TRUE">SDE Feature Class</formatName>
+            </distorFormat>
+        </distributor>
+    </distInfo>
+    <spdoinfo>
+        <direct Sync="TRUE">Vector</direct>
+        <ptvctinf>
+            <esriterm Name="ETAT.ADOPTED_TMDLS_JAN12">
+                <efeatyp Sync="TRUE">Simple</efeatyp>
+                <efeageom Sync="TRUE">Polygon</efeageom>
+                <esritopo Sync="TRUE">FALSE</esritopo>
+                <efeacnt Sync="TRUE">271</efeacnt>
+                <spindex Sync="TRUE">TRUE</spindex>
+                <linrefer Sync="TRUE">FALSE</linrefer>
+            </esriterm>
+            <sdtsterm Name="ETAT.ADOPTED_TMDLS_JAN12">
+                <sdtstype Sync="TRUE">G-polygon</sdtstype>
+                <ptvctcnt Sync="TRUE">271</ptvctcnt>
+            </sdtsterm>
+        </ptvctinf>
+    </spdoinfo>
+    <spref>
+        <horizsys>
+            <cordsysn>
+                <geogcsn Sync="TRUE">GCS_North_American_1983_HARN</geogcsn>
+                <projcsn Sync="TRUE">Albers Conical Equal Area [Florida Geographic Data Library]</projcsn>
+            </cordsysn>
+            <planar>
+                <planci>
+                    <plance Sync="TRUE">coordinate pair</plance>
+                    <plandu Sync="TRUE">meters</plandu>
+                    <coordrep>
+                        <absres Sync="TRUE">0.010000</absres>
+                        <ordres Sync="TRUE">0.010000</ordres>
+                    </coordrep>
+                </planci>
+                <mapproj>
+                    <mapprojn Sync="TRUE">Albers Conical Equal Area</mapprojn>
+                    <albers>
+                        <stdparll Sync="TRUE">24.000000</stdparll>
+                        <stdparll Sync="TRUE">31.500000</stdparll>
+                        <longcm Sync="TRUE">-84.000000</longcm>
+                        <latprjo Sync="TRUE">24.000000</latprjo>
+                        <feast Sync="TRUE">400000.000000</feast>
+                        <fnorth Sync="TRUE">0.000000</fnorth>
+                    </albers>
+                </mapproj>
+            </planar>
+            <geodetic>
+                <horizdn Sync="TRUE">D_North_American_1983_HARN</horizdn>
+                <ellips Sync="TRUE">Geodetic Reference System 80</ellips>
+                <semiaxis Sync="TRUE">6378137.000000</semiaxis>
+                <denflat Sync="TRUE">298.257222</denflat>
+            </geodetic>
+        </horizsys>
+        <vertdef>
+            <altsys>
+                <altenc Sync="TRUE">Explicit elevation coordinate included with horizontal coordinates</altenc>
+                <altres Sync="TRUE">1.000000</altres>
+            </altsys>
+        </vertdef>
+    </spref>
+    <refSysInfo>
+        <RefSystem>
+            <refSysID>
+                <identCode Sync="TRUE">Albers Conical Equal Area [Florida Geographic Data Library]</identCode>
+            </refSysID>
+        </RefSystem>
+    </refSysInfo>
+    <spatRepInfo>
+        <VectSpatRep>
+            <topLvl>
+                <TopoLevCd Sync="TRUE" value="001"></TopoLevCd>
+            </topLvl>
+            <geometObjs Name="ETAT.ADOPTED_TMDLS_JAN12">
+                <geoObjTyp>
+                    <GeoObjTypCd Sync="TRUE" value="001"></GeoObjTypCd>
+                </geoObjTyp>
+                <geoObjCnt Sync="TRUE">271</geoObjCnt>
+            </geometObjs>
+        </VectSpatRep>
+    </spatRepInfo>
+    <eainfo>
+        <detailed Name="ETAT.ADOPTED_TMDLS_JAN12">
+            <enttyp>
+                <enttypl>ADOPTED_TMDLS_JAN12</enttypl>
+                <enttypt Sync="TRUE">Feature Class</enttypt>
+                <enttypc Sync="TRUE">271</enttypc>
+                <enttypd>ADOPTED_TMDLS_JAN12.DBF</enttypd>
+                <enttypds>FDEP</enttypds>
+            </enttyp>
+            <attr>
+                <attrlabl Sync="TRUE">OBJECTID</attrlabl>
+                <attalias Sync="TRUE">OBJECTID</attalias>
+                <attrtype Sync="TRUE">OID</attrtype>
+                <attwidth Sync="TRUE">4</attwidth>
+                <atprecis Sync="TRUE">10</atprecis>
+                <attscale Sync="TRUE">0</attscale>
+                <attrdef Sync="TRUE">Internal feature number.</attrdef>
+                <attrdefs Sync="TRUE">ESRI</attrdefs>
+                <attrdomv>
+                    <udom Sync="TRUE">Sequential unique whole numbers that are automatically generated.</udom>
+                </attrdomv>
+            </attr>
+            <attr>
+                <attrlabl Sync="TRUE">Shape</attrlabl>
+                <attalias Sync="TRUE">Shape</attalias>
+                <attrtype Sync="TRUE">Geometry</attrtype>
+                <attwidth Sync="TRUE">4</attwidth>
+                <atprecis Sync="TRUE">0</atprecis>
+                <attscale Sync="TRUE">0</attscale>
+                <attrdef Sync="TRUE">Feature geometry.</attrdef>
+                <attrdefs Sync="TRUE">ESRI</attrdefs>
+                <attrdomv>
+                    <udom Sync="TRUE">Coordinates defining the features.</udom>
+                </attrdomv>
+            </attr>
+            <attr>
+                <attrlabl Sync="TRUE">HUC</attrlabl>
+                <attalias Sync="TRUE">HUC</attalias>
+                <attrtype Sync="TRUE">String</attrtype>
+                <attwidth Sync="TRUE">8</attwidth>
+                <attrdef>Hydrologic Unit Code</attrdef>
+                <attrdefs>FDEP</attrdefs>
+                <atprecis Sync="TRUE">0</atprecis>
+                <attscale Sync="TRUE">0</attscale>
+            </attr>
+            <attr>
+                <attrlabl Sync="TRUE">WBID</attrlabl>
+                <attalias Sync="TRUE">WBID</attalias>
+                <attrtype Sync="TRUE">String</attrtype>
+                <attwidth Sync="TRUE">6</attwidth>
+                <attrdef>Waterbody Unique Identifier</attrdef>
+                <attrdefs>FDEP</attrdefs>
+                <atprecis Sync="TRUE">0</atprecis>
+                <attscale Sync="TRUE">0</attscale>
+            </attr>
+            <attr>
+                <attrlabl Sync="TRUE">DISTRICT</attrlabl>
+                <attalias Sync="TRUE">DISTRICT</attalias>
+                <attrtype Sync="TRUE">String</attrtype>
+                <attwidth Sync="TRUE">3</attwidth>
+                <attrdef>FDEP District</attrdef>
+                <attrdefs>FDEP</attrdefs>
+                <atprecis Sync="TRUE">0</atprecis>
+                <attscale Sync="TRUE">0</attscale>
+            </attr>
+            <attr>
+                <attrlabl Sync="TRUE">PLANUNIT</attrlabl>
+                <attalias Sync="TRUE">PLANUNIT</attalias>
+                <attrtype Sync="TRUE">String</attrtype>
+                <attwidth Sync="TRUE">40</attwidth>
+                <attrdef>Hydrologic collection of WBIDs</attrdef>
+                <attrdefs>FDEP</attrdefs>
+                <atprecis Sync="TRUE">0</atprecis>
+                <attscale Sync="TRUE">0</attscale>
+            </attr>
+            <attr>
+                <attrlabl Sync="TRUE">GROUP_NUM</attrlabl>
+                <attalias Sync="TRUE">GROUP_NUM</attalias>
+                <attrtype Sync="TRUE">String</attrtype>
+                <attwidth Sync="TRUE">8</attwidth>
+                <attrdef>5 Year Rotating Basin Group Number</attrdef>
+                <attrdefs>FDEP</attrdefs>
+                <atprecis Sync="TRUE">0</atprecis>
+                <attscale Sync="TRUE">0</attscale>
+            </attr>
+            <attr>
+                <attrlabl Sync="TRUE">GROUP_NAME</attrlabl>
+                <attalias Sync="TRUE">GROUP_NAME</attalias>
+                <attrtype Sync="TRUE">String</attrtype>
+                <attwidth Sync="TRUE">46</attwidth>
+                <attrdef>5 Year Rotating Basin Group Name</attrdef>
+                <attrdefs>FDEP</attrdefs>
+                <atprecis Sync="TRUE">0</atprecis>
+                <attscale Sync="TRUE">0</attscale>
+            </attr>
+            <attr>
+                <attrlabl Sync="TRUE">BASIN_1</attrlabl>
+                <attalias Sync="TRUE">BASIN_1</attalias>
+                <attrtype Sync="TRUE">String</attrtype>
+                <attwidth Sync="TRUE">55</attwidth>
+                <attrdef>Waterbody Name</attrdef>
+                <attrdefs>FDEP</attrdefs>
+                <atprecis Sync="TRUE">0</atprecis>
+                <attscale Sync="TRUE">0</attscale>
+            </attr>
+            <attr>
+                <attrlabl Sync="TRUE">BODY</attrlabl>
+                <attalias Sync="TRUE">BODY</attalias>
+                <attrtype Sync="TRUE">String</attrtype>
+                <attwidth Sync="TRUE">10</attwidth>
+                <attrdef>Type of waterbody, i.e. lake, stream, spring, etc</attrdef>
+                <attrdefs>FDEP</attrdefs>
+                <atprecis Sync="TRUE">0</atprecis>
+                <attscale Sync="TRUE">0</attscale>
+            </attr>
+            <attr>
+                <attrlabl Sync="TRUE">CLASS</attrlabl>
+                <attalias Sync="TRUE">CLASS</attalias>
+                <attrtype Sync="TRUE">String</attrtype>
+                <attwidth Sync="TRUE">2</attwidth>
+                <attrdef>Surface Water Classification</attrdef>
+                <attrdefs>FDEP</attrdefs>
+                <atprecis Sync="TRUE">0</atprecis>
+                <attscale Sync="TRUE">0</attscale>
+            </attr>
+            <attr>
+                <attrlabl Sync="TRUE">Param_TMDL</attrlabl>
+                <attalias Sync="TRUE">PARAM_TMDL</attalias>
+                <attrtype Sync="TRUE">String</attrtype>
+                <attwidth Sync="TRUE">50</attwidth>
+                <attrdef>Parameter for which the TMDL is developed</attrdef>
+                <attrdefs>FDEP</attrdefs>
+                <atprecis Sync="TRUE">0</atprecis>
+                <attscale Sync="TRUE">0</attscale>
+            </attr>
+            <attr>
+                <attrlabl Sync="TRUE">Pollutant</attrlabl>
+                <attalias Sync="TRUE">POLLUTANT</attalias>
+                <attrtype Sync="TRUE">String</attrtype>
+                <attwidth Sync="TRUE">50</attwidth>
+                <attrdef>Pollutant causing the impairment</attrdef>
+                <attrdefs>FDEP</attrdefs>
+                <atprecis Sync="TRUE">0</atprecis>
+                <attscale Sync="TRUE">0</attscale>
+            </attr>
+            <attr>
+                <attrlabl Sync="TRUE">TMDLStatus</attrlabl>
+                <attalias Sync="TRUE">TMDLSTATUS</attalias>
+                <attrtype Sync="TRUE">String</attrtype>
+                <attwidth Sync="TRUE">50</attwidth>
+                <attrdef>Phase of development in which the TMDL is.</attrdef>
+                <attrdefs>FDEP</attrdefs>
+                <atprecis Sync="TRUE">0</atprecis>
+                <attscale Sync="TRUE">0</attscale>
+            </attr>
+            <attr>
+                <attrlabl Sync="TRUE">DESCRIPT</attrlabl>
+                <attalias Sync="TRUE">DESCRIPT</attalias>
+                <attrtype Sync="TRUE">String</attrtype>
+                <attwidth Sync="TRUE">75</attwidth>
+                <attrdef>FGDL added field based on BASIN_1 &amp; WBID</attrdef>
+                <attrdefs>GeoPlan</attrdefs>
+                <atprecis Sync="TRUE">0</atprecis>
+                <attscale Sync="TRUE">0</attscale>
+            </attr>
+            <attr>
+                <attrlabl Sync="TRUE">FGDLAQDATE</attrlabl>
+                <attalias Sync="TRUE">FGDLAQDATE</attalias>
+                <attrtype Sync="TRUE">Date</attrtype>
+                <attwidth Sync="TRUE">36</attwidth>
+                <attrdef>The date FGDL acquired the data from the Source.</attrdef>
+                <attrdefs>GeoPlan</attrdefs>
+                <atprecis Sync="TRUE">0</atprecis>
+                <attscale Sync="TRUE">0</attscale>
+            </attr>
+            <attr>
+                <attrlabl Sync="TRUE">AUTOID</attrlabl>
+                <attalias Sync="TRUE">AUTOID</attalias>
+                <attrtype Sync="TRUE">Integer</attrtype>
+                <attwidth Sync="TRUE">4</attwidth>
+                <atprecis Sync="TRUE">10</atprecis>
+                <attscale Sync="TRUE">0</attscale>
+                <attrdef>Unique ID added by GeoPlan</attrdef>
+                <attrdefs>GeoPlan</attrdefs>
+            </attr>
+            <attr>
+                <attrlabl Sync="TRUE">SHAPE.AREA</attrlabl>
+                <attalias Sync="TRUE">SHAPE.AREA</attalias>
+                <attrtype Sync="TRUE">Double</attrtype>
+                <attwidth Sync="TRUE">0</attwidth>
+                <atprecis Sync="TRUE">0</atprecis>
+                <attscale Sync="TRUE">0</attscale>
+                <attrdef>Area in meters</attrdef>
+                <attrdefs>GeoPlan</attrdefs>
+            </attr>
+            <attr>
+                <attrlabl Sync="TRUE">SHAPE.LEN</attrlabl>
+                <attalias Sync="TRUE">SHAPE.LEN</attalias>
+                <attrtype Sync="TRUE">Double</attrtype>
+                <attwidth Sync="TRUE">0</attwidth>
+                <atprecis Sync="TRUE">0</atprecis>
+                <attscale Sync="TRUE">0</attscale>
+                <attrdef>Perimeter in meters</attrdef>
+                <attrdefs>GeoPlan</attrdefs>
+            </attr>
+        </detailed>
+    </eainfo>
+    <mdDateSt Sync="TRUE">20120705</mdDateSt>
+    <dataqual>
+        <lineage>
+            <procstep>
+                <proccont>
+                    <cntinfo>
+                        <cntperp>
+                            <cntper>Janis Paulsen</cntper>
+                            <cntorg>FDEP</cntorg>
+                        </cntperp>
+                        <cntpos>Environmental Manager</cntpos>
+                        <cntvoice>850-245-8543</cntvoice>
+                        <cntemail>janis.paulsen@dep.state.fl.us</cntemail>
+                    </cntinfo>
+                </proccont>
+                <procdesc>Data set created from the WBID layer attributed with TMDL attributes.</procdesc>
+                <procsv>ESRI ArcMap 10.0</procsv>
+                <srcused>FDEP</srcused>
+                <procdate>2012</procdate>
+            </procstep>
+            <srcinfo>
+                <srcscale>Unknown</srcscale>
+                <typesrc>online</typesrc>
+                <srccitea>FDEP</srccitea>
+                <srccontr>Spatial and Attribute Information</srccontr>
+            </srcinfo>
+            <procstep>
+                <procdesc>GeoPlan downloaded the following dataset from the
+                    Florida Department of Environmental Protection website on June 13th, 2012
+                    http://www.dep.state.fl.us/water/basin411/download.htm
+                </procdesc>
+                <srcused>GeoPlan</srcused>
+                <procdate>20120613</procdate>
+            </procstep>
+            <procstep>
+                <procdesc Sync="TRUE">Metadata imported.</procdesc>
+                <srcused Sync="TRUE">C:\Users\sam\Desktop\adopted_tmdls_jan12.xml</srcused>
+                <procdate Sync="TRUE">20120621</procdate>
+                <proctime Sync="TRUE">15392100</proctime>
+            </procstep>
+        </lineage>
+        <attracc>
+            <attraccr>GeoPlan relied on the integrity of the attribute information within
+                the original data.
+            </attraccr>
+        </attracc>
+        <logic>This data is provided 'as is'. GeoPlan relied on the integrity
+            of the original data layer's topology
+        </logic>
+        <complete>This data is provided 'as is' by GeoPlan and is complete to our
+            knowledge.
+        </complete>
+        <posacc>
+            <horizpa>
+                <horizpar>This data is provided 'as is' and its horizontal positional accuracy
+                    has not been verified by GeoPlan
+                </horizpar>
+            </horizpa>
+            <vertacc>
+                <vertaccr>This data is provided 'as is' and its vertical positional accuracy
+                    has not been verified by GeoPlan
+                </vertaccr>
+            </vertacc>
+        </posacc>
+    </dataqual>
+</metadata>

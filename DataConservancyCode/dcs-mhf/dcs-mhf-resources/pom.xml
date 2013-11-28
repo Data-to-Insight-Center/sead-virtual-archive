@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <artifactId>dcs-mhf-resources</artifactId>
+    <groupId>org.dataconservancy.mhf</groupId>
+    <packaging>jar</packaging>
+    <modelVersion>4.0.0</modelVersion>
+    <name>Data Conservancy Metadata Handling Framework Resources</name>
+    <description>Containing resources used by  MHF Services</description>
+
+    <parent>
+      <artifactId>dcs-mhf</artifactId>
+      <groupId>org.dataconservancy.mhf</groupId>
+      <version>1.1.0-SNAPSHOT</version>
+    </parent>
+
+
+    <!-- Build ====================================================== -->
+
+    <build>
+
+      <plugins>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-remote-resources-plugin</artifactId>
+          <executions>
+            
+            <!-- Produce our bundle from resources in this module. -->
+            <execution>
+              <id>bundle-resources</id>
+              <goals>
+                <goal>bundle</goal>
+              </goals>
+              <configuration>
+                <includes>
+                  <include>**/*</include>
+                </includes>
+              </configuration>
+            </execution>
+            
+            <!--
+              Override the behavior of the MRRP defined in the parent POM.  
+              The dcs-mhf-resources module shouldn't run process-resources or
+              process-test-resources MRRP executions 
+            -->          
+            <execution>
+              <id>process-test-resources</id>
+              <goals/>
+              <phase>none</phase>
+            </execution>
+            
+            <!--
+              Override the behavior of the MRRP defined in the parent POM.  
+              The dcs-mhf-resources module shouldn't run process-resources or
+              process-test-resources MRRP executions 
+            -->          
+            <execution>
+              <id>process-resources</id>
+              <goals/>
+              <phase>none</phase>
+            </execution>
+            
+          </executions>
+        </plugin>
+
+      </plugins>
+
+    </build>
+    <!-- Dependencies =============================================== -->
+
+    <dependencies>
+
+        <!-- Provided ================================================= -->
+
+        <!-- Compile ================================================== -->
+
+      <dependency>
+        <groupId>org.dataconservancy.model</groupId>
+        <artifactId>dcs-model</artifactId>
+        <scope>compile</scope>
+        <version>${project.parent.version}</version>
+      </dependency>
+
+        <!-- Runtime ================================================== -->
+
+        <!-- Test ===================================================== -->
+
+      <dependency>
+        <groupId>org.dataconservancy.mhf</groupId>
+        <artifactId>dcs-mhf-instance-api</artifactId>
+        <scope>test</scope>
+        <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>commons-cli</groupId>
+        <artifactId>commons-cli</artifactId>
+        <version>1.2</version>
+        <scope>test</scope>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.dataconservancy.registry</groupId>
+        <artifactId>dcs-registry-api</artifactId>
+        <scope>test</scope>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.dataconservancy.registry</groupId>
+        <artifactId>dcs-registry-metadata-shared</artifactId>
+        <scope>test</scope>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.dataconservancy.registry</groupId>
+        <artifactId>dcs-registry-memory-support</artifactId>
+        <scope>test</scope>
+      </dependency>
+      
+    </dependencies>
+
+</project>

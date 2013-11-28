@@ -1,0 +1,74 @@
+Index: dcs-ingest-file/src/main/java/org/dataconservancy/dcs/ingest/file/impl/FileSystemContentStager.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- dcs-ingest-file/src/main/java/org/dataconservancy/dcs/ingest/file/impl/FileSystemContentStager.java	(revision 2117)
++++ dcs-ingest-file/src/main/java/org/dataconservancy/dcs/ingest/file/impl/FileSystemContentStager.java	(revision )
+@@ -36,6 +36,7 @@
+ import org.dataconservancy.dcs.util.FilePathSource;
+ import org.dataconservancy.model.dcp.Dcp;
+ import org.dataconservancy.model.dcs.DcsFile;
++import org.seadva.model.pack.ResearchObject;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+ import org.springframework.beans.factory.annotation.Required;
+@@ -263,8 +264,8 @@
+     }
+ 
+     private String createSip(String key) {
+-        Dcp sip = new Dcp();
+-        String id = sipStager.addSIP(new Dcp());
++        ResearchObject sip = new ResearchObject();
++        String id = sipStager.addSIP(new ResearchObject());
+ 
+         DcsFile file = new DcsFile();
+         file.setId(referenceBaseURI + key);
+Index: dcs-ingest-file/pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- dcs-ingest-file/pom.xml	(revision 2117)
++++ dcs-ingest-file/pom.xml	(revision )
+@@ -22,6 +22,7 @@
+   <description>A collection of tools and utilities for handling file
+     content and uploads</description>
+   <packaging>jar</packaging>
++    <version>1.1.1-SNAPSHOT</version>
+ 
+   <parent>
+     <artifactId>dcs-ingest</artifactId>
+@@ -58,8 +59,14 @@
+       <artifactId>dcs-ingest-core</artifactId>
+       <version>${project.parent.version}</version>
+     </dependency>
++      <dependency>
++          <groupId>org.seadva.ingest</groupId>
++          <artifactId>sead-ingest-core</artifactId>
++          <version>1.1.0-SNAPSHOT</version>
++      </dependency>
+ 
++
+-    <dependency>
++      <dependency>
+       <groupId>org.dataconservancy.dcs</groupId>
+       <artifactId>dcs-ingest-deposit</artifactId>
+       <version>${project.parent.version}</version>
+@@ -68,8 +75,14 @@
+     <dependency>
+       <groupId>org.dataconservancy.deposit</groupId>
+       <artifactId>dc-deposit-core</artifactId>
++      <version>1.1.0-SNAPSHOT</version>
++    </dependency>
++
++      <dependency>
++          <groupId>org.seadva.model</groupId>
++          <artifactId>sead-model</artifactId>
+-      <version>1.1.0-SNAPSHOT</version>
+-    </dependency>
++          <version>1.1.0-SNAPSHOT</version>
++      </dependency>
+ 
+     <dependency>
+       <groupId>org.dataconservancy.model</groupId>

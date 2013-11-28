@@ -1,0 +1,1 @@
+<scheme xmlns="http://dataconservancy.org/schemas/dcp/1.0"><name>XSD Schema: Datatypes DTD</name><schemaVersion>http://www.w3.org/2001/XMLSchema</schemaVersion><schemaUrl>http://www.w3.org/2001/datatypes.dtd</schemaUrl><source>classpath:/org/dataconservancy/mhf/resources/schemas/xsd/datatypes.dtd</source></scheme>

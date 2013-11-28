@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xmlns="http://java.sun.com/xml/ns/javaee" 
+	 xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" 
+	 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+			     http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="dcs-access-http" version="2.5">
+  <display-name>DCS HTTP Access</display-name>	
+
+  <context-param>
+    <description>Class implementing access api</description>
+    <param-name>dcpquery.impl</param-name>
+    <param-value>org.dataconservancy.dcs.query.dcpsolr.DcsDataModelQueryService</param-value> 
+  </context-param>
+
+  <context-param>
+    <description>Datastream servlet url</description>
+    <param-name>datastream.url</param-name>
+    <param-value>http://localhost:8080/datastream/</param-value>
+  </context-param>
+
+</web-app>

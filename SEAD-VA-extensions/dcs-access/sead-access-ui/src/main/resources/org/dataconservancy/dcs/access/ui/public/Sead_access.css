@@ -1,0 +1,779 @@
+/*
+ * Copyright 2012 Johns Hopkins University
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+a:link {
+  color: #666666;
+  font-weight: normal;
+}
+
+a:visited {
+  color: #CF0003;
+  /*color: #F0999B;*/
+  font-weight: normal;
+}
+
+a:hover {
+  color:  #000000;
+  font-weight: normal;
+}
+
+a:active {
+ color: #666666;
+}
+
+
+.my-HyperLink a:link {
+  color: #0737FF;
+  font-weight: normal;
+  text-decoration:underline;
+}
+
+.my-HyperLink a:visited {
+  color: #3299CC;
+  /*color: #F0999B;*/
+  font-weight: normal;
+}
+
+.my-HyperLink a:hover {
+  color:  #000000;
+  font-weight: normal;
+}
+
+.my-HyperLink a:active {
+ color: #3299CC;
+}
+
+body {
+  background-color: #FFFFFF;
+}
+.arrow {
+  margin-top:200px;
+  margin-left:50px;
+}
+.Main {
+  color: #000000;
+  background-color: #FFFFFF;
+  width: 100%;
+  height: 100%;
+  border-collapse: collapse;
+}
+
+.TopHeader {
+  background-color: #FFFFFF;
+}
+
+.TopHeader img {
+  float: left;
+}
+
+.TopHeaderText {
+  font-weight: bold;
+  font-size: large;
+  color: #6F7074;
+  margin-left: 150px;
+  margin-top: 50px;
+}
+.logoutPanel{
+  margin-left: 350px;
+  margin-top: 50px;
+}
+.ButtonPosition
+{
+	margin-top: 50px;
+	margin-left:150px
+}
+
+.Button1Border
+{
+	margin-top: 50px;
+}
+
+.Button2Border
+{
+	margin-top: 50px;
+}
+
+.TableBorder
+{
+	margin-left: 100px;
+ 	margin-top: 50px;
+}
+
+.CollectionBorder
+{
+	margin-top: 40px;
+	margin-left: 120px;
+	width:65%;
+	height:80%;
+ 	border-style:double;
+	border-width:5px;
+	border-color:#e0e0e0;
+	border-radius: 15px;
+}
+.FileBorder
+{
+	margin-top: 40px;
+	margin-left: 0px;
+	height:80%;
+	border-style:double;
+	border-width:5px;
+	border-color:#e0e0e0;
+	border-radius: 15px;
+}
+.LeftPanel
+{
+	height:85%;
+	width:100%;
+	border-radius: 15px;
+	border-width:5px;
+	border-color:#e0e0e0;
+}
+.RightPanel
+{
+	height:85%;
+	width:100%;
+	border-radius: 15px;
+	border-width:5px;
+	border-color:#e0e0e0;
+}
+.HorizontalPanel
+{
+	height:400px;
+	width:100%;
+ 	border-style:double;
+	border-width:5px;
+	border-color:#e0e0e0;
+}
+.HorizontalPanel2
+{
+	height:400px;
+	width:100%;
+ /*	border-style:double;
+	border-width:5px;*/
+	border-color:#e0e0e0;
+}
+.VerticalPanel
+{
+	height:100%;
+	width:100%;
+ 	border-style:double;
+	border-width:5px;
+	border-color:#e0e0e0;
+}
+.Center
+{
+ 	margin-left: auto;
+ 	margin-right: auto;
+ 	border-style:solid;
+	border-width:1px;
+	border-color:#0;
+}
+
+.Center2
+{
+ 	margin-left: auto;
+ 	margin-right: auto;
+ 	width:100%;
+ 	border-style:solid;
+	border-width:1px;
+	border-color:#0;
+}
+
+.Middle
+{
+ 	margin-left: auto;
+ 	margin-right: auto;
+ 	padding-top:20px;
+}
+
+.CenterOuterPanel{
+	padding-top:10px;
+	padding-left:10px;
+}
+
+.wrap{
+white-space:normal;
+}
+
+.BoxHeader {
+  color: #6F7074;
+  font-weight: bold;
+  font-size: larger;
+  padding: 1em;
+  margin-left: 40px;
+  margin-right: auto;
+  
+}
+.Pad{
+	padding-left:10px;
+	padding-top:5px;
+}
+.LeftPad{
+	padding-left:50px;
+	padding-top:5px;
+}
+.TableBottom{
+	border-bottom-style:solid;
+	border-width:5px;
+	border-color:#FF8E2B;;
+}
+.Collapse{
+  color: blue;
+  cursor: pointer;
+}
+
+.Content {
+  background-color: #FFFFFF;
+  vertical-align: top;
+  padding: 5px;
+}
+
+.DatasetsRow{
+	background-color: #F0F0F0 ;
+	color: #000000;
+	border-style:solid;
+	
+	border-width:3px;
+	border-color:#FFFFFF;
+	height: 30px;
+	font-family:Arial,Georgia,Serif;
+	font-weight: bold;
+	padding: 6em;
+}
+
+.ErrorField {
+  font-weight: bold;
+  color: red;
+}
+.Expand{
+  color: blue;
+  cursor: pointer;
+}
+
+.Footer {
+  background-color: #e0e0e0;
+  font-size: smaller;
+  border-top:thick solid #0F9246;
+}
+
+.FooterHyperlink {
+  margin-bottom:10px;
+  margin-left:300px;
+  color: blue;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.Gradient{
+  background-image: url(images/gradient.png);	
+  background-repeat: repeat-x; 
+ 
+}
+
+.GradientFacet{
+  /*background-image: url(images/gradient_orange.png);*/
+  background-image: url(images/gradient_olive.png);
+  background-repeat: repeat-x; 
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  height:40px;
+  text-align:center;
+  font-weight:bold;
+  padding-top:15px;
+}
+.HeadingField {
+   font-weight: bold;
+   padding-left: 2em;
+   padding-top:5px;
+}
+.HeaderOuter{
+	padding-top:15px;
+}
+.topPadding{
+	padding-top:20px;
+}
+
+.greenFont{
+	color: #087851;
+	font-weight: bold;
+}
+.greyFont{
+	color: #6F7074;
+	font-weight: bold;
+}
+.droplist{
+	color: #087851;
+	font-weight: bold;
+}
+.Hyperlink {
+  color: blue;
+  font-weight:bold
+  text-decoration: underline;
+  cursor: pointer;
+}
+.hideHorzScroll
+{
+ overflow-x: visible !important;
+ border:thin solid #0F9246;
+}
+.FacetHyperlink {
+  color: blue;
+  text-decoration: underline;
+  cursor: pointer;
+  padding-left: 2em;
+}
+
+.leftMargin{
+	margin-left:15px;
+}
+
+
+.orientation-style
+{
+  border: 1px solid #AAAAAA;
+}
+.PaddedCell
+{
+	padding-top:5px;
+	padding-bottom:5px;
+}
+.ResultRow{
+	background-color: #F0F0F0 ;
+	color: #000000;
+	border-style:solid;
+	border-width2px;
+	border-color:#FFFFFF;
+	
+	font-family:Arial,Georgia,Serif;
+	
+	padding: 2em;
+}
+.RowTopBorder{
+	border-style:solid;
+  	border-width:2px;
+  	border-color:#FF8E2B;
+  	font-color:#000000;
+}
+.rightAlign{
+	position:absolute;
+	right: 280px;
+	margin-top:40px;
+}
+.SimpleButton{
+	color: #FFFFFF;
+	background-color: #4C8FFC;
+	border-width: 1px;
+	border-radius: 2px;
+	border-style:solid;
+	border-color:#3079ED;
+	font-weight:bold;
+	font-size: 10pt;
+	text-decoration:underline;
+	text-align: right;
+	cursor:pointer;
+}
+
+.SimplerButton{
+	color: #FFFFFF;
+	background-color: #4C8FFC;
+	border-width: 1px;
+	border-radius: 2px;
+	border-style:solid;
+	border-color:#3079ED;
+	font-weight:bold;
+	font-size: 10pt;
+	text-align: right;
+	cursor:pointer;
+}
+.LogoutButton{
+	color: #0B5CA3;
+	font-weight:bold;
+	font-size: 10pt;
+	text-decoration:underline;
+	text-align: right;
+	cursor:pointer;
+}
+
+.SimpleGreenButton{
+	color: #FFFFFF;
+	background-color: #8EAF2F;
+	border-width: 1px;
+	border-radius: 2px;
+	border-style:solid;
+	border-color:#8BAB2B;
+	font-weight:bold;
+	font-size: 10pt;
+	text-decoration:underline;
+	text-align: right;
+	cursor:pointer;
+}
+
+
+.SearchOption{
+	color: #FFFFFF;
+	border-style:solid;
+	border-width:2px;
+	border-color:#4F81BD;
+	font-size: 10pt;
+	/*previous green border-color:#528B8B;*/
+	font-weight:bold;
+	text-decoration:underline;
+	padding: 1em;
+	cursor:pointer;
+}
+
+.SearchSelected{
+	color: #FFFFFF;
+	border-style:solid;
+	border-width:2px;
+	border-color:#4F81BD;
+	font-size: 10pt;
+	/*previous green border-color:#528B8B;*/
+	font-weight:bold;
+	padding: 1em;
+}
+.SectionHeader {
+  /*color: #204D9B;*/
+  color: #6F7074;
+  font-weight: bold;
+  font-size: larger;
+  padding: 1em;
+}
+
+.GreenHeader {
+  color: #087851;
+  font-weight: bold;
+  font-size: larger;
+  padding: 1em;
+}
+
+.StatusBox
+{
+	margin-left: 50px;
+	margin-top: 160px;
+	height:150px;
+	width:150px;
+ 	border-style:double;
+	border-width:5px;
+	border-color:#e0e0e0;
+	border-radius:15px;
+}
+
+.StatusBoxSuccess
+{
+	background-color:#528B8B;
+	margin-left: 50px;
+	margin-top: 160px;
+	height:150px;
+	width:150px;
+ 	border-style:double;
+	border-width:5px;
+	border-color:#e0e0e0;
+	border-radius:15px;
+}
+.UploadStatusBox
+{
+	margin-left: 50px;
+	margin-top: 160px;
+	height:150px;
+	width:150px;
+ 	border-style:double;
+	border-width:5px;
+	border-color:#e0e0e0;
+	border-radius:15px;
+}
+.FileStatusBox
+{
+	margin-left: 50px;
+	margin-top: 160px;
+	height:150px;
+	width:150px;
+ 	border-style:double;
+	border-width:5px;
+	border-color:#e0e0e0;
+	border-radius:15px;
+}
+.DepositStatusBox
+{
+	margin-left: 50px;
+	margin-top: 160px;
+	height:150px;
+	width:150px;
+ 	border-style:double;
+	border-width:5px;
+	border-color:#e0e0e0;
+	border-radius:15px;
+}
+.DoiStatusBox
+{
+	margin-left: 50px;
+	margin-top: 160px;
+	height:150px;
+	width:150px;
+ 	border-style:double;
+	border-width:5px;
+	border-color:#e0e0e0;
+	border-radius:15px;
+}
+.IndexStatusBox
+{
+	margin-left: 50px;
+	margin-top: 160px;
+	height:150px;
+	width:150px;
+ 	border-style:double;
+	border-width:5px;
+	border-color:#e0e0e0;
+	border-radius:15px;
+}
+.StatusLabel
+{
+  color: #6F7074;
+  font-weight: bold;
+  margin-left: 50px;
+  margin-top: 60px;
+
+}
+
+
+.FilterHeader {
+  /*color: #204D9B;*/
+  color: #6F7074;
+  font-weight: bold;
+  padding: 1em;
+}
+
+.FacetPanel{
+  padding-top:10px;
+  padding-left:10px;
+
+}
+.CurvedPanel{
+  border-style:solid;
+  border-width:1px;
+  border-color:#8BAB2E;
+  /* previous orange color border-color:#FF8E2B;*/
+  border-radius: 17px;
+}
+.SubSectionHeader {
+  text-decoration:underline;
+  padding: 1em;
+}
+
+.CurrentNavigationPage {
+  font-weight: bold;
+}
+.columnWidth{
+	width:250px;
+}
+.TableHeader {
+  font-weight: bold;
+}
+
+.Entity {
+  margin-left: 1em;
+}
+
+.LeftPad{
+	padding-left:10px;
+	
+}
+.RelatedView {
+  width: 100%;
+  height: 300px;
+}
+
+.ResultField {
+  color: #FFFFFF;
+  font-weight: bold;
+}
+
+.ResultSnippet {
+  font-weight: bold;
+}
+
+.ResultAuthor {
+  color: #204D9B;
+}
+
+.ResultAbstract {
+  color: #204D9B;
+}
+
+.ResultsNav {
+  margin-left: 10%;
+}
+
+.SearchResults {
+  
+}
+
+.statusPopupPanelContainer {
+ position: fixed !important;
+ top: 0px;
+ margin-left: auto;
+ margin-right: auto;
+ width: 80%;
+}
+
+.progressBarContainer {
+	height:52%;
+ 	width: 82%;
+ 	background-color: #F7F7F7; 
+}
+
+.metadataPopupPanelContainer {
+ position: fixed !important;
+ top: 0px;
+ margin-left: auto;
+ margin-right: auto;
+ width: 80%;
+}
+
+.metadataPopupPanel {
+
+ background-color: #F7F7F7; 
+ margin-top: 100px;
+ margin-left: 200px;
+ height:700px;
+ width:80%;
+ padding: 0 5px;
+ border-style:groove;
+ -moz-border-radius-bottomleft: 5px;
+ -webkit-border-bottom-left-radius: 5px;
+ moz-border-radius-topleft: 5px;
+ -webkit-border-top-left-radius: 5px;
+ -moz-border-radius-bottomright: 5px;
+ -webkit-border-bottom-right-radius: 5px;
+ -moz-border-radius-topright: 5px;
+ -webkit-border-top-right-radius: 5px;
+}
+
+.metadataInPopupPanel {
+
+ background-color: #F7F7F7; 
+ margin-left: auto;
+ margin-right: auto;
+ height:650px;
+ width:95%;
+ padding: 0 5px;
+ border-style:groove;
+ -moz-border-radius-bottomleft: 5px;
+ -webkit-border-bottom-left-radius: 5px;
+ moz-border-radius-topleft: 5px;
+ -webkit-border-top-left-radius: 5px;
+ -moz-border-radius-bottomright: 5px;
+ -webkit-border-bottom-right-radius: 5px;
+ -moz-border-radius-topright: 5px;
+ -webkit-border-top-right-radius: 5px;
+}
+ 
+.statusPopupPanel {
+
+ background-color: #F7F7F7; 
+ margin-top: 200px;
+ margin-left: 400px;
+ height:200px;
+ width:30%;
+ padding: 0 5px;
+ border-style:groove;
+ -moz-border-radius-bottomleft: 5px;
+ -webkit-border-bottom-left-radius: 5px;
+ moz-border-radius-topleft: 5px;
+ -webkit-border-top-left-radius: 5px;
+ -moz-border-radius-bottomright: 5px;
+ -webkit-border-bottom-right-radius: 5px;
+ -moz-border-radius-topright: 5px;
+ -webkit-border-top-right-radius: 5px;
+}
+
+.dialogBox {
+
+ background-color: #F7F7F7; 
+ position: fixed !important;
+ margin-left: auto;
+ margin-right: auto;
+ height:100px;
+ width:20%;
+ padding: 0 5px;
+ border-style:groove;
+ -moz-border-radius-bottomleft: 5px;
+ -webkit-border-bottom-left-radius: 5px;
+ moz-border-radius-topleft: 5px;
+ -webkit-border-top-left-radius: 5px;
+ -moz-border-radius-bottomright: 5px;
+ -webkit-border-bottom-right-radius: 5px;
+ -moz-border-radius-topright: 5px;
+ -webkit-border-top-right-radius: 5px;
+}
+ 
+.statusPopupPanelText {
+ font-weight: bold;
+ font-color: #333;
+}
+
+.emailPopupPanelContainer {
+ position: fixed !important;
+ top: 0px;
+ margin-left: auto;
+ margin-right: auto;
+ width: 80%;
+}
+ 
+.emailPopupPanel {
+ background-color: #F7F7F7; 
+ margin-top: 200px;
+ margin-left: 500px;
+ height:200px;
+ width:40%;
+ padding: 0 5px;
+ border-style:groove;
+ -moz-border-radius-bottomleft: 5px;
+ -webkit-border-bottom-left-radius: 5px;
+ moz-border-radius-topleft: 5px;
+ -webkit-border-top-left-radius: 5px;
+ -moz-border-radius-bottomright: 5px;
+ -webkit-border-bottom-right-radius: 5px;
+ -moz-border-radius-topright: 5px;
+ -webkit-border-top-right-radius: 5px;
+}
+ 
+.emailPopupPanelText {
+ font-weight: bold;
+ font-color: #333;
+}
+
+.alertContainer {
+ }
+.textbox{
+ width:250px;
+}
+.theme-blue{ 
+  background-color: #528B8B; 
+}
+
+
+.Explanation {
+  border-width: 2px;
+  border-style: groove;
+  padding: 5px;
+  margin: 5px;
+}
+
+.gwt-TextBox { width: 25em; }
+
+
+}
+

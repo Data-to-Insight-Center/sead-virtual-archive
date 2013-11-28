@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:tx="http://www.springframework.org/schema/tx" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+  <context:annotation-config />
+
+  <bean
+    class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <property name="locations">
+      <list>
+        <value>classpath:default.properties</value>
+        <value>classpath:test.properties</value>
+      </list>
+    </property>
+    <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+    <property name="ignoreResourceNotFound" value="true" />
+    <property name="ignoreUnresolvablePlaceholders" value="true" />
+  </bean>
+  
+  <bean id="depositClient"
+    class="org.dataconservancy.dcs.ingest.client.impl.DualManagerDepositClient">
+    <property name="digestAlgorithm" value="SHA-1" />
+    <property name="modelBuilder" ref="dcsModelBuilder" />
+    <property name="sipDepositManager" ref="swordSipDepositManager" />
+    <property name="fileDepositManager" ref="swordFileDepositManager" />
+  </bean>
+
+  <bean id="dcsModelBuilder"
+    class="org.dataconservancy.model.builder.xstream.DcsXstreamStaxModelBuilder"
+    scope="singleton" />
+
+  <bean id="swordSipDepositManager"
+    class="org.dataconservancy.dcs.ingest.client.impl.SwordClientManager">
+    <property name="collectionUrl"
+      value="${dcs.baseurl}/deposit/sip" />
+    <property name="httpClient" ref="httpClient" />
+  </bean>
+
+  <bean id="swordFileDepositManager"
+    class="org.dataconservancy.dcs.ingest.client.impl.SwordClientManager">
+    <property name="collectionUrl"
+      value="${dcs.baseurl}/deposit/file" />
+    <property name="httpClient" ref="httpClient" />
+  </bean>
+
+  <bean id="httpClient" class="org.apache.http.impl.client.DefaultHttpClient">
+    <constructor-arg ref="multiThreadConnectionManager" />
+    <constructor-arg ref="httpClientParams" />
+  </bean>
+
+  <bean id="httpClientParams" class="org.apache.http.params.BasicHttpParams" />
+
+  <bean id="connectionParams" class="org.apache.http.params.HttpConnectionParamBean">
+    <constructor-arg ref="httpClientParams" />
+    <property name="connectionTimeout" value="100000" />
+    <property name="soTimeout" value="100000" />
+  </bean>
+
+  <bean id="protocolParams" class="org.apache.http.params.HttpProtocolParamBean">
+    <constructor-arg ref="httpClientParams" />
+    <property name="contentCharset" value="UTF-8" />
+    <property name="userAgent"
+      value="dcs-ingest-client/1.0.0-SNAPSHOT (dcs-integration-deposit; integration-test)" />
+  </bean>
+
+  <bean id="singleThreadConnectionManager" class="org.apache.http.impl.conn.SingleClientConnManager">
+    <constructor-arg ref="httpClientParams" />
+    <constructor-arg ref="schemeRegistry" />
+  </bean>
+  <bean id="multiThreadConnectionManager"
+    class="org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager"
+    depends-on="schemeConfigurator">
+    <constructor-arg ref="httpClientParams" />
+    <constructor-arg ref="schemeRegistry" />
+  </bean>
+
+  <bean id="schemeRegistry" class="org.apache.http.conn.scheme.SchemeRegistry" />
+
+  <bean id="schemeConfigurator"
+    class="org.springframework.beans.factory.config.MethodInvokingFactoryBean"
+    depends-on="schemeRegistry">
+    <property name="targetObject" ref="schemeRegistry" />
+    <property name="targetMethod" value="setItems" />
+    <property name="arguments">
+      <map>
+        <entry key="http" value-ref="httpScheme" />
+      </map>
+    </property>
+  </bean>
+
+  <bean id="httpScheme" class="org.apache.http.conn.scheme.Scheme">
+    <constructor-arg value="http" />
+    <constructor-arg ref="plainSocketFactory" />
+    <constructor-arg type="int" value="80" />
+  </bean>
+
+  <bean id="plainSocketFactory" class="org.apache.http.conn.scheme.PlainSocketFactory"
+    factory-method="getSocketFactory" />
+</beans>

@@ -1,0 +1,209 @@
+Index: dcs-access-http/pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- dcs-access-http/pom.xml	(revision 2117)
++++ dcs-access-http/pom.xml	(revision )
+@@ -21,7 +21,8 @@
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.dataconservancy.access</groupId>
+   <artifactId>dcs-access-http</artifactId>
+-  <packaging>war</packaging>
++  <packaging>jar</packaging>
++    <version>1.1.1-SNAPSHOT</version>
+   <name>HTTP Access API</name>
+ 
+   <parent>
+@@ -178,7 +179,7 @@
+     
+     <dependency>
+       <groupId>org.dataconservancy.index</groupId>
+-      <artifactId>dcs-index-dcp-solr</artifactId>
++      <artifactId>sead-index-extension</artifactId>
+       <version>1.1.0-SNAPSHOT</version>
+       <type>jar</type>
+       <scope>compile</scope>
+@@ -226,8 +227,56 @@
+       <version>1.1.0-SNAPSHOT</version>
+       <type>jar</type>
+       <scope>compile</scope>
+-    </dependency>    
++    </dependency>
+ 
++      <dependency>
++          <groupId>org.seadva.ingest</groupId>
++          <artifactId>sead-ingest-core</artifactId>
++          <version>${project.parent.version}</version>
++      </dependency>
++
++      <dependency>
++          <groupId>org.seadva.ingest</groupId>
++          <artifactId>sead-ingest-core</artifactId>
++          <version>${project.parent.version}</version>
++      </dependency>
++
++      <dependency>
++          <groupId>org.seadva.query</groupId>
++          <artifactId>sead-query-solr</artifactId>
++          <version>1.1.0-SNAPSHOT</version>
++      </dependency>
++
++      <dependency>
++          <groupId>org.dataconservancy.index</groupId>
++          <artifactId>sead-index-extension</artifactId>
++          <version>${project.parent.version}</version>
++      </dependency>
++
++      <dependency>
++          <groupId>org.seadva.archive</groupId>
++          <artifactId>sead-archive-api</artifactId>
++          <version>${project.parent.version}</version>
++      </dependency>
++
++      <dependency>
++          <groupId>org.seadva.archive</groupId>
++          <artifactId>sead-archive-impl-sda</artifactId>
++          <version>${project.parent.version}</version>
++      </dependency>
++
++      <dependency>
++          <groupId>org.seadva.model</groupId>
++          <artifactId>sead-model</artifactId>
++          <version>${project.parent.version}</version>
++      </dependency>
++
++      <dependency>
++          <groupId>org.seadva.model</groupId>
++          <artifactId>sead-model-builder-xstream</artifactId>
++          <version>${project.parent.version}</version>
++      </dependency>
++
+     <!-- Test ===================================================== --> 
+ 
+     <dependency>
+@@ -274,7 +323,13 @@
+           <artifactId>commons-logging</artifactId>
+         </exclusion>
+       </exclusions>
++    </dependency>
++
++      <dependency>
++          <groupId>com.jcraft</groupId>
++          <artifactId>jsch</artifactId>
++          <version>0.1.49</version>
+-    </dependency>
++      </dependency>
+ 
+     <dependency>
+       <groupId>org.mortbay.jetty</groupId>
+Index: dcs-access-http/src/main/java/org/dataconservancy/dcs/access/http/QueryServlet.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- dcs-access-http/src/main/java/org/dataconservancy/dcs/access/http/QueryServlet.java	(revision 2117)
++++ dcs-access-http/src/main/java/org/dataconservancy/dcs/access/http/QueryServlet.java	(revision )
+@@ -31,16 +31,21 @@
+ import com.thoughtworks.xstream.XStream;
+ 
+ import org.apache.commons.io.output.CountingOutputStream;
++import org.dataconservancy.dcs.access.http.util.SeadUtil;
+ import org.dataconservancy.dcs.query.api.QueryMatch;
+ import org.dataconservancy.dcs.query.api.QueryResult;
+ import org.dataconservancy.dcs.query.api.QueryServiceException;
+-import org.dataconservancy.dcs.query.endpoint.utils.dcpsolr.Config;
++import org.dataconservancy.dcs.query.dcpsolr.SeadConfig;
+ import org.dataconservancy.dcs.query.endpoint.utils.dcpsolr.ResultFormat;
+ import org.dataconservancy.model.builder.DcsModelBuilder;
+ import org.dataconservancy.model.builder.xstream.DcsXstreamStaxModelBuilder;
+ import org.dataconservancy.model.dcp.Dcp;
+ import org.dataconservancy.model.dcs.DcsEntity;
+ import org.dataconservancy.model.dcs.DcsFile;
++import org.seadva.model.builder.xstream.SeadXstreamStaxModelBuilder;
++import org.seadva.model.pack.ResearchObject;
++import org.slf4j.Logger;
++import org.slf4j.LoggerFactory;
+ 
+ // TODO Could set last mod by using most recent last mod of results
+ 
+@@ -57,14 +62,14 @@
+ 
+     private XStream jsonbuilder;
+ 
+-    private Config config;
++    private SeadConfig config;
+ 
++
+     public void init(ServletConfig cfg) throws ServletException {
+         super.init(cfg);
+-
+-        this.dcpbuilder = new DcsXstreamStaxModelBuilder();
+-        this.config = Config.instance(getServletContext());
+-        this.jsonbuilder = DcpUtil.toJSONConverter();
++        this.config = SeadConfig.instance(getServletContext());
++        this.dcpbuilder = new SeadXstreamStaxModelBuilder();//this.config.modelBuilder();//new DcsXstreamStaxModelBuilder();
++        this.jsonbuilder = new SeadUtil().toJSONConverter();// this.config.util().toJSONConverter();//DcpUtil.toJSONConverter();
+     }
+ 
+     @SuppressWarnings("unchecked")
+@@ -171,7 +176,7 @@
+             }
+         }
+ 
+-        if (fmt == ResultFormat.JSON || fmt == ResultFormat.JAVASCRIPT) {
++       if (fmt == ResultFormat.JSON || fmt == ResultFormat.JAVASCRIPT) {
+             String jsoncallback = req.getParameter("callback");
+ 
+             if (jsoncallback != null) {
+@@ -185,10 +190,10 @@
+                 os.write(')');
+             }
+         } else if (fmt == ResultFormat.DCP) {
+-            Dcp dcp = new Dcp();
++            ResearchObject dcp = new ResearchObject();
+ 
+             for (QueryMatch<DcsEntity> match : result.getMatches()) {
+-                DcpUtil.add(dcp, match.getObject());
++                dcp = new SeadUtil().add(dcp, match.getObject());
+             }
+ 
+             dcpbuilder.buildSip(dcp, os);
+Index: dcs-access-api/pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- dcs-access-api/pom.xml	(revision 2117)
++++ dcs-access-api/pom.xml	(revision )
+@@ -32,7 +32,7 @@
+     <dependency>
+       <artifactId>dcs-model</artifactId>
+       <groupId>org.dataconservancy.model</groupId>
+-      <version>1.1.0-alpha</version>
++      <version>1.1.0-SNAPSHOT</version>
+       <type>jar</type>
+       <scope>compile</scope>
+     </dependency>
+Index: dcs-access-http/src/main/webapp/WEB-INF/web.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- dcs-access-http/src/main/webapp/WEB-INF/web.xml	(revision 2117)
++++ dcs-access-http/src/main/webapp/WEB-INF/web.xml	(revision )
+@@ -29,6 +29,14 @@
+     <param-name>datastream.url</param-name>
+     <param-value>${datastream.url}</param-value>
+     <description>Public url to the datastream servlet</description>
++
++      <param-name>modelbuilder.impl</param-name>
++      <param-value>${modelbuilder.impl}</param-value>
++      <description>Instance of model builder</description>
++
++      <param-name>sead.converter.util</param-name>
++      <param-value>${sead.converter.util}</param-value>
++      <description>SEAD Converter</description>
+   </context-param>
+ 
+   <servlet>

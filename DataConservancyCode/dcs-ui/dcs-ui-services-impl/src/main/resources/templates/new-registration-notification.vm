@@ -1,0 +1,39 @@
+##
+## Copyright 2012 Johns Hopkins University
+##
+## Licensed under the Apache License, Version 2.0 (the "License");
+## you may not use this file except in compliance with the License.
+## You may obtain a copy of the License at
+##
+##    http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing, software
+## distributed under the License is distributed on an "AS IS" BASIS,
+## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+## See the License for the specific language governing permissions and
+## limitations under the License.
+##
+##
+##
+## New User Registration Velocity Template
+##
+## Edit this template to control what
+## content will be sent to administrators
+## when exceptions occur.
+##
+## The objects provided to this template are
+##   1) An instance of org.dataconservancy.ui.eventing.api.EventContext
+##      bound to the name 'eventContext'
+##   2) An instance of org.dataconservancy.ui.eventing.api.Event,
+##      bound to the name 'event'.
+##   3) An instance of org.dataconservancy.ui.model.Person, bound to
+##      the name 'person'.
+##   4) A string containing the full URL where an Administrator can go to
+##      and approve the registration, bound to 'approveRegistrationsLink'
+##
+A new user has registered:
+
+   Name: $person.firstNames $person.lastNames
+   E-mail Address: $person.emailAddress
+
+You can approve this registration by clicking here: $approveRegistrationsLink

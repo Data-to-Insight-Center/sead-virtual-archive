@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xmlns="http://java.sun.com/xml/ns/javaee" 
+	 xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" 
+	 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+			     http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="dcs-access-http" version="2.5">
+  <display-name>DC GQM query service</display-name>	
+
+  <context-param>
+    <param-name>gqmquery.impl</param-name>
+    <param-value>${gqmquery.impl}</param-value>
+    <description>Class implementing GQM query service api</description>
+
+    <param-name>datastream.url</param-name>
+    <param-value>${datastream.url}</param-value>
+    <description>Public url to the datastream servlet</description>
+  </context-param>
+
+  <servlet>
+    <servlet-name>GQMqueryServlet</servlet-name>
+    <servlet-class>org.dataconservancy.dcs.query.endpoint.gqm.GqmQueryServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>GQMqueryServlet</servlet-name>
+    <url-pattern>/*</url-pattern>
+  </servlet-mapping>
+</web-app>

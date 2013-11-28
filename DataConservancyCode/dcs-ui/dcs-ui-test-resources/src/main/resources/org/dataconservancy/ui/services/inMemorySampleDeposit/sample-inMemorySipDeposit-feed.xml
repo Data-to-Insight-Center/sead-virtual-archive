@@ -1,0 +1,49 @@
+<!--
+  ~ Copyright 2012 Johns Hopkins University
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <id>http://dataconservancy.org/ingest/status/file%3A%2Fvar%2Ffolders%2F8c%2Fd5953nv94tz71gl0phc8whkc0000gn%2FT%2Fticket8489452164748187556.xml</id>
+  <title type="text"
+    >Status event feed for ingest file:/var/folders/8c/d5953nv94tz71gl0phc8whkc0000gn/T/ticket8489452164748187556.xml</title>
+  <updated>2012-02-29T18:29:16.472Z</updated>
+  <author>
+    <name>DCS ingest service</name>
+  </author>
+  <entry>
+    <updated>2012-02-29T18:29:16.472Z</updated>
+    <title type="text">identifier.assignment</title>
+    <summary type="text">Assigned archive id file to file</summary>
+    <link href="file" rel="related"/>
+  </entry>
+  <entry>
+    <updated>2012-02-29T18:29:16.472Z</updated>
+    <title type="text">identifier.assignment</title>
+    <summary type="text">Assigned archive id id://mooo to du</summary>
+    <link href="id://mooo" rel="related"/>
+  </entry>
+  <entry>
+    <updated>2012-02-29T18:29:16.472Z</updated>
+    <title type="text">identifier.assignment</title>
+    <summary type="text">Assigned archive id man to man</summary>
+    <link href="man" rel="related"/>
+  </entry>
+  <entry>
+    <updated>2012-02-29T18:29:16.471Z</updated>
+    <title type="text">ingest.complete</title>
+    <link href="id://mooo" rel="related"/>
+    <link href="file" rel="related"/>
+    <link href="man" rel="related"/>
+  </entry>
+</feed>
