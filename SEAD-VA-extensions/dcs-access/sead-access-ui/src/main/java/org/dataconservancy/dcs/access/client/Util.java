@@ -15,11 +15,13 @@
  */
 package org.dataconservancy.dcs.access.client;
 
+import org.dataconservancy.dcs.access.shared.Constants;
 import org.dataconservancy.dcs.access.ui.client.model.JsCollection;
 import org.dataconservancy.dcs.access.client.model.JsDcp;
 import org.dataconservancy.dcs.access.client.model.JsDeliverableUnit;
 import org.dataconservancy.dcs.access.client.model.JsEntity;
 import org.dataconservancy.dcs.access.client.model.JsFile;
+import org.dataconservancy.dcs.access.client.model.JsSearchResult;
 import org.dataconservancy.dcs.access.ui.client.model.JsFormat;
 import org.dataconservancy.dcs.access.client.model.JsMatch;
 import org.dataconservancy.dcs.access.client.ui.MetadataPopupPanel;
@@ -141,30 +143,35 @@ public class Util {
             final String id = ids.get(i);
             JsonpRequestBuilder rb = new JsonpRequestBuilder();
 
-            rb.requestObject(id, new AsyncCallback<JsDcp>() {
+            String query = Search.createLiteralQuery("id", id);
+            String searchUrl  = Search.searchURL(query, 
+    	        		0, 
+    	        		true, 
+    	        		Constants.MAX_SEARCH_RESULTS);
+            rb.requestObject(searchUrl, new AsyncCallback<JsSearchResult>() {
 
                 public void onFailure(Throwable caught) {
                     reportInternalError("Viewing entity", caught);
                 }
 
-                public void onSuccess(final JsDcp result) {
-                	if (result.getFiles().length() > 0) {
-                		
+                public void onSuccess(final JsSearchResult result) {
+                	final JsMatch m = result.matches().get(0);
+              	  	if (m.getEntityType().equalsIgnoreCase("file")) {
                 	
-                		final JsArray<JsFormat> formats = result.getFiles().get(0).getFormats();
+                		final JsArray<JsFormat> formats = ((JsFile)m.getEntity()).getFormats();
 	            		if(formats.length()>0){
 	                	
 	                	refs.addItem(formats.get(0).getFormat(), new Command() {
 	                        public void execute() {
-	                        	String fileSource = result.getFiles().get(0).getPrimaryDataLocation().getLocation();
+	                        	String fileSource = ((JsFile)m.getEntity()).getPrimaryDataLocation().getLocation();
 	                        	if(!(fileSource.startsWith("http://")||fileSource.startsWith("https://")))
-	                        		fileSource = result.getFiles().get(0).getSource();
+	                        		fileSource = ((JsFile)m.getEntity()).getSource();
 	                        	MetadataPopupPanel statusPopupPanel = new MetadataPopupPanel(fileSource,formats.get(0).getFormat()); 
 	        					statusPopupPanel.show();
 	                        }
 	                    });
-	            		}
                 	}
+              	  }
                 }
             });
             

@@ -21,6 +21,8 @@ import java.util.List;
 import org.dataconservancy.dcs.access.client.SolrField.DeliverableUnitField;
 import org.dataconservancy.dcs.access.shared.Constants;
 
+import com.google.gwt.http.client.URL;
+
 public class Search {
 
     // ALL is treated specially to match all lucene fields used by other
@@ -180,6 +182,23 @@ public class Search {
         return sb.toString();
     }
 
+    public static String searchURL(String query, int offset, boolean context,
+            int max, String... params) {
+      
+        String s = 
+        		SeadApp.accessurl+
+        		"squery/?q=" + URL.encodeQueryString(query)
+                + "&offset=" + offset + "&max=" + max;
+
+        if (context) {
+            s= s + "&_hl=true&_hl.requireFieldMatch=true&_hl.fl="
+                    + URL.encodeQueryString("*");
+        }
+        for (int i = 0; i < params.length;i+=2) {
+        		s=s+"&"+params[i]+"="+params[i+1];
+        }
+        return s;
+    }
     // Tokenize a user query into lucene terms and phrases.
     // Phrases will be surrounded by "
     // Unsupported lucene characters are escaped.

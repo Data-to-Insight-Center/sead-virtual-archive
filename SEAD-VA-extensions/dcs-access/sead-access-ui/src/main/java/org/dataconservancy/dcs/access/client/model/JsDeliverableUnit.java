@@ -27,7 +27,6 @@ import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.cellview.client.CellTree;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -175,7 +174,6 @@ public final class JsDeliverableUnit
 
         table.setText(7, 1, toString(getFormerExternalRefs()));
         table.setWidget(8, 1, Util.metadataLinks(getMetadataRefs()));
-     //   table.setWidget(8, 1, Util.metadataLinks(getMetadataRefs()));//Make this provenance display//maybe based on XSLT?
         table.setText(10, 1, isDigitalSurrogate() == null ? "Unknown" : ""
                 + isDigitalSurrogate());
         
