@@ -28,6 +28,7 @@ import org.dataconservancy.model.builder.InvalidXmlException;
 import org.dataconservancy.model.dcp.Dcp;
 import org.seadva.ingest.SeadSipStager;
 import org.seadva.model.builder.api.SeadModelBuilder;
+import org.seadva.model.builder.xstream.SeadXstreamStaxModelBuilder;
 import org.seadva.model.pack.ResearchObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +54,7 @@ public class SeadElmSipStager
 
     private MetadataStore metadataStore;
 
-    private DcsModelBuilder modelBuilder;
+    private SeadXstreamStaxModelBuilder modelBuilder;
 
     private boolean finishDeletes = true;
 
@@ -63,7 +64,7 @@ public class SeadElmSipStager
     }
 
     @Required
-    public void setModelBuilder(DcsModelBuilder mb) {
+    public void setModelBuilder(SeadXstreamStaxModelBuilder mb) {
         modelBuilder = mb;
     }
 
