@@ -540,7 +540,7 @@
         <property name="hostname" value="${sda.host}" />
         <property name="mountPath" value="${sda.mount}" />
         <property name="solrService" ref="solrService" />
-    </bean>                                                             }" />
+    </bean>
         <!-- Limited number of executing threads, but unbounded queue. Invoking
 thread drops off a task into this queue, which is then executed asynchronously
 at some point in the future. -->

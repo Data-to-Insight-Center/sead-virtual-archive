@@ -233,6 +233,16 @@
           <artifactId>sead-ingest-services</artifactId>
           <version>1.1.0-SNAPSHOT</version>
           <scope>runtime</scope>
+          <exclusions>
+              <exclusion>
+                  <groupId>com.google.gwt</groupId>
+                  <artifactId>gwt-dev</artifactId>
+              </exclusion>
+              <exclusion>
+                  <groupId>javax.servlet</groupId>
+                  <artifactId>javax.servlet-api</artifactId>
+              </exclusion>
+          </exclusions>
       </dependency>
       <dependency>
           <groupId>org.seadva.ingest</groupId>
@@ -245,6 +255,12 @@
         <groupId>org.seadva.archive</groupId>
         <artifactId>sead-archive-impl-sda</artifactId>
         <version>1.1.0-SNAPSHOT</version>
+        <exclusions>
+            <exclusion>
+                <groupId>javax.servlet</groupId>
+                <artifactId>servlet-api</artifactId>
+            </exclusion>
+        </exclusions>
     </dependency>
 
       <dependency>
@@ -495,6 +511,12 @@
       <groupId>org.dataconservancy.dcs</groupId>
       <artifactId>dcs-transform-index</artifactId>
       <version>1.1.0-SNAPSHOT</version>
+        <exclusions>
+            <exclusion>
+                <groupId>javax.servlet</groupId>
+                <artifactId>servlet-api</artifactId>
+            </exclusion>
+        </exclusions>
     </dependency>
 
     <dependency>
