@@ -13,7 +13,7 @@
     ~ See the License for the specific language governing permissions and
     ~ limitations under the License.
 -->
-<dcp xsi:schemaLocation="http://dataconservancy.org/schemas/dcp/1.0 http://dataconservancy.org/schemas/dcp/1.0">
+<dcp xmlns="http://dataconservancy.org/schemas/dcp/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://dataconservancy.org/schemas/dcp/1.0 http://dataconservancy.org/schemas/dcp/1.0">
     <DeliverableUnits>
         <DeliverableUnit id="xyz">
             <title>Test deliverable unit</title>

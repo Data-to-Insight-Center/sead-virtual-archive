@@ -70,7 +70,7 @@ public class IngestTest {
     @Test
     public void sipleIngest() throws Exception {
        int code = doDeposit(new File(IngestTest.class.getResource("/" + "sampleSip.xml").getPath()));
-        assertEquals(code,200);
+        assertEquals(code,202);
     }
 
     private int doDeposit(File file) throws Exception {
