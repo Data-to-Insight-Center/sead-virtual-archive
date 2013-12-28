@@ -17,15 +17,16 @@
 package org.seadva.bagit;
 
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class FileNode {
 
-
     private String title;
     private String id;
-    private Set<String> formats = new HashSet<String>();
+    private List<String> formats = new ArrayList<String>();
 
 
     public FileNode(){
@@ -44,17 +45,28 @@ public class FileNode {
     public void setTitle(String title){
         this.title = title;
     }
-    public Set<String> getFormats() {
+
+    public int compareTo(FileNode o) {
+        return (o == null || o.id == null) ? -1 : -o.id.compareTo(id);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof FileNode) {
+            return id == ((FileNode) o).getId();
+        }
+        return false;
+    }
+
+    public List<String> getFormats() {
         return formats;
     }
 
-    public void setFormats(Set<String> formats) {
+    public void setFormats(List<String> formats) {
         this.formats = formats;
     }
-
     public void addFormat(String format){
-        this.formats.add(format);
+        formats.add(format);
     }
 
-  
-  }
+}

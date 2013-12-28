@@ -144,14 +144,6 @@
             <version>10.9.1.0</version>
         </dependency>
 
-
-        <!-- required for role based security annotations in Jersey Resource classes -->
-        <dependency>
-            <groupId>javax.annotation</groupId>
-            <artifactId>jsr250-api</artifactId>
-            <version>1.0</version>
-        </dependency>
-
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-exec</artifactId>
@@ -237,12 +229,6 @@
             <version>2.5</version>
         </dependency>
 
-
-        <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>jsr311-api</artifactId>
-            <version>1.1.1</version>
-        </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpmime</artifactId>
@@ -285,6 +271,13 @@
             <groupId>org.sead.acr.common</groupId>
             <artifactId>ACRCommon</artifactId>
             <version>1.1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sun.jersey.jersey-test-framework</groupId>
+            <artifactId>jersey-test-framework-grizzly2</artifactId>
+            <version>${jersey-version}</version>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>

@@ -16,14 +16,12 @@
 
 package org.seadva.bagit;
 
-import org.apache.commons.io.IOUtils;
-import org.dataconservancy.model.builder.DcsModelBuilder;
-import org.dataconservancy.model.builder.xstream.DcsXstreamStaxModelBuilder;
+import org.sead.acr.common.utilities.json.JSONArray;
 import org.sead.acr.common.utilities.json.JSONException;
 import org.sead.acr.common.utilities.json.JSONObject;
 
 import javax.servlet.ServletException;
-import java.io.*;
+import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -45,28 +43,116 @@ public class MediciServiceImpl {
    public void init() throws ServletException {
    }
 
-    public List<String>  parseJsonAttribute(String json, String attribute) {
-        List<String> result = new ArrayList<String>();
+    public Map<String,String> parseJson(String json) {
+        Map<String,String> result = new HashMap<String, String>();
+
         JSONObject jsonObject;
         try {
             jsonObject = new JSONObject(json);
 
-            JSONObject binding = jsonObject.getJSONObject("sparql")
-                    .getJSONObject("results")
-                    .getJSONObject("result")
-                    .getJSONObject("binding");
-            if(((String)binding.get("name")).equalsIgnoreCase(attribute))
-                result.add((String) binding.get("literal"));
+            JSONObject resultObject = jsonObject.getJSONObject("sparql")
+                    .getJSONObject("results");
 
-            return result;
+            JSONArray resultArray = new JSONArray();
+            if(resultObject.has("result")){
+                try{
+                    resultArray.put(0, resultObject.getJSONObject("result"));
+                }
+                catch(Exception e){
+                    resultArray = resultObject.getJSONArray("result");
+                }
+
+            }
+
+            for(int i =0; i< resultArray.length();i++){
+                JSONArray binding = resultArray.getJSONObject(i).getJSONArray("binding");
+                String title = "";
+                String id = "";
+                for(int j =0; j< binding.length();j++){
+                    if(((String)binding.getJSONObject(j).get("name")).equalsIgnoreCase("id"))
+                        id = (String)binding.getJSONObject(j).get("literal");
+                    if(((String)binding.getJSONObject(j).get("name")).equalsIgnoreCase("name"))
+                        title = (String)binding.getJSONObject(j).get("literal");
+                }
+                result.put(id, title);
+            }
         } catch (JSONException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        return null;
+        return result;
     }
 
-    static int i=0;
+    public List<String> parseJsonAttribute(String json, String attribute) {
+
+        List<String> result = new ArrayList<String>();
+
+        JSONObject jsonObject;
+        JSONArray resultArray = new JSONArray();
+        try {
+            jsonObject = new JSONObject(json);
+
+            JSONObject resultObject = jsonObject.getJSONObject("sparql")
+                    .getJSONObject("results");
+
+            if(resultObject.has("result")){
+                try{
+                    resultArray.put(0, resultObject.getJSONObject("result"));
+                }
+                catch(Exception e){
+                    resultArray = resultObject.getJSONArray("result");
+                }
+
+            }
+        }catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        try{
+            for(int i =0; i< resultArray.length();i++){
+                JSONArray binding = resultArray.getJSONObject(i).getJSONArray("binding");
+                String title = "";
+                String id = "";
+                for(int j =0; j< binding.length();j++){
+                    if(((String)binding.getJSONObject(j).get("name")).equalsIgnoreCase("id"))
+                        id = (String)binding.getJSONObject(j).get("literal");
+                    if(id.equalsIgnoreCase(attribute))
+                        if(((String)binding.getJSONObject(j).get("name")).equalsIgnoreCase("name"))
+                        {
+                            title = (String)binding.getJSONObject(j).get("literal");
+                            result.add(title);
+                        }
+                }
+            }
+        }
+        catch (JSONException e) {
+            JSONObject binding = null;
+            try {
+                for(int i =0; i< resultArray.length();i++){
+                    binding = resultArray.getJSONObject(i).getJSONObject("binding");
+                    String title = "";
+                    String key = (String)binding.get("name");
+                    if(key.equalsIgnoreCase(attribute))
+                    {
+                        title = (String)binding.get("literal");
+                        result.add(title);
+                    }
+                }
+
+            } catch (JSONException e1) {
+                assert binding != null;
+                String value = null;
+                try {
+                    value = (String)binding.get("uri");
+                } catch (JSONException e2) {
+                    e2.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+                result.add(value);
+            }
+
+        }
+        return result;
+    }
     public void populateKids(String tagId, String type, MediciInstance mediciInstance) throws IOException, JSONException {
 
         String json = "";
@@ -76,7 +162,9 @@ public class MediciServiceImpl {
             json = util.getJsonResponse(mediciInstance,Query.DU_TITLE.getTitle(),tagId);
 
             CollectionNode du = new CollectionNode();
-            du.setTitle(parseJsonAttribute(json, "title").get(0));
+            List<String> titles = parseJsonAttribute(json, "title");
+            if(titles.size()>0)
+                du.setTitle(titles.get(0));
 
 
             json = util.getJsonResponse(mediciInstance,Query.DuCreator.getTitle(),tagId);

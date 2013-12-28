@@ -32,7 +32,7 @@ public class VAQueryUtil{
         	if(tagId!=null)
         		query = query.replace("tagId", tagId);
         	
-           return getProxy(t_instance).getSparqlJSONResponse(query);
+           return getProxy(t_instance).getSparqlJSONResponse("query="+query);
         }
 
 		protected MediciProxy getProxy(MediciInstance t_instance){

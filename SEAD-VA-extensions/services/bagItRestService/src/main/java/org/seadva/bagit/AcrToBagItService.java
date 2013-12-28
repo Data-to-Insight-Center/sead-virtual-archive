@@ -49,7 +49,7 @@ public class AcrToBagItService {
             LoggerFactory.getLogger(AcrToBagItService.class);
 
 
-        //Do some time stamp based caching
+        //ToDo: some time stamp based caching
         @Context
         ServletContext context;
 
@@ -73,7 +73,9 @@ public class AcrToBagItService {
 
          if(Constants.homeDir==null){
              StringWriter writer = new StringWriter();
-             IOUtils.copy(new FileInputStream(context.getRealPath("WEB-INF/Config.properties")), writer);
+             IOUtils.copy(new FileInputStream(
+                     context.getRealPath("WEB-INF/Config.properties")
+             ), writer);
              String result = writer.toString();
              String[] pairs = result.trim().split(
                      "\\w*\n|\\=\\w*");
@@ -86,13 +88,6 @@ public class AcrToBagItService {
                      Constants.homeDir = value;
                      Constants.bagDir = Constants.homeDir+"bag/";
                      Constants.unzipDir = Constants.homeDir+"bag/"+"unzip/";
-                 }
-                 if (name.equals("acrusername")) {
-
-                     Constants.acrusername = value.replace("/","");
-                 }
-                 if (name.equals("acrpassword")) {
-                    Constants.acrpassword = value.replace("/","");
                  }
              }
          }
