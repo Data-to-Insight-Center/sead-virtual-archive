@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.seadva.bagit;
+package org.seadva.bagit.util;
 
 /**
  * Constants
@@ -24,7 +24,6 @@ public class Constants {
     public static String homeDir = null;
     public static String bagDir = null;
     public static String unzipDir = null;
-    public static String acrusername = null;
-    public static String acrpassword = null;
+    public static String sipDir = null;
     public static String FORMAT_IANA_SCHEME = "http://www.iana.org/assignments/media-types/";
 }

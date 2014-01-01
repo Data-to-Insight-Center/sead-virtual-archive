@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.seadva.bagit;
+package org.seadva.bagit.model;
 
 public enum Query {
 	PROPOSED_FOR_PUBLICATION("proposedpublications","SELECT ?id ?name WHERE { "+
@@ -44,12 +44,19 @@ public enum Query {
     FileFormat("fileformat","SELECT ?format WHERE { "+
             "<tagId> <http://purl.org/dc/elements/1.1/format> ?format ."+
             " }"),
+
+    FileSize("fileformat","SELECT ?size WHERE { "+
+            "<tagId> <tag:tupeloproject.org,2006:/2.0/files/length> ?size ."+
+            " }"),
+
     Date ("date","SELECT ?date WHERE { "+
             "<tagId> <http://purl.org/dc/terms/issued> ?date . " +
             " }"),
-   Contact ("contact","SELECT ?contact WHERE { "+
+
+    Contact ("contact","SELECT ?contact WHERE { "+
             "<tagId> <http://sead-data.net/terms/contact> ?contact . " +
             " }"),
+
     Site ("site","SELECT ?site WHERE { "+
             "<tagId> <http://sead-data.net/terms/generatedAt> ?site . " +
             " }");

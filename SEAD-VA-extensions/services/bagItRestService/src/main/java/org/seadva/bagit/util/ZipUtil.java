@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.seadva.bagit;
+package org.seadva.bagit.util;
 
 import java.io.*;
 import java.util.ArrayList;

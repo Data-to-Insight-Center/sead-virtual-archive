@@ -29,7 +29,7 @@
 /**
  * 
  */
-package org.seadva.bagit;
+package org.seadva.bagit.util;
 
 import noNamespace.*;
 

@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package org.seadva.bagit;
+package org.seadva.bagit.model;
 
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class FileNode {
 
     private String title;
     private String id;
+    private long fileSize;
     private List<String> formats = new ArrayList<String>();
 
 
@@ -69,4 +68,11 @@ public class FileNode {
         formats.add(format);
     }
 
+    public long getFileSize() {
+        return fileSize;
+    }
+
+    public void setFileSize(long fileSize) {
+        this.fileSize = fileSize;
+    }
 }
