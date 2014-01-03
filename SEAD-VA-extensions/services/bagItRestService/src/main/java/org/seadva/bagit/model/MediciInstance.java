@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.seadva.bagit;
+package org.seadva.bagit.model;
 
 
 public class MediciInstance{

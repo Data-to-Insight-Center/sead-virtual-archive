@@ -19,12 +19,23 @@ package org.seadva.bagit;
 
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
+import com.sun.jersey.multipart.FormDataMultiPart;
+import com.sun.jersey.multipart.file.FileDataBodyPart;
 import com.sun.jersey.test.framework.JerseyTest;
+import com.thoughtworks.xstream.XStream;
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
+import org.seadva.bagit.model.ActiveWorkspace;
+import org.seadva.bagit.model.ActiveWorkspaces;
 
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+import java.io.*;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -52,4 +63,68 @@ public class BagItTest extends JerseyTest {
                 .get(ClientResponse.class);
         assertEquals(200, response.getStatus());
     }
-}
+
+    @Test
+    public void testRESTListACR() throws IOException {
+        WebResource webResource = resource();
+
+        ClientResponse response = webResource.path("acrToBag")
+                .path("listACR")
+                .accept(MediaType.APPLICATION_XML)
+                .get(ClientResponse.class);
+
+
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(response.getEntityInputStream(),writer);
+        String xml = writer.toString();
+//        System.out.println(xml);
+
+        XStream xStream = new XStream();
+        xStream.alias("ActiveWorkspaces",ActiveWorkspaces.class);
+        xStream.alias("ActiveWorkspace",ActiveWorkspace.class);
+        ActiveWorkspaces workspaceList = new ActiveWorkspaces();
+        xStream.fromXML(xml, workspaceList);
+
+        assertEquals(200, response.getStatus());
+        assertEquals(3, workspaceList.getSpaceList().size());
+    }
+
+    @Test
+    public void testListACR(){
+        AcrToBagItService service= new AcrToBagItService();
+        XStream xStream = new XStream();
+
+        ActiveWorkspaces workspaceList = new ActiveWorkspaces();
+        xStream.fromXML(service.viewACR(), workspaceList);
+        assertEquals(3, workspaceList.getSpaceList().size());
+    }
+
+    @Test
+    public void testGetSIP() throws IOException {
+
+        WebResource webResource = resource();
+
+        File file = new File(getClass().getResource("sample_bag.zip").getFile());
+        FileDataBodyPart fdp = new FileDataBodyPart("file", file,
+                MediaType.APPLICATION_OCTET_STREAM_TYPE);
+
+        FormDataMultiPart formDataMultiPart = new FormDataMultiPart();
+
+        formDataMultiPart.bodyPart(fdp);
+
+        ClientResponse response = webResource.path("acrToBag")
+                .path("sip")
+                .type(MediaType.MULTIPART_FORM_DATA)
+                .post(ClientResponse.class, formDataMultiPart);
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(response.getEntityInputStream(),writer);
+        String sipText = "<dcp xmlns=\"http://dataconservancy.org/schemas/dcp/1.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://dataconservancy.org/schemas/dcp/1.0 http://dataconservancy.org/schemas/dcp/1.0\"><DeliverableUnits><DeliverableUnit id=\"sample_bag\"><title>Sample Bag Collection</title><abstract>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</abstract><pubdate>2007-01-01</pubdate><sizeBytes>0</sizeBytes><fileNo>0</fileNo><contact>None</contact></DeliverableUnit></DeliverableUnits><Manifestations><Manifestation id=\"sample_bagman\"><deliverableUnit ref=\"sample_bag\" /><manifestationFile ref=\"http://pdf_file_id\" /><manifestationFile ref=\"http://xls_file_id\" /></Manifestation></Manifestations><Files><File id=\"http://pdf_file_id\" src=\"http://ashbha.ads.iu.edu/sample/sample.pdf\"><fileName>sample.pdf</fileName><extant>true</extant><format><id scheme=\"http://www.iana.org/assignments/media-types/\">application/pdf</id></format></File><File id=\"http://xls_file_id\" src=\"http://ashbha.ads.iu.edu/sample/sample.xls\"><fileName>sample.xls</fileName><extant>true</extant><format><id scheme=\"http://www.iana.org/assignments/media-types/\">application/vnd.ms-excel</id></format></File></Files></dcp>";
+        assertEquals(sipText,writer.toString());
+    }
+
+    @Test
+    public void testOREUtil(){
+
+    }
+
+  }

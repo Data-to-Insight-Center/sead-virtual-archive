@@ -18,6 +18,8 @@ package org.seadva.bagit;
 
 import org.sead.acr.common.MediciProxy;
 import org.sead.acr.common.utilities.json.JSONException;
+import org.seadva.bagit.model.MediciInstance;
+import org.seadva.bagit.model.Query;
 
 import java.io.IOException;
 

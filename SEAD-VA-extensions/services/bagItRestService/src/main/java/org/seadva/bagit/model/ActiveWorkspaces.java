@@ -17,32 +17,28 @@
 package org.seadva.bagit.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
- * User: kavchand
- * Date: 12/31/13
- * Time: 11:13 AM
- * To change this template use File | Settings | File Templates.
+ * Lists active workspaces in ACR as XML with corresponding Id,
+ * which needs to be passed as argument to getBag function to create
+ * bags from SEAD ACR collections.
  */
 @XmlRootElement
 public class ActiveWorkspaces {
-    private String name;
-    private int id;
+    private List<ActiveWorkspace> spaceList= new ArrayList<ActiveWorkspace>();
 
-    public String getName() {
-        return name;
+    public List<ActiveWorkspace> getSpaceList() {
+        return spaceList;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setSpaceList(List<ActiveWorkspace> activeWorkspace) {
+        this.spaceList = activeWorkspace;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    public void addActiveWorkspace(ActiveWorkspace activeWorkspace) {
+        this.spaceList.add(activeWorkspace);
     }
 }

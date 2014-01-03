@@ -19,6 +19,7 @@ package org.seadva.bagit;
 import org.sead.acr.common.utilities.json.JSONArray;
 import org.sead.acr.common.utilities.json.JSONException;
 import org.sead.acr.common.utilities.json.JSONObject;
+import org.seadva.bagit.model.*;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
@@ -159,7 +160,7 @@ public class MediciServiceImpl {
 
         if(type.equals("collection")){
 
-            json = util.getJsonResponse(mediciInstance,Query.DU_TITLE.getTitle(),tagId);
+            json = util.getJsonResponse(mediciInstance, Query.DU_TITLE.getTitle(),tagId);
 
             CollectionNode du = new CollectionNode();
             List<String> titles = parseJsonAttribute(json, "title");
@@ -266,6 +267,9 @@ public class MediciServiceImpl {
             for(String format:formats){
                 fileNode.addFormat(format);
             }
+
+            json = util.getJsonResponse(mediciInstance, Query.FileSize.getTitle(), tagId);
+            fileNode.setFileSize(Integer.parseInt(parseJsonAttribute(json,"size").get(0)));
 
             relations.getFileAttrMap().put(tagId,fileNode);
         }

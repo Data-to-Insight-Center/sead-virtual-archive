@@ -16,6 +16,16 @@
 
 package org.seadva.bagit.util;
 
+import org.apache.commons.io.IOUtils;
+import org.seadva.bagit.model.MediciInstance;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Constants
  * */
@@ -26,4 +36,114 @@ public class Constants {
     public static String unzipDir = null;
     public static String sipDir = null;
     public static String FORMAT_IANA_SCHEME = "http://www.iana.org/assignments/media-types/";
+
+    static{
+        try {
+
+            acrInstances = new Constants().loadAcrInstances();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static List<MediciInstance> acrInstances;
+
+    private List<MediciInstance> loadAcrInstances() throws IOException{
+        List<MediciInstance> instances = new ArrayList<MediciInstance>();
+        InputStream inputStream =
+                getClass().getResourceAsStream("../../../../../../acrInstances.xml");
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(inputStream, writer);
+
+
+        XmlPullParserFactory factory = null;
+        try {
+            factory = XmlPullParserFactory.newInstance();
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        }
+        factory.setNamespaceAware(true);
+        XmlPullParser xpp = null;
+        try {
+            xpp = factory.newPullParser();
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        }
+
+        try {
+
+            xpp.setInput ( new StringReader(writer.toString()) );
+            int eventType = xpp.getEventType();
+            int id = 0;
+            int url = 0;
+            int remoteAPI = 0;
+            int title = 0;
+            int type = 0;
+            int user = 0;
+            int pwd = 0;
+
+            MediciInstance instance = null;
+
+            while (eventType != xpp.END_DOCUMENT) {
+                if(eventType == xpp.START_TAG) {
+                    if(xpp.getName().equals("instance"))
+                        instance = new MediciInstance();
+                    if(xpp.getName().equals("id"))
+                        id = 1;
+                    if(xpp.getName().equals("url"))
+                        url = 1;
+                    if(xpp.getName().equals("remoteAPI"))
+                        remoteAPI = 1;
+                    if(xpp.getName().equals("title"))
+                        title = 1;
+                    if(xpp.getName().equals("type"))
+                        type = 1;
+                    if(xpp.getName().equals("user"))
+                        user = 1;
+                    if(xpp.getName().equals("password"))
+                        pwd = 1;
+                }
+                else if(eventType == xpp.TEXT) {
+                    if(id==1){
+                        instance.setId(Integer.parseInt(xpp.getText()));
+                        id = 0;
+                    }
+                    else if(url==1){
+                        instance.setUrl(xpp.getText());
+                        url = 0;
+                    }
+                    else if(remoteAPI==1){
+                        instance.setRemoteAPI(xpp.getText());
+                        remoteAPI = 0;
+                    }
+                    else if(title ==1){
+                        instance.setTitle(xpp.getText());
+                        title = 0;
+                    }
+                    else if(type==1){
+                        instance.setType(xpp.getText());
+                        type = 0;
+                    }else if(user==1){
+                        instance.setUser(xpp.getText());
+                        user = 0;
+                    }else if(pwd==1){
+                        instance.setPassword(xpp.getText());
+                        pwd = 0;
+                    }
+                }
+                else if(eventType == xpp.END_TAG) {
+                    if(xpp.getName().equals("instance"))
+                        instances.add(instance);
+                }
+                eventType = xpp.next();
+            }
+
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return instances;
+    }
 }

@@ -14,10 +14,15 @@
  * limitations under the License.
  */
 
-package org.seadva.bagit;
+package org.seadva.bagit.util;
 
 import org.dspace.foresite.*;
 import org.sead.acr.common.utilities.json.JSONException;
+import org.seadva.bagit.model.MediciInstance;
+import org.seadva.bagit.MediciServiceImpl;
+import org.seadva.bagit.OreGenerator;
+import org.seadva.bagit.model.CollectionNode;
+import org.seadva.bagit.model.FileNode;
 
 import java.io.*;
 import java.net.URISyntaxException;
@@ -28,14 +33,13 @@ import java.util.*;
  */
 public class AcrBagItConverter {
 
-
     MediciServiceImpl mediciService;
     public AcrBagItConverter(){
         mediciService = new MediciServiceImpl();
     }
 
     //#1 Convert ACR metadata into a bag
-    //Returns path to zipped file
+    //#2 Returns path to zipped file
     public String convertRdfToBagit(String collectionId,
                                     MediciInstance mediciInstance
                                     ) throws IOException, JSONException {
@@ -119,7 +123,7 @@ public class AcrBagItConverter {
         return zippedBag;
     }
     private static final String RESOURCE_MAP_SERIALIZATION_FORMAT = "RDF/XML";
-    //static int i=0;
+
 
 
 

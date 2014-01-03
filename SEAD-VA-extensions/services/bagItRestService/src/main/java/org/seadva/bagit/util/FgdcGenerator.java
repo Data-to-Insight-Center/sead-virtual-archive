@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package org.seadva.bagit;
+package org.seadva.bagit.util;
 
 import noNamespace.*;
 import org.apache.xmlbeans.XmlException;
+import org.seadva.bagit.model.CollectionNode;
+import org.seadva.bagit.model.Creator;
 import org.seadva.model.SeadDeliverableUnit;
 import org.seadva.model.SeadPerson;
 

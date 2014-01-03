@@ -16,9 +16,22 @@
 
 package org.seadva.bagit;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.core.MediaType;
+import com.sun.jersey.core.header.FormDataContentDisposition;
+import com.sun.jersey.multipart.FormDataParam;
+import com.thoughtworks.xstream.XStream;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.dspace.foresite.OREException;
 import org.sead.acr.common.utilities.json.JSONException;
+import org.seadva.bagit.model.ActiveWorkspace;
+import org.seadva.bagit.model.ActiveWorkspaces;
+import org.seadva.bagit.model.MediciInstance;
+import org.seadva.bagit.util.AcrBagItConverter;
+import org.seadva.bagit.util.Constants;
+import org.seadva.bagit.util.ZipUtil;
+import org.seadva.model.builder.xstream.SeadXstreamStaxModelBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,9 +41,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.StringWriter;
+import java.io.*;
 import java.net.URISyntaxException;
 
 /**
@@ -53,6 +64,9 @@ public class AcrToBagItService {
         @Context
         ServletContext context;
 
+        /*
+        Get/Create Bag from ACR Collection
+         */
         @GET
         @Path("/bag/{collectionId}")
         @Produces("application/zip")
@@ -74,7 +88,7 @@ public class AcrToBagItService {
          if(Constants.homeDir==null){
              StringWriter writer = new StringWriter();
              IOUtils.copy(new FileInputStream(
-                     context.getRealPath("WEB-INF/Config.properties")
+                     context.getRealPath("/WEB-INF/Config.properties")
              ), writer);
              String result = writer.toString();
              String[] pairs = result.trim().split(
@@ -94,7 +108,7 @@ public class AcrToBagItService {
 
         AcrBagItConverter acrBagItConverter = new AcrBagItConverter();
          MediciInstance instance = null;
-         for(MediciInstance t_instance:ServerConstants.acrInstances)
+         for(MediciInstance t_instance: Constants.acrInstances)
              if(t_instance.getId()==sparqlEndpoint)
                  instance = t_instance;
         String zippedBag = acrBagItConverter.convertRdfToBagit(collectionId,instance);
@@ -112,35 +126,130 @@ public class AcrToBagItService {
         return responseBuilder.build();
         }
 
+
+
+    /*
+    List ACR instances
+     */
     @GET
-    @Path("/sip/{collectionId}")
-    @Produces("*/*")
-    public Response getSIP(@Context HttpServletRequest request,
-                           @Context UriInfo uri,
-                           @PathParam("collectionId") String collectionId
+    @Path("/listACR")
+    @Produces(MediaType.APPLICATION_XML)
+    public String viewACR(){
+        ActiveWorkspaces workspaces = new ActiveWorkspaces();
+        for(MediciInstance instance:Constants.acrInstances){
+            ActiveWorkspace workspace = new ActiveWorkspace();
+            workspace.setName(instance.getTitle());
+            workspace.setId(instance.getId());
+            workspaces.addActiveWorkspace(workspace);
+        }
+
+        XStream xStream = new XStream();
+        xStream.alias("ActiveWorkspaces",ActiveWorkspaces.class);
+        xStream.alias("ActiveWorkspace",ActiveWorkspace.class);
+        return xStream.toXML(workspaces);
+    }
+
+    /*
+    * Get/Generate SEAD VA SIP (that can be used to ingest data into SEAD VA)
+    * from Holey Bag (containing fetch.txt, manifest.txt, valid OAI-ORE and FGDC file for collection)
+     */
+    @POST
+    @Path("/sip")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response getSIP(
+                           @FormDataParam("file") InputStream uploadedInputStream,
+                           @FormDataParam("file") FormDataContentDisposition fileDetail
     ) throws IOException, OREException, URISyntaxException
 
     {
+        if(!fileDetail.getFileName().endsWith(".zip"))
+            return Response
+                    .status(Response.Status.NOT_ACCEPTABLE)
+                    .header("SEAD-Exception-Name", "Not accepted")
+                    .entity("Please upload a zipped SEAD BagIt file.")
+                    .type(MediaType.APPLICATION_XML)
+                    .build();
 
-        String test ="<error name=\"NotFound\" errorCode=\"404\" detailCode=\"1020\" pid=\""+collectionId+"\" nodeId=\"SEAD ACR\">\n" +
-                "<description>The specified object does not exist on this node.</description>\n" +
-                "<traceInformation>\n" +
-                "method: AcrToBagItService.getObject \n" +
-                "</traceInformation>\n" +
-                "</error>";
-        BagItSipConverter bagItSipConverter = new BagItSipConverter();
-        String sipPath = bagItSipConverter.bagitToSIP(collectionId);
+        if(Constants.homeDir==null){
+            StringWriter writer = new StringWriter();
+            IOUtils.copy(new FileInputStream(
+                    context.getRealPath("/WEB-INF/Config.properties")
+            ), writer);
+            String result = writer.toString();
+            String[] pairs = result.trim().split(
+                    "\\w*\n|\\=\\w*");
 
-        if(sipPath == null)
-            throw new NotFoundException(test);
 
-        String[] filename = sipPath.split("/");
+            for (int i = 0; i + 1 < pairs.length;) {
+                String name = pairs[i++].trim();
+                String value = pairs[i++].trim();
+                if (name.equals("bagit.home")) {
+                    Constants.homeDir = value;
+                }
+            }
+        }
 
+        Constants.sipDir = Constants.homeDir+"/"+"sip";
+        String zippedBag = Constants.sipDir+"/"+fileDetail.getFileName();
+        String unzipDir = Constants.sipDir+"/"+
+                fileDetail.getFileName().replace(".zip","")+"/";
+
+        String sipPath;
+        try {
+            if(!(new File(Constants.sipDir).exists()))
+                (new File(Constants.sipDir)).mkdirs();
+            if(!(new File(unzipDir).exists()))
+                (new File(unzipDir)).mkdirs();
+
+            writeToFile(uploadedInputStream,zippedBag);
+
+            ZipUtil.unzip(zippedBag, unzipDir);
+
+            OreGenerator oreGenerator = new OreGenerator();
+            oreGenerator.fromOAIORE(fileDetail.getFileName().replace(".zip",""), null, unzipDir);
+
+            sipPath = Constants.sipDir+"/"
+                    +fileDetail.getFileName().replace(".zip","")+"_sip.xml";
+            File sipFile = new File(sipPath);
+
+            OutputStream out = FileUtils.openOutputStream(sipFile);
+            new SeadXstreamStaxModelBuilder().buildSip(oreGenerator.sip, out);
+            out.close();
+
+        } catch (IOException e) {
+            throw e;
+        } catch (URISyntaxException e) {
+            throw e;
+        } catch (OREException e) {
+            throw e;
+        }
         Response.ResponseBuilder responseBuilder = Response.ok(new FileInputStream(sipPath));
 
         responseBuilder.header("Content-Disposition",
-                "inline; filename=" + filename[filename.length-1].replace(".xml",""));
+                "inline; filename=" + sipPath);
         return responseBuilder.build();
     }
+
+    private void writeToFile(InputStream uploadedInputStream,
+                             String uploadedFileLocation) {
+
+        try {
+            OutputStream out;
+            int read = 0;
+            byte[] bytes = new byte[1024];
+
+            out = new FileOutputStream(new File(uploadedFileLocation));
+            while ((read = uploadedInputStream.read(bytes)) != -1) {
+                out.write(bytes, 0, read);
+            }
+            out.flush();
+            out.close();
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
+
+    }
+
 
 }

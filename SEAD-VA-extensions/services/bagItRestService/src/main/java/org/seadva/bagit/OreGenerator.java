@@ -21,6 +21,12 @@ import org.apache.commons.logging.LogFactory;
 import org.dataconservancy.model.dcs.*;
 import org.dspace.foresite.*;
 import org.dspace.foresite.jena.TripleJena;
+import org.seadva.bagit.model.CollectionNode;
+import org.seadva.bagit.model.DatasetRelation;
+import org.seadva.bagit.model.FileNode;
+import org.seadva.bagit.model.MediciInstance;
+import org.seadva.bagit.util.Constants;
+import org.seadva.bagit.util.FgdcGenerator;
 import org.seadva.model.SeadDeliverableUnit;
 import org.seadva.model.SeadFile;
 import org.seadva.model.pack.ResearchObject;
@@ -47,6 +53,7 @@ public class OreGenerator {
     private static Predicate DC_TERMS_ABSTRACT = null;
 
     private static Predicate CITO_IS_DOCUMENTED_BY = null;
+    private static Predicate DC_TERMS_TYPE = null;
 
     private static Predicate CITO_DOCUMENTS = null;
 
@@ -101,6 +108,13 @@ public class OreGenerator {
         CITO_IS_DOCUMENTED_BY.setURI(new URI(CITO_IS_DOCUMENTED_BY.getNamespace()
                 + CITO_IS_DOCUMENTED_BY.getName()));
 
+        DC_TERMS_TYPE = new Predicate();
+        DC_TERMS_TYPE.setNamespace(Vocab.dcterms_Agent.ns().toString());
+        DC_TERMS_TYPE.setPrefix(Vocab.dcterms_Agent.schema());
+        DC_TERMS_TYPE.setName("type");
+        DC_TERMS_TYPE.setURI(new URI(DC_TERMS_TYPE.getNamespace()
+                + DC_TERMS_TYPE.getName()));
+
         // create the CITO:documents predicate
         CITO_DOCUMENTS = new Predicate();
         CITO_DOCUMENTS.setNamespace(CITO_IS_DOCUMENTED_BY.getNamespace());
@@ -151,6 +165,12 @@ public class OreGenerator {
                         mediciInstance.getUrl()+"#collection?uri="+ URLEncoder.encode(node.getId())
                     ));
             mainRem = rem;
+
+            Triple identifier = new TripleJena();
+            identifier.initialise(rem);
+            identifier.relate(DC_TERMS_IDENTIFIER, node.getId());
+            rem.addTriple(identifier);
+
             Triple resourceMapTitle = new TripleJena();
             resourceMapTitle.initialise(rem);
             resourceMapTitle.relate(DC_TERMS_TITLE, node.getTitle());
@@ -161,6 +181,13 @@ public class OreGenerator {
             metadata.relate(CITO_IS_DOCUMENTED_BY,
                     bagPath+ guid + "_fgdc.xml");
             rem.addTriple(metadata);
+
+            Triple altId = new TripleJena();
+            altId.initialise(rem);
+            altId.relate(DC_TERMS_TYPE,
+                    mediciInstance.getType());
+            rem.addTriple(altId);
+
 
             Agent creator = OREFactory.createAgent();
             creator.addName("SEAD_VA BagItService");
@@ -185,10 +212,23 @@ public class OreGenerator {
                 resourceMapIdentifier.relate(DC_TERMS_IDENTIFIER, file.getId());
                 rem.addTriple(resourceMapIdentifier);
 
+                Triple altId = new TripleJena();
+                altId.initialise(dataResource);
+                altId.relate(DC_TERMS_TYPE,
+                        mediciInstance.getType());
+                rem.addTriple(altId);
+
                 Triple resourceMapTitle = new TripleJena();
                 resourceMapTitle.initialise(dataResource);
                 resourceMapTitle.relate(DC_TERMS_TITLE, file.getTitle());
                 rem.addTriple(resourceMapTitle);
+
+
+                Triple source = new TripleJena();
+                source.initialise(dataResource);
+                source.relate(DC_TERMS_SOURCE, mediciInstance.getUrl()+ "/api/image/download/"+file.getId());
+                rem.addTriple(source);
+
                 agg.addAggregatedResource(dataResource);
 
                 for(String format:file.getFormats()){
@@ -199,7 +239,8 @@ public class OreGenerator {
                     agg.addAggregatedResource(dataResource);
                 }
 
-                fetch.write(mediciInstance.getUrl()+"/api/image/download/"+file.getId()+" 0 "+dataPath+file.getTitle()+"\n");
+
+                fetch.write(mediciInstance.getUrl()+"/api/image/download/"+file.getId()+" "+file.getFileSize()+" "+dataPath+file.getTitle()+"\n");
                 manifest.write("0000000000000000000" + "  " +dataPath+file.getTitle()+"\n");
             }
 
@@ -294,20 +335,16 @@ public class OreGenerator {
     }
 
     ResearchObject sip = new ResearchObject();
-    public void fromOAIORE(String id, String parentId, String unzippedDir) throws FileNotFoundException {//top collection id
+    public void fromOAIORE(String collectionId, String parentId, String unzippedDir) throws FileNotFoundException {//top collection id
      //probably convert to Map memory/Sip
         //start with the top most SIP
         //Find what it aggregates and do the same for lower SIPs
 
         try{
-            String guid = null;
-            if(id.contains("/"))
-                guid = id.split("/")[id.split("/").length-1];
-            else
-                guid = id.split(":")[id.split(":").length-1];
+            collectionId = collectionId.split("/")[collectionId.split("/").length-1];
+            String duId = collectionId;
 
-
-            InputStream input = new FileInputStream(new File(unzippedDir + guid + "_oaiore.xml"));
+            InputStream input = new FileInputStream(new File(unzippedDir + collectionId + "_oaiore.xml"));
             OREParser parser = OREParserFactory.getInstance("RDF/XML");
             ResourceMap rem = parser.parse(input);
             //get any metadata file associated
@@ -318,28 +355,66 @@ public class OreGenerator {
             SeadDeliverableUnit du = new SeadDeliverableUnit();
 
             if(metadataTriples.size()>0){
-                String fgdcFilePath = metadataTriples.get(0).getObjectLiteral();
-                du = FgdcGenerator.fromFGDC(fgdcFilePath,du);
+                String[] fgdcFilePath = metadataTriples.get(0).getObjectLiteral().split("/");
+
+                du = FgdcGenerator.fromFGDC(unzippedDir + fgdcFilePath[fgdcFilePath.length - 1], du);
+            }
+            if(du.getTitle()==null){
+                TripleSelector titleSelector = new TripleSelector();
+                titleSelector.setSubjectURI(rem.getURI());
+                titleSelector.setPredicate(DC_TERMS_TITLE);
+                List<Triple> titleTriples = rem.listAllTriples(titleSelector);
+
+                if(titleTriples.size()>0){
+                    du.setTitle(titleTriples.get(0).getObjectLiteral());
+                }
             }
 
-            //get root DU
-            Aggregation agg = rem.getAggregation();
-            String duId = id.replace("_Aggregation", "");
+            TripleSelector idSelector = new TripleSelector();
+            idSelector.setSubjectURI(rem.getURI());
+            idSelector.setPredicate(DC_TERMS_IDENTIFIER);
+            List<Triple> idTriples = rem.listAllTriples(idSelector);
+
+            if(idTriples.size()>0){
+                duId = idTriples.get(0).getObjectLiteral().replace("_Aggregation", "");
+            }
+
             du.setId(duId);
+
+            TripleSelector typeSelector = new TripleSelector();
+            typeSelector.setSubjectURI(rem.getURI());
+            typeSelector.setPredicate(DC_TERMS_TYPE);
+            List<Triple> typeTriples = rem.listAllTriples(typeSelector);
+
+            if(typeTriples.size()>0){
+
+                for(MediciInstance instance: Constants.acrInstances){
+                    if(instance.getType().equalsIgnoreCase(typeTriples.get(0).getObjectLiteral())) {
+                        DcsResourceIdentifier duAltId = new DcsResourceIdentifier();
+                        duAltId.setIdValue(duId);
+                        duAltId.setTypeId(instance.getType());
+                        du.addAlternateId(duAltId);
+                        break;
+                    }
+                }
+            }
+            //get root DU
+
+            Aggregation agg = rem.getAggregation();
+
             if(parentId!=null){
                 DcsDeliverableUnitRef ref = new DcsDeliverableUnitRef();
                 ref.setRef(parentId);
                 du.addParent(ref);
             }
 
-            DcsResourceIdentifier duAltId = new DcsResourceIdentifier();
-            duAltId.setIdValue(duId);
-            duAltId.setTypeId("medici");//Todo change this to ACR sparql endpoint
+
             sip.addDeliverableUnit(du);
             //get any children files or sub-collections associated and recursively add them
             List<AggregatedResource> aggregatedResources = agg.getAggregatedResources();
             boolean filesExist = false;
             DcsManifestation manifestation = new DcsManifestation();
+            manifestation.setId(duId+"man");
             manifestation.setDeliverableUnit(duId);
             for(AggregatedResource aggregatedResource:aggregatedResources){
                 List<URI> types = aggregatedResource.getTypes();
@@ -354,10 +429,33 @@ public class OreGenerator {
                     List<Triple> triples = aggregatedResource.listAllTriples(selector);
                     file.setId(triples.get(0).getObjectLiteral());
 
-                    DcsResourceIdentifier altId = new DcsResourceIdentifier();
-                    altId.setIdValue(triples.get(0).getObjectLiteral());
-                    altId.setTypeId("medici");
-                    file.addAlternateId(altId);
+
+                    TripleSelector filetypeSelector = new TripleSelector();
+                    filetypeSelector.setSubjectURI(rem.getURI());
+                    filetypeSelector.setPredicate(DC_TERMS_TYPE);
+                    List<Triple> filetypeTriples = rem.listAllTriples(filetypeSelector);
+
+                    if(filetypeTriples.size()>0){
+
+                        for(MediciInstance instance: Constants.acrInstances){
+                            if(instance.getType().equalsIgnoreCase(filetypeTriples.get(0).getObjectLiteral())) {
+                                DcsResourceIdentifier altId = new DcsResourceIdentifier();
+                                altId.setIdValue(triples.get(0).getObjectLiteral());
+                                altId.setTypeId(instance.getType());
+                                file.addAlternateId(altId);
+                                break;
+                            }
+                        }
+                    }
+
+
+                    TripleSelector sourceselector = new TripleSelector();
+                    sourceselector.setSubjectURI(aggregatedResource.getURI());
+                    selector.setPredicate(DC_TERMS_SOURCE);
+                    List<Triple> sourcetriples = aggregatedResource.listAllTriples(selector);
+
+                    if(sourcetriples.size()>0)
+                        file.setSource(sourcetriples.get(0).getObjectLiteral());
 
                     selector = new TripleSelector();
                     selector.setSubjectURI(aggregatedResource.getURI());
@@ -375,7 +473,6 @@ public class OreGenerator {
                     format.setFormat(triples.get(0).getObjectLiteral());
                     file.addFormat(format);
 
-                    file.setSource("http://nced.ncsa.illinois.edu/acr/api/image/download/"+file.getId());
 
                     file.setExtant(true);
 

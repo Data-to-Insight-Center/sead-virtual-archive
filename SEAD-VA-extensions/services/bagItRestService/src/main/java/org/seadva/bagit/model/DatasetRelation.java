@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-package org.seadva.bagit;
+package org.seadva.bagit.model;
+
+import org.seadva.bagit.model.CollectionNode;
+import org.seadva.bagit.model.FileNode;
 
 import java.util.HashMap;
 import java.util.Map;
