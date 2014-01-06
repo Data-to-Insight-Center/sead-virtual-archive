@@ -16,9 +16,11 @@
   -->
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:security="http://www.springframework.org/schema/security"
        xmlns:tx="http://www.springframework.org/schema/tx" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+           http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 
     <context:annotation-config />
 
@@ -629,6 +631,28 @@ method call. Invoking thread continues once task is completed. -->
         <property name="url" value="${dcs.idservice.hibernate.url}" />
         <property name="username" value="${dcs.idservice.hibernate.username}" />
         <property name="password" value="${dcs.idservice.hibernate.password}" />
+    </bean>
+
+    <security:http auto-config='true'>
+        <security:intercept-url pattern="/deposit/*" access="ROLE_admin" />
+        <security:http-basic />
+    </security:http>
+
+    <security:authentication-manager>
+        <security:authentication-provider>
+            <security:password-encoder hash="md5" />
+            <security:jdbc-user-service data-source-ref="myDataSource"
+                                        users-by-username-query="select EMAILADDRESS, PASSWORD, ROLE from users where EMAILADDRESS = ?"
+                                        authorities-by-username-query="select EMAILADDRESS, ROLE from users where EMAILADDRESS = ?"
+                                        role-prefix="ROLE_"
+                    />
+        </security:authentication-provider>
+    </security:authentication-manager>
+
+
+    <bean id="myDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="org.apache.derby.jdbc.EmbeddedDriver"/>
+        <property name="url" value="jdbc:derby:/tmp/database"/>
     </bean>
 
 </beans>
