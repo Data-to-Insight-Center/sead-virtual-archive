@@ -45,7 +45,7 @@ public enum Query {
             "<tagId> <http://purl.org/dc/elements/1.1/format> ?format ."+
             " }"),
 
-    FileSize("fileformat","SELECT ?size WHERE { "+
+    FileSize("size","SELECT ?size WHERE { "+
             "<tagId> <tag:tupeloproject.org,2006:/2.0/files/length> ?size ."+
             " }"),
 

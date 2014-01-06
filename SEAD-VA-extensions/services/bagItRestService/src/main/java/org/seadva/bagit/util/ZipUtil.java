@@ -111,6 +111,11 @@ public class ZipUtil {
             getFilesList(dir);
              FileOutputStream fos = new FileOutputStream(zipDirName);
             ZipOutputStream zos = new ZipOutputStream(fos);
+
+            ZipEntry dataDir = new ZipEntry("data/pls_delete");
+            zos.putNextEntry(dataDir);
+            zos.closeEntry();
+
             for(String filePath : filesListInDir){
                 ZipEntry ze = new ZipEntry(filePath.substring(dir.getAbsolutePath().length()+1, filePath.length()));
                 zos.putNextEntry(ze);

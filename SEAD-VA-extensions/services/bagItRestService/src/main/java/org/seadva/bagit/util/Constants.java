@@ -52,7 +52,9 @@ public class Constants {
     private List<MediciInstance> loadAcrInstances() throws IOException{
         List<MediciInstance> instances = new ArrayList<MediciInstance>();
         InputStream inputStream =
-                getClass().getResourceAsStream("../../../../../../acrInstances.xml");
+                  getClass().getResourceAsStream(
+                        "../../../../../acrInstances.xml"
+               );
         StringWriter writer = new StringWriter();
         IOUtils.copy(inputStream, writer);
 

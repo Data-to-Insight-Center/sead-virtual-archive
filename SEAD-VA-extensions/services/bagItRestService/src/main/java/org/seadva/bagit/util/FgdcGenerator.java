@@ -34,8 +34,9 @@ import java.util.Set;
 public class FgdcGenerator {
     public static String createFGDC(CollectionNode parentCollection){
         Set<String> creators = new HashSet<String>();
-        for(Creator creator:parentCollection.getCreators())
-            creators.add(creator.getCreatorName()+";"+creator.getCreatorId()+";"+creator.getCreatorIdType());
+        if(parentCollection.getCreators()!=null)
+            for(Creator creator:parentCollection.getCreators())
+                creators.add(creator.getCreatorName()+";"+creator.getCreatorId()+";"+creator.getCreatorIdType());
         Set<String> contacts = new HashSet<String>();
         contacts.add(parentCollection.getContact());
 

@@ -56,81 +56,97 @@ public class AcrToBagItService {
     public AcrToBagItService() {}
 
 
-        private static final Logger log =
-            LoggerFactory.getLogger(AcrToBagItService.class);
+    private static final Logger log =
+        LoggerFactory.getLogger(AcrToBagItService.class);
 
 
-        //ToDo: some time stamp based caching
-        @Context
-        ServletContext context;
-
-        /*
-        Get/Create Bag from ACR Collection
-         */
-        @GET
-        @Path("/bag/{collectionId}")
-        @Produces("application/zip")
-        public Response getBag(@Context HttpServletRequest request,
-                                 @Context UriInfo uri,
-                                 @PathParam("collectionId") String collectionId,
-                                 @QueryParam("sparqlEpEnum") int sparqlEndpoint
-        ) throws IOException, OREException, URISyntaxException, JSONException
-
-        {
-
-        String test ="<error name=\"NotFound\" errorCode=\"404\" detailCode=\"1020\" pid=\""+collectionId+"\" nodeId=\"SEAD ACR\">\n" +
-                "<description>The specified object does not exist on this node.</description>\n" +
-                "<traceInformation>\n" +
-                "method: AcrToBagItService.getObject \n" +
-                "</traceInformation>\n" +
-                "</error>";
-
-         if(Constants.homeDir==null){
-             StringWriter writer = new StringWriter();
-             IOUtils.copy(new FileInputStream(
-                     context.getRealPath("/WEB-INF/Config.properties")
-             ), writer);
-             String result = writer.toString();
-             String[] pairs = result.trim().split(
-                     "\\w*\n|\\=\\w*");
+    //ToDo: some time stamp based caching
+    @Context
+    ServletContext context;
 
 
-             for (int i = 0; i + 1 < pairs.length;) {
-                 String name = pairs[i++].trim();
-                 String value = pairs[i++].trim();
-                 if (name.equals("bagit.home")) {
-                     Constants.homeDir = value;
-                     Constants.bagDir = Constants.homeDir+"bag/";
-                     Constants.unzipDir = Constants.homeDir+"bag/"+"unzip/";
-                 }
+    /**
+     *
+     * @param request
+     * @param uri
+     * @param collectionId
+     * @param sparqlEndpoint
+     * @return
+     * @throws IOException
+     * @throws OREException
+     * @throws URISyntaxException
+     * @throws JSONException
+     *
+     * Get/Create Bag from ACR Collection
+     */
+
+    @GET
+    @Path("/bag/{collectionId}")
+    @Produces("application/zip")
+    public Response getBag(@Context HttpServletRequest request,
+                             @Context UriInfo uri,
+                             @PathParam("collectionId") String collectionId,
+                             @QueryParam("sparqlEpEnum") int sparqlEndpoint
+    ) throws IOException, OREException, URISyntaxException, JSONException
+
+    {
+
+    String test ="<error name=\"NotFound\" errorCode=\"404\" detailCode=\"1020\" pid=\""+collectionId+"\" nodeId=\"SEAD ACR\">\n" +
+            "<description>The specified object does not exist on this node.</description>\n" +
+            "<traceInformation>\n" +
+            "method: AcrToBagItService.getObject \n" +
+            "</traceInformation>\n" +
+            "</error>";
+
+     if(Constants.homeDir==null){
+         StringWriter writer = new StringWriter();
+         IOUtils.copy(new FileInputStream(
+                 context.getRealPath("/WEB-INF/Config.properties")
+         ), writer);
+         String result = writer.toString();
+         String[] pairs = result.trim().split(
+                 "\\w*\n|\\=\\w*");
+
+
+         for (int i = 0; i + 1 < pairs.length;) {
+             String name = pairs[i++].trim();
+             String value = pairs[i++].trim();
+             if (name.equals("bagit.home")) {
+                 Constants.homeDir = value;
+                 Constants.bagDir = Constants.homeDir+"bag/";
+                 Constants.unzipDir = Constants.homeDir+"bag/"+"unzip/";
              }
          }
+     }
 
-        AcrBagItConverter acrBagItConverter = new AcrBagItConverter();
-         MediciInstance instance = null;
-         for(MediciInstance t_instance: Constants.acrInstances)
-             if(t_instance.getId()==sparqlEndpoint)
-                 instance = t_instance;
-        String zippedBag = acrBagItConverter.convertRdfToBagit(collectionId,instance);
+    AcrBagItConverter acrBagItConverter = new AcrBagItConverter();
+     MediciInstance instance = null;
+     for(MediciInstance t_instance: Constants.acrInstances)
+         if(t_instance.getId()==sparqlEndpoint)
+             instance = t_instance;
+    String zippedBag = acrBagItConverter.convertRdfToBagit(collectionId,instance);
 
-        if(zippedBag==null)
-            throw new NotFoundException(test);
+    if(zippedBag==null)
+        throw new NotFoundException(test);
 
-        String[] filename = zippedBag.split("/");
+    String[] filename = zippedBag.split("/");
 
-        Response.ResponseBuilder responseBuilder = Response.ok(new FileInputStream(zippedBag));
+    Response.ResponseBuilder responseBuilder = Response.ok(new FileInputStream(zippedBag));
 
-        responseBuilder.header("Content-Type", "application/zip");
-        responseBuilder.header("Content-Disposition",
-                         "inline; filename=" + filename[filename.length-1]);
-        return responseBuilder.build();
-        }
+    responseBuilder.header("Content-Type", "application/zip");
+    responseBuilder.header("Content-Disposition",
+                     "inline; filename=" + filename[filename.length-1]);
+    return responseBuilder.build();
+    }
 
 
 
-    /*
-    List ACR instances
+
+    /**
+     *
+     * List ACR instances
      */
+
     @GET
     @Path("/listACR")
     @Produces(MediaType.APPLICATION_XML)
@@ -149,10 +165,20 @@ public class AcrToBagItService {
         return xStream.toXML(workspaces);
     }
 
-    /*
-    * Get/Generate SEAD VA SIP (that can be used to ingest data into SEAD VA)
-    * from Holey Bag (containing fetch.txt, manifest.txt, valid OAI-ORE and FGDC file for collection)
+    /**
+     *
+     * @param uploadedInputStream
+     * @param fileDetail
+     * @return
+     * @throws IOException
+     * @throws OREException
+     * @throws URISyntaxException
+     *
+     *
+     * Get/Generate SEAD VA SIP (that can be used to ingest data into SEAD VA)
+     * from Holey Bag (containing fetch.txt, manifest.txt, valid OAI-ORE and FGDC file for collection)
      */
+
     @POST
     @Path("/sip")
     @Consumes(MediaType.MULTIPART_FORM_DATA)

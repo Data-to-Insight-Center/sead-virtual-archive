@@ -16,13 +16,13 @@
 
 package org.seadva.bagit.util;
 
+import com.sun.syndication.feed.rss.Guid;
+import org.apache.commons.io.IOUtils;
 import org.dspace.foresite.*;
 import org.sead.acr.common.utilities.json.JSONException;
-import org.seadva.bagit.model.MediciInstance;
+import org.seadva.bagit.model.*;
 import org.seadva.bagit.MediciServiceImpl;
 import org.seadva.bagit.OreGenerator;
-import org.seadva.bagit.model.CollectionNode;
-import org.seadva.bagit.model.FileNode;
 
 import java.io.*;
 import java.net.URISyntaxException;
@@ -49,7 +49,9 @@ public class AcrBagItConverter {
             "collection",
             mediciInstance
         );
-
+        return generateORE(collectionId,mediciInstance);
+    }
+        private String generateORE(String collectionId,MediciInstance mediciInstance) throws IOException, JSONException {
         Map<String,List<FileNode>> existingFiles = new HashMap<String, List<FileNode>>();
 
         Map<String,CollectionNode>  tempDuMp = new HashMap<String, CollectionNode>(MediciServiceImpl.relations.getDuAttrMap());
@@ -107,10 +109,13 @@ public class AcrBagItConverter {
                     manifest);
 
         } catch (URISyntaxException e) {
+            e.printStackTrace();
             return null;
         } catch (OREException e) {
+            e.printStackTrace();
             return null;
         } catch (ORESerialiserException e) {
+            e.printStackTrace();
             return null;
         }
 
@@ -122,6 +127,104 @@ public class AcrBagItConverter {
         ZipUtil.zipDirectory(new File(bagPath), zippedBag);
         return zippedBag;
     }
+
+    Map<String,List<Node>> parents = new HashMap<String, List<Node>>();
+    Map<String,String> ids = new HashMap<String, String>();
+
+    public String convertFecthToORE(File fetchFile) throws IOException, JSONException {
+
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(new FileInputStream(fetchFile), writer);
+        String fetchContent = writer.toString();
+
+
+        String[] fetchArray = fetchContent.split("[ \n]");
+
+        for(int i=0;i<fetchArray.length-2;i+=3){
+            String source = fetchArray[i];
+            String size = fetchArray[i+1];
+            String path = fetchArray[i+2];
+
+            String[] collectionPath = path.split("/");
+
+            for(int j=1;j<collectionPath.length;j++){
+                //excluding j=0 since it is always "data"
+                //Does not handle case of having sample collection name along the path
+                String id = "";
+                if(!ids.containsKey(collectionPath[j])){
+                    id = UUID.randomUUID().toString();
+                    ids.put(collectionPath[j], id);
+                }
+                else
+                    continue;
+
+                List<Node> children  = new ArrayList<Node>();
+                if(j>1){
+                    if(parents.containsKey(collectionPath[j-1]))
+                        children = parents.get(collectionPath[j-1]);
+                }
+                else{
+                    if(parents.containsKey("null"))
+                        children = parents.get("null");
+                }
+
+                if(j==collectionPath.length-1){
+                    FileNode fileNode = new FileNode();
+                    fileNode.setTitle(collectionPath[j]);
+                    fileNode.setId(id);
+                    fileNode.setSource(source);
+                    fileNode.setFileSize(Long.parseLong(size));
+                    children.add(fileNode);
+                }
+                else{
+                    CollectionNode collectionNode = new CollectionNode();
+                    collectionNode.setTitle(collectionPath[j]);
+                    collectionNode.setId(id);
+                    children.add(collectionNode);
+                }
+
+                if(j>1)
+                    parents.put(collectionPath[j-1],children);
+                else
+                    parents.put("null",children);
+
+            }
+        }
+
+        createORE("null");
+        return generateORE(ids.get(parents.get("null").get(0).getTitle()),null);
+
+    }
+
+    private void createORE(String parent){
+
+        List<Node> children = parents.get(parent);
+
+
+        for(Node child:children){
+            MediciServiceImpl.relations.getParentMap().put(ids.get(child.getTitle()),parent);
+
+            if(!parents.containsKey(child.getTitle()))   {//file
+                if(parent.equalsIgnoreCase("null"))
+                    continue;
+                MediciServiceImpl.relations.getFileAttrMap().put(child.getId(),(FileNode)child);
+                CollectionNode parentDu = MediciServiceImpl.relations.getDuAttrMap().get(ids.get(parent));
+                parentDu.addSub(CollectionNode.SubType.File, child.getId());
+                MediciServiceImpl.relations.getDuAttrMap().put(ids.get(parent),parentDu);
+            }
+            else{
+
+                if(!parent.equalsIgnoreCase("null"))      {
+                    CollectionNode parentDu = MediciServiceImpl.relations.getDuAttrMap().get(ids.get(parent));
+                    parentDu.addSub(CollectionNode.SubType.Collection, ids.get(child.getTitle()));
+                    MediciServiceImpl.relations.getDuAttrMap().put(ids.get(parent),parentDu);
+                }
+                MediciServiceImpl.relations.getDuAttrMap().put(child.getId(), (CollectionNode)child);
+                createORE(child.getTitle());
+             }
+        }
+    }
+
     private static final String RESOURCE_MAP_SERIALIZATION_FORMAT = "RDF/XML";
 
 

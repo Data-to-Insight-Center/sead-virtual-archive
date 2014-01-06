@@ -56,6 +56,7 @@ public class OreGenerator {
     private static Predicate DC_TERMS_TYPE = null;
 
     private static Predicate CITO_DOCUMENTS = null;
+    private static String DEFAULT_URL_PREFIX = "http://";
 
     //Aggregation agg = null;
 
@@ -156,13 +157,16 @@ public class OreGenerator {
         CollectionNode node = duMap.get(id);
         //if(relation.getRootDuId().equals(id))
         if(parent.equals(id)){
+            String remId = DEFAULT_URL_PREFIX + URLEncoder.encode(node.getId());
+            if(mediciInstance!=null)
+                remId =  mediciInstance.getUrl()+"#collection?uri="+ URLEncoder.encode(node.getId());
             agg = OREFactory.createAggregation(new URI(
-            //        "http://my-aggregation-uri"
-                    mediciInstance.getUrl()+"#collection?uri="+ URLEncoder.encode(node.getId())+"_Aggregation"
+                remId  +"_Aggregation"
             ));
+
             rem = agg.createResourceMap(
                     new URI(
-                        mediciInstance.getUrl()+"#collection?uri="+ URLEncoder.encode(node.getId())
+                            remId
                     ));
             mainRem = rem;
 
@@ -182,11 +186,13 @@ public class OreGenerator {
                     bagPath+ guid + "_fgdc.xml");
             rem.addTriple(metadata);
 
-            Triple altId = new TripleJena();
-            altId.initialise(rem);
-            altId.relate(DC_TERMS_TYPE,
-                    mediciInstance.getType());
-            rem.addTriple(altId);
+            if(mediciInstance!=null){
+                Triple altId = new TripleJena();
+                altId.initialise(rem);
+                altId.relate(DC_TERMS_TYPE,
+                        mediciInstance.getType());
+                rem.addTriple(altId);
+            }
 
 
             Agent creator = OREFactory.createAgent();
@@ -194,7 +200,7 @@ public class OreGenerator {
 
 
             rem.addCreator(creator);
-
+                      Constants.bagDir = Constants.homeDir+"bag/";
             agg.addCreator(creator);
             agg.addTitle("Transit BagIt");
         }
@@ -205,19 +211,24 @@ public class OreGenerator {
 
         if(existingFiles.get(id)!=null)
             for(FileNode file:existingFiles.get(id)){
-                AggregatedResource dataResource = agg.createAggregatedResource(new URI(mediciInstance.getUrl()+"#dataset?uri="+URLEncoder.encode(file.getId())));
+                String uri = DEFAULT_URL_PREFIX + URLEncoder.encode(file.getId());
+                if(mediciInstance!=null)
+                    uri =  mediciInstance.getUrl()+"#dataset?uri="+URLEncoder.encode(file.getId());
+
+                AggregatedResource dataResource = agg.createAggregatedResource(new URI(uri));
 
                 Triple resourceMapIdentifier = new TripleJena();
                 resourceMapIdentifier.initialise(dataResource);
                 resourceMapIdentifier.relate(DC_TERMS_IDENTIFIER, file.getId());
                 rem.addTriple(resourceMapIdentifier);
 
-                Triple altId = new TripleJena();
-                altId.initialise(dataResource);
-                altId.relate(DC_TERMS_TYPE,
-                        mediciInstance.getType());
-                rem.addTriple(altId);
-
+                if(mediciInstance!=null){
+                    Triple altId = new TripleJena();
+                    altId.initialise(dataResource);
+                    altId.relate(DC_TERMS_TYPE,
+                            mediciInstance.getType());
+                    rem.addTriple(altId);
+                }
                 Triple resourceMapTitle = new TripleJena();
                 resourceMapTitle.initialise(dataResource);
                 resourceMapTitle.relate(DC_TERMS_TITLE, file.getTitle());
@@ -226,8 +237,9 @@ public class OreGenerator {
 
                 Triple source = new TripleJena();
                 source.initialise(dataResource);
-                source.relate(DC_TERMS_SOURCE, mediciInstance.getUrl()+ "/api/image/download/"+file.getId());
+                source.relate(DC_TERMS_SOURCE, file.getSource());
                 rem.addTriple(source);
+
 
                 agg.addAggregatedResource(dataResource);
 
@@ -239,8 +251,11 @@ public class OreGenerator {
                     agg.addAggregatedResource(dataResource);
                 }
 
+                if(dataPath==null)
+                    dataPath = "null";
 
-                fetch.write(mediciInstance.getUrl()+"/api/image/download/"+file.getId()+" "+file.getFileSize()+" "+dataPath+file.getTitle()+"\n");
+
+                fetch.write(file.getSource()+" "+file.getFileSize()+" "+dataPath+file.getTitle()+"\n");
                 manifest.write("0000000000000000000" + "  " +dataPath+file.getTitle()+"\n");
             }
 
@@ -277,12 +292,14 @@ public class OreGenerator {
 
                     FileWriter oreStream = new FileWriter(bagPath + guid + "_oaiore.xml");
 
+                    String uri = DEFAULT_URL_PREFIX + URLEncoder.encode(child);
+                    if(mediciInstance!=null)
+                        uri =  mediciInstance.getUrl()+"#collection?uri="+ URLEncoder.encode(child);
 
                     //Based on http://www.openarchives.org/ore/0.1/datamodel#nestedAggregations
                     AggregatedResource subAggResource = agg.createAggregatedResource(
                             new URI(
-                              //      "http://my-aggregation-uri"+"_"+i
-                                    mediciInstance.getUrl()+"#collection?uri="+ URLEncoder.encode(child)     //This URI should be resource map URI
+                                   uri
                             )
 
                     );
@@ -303,12 +320,15 @@ public class OreGenerator {
 
                     agg.addAggregatedResource(subAggResource);
 
+                    String remId =  DEFAULT_URL_PREFIX + URLEncoder.encode(child);
+                    if(mediciInstance!=null)
+                        remId = mediciInstance.getUrl()+"#collection?uri="+ URLEncoder.encode(child);
 
                     Aggregation newAgg = OREFactory.createAggregation(new URI(
-                            mediciInstance.getUrl()+"#collection?uri="+ URLEncoder.encode(child)+"_Aggregation"
+                            remId+"_Aggregation"
                     ));
                     ResourceMap newRem = newAgg.createResourceMap(new URI(
-                            mediciInstance.getUrl()+"#collection?uri="+ URLEncoder.encode(child)   //Resource Map
+                            remId
                     ));
                     Agent creator = OREFactory.createAgent();
                     creator.addName("SEAD_VA BagItService");
@@ -501,6 +521,8 @@ public class OreGenerator {
         }
 
     }
+
+
 
 }
 

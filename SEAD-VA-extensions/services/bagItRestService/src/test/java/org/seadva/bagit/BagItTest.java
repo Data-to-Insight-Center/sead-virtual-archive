@@ -19,7 +19,6 @@ package org.seadva.bagit;
 
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 import com.sun.jersey.multipart.FormDataMultiPart;
 import com.sun.jersey.multipart.file.FileDataBodyPart;
@@ -34,8 +33,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import java.io.*;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -47,7 +44,7 @@ public class BagItTest extends JerseyTest {
     }
 
     @Test
-    public void testGetBag() {
+    public void testGetACRBag() {
         WebResource webResource = resource();
 
         MultivaluedMap<String, String> params = new MultivaluedMapImpl();
@@ -64,6 +61,8 @@ public class BagItTest extends JerseyTest {
         assertEquals(200, response.getStatus());
     }
 
+
+
     @Test
     public void testRESTListACR() throws IOException {
         WebResource webResource = resource();
@@ -77,7 +76,6 @@ public class BagItTest extends JerseyTest {
         StringWriter writer = new StringWriter();
         IOUtils.copy(response.getEntityInputStream(),writer);
         String xml = writer.toString();
-//        System.out.println(xml);
 
         XStream xStream = new XStream();
         xStream.alias("ActiveWorkspaces",ActiveWorkspaces.class);
@@ -123,7 +121,22 @@ public class BagItTest extends JerseyTest {
     }
 
     @Test
-    public void testOREUtil(){
+    public void testOREUtil() {
+        WebResource webResource = resource();
+
+        File file = new File(getClass().getResource("org/seadva/bagit/no_ORE_bag.zip").getFile());
+        FileDataBodyPart fdp = new FileDataBodyPart("file", file,
+                MediaType.APPLICATION_OCTET_STREAM_TYPE);
+
+        FormDataMultiPart formDataMultiPart = new FormDataMultiPart();
+
+        formDataMultiPart.bodyPart(fdp);
+
+        ClientResponse response = webResource.path("bagUtil")
+                .path("OreBag")
+                .type(MediaType.MULTIPART_FORM_DATA)
+                .post(ClientResponse.class, formDataMultiPart);
+        assertEquals(200,response.getStatus());
 
     }
 

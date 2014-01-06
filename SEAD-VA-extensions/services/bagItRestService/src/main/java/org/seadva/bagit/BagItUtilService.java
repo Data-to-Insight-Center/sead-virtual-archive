@@ -16,196 +16,115 @@
 
 package org.seadva.bagit;
 
-import com.thoughtworks.xstream.XStream;
+import com.sun.jersey.core.header.FormDataContentDisposition;
+import com.sun.jersey.multipart.FormDataParam;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.dspace.foresite.OREException;
 import org.sead.acr.common.utilities.json.JSONException;
-import org.seadva.bagit.model.ActiveWorkspace;
-import org.seadva.bagit.model.ActiveWorkspaces;
+import org.seadva.bagit.model.MediciInstance;
+import org.seadva.bagit.util.AcrBagItConverter;
 import org.seadva.bagit.util.Constants;
 import org.seadva.bagit.util.ZipUtil;
 import org.seadva.model.builder.xstream.SeadXstreamStaxModelBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 import java.io.*;
 import java.net.URISyntaxException;
 
 /**
- * BagIt service interface
+ * BagIt Utility service interface
  */
 
-@Path("/acrToBag")
+@Path("/bagUtil")
 public class BagItUtilService {
-
-
 
     public BagItUtilService() {}
 
+    @Context
+    ServletContext context;
 
-        private static final Logger log =
-            LoggerFactory.getLogger(BagItUtilService.class);
-
-
-        //ToDo: some time stamp based caching
-        @Context
-        ServletContext context;
-
-        @GET
-        @Path("/bag/{collectionId}")
-        @Produces("application/zip")
-        public Response getBag(@Context HttpServletRequest request,
-                                 @Context UriInfo uri,
-                                 @PathParam("collectionId") String collectionId,
-                                 @QueryParam("sparqlEpEnum") int sparqlEndpoint
-        ) throws IOException, OREException, URISyntaxException, JSONException
-
-        {
-
-        String test ="<error name=\"NotFound\" errorCode=\"404\" detailCode=\"1020\" pid=\""+collectionId+"\" nodeId=\"SEAD ACR\">\n" +
-                "<description>The specified object does not exist on this node.</description>\n" +
-                "<traceInformation>\n" +
-                "method: AcrToBagItService.getObject \n" +
-                "</traceInformation>\n" +
-                "</error>";
-
-         if(Constants.homeDir==null){
-             StringWriter writer = new StringWriter();
-             IOUtils.copy(new FileInputStream(
-                     context.getRealPath("WEB-INF/Config.properties")
-             ), writer);
-             String result = writer.toString();
-             String[] pairs = result.trim().split(
-                     "\\w*\n|\\=\\w*");
-
-
-             for (int i = 0; i + 1 < pairs.length;) {
-                 String name = pairs[i++].trim();
-                 String value = pairs[i++].trim();
-                 if (name.equals("bagit.home")) {
-                     Constants.homeDir = value;
-                     Constants.bagDir = Constants.homeDir+"bag/";
-                     Constants.unzipDir = Constants.homeDir+"bag/"+"unzip/";
-                 }
-             }
-         }
-
-        AcrBagItConverter acrBagItConverter = new AcrBagItConverter();
-         MediciInstance instance = null;
-         for(MediciInstance t_instance: Constants.acrInstances)
-             if(t_instance.getId()==sparqlEndpoint)
-                 instance = t_instance;
-        String zippedBag = acrBagItConverter.convertRdfToBagit(collectionId,instance);
-
-        if(zippedBag==null)
-            throw new NotFoundException(test);
-
-        String[] filename = zippedBag.split("/");
-
-        Response.ResponseBuilder responseBuilder = Response.ok(new FileInputStream(zippedBag));
-
-        responseBuilder.header("Content-Type", "application/zip");
-        responseBuilder.header("Content-Disposition",
-                         "inline; filename=" + filename[filename.length-1]);
-        return responseBuilder.build();
-        }
-
-
-
-    @GET
-    @Path("/listACR")
-    @Produces(MediaType.APPLICATION_XML)
-    public String viewACR(){
-        ActiveWorkspaces workspaces = new ActiveWorkspaces();
-        for(MediciInstance instance:Constants.acrInstances){
-            ActiveWorkspace workspace = new ActiveWorkspace();
-            workspace.setName(instance.getTitle());
-            workspace.setId(instance.getId());
-            workspaces.addActiveWorkspace(workspace);
-        }
-
-        XStream xStream = new XStream();
-        xStream.alias("ActiveWorkspaces",ActiveWorkspaces.class);
-        xStream.alias("ActiveWorkspace",ActiveWorkspace.class);
-        return xStream.toXML(workspaces);
-    }
-
-    @GET
-    @Path("/sip/{collectionId}")
-    @Produces("application/zip")
-    public Response getSIP(@Context HttpServletRequest request,
-                           @Context UriInfo uri,
-//                           @FormDataParam("file") InputStream uploadedInputStream,
-//                           @FormDataParam("file") FormDataContentDisposition fileDetail,
-                           @PathParam("collectionId") String collectionId,
-                           @QueryParam("sparqlEpEnum") int sparqlEndpoint
+    @POST
+    @Path("/OreBag")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response getORE(
+            @FormDataParam("file") InputStream uploadedInputStream,
+            @FormDataParam("file") FormDataContentDisposition fileDetail
     ) throws IOException, OREException, URISyntaxException
 
     {
-        String guid;
-        if(collectionId.contains("/"))
-            guid = collectionId.split("/")[collectionId.split("/").length-1];
-        else
-            guid = collectionId.split(":")[collectionId.split(":").length-1];
+        if(!fileDetail.getFileName().endsWith(".zip"))
+            return Response
+                    .status(Response.Status.NOT_ACCEPTABLE)
+                    .header("SEAD-Exception-Name", "Not accepted")
+                    .entity("Please upload a zipped SEAD BagIt file.")
+                    .type(MediaType.APPLICATION_XML)
+                    .build();
 
-        Constants.sipDir = Constants.homeDir+"/"+"sip";
-        String zippedBag = Constants.sipDir+"/"+guid+".zip";
-        String unzipDir = Constants.sipDir+"/"+guid+"/";
+        if(Constants.homeDir==null){
+            StringWriter writer = new StringWriter();
+            IOUtils.copy(new FileInputStream(
+                    context.getRealPath("/WEB-INF/Config.properties")
+            ), writer);
+            String result = writer.toString();
+            String[] pairs = result.trim().split(
+                    "\\w*\n|\\=\\w*");
+
+
+            for (int i = 0; i + 1 < pairs.length;) {
+                String name = pairs[i++].trim();
+                String value = pairs[i++].trim();
+                if (name.equals("bagit.home")) {
+                    Constants.homeDir = value;
+                }
+            }
+        }
+
+        Constants.unzipDir = Constants.homeDir+"/"+"unzip";
+        String zippedBag = Constants.unzipDir+"/"+fileDetail.getFileName();
+        String unzipDir = Constants.unzipDir+"/"+
+                fileDetail.getFileName().replace(".zip","")+"/";
 
         String sipPath;
         try {
-            if(!(new File(Constants.sipDir).exists()))
-                (new File(Constants.sipDir)).mkdirs();
             if(!(new File(unzipDir).exists()))
                 (new File(unzipDir)).mkdirs();
 
-//            writeToFile(uploadedInputStream,zippedBag);
+            writeToFile(uploadedInputStream,zippedBag);
 
             ZipUtil.unzip(zippedBag, unzipDir);
 
-            MediciInstance instance = null;
-            for(MediciInstance t_instance:Constants.acrInstances)
-                if(t_instance.getId()==sparqlEndpoint)
-                    instance = t_instance;
 
-            OreGenerator oreGenerator = new OreGenerator();
-            oreGenerator.fromOAIORE(collectionId, null, unzipDir, instance);
+            AcrBagItConverter acrBagItConverter = new AcrBagItConverter();
+            String finalZippedBag = acrBagItConverter.convertFecthToORE(new File(unzipDir+"fetch.txt"));
 
-            sipPath = Constants.sipDir+"/"+guid+"_sip.xml";
-            File sipFile = new File(sipPath);
+            if(zippedBag==null)
+                throw new NotFoundException("Failed to create a zipped BagIt Bag. Please ensure the basic bag you uploaded is valid.");
 
-            OutputStream out = FileUtils.openOutputStream(sipFile);
-            new SeadXstreamStaxModelBuilder().buildSip(oreGenerator.sip, out);
-            out.close();
+            String[] filename = finalZippedBag.split("/");
 
-        } catch (IOException e) {
-            throw e;
-        } catch (URISyntaxException e) {
-            throw e;
-        } catch (OREException e) {
-            throw e;
+            Response.ResponseBuilder responseBuilder = Response.ok(new FileInputStream(finalZippedBag));
+
+            responseBuilder.header("Content-Type", "application/zip");
+            responseBuilder.header("Content-Disposition",
+                    "inline; filename=" + filename[filename.length-1]);
+            return responseBuilder.build();
         }
-        Response.ResponseBuilder responseBuilder = Response.ok(new FileInputStream(sipPath));
-
-        responseBuilder.header("Content-Disposition",
-                "inline; filename=" + sipPath);
-        return responseBuilder.build();
+        catch (JSONException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        return null;
     }
 
     private void writeToFile(InputStream uploadedInputStream,
                              String uploadedFileLocation) {
 
         try {
-            OutputStream out = new FileOutputStream(new File(
-                    uploadedFileLocation));
+            OutputStream out;
             int read = 0;
             byte[] bytes = new byte[1024];
 
@@ -221,6 +140,4 @@ public class BagItUtilService {
         }
 
     }
-
-
 }

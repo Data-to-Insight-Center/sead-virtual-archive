@@ -20,27 +20,32 @@ package org.seadva.bagit.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileNode {
+public class FileNode implements Node{
 
     private String title;
     private String id;
     private long fileSize;
     private List<String> formats = new ArrayList<String>();
+    private String source;
 
 
     public FileNode(){
 
     }
 
+    @Override
     public String getId(){
         return this.id;
     }
+    @Override
     public void setId(String id){
         this.id = id;
     }
+    @Override
     public String getTitle(){
         return this.title;
     }
+    @Override
     public void setTitle(String title){
         this.title = title;
     }
@@ -74,5 +79,13 @@ public class FileNode {
 
     public void setFileSize(long fileSize) {
         this.fileSize = fileSize;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
     }
 }

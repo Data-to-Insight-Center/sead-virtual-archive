@@ -93,6 +93,7 @@ public class MediciServiceImpl {
         try {
             jsonObject = new JSONObject(json);
 
+
             JSONObject resultObject = jsonObject.getJSONObject("sparql")
                     .getJSONObject("results");
 
@@ -106,6 +107,7 @@ public class MediciServiceImpl {
 
             }
         }catch (JSONException e) {
+            System.out.println(json);
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -135,7 +137,12 @@ public class MediciServiceImpl {
                     String key = (String)binding.get("name");
                     if(key.equalsIgnoreCase(attribute))
                     {
-                        title = (String)binding.get("literal");
+                        if(binding.get("literal") instanceof String)
+                            title = (String)binding.get("literal");
+                        else{
+                            JSONObject temp = (JSONObject)binding.get("literal");
+                            title = temp.get("content").toString();
+                        }
                         result.add(title);
                     }
                 }
@@ -270,11 +277,10 @@ public class MediciServiceImpl {
 
             json = util.getJsonResponse(mediciInstance, Query.FileSize.getTitle(), tagId);
             fileNode.setFileSize(Integer.parseInt(parseJsonAttribute(json,"size").get(0)));
+            fileNode.setSource(mediciInstance.getUrl()+ "/api/image/download/"+tagId);
 
             relations.getFileAttrMap().put(tagId,fileNode);
         }
-
-
 
     }
 

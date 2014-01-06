@@ -20,7 +20,7 @@ import java.lang.Object;
 import java.util.*;
 
 
-public class CollectionNode {
+public class CollectionNode implements Node{
 
 	public enum SubType {
 	    Collection,File 
@@ -43,16 +43,20 @@ public class CollectionNode {
 		creators = new HashSet<Creator>();
 		sub = new HashMap<SubType,List<String>>();
 	}
-    
+
+    @Override
     public String getId(){
 	   return this.id;
     }
+    @Override
     public void setId(String id){
  	   this.id = id;
      }
+    @Override
     public String getTitle(){
  	   return this.title;
      }
+    @Override
     public void setTitle(String title){
  	   this.title = title;
      }
