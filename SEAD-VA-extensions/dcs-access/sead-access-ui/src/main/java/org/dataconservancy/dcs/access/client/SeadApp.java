@@ -230,7 +230,7 @@ public class SeadApp implements EntryPoint {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				Window.open("http://vivo-vis-test.slis.indiana.edu/vivo/", "_blank", "");
+				Window.open("http://sead-vivo.d2i.indiana.edu:8080/sead-vivo/", "_blank", "");
 			}
 		});
 		
