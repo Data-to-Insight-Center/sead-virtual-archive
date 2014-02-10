@@ -633,26 +633,26 @@ method call. Invoking thread continues once task is completed. -->
         <property name="password" value="${dcs.idservice.hibernate.password}" />
     </bean>
 
+    <bean id="customAuthenticationProvider"
+          class="org.seadva.access.security.CustomAuthenticationProvider">
+        <property name="dbUrl" value="${userdb.url}"/>
+    </bean>
+    <bean id="authTokenFilter" class="org.seadva.access.security.model.AuthenticationTokenFilter" scope="singleton" />
+
+     <bean id="userpwdAuthenticationProvider" class="org.seadva.access.security.FormAuthenticationProvider">
+        <property name="dbUrl" value="${userdb.url}"/>
+    </bean>
+
     <security:http auto-config='true'>
         <security:intercept-url pattern="/deposit/*" access="ROLE_admin" />
-        <security:http-basic />
+        <security:custom-filter ref="authTokenFilter"  before="BASIC_AUTH_FILTER" />
+        <security:http-basic/>
     </security:http>
 
     <security:authentication-manager>
-        <security:authentication-provider>
-            <security:password-encoder hash="md5" />
-            <security:jdbc-user-service data-source-ref="myDataSource"
-                                        users-by-username-query="select EMAILADDRESS, PASSWORD, ROLE from users where EMAILADDRESS = ?"
-                                        authorities-by-username-query="select EMAILADDRESS, ROLE from users where EMAILADDRESS = ?"
-                                        role-prefix="ROLE_"
-                    />
-        </security:authentication-provider>
+        <security:authentication-provider ref="customAuthenticationProvider"/>
+        <security:authentication-provider ref="userpwdAuthenticationProvider"/>
     </security:authentication-manager>
 
-
-    <bean id="myDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-        <property name="driverClassName" value="org.apache.derby.jdbc.EmbeddedDriver"/>
-        <property name="url" value="jdbc:derby:/tmp/database"/>
-    </bean>
 
 </beans>

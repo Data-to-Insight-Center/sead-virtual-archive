@@ -19,9 +19,11 @@ package org.dataconservancy.dcs.integration.main;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.auth.AuthScope;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.FileEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.dataconservancy.dcs.util.HttpHeaderUtil;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -33,6 +35,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Date;
 import java.util.Properties;
+
+import org.seadva.access.security.model.UsernamePasswordCredentials;
 
 import static org.dataconservancy.dcs.integration.support.Interpolator.interpolate;
 import static org.junit.Assert.assertEquals;
@@ -50,8 +54,8 @@ public class IngestTest {
 
     private final String baseUrl = interpolate(new StringBuilder("${dcs.baseurl}/"), 0, props).toString();
 
-    private final String sipPostUrl = baseUrl + "deposit/sip";
-    private static HttpClient client;
+    private String sipPostUrl = baseUrl + "deposit/sip";
+    private static DefaultHttpClient client;
     private final static Properties props = new Properties();
 
     @BeforeClass
@@ -60,7 +64,7 @@ public class IngestTest {
                 new ClassPathXmlApplicationContext(new String[] {
                         "depositClientContext.xml", "classpath*:org/dataconservancy/config/applicationContext.xml"});
 
-        client = (HttpClient) appContext.getBean("httpClient");
+        client = new DefaultHttpClient();//HttpClient) appContext.getBean("httpClient");
         final URL defaultProps = IngestTest.class.getResource("/default.properties");
         assertNotNull("Could not resolve /default.properties from the classpath.", defaultProps);
         assertTrue("default.properties does not exist.", new File(defaultProps.getPath()).exists());
@@ -68,8 +72,21 @@ public class IngestTest {
     }
 
     @Test
-    public void sipleIngest() throws Exception {
-       int code = doDeposit(new File(IngestTest.class.getResource("/" + "sampleSip.xml").getPath()));
+    public void sipIngest_db_authentication() throws Exception {
+        client.getCredentialsProvider().setCredentials(
+                new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT),
+                new UsernamePasswordCredentials(
+                        "you-email@gmail.com","password"
+                ));
+        int code = doDeposit(new File(IngestTest.class.getResource("/" + "sampleSip.xml").getPath()));
+        assertEquals(code, 202);
+    }
+
+    @Test
+    public void sipIngest_oauth_authentication() throws Exception {
+        //generate OAuth token from Util below
+        sipPostUrl+="?oauth_token="+"ya29.1.AADtN_V_0qtTKE3pPI5nFamy-sa4XbKdvvp6PiPE202Icab3aS3S32HlveaMivX8zw";
+        int code = doDeposit(new File(IngestTest.class.getResource("/" + "sampleSip.xml").getPath()));
         assertEquals(code,202);
     }
 
