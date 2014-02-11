@@ -487,6 +487,12 @@
       <groupId>org.dataconservancy.index</groupId>
       <artifactId>dcs-index-dcp-solr</artifactId>
       <version>1.1.1-SNAPSHOT</version>
+           <exclusions>
+               <exclusion>
+                   <groupId>javax.servlet</groupId>
+                   <artifactId>servlet-api</artifactId>
+               </exclusion>
+           </exclusions>
     </dependency>
 
 
@@ -583,6 +589,12 @@
           <groupId>org.apache.axis2</groupId>
           <artifactId>axis2-kernel</artifactId>
           <version>1.6.2</version>
+          <exclusions>
+              <exclusion>
+                  <groupId>javax.servlet</groupId>
+                  <artifactId>servlet-api</artifactId>
+              </exclusion>
+          </exclusions>
       </dependency>
       <dependency>
           <groupId>org.apache.axis2</groupId>
@@ -630,5 +642,15 @@
           <version>1.2.13</version>
       </dependency>
 
+      <dependency>
+          <groupId>commons-codec</groupId>
+          <artifactId>commons-codec</artifactId>
+          <version>1.4</version>
+      </dependency>
+      <dependency>
+          <groupId>org.dataconservancy.access</groupId>
+          <artifactId>sead-security</artifactId>
+          <version>1.1.0-SNAPSHOT</version>
+      </dependency>
   </dependencies>
 </project>
