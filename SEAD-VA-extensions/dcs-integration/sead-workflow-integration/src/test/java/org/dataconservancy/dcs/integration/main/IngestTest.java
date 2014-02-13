@@ -20,13 +20,19 @@ import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.NTCredentials;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.FileEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
 import org.dataconservancy.dcs.util.HttpHeaderUtil;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.seadva.access.security.model.AuthType;
+import org.seadva.access.security.model.SeadCredentials;
+import org.seadva.access.security.model.UsernamePasswordCredentials;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.File;
@@ -36,19 +42,13 @@ import java.net.URL;
 import java.util.Date;
 import java.util.Properties;
 
-import org.seadva.access.security.model.UsernamePasswordCredentials;
-
 import static org.dataconservancy.dcs.integration.support.Interpolator.interpolate;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Created with IntelliJ IDEA.
- * User: kavchand
- * Date: 12/27/13
- * Time: 1:05 PM
- * To change this template use File | Settings | File Templates.
+ * Test case of SIP ingest
  */
 public class IngestTest {
 
@@ -60,11 +60,13 @@ public class IngestTest {
 
     @BeforeClass
     public static void init() throws IOException {
-        ClassPathXmlApplicationContext appContext =
+       /* ClassPathXmlApplicationContext appContext =
                 new ClassPathXmlApplicationContext(new String[] {
-                        "depositClientContext.xml", "classpath*:org/dataconservancy/config/applicationContext.xml"});
+                        "depositClientContext.xml", "classpath*:org/dataconservancy/config/applicationContext.xml"});*/
 
-        client = new DefaultHttpClient();//HttpClient) appContext.getBean("httpClient");
+
+        client = new DefaultHttpClient();//(DefaultHttpClient) appContext.getBean("httpClient");
+
         final URL defaultProps = IngestTest.class.getResource("/default.properties");
         assertNotNull("Could not resolve /default.properties from the classpath.", defaultProps);
         assertTrue("default.properties does not exist.", new File(defaultProps.getPath()).exists());
@@ -76,19 +78,21 @@ public class IngestTest {
         client.getCredentialsProvider().setCredentials(
                 new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT),
                 new UsernamePasswordCredentials(
-                        "you-email@gmail.com","password"
+                        "seadva@gmail.com","password"
                 ));
         int code = doDeposit(new File(IngestTest.class.getResource("/" + "sampleSip.xml").getPath()));
-        assertEquals(code, 202);
+        assertEquals(code,202);
     }
 
     @Test
     public void sipIngest_oauth_authentication() throws Exception {
         //generate OAuth token from Util below
-        sipPostUrl+="?oauth_token="+"ya29.1.AADtN_V_0qtTKE3pPI5nFamy-sa4XbKdvvp6PiPE202Icab3aS3S32HlveaMivX8zw";
+        sipPostUrl+="?oauth_token="+"ya29.1.AADtN_WGcJREOIxNzHjVID7tG5ccjcITXc2HFzChw2OOBJ5SDXGTz7DdLGcfEmHcA9sr1A";
         int code = doDeposit(new File(IngestTest.class.getResource("/" + "sampleSip.xml").getPath()));
         assertEquals(code,202);
     }
+    //https://accounts.google.com/o/oauth2/auth?scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&state=%2Fprofile&redirect_uri=http://localhost:8080/sead-access/&response_type=token&client_id=343397275658-72p8a7jemrm0rdkgci440dfnnse4g0f7.apps.googleusercontent.com
+
 
     private int doDeposit(File file) throws Exception {
 
@@ -113,5 +117,4 @@ public class IngestTest {
         }
         return code;
     }
-
 }

@@ -639,7 +639,7 @@ method call. Invoking thread continues once task is completed. -->
     </bean>
     <bean id="authTokenFilter" class="org.seadva.access.security.model.AuthenticationTokenFilter" scope="singleton" />
 
-     <bean id="userpwdAuthenticationProvider" class="org.seadva.access.security.FormAuthenticationProvider">
+    <bean id="userpwdAuthenticationProvider" class="org.seadva.access.security.FormAuthenticationProvider">
         <property name="dbUrl" value="${userdb.url}"/>
     </bean>
 
