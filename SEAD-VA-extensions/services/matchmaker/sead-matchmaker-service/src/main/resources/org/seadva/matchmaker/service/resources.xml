@@ -15,6 +15,35 @@
   -->
 
 <resources>
+
+    <resource>
+        <characteristics>
+            <name>IU SDA</name>
+            <id>5</id>
+            <url>https://www.sdarchive.iu.edu/</url>
+            <type>cloud</type>
+            <gentype>repo</gentype>
+            <dataCollectionSize>200000</dataCollectionSize>
+        </characteristics>
+
+        <requirements>
+            <rule>
+                <subject>license</subject>
+                <predicate>equals</predicate>
+                <object>CC</object>
+            </rule>
+        </requirements>
+
+        <preferences>
+            <rule>
+                <subject>affiliation</subject>
+                <predicate>equals</predicate>
+                <object>Indiana University</object>
+            </rule>
+
+        </preferences>
+    </resource>
+
     <resource>
         <characteristics>
             <name>IU Scholarworks</name>

@@ -62,17 +62,13 @@ public class ResourceAgent implements Agent {
 
     @Override
     public void loadAds() {
-        //uses pull parser
-        String filePath = getClass().getResource("resources.xml").getPath();
 
         try{
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
             factory.setNamespaceAware(true);
             XmlPullParser xpp = factory.newPullParser();
 
-            String xml = readFile(filePath);
-
-            xpp.setInput ( new StringReader(xml) );
+            xpp.setInput ( ResourceAgent.class.getResourceAsStream("resources.xml"),null);
             int eventType = xpp.getEventType();
             int charac=0;
            // int req =0;
