@@ -20,32 +20,22 @@ import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.NTCredentials;
-import org.apache.http.client.HttpClient;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.FileEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
 import org.dataconservancy.dcs.util.HttpHeaderUtil;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.seadva.access.security.model.AuthType;
-import org.seadva.access.security.model.SeadCredentials;
-import org.seadva.access.security.model.UsernamePasswordCredentials;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Date;
 import java.util.Properties;
 
 import static org.dataconservancy.dcs.integration.support.Interpolator.interpolate;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Test case of SIP ingest
