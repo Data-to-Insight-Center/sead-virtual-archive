@@ -383,8 +383,8 @@
         <property name="executor" ref="${ingest.bootstrap.executor}" />
         <property name="ingestServices">
             <list>
-                <ref
-          bean="org.dataconservancy.dcs.ingest.services.DoiCreationService" />
+                <!--ref
+          bean="org.dataconservancy.dcs.ingest.services.DoiCreationService" /-->
                 <!--ref
           bean="org.dataconservancy.dcs.ingest.services.DataOneIdService" /-->
                 <!--ref bean="org.dataconservancy.dcs.ingest.services.MetadataGenerator" /-->
@@ -416,7 +416,7 @@
           bean="org.dataconservancy.dcs.ingest.services.DoiUpdationService" />
                 <ref bean="org.dataconservancy.dcs.ingest.services.BasicFeatureExtraction.AFTER" />
                 <ref bean="org.dataconservancy.dcs.ingest.services.Finisher" />
-                <ref bean="org.dataconservancy.dcs.ingest.services.Cleanup" />
+                <!--ref bean="org.dataconservancy.dcs.ingest.services.Cleanup" /-->
             </list>
         </property>
     </bean>
