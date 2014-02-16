@@ -31,7 +31,10 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
 
 import static org.dataconservancy.dcs.integration.support.Interpolator.interpolate;
@@ -68,10 +71,33 @@ public class IngestTest {
         client.getCredentialsProvider().setCredentials(
                 new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT),
                 new UsernamePasswordCredentials(
-                        "seadva@gmail.com","password"
+                        "seadva@gmail.com",hashPassword("password")
                 ));
         int code = doDeposit(new File(IngestTest.class.getResource("/" + "sampleSip.xml").getPath()));
         assertEquals(code,202);
+    }
+
+    public String hashPassword(String password)
+    {
+        String hashword = null;
+        try {
+            MessageDigest md5 = MessageDigest.getInstance("MD5");
+            md5.update(password.getBytes());
+            BigInteger hash = new BigInteger(1, md5.digest());
+            hashword = hash.toString(16);
+        }
+        catch (NoSuchAlgorithmException localNoSuchAlgorithmException)
+        {
+        }
+        return pad(hashword, 32, '0');
+    }
+
+    private String pad(String s, int length, char pad) {
+        StringBuffer buffer = new StringBuffer(s);
+        while (buffer.length() < length) {
+            buffer.insert(0, pad);
+        }
+        return buffer.toString();
     }
 
     @Test
