@@ -51,7 +51,7 @@ public class UserServiceImpl
     {
       if (person.getRegistrationStatus() == RegistrationStatus.APPROVED)
       {
-        if (person.getPassword().equals(hashPassword(pass)))
+        if (person.getPassword().equals(pass))
         {
           authentication = new Authentication(true);
           return authentication;
@@ -90,52 +90,6 @@ public class UserServiceImpl
     }
   }
 
-
-
-  public String hashPassword(String password)
-  {
-    String hashword = null;
-    try {
-      MessageDigest md5 = MessageDigest.getInstance("MD5");
-      md5.update(password.getBytes());
-      BigInteger hash = new BigInteger(1, md5.digest());
-      hashword = hash.toString(16);
-    }
-    catch (NoSuchAlgorithmException localNoSuchAlgorithmException)
-    {
-    }
-    return pad(hashword, 32, '0');
-  }
-
-  private String pad(String s, int length, char pad) {
-    StringBuffer buffer = new StringBuffer(s);
-    while (buffer.length() < length) { 
-      buffer.insert(0, pad);
-    }
-    return buffer.toString();
-  }
-
-
-  public String getInfo(String apiUrl) {
-     URL url;
-     HttpURLConnection conn;
-     BufferedReader rd;
-     String line;
-     String result = "";
-     try {
-        url = new URL(apiUrl);
-        conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
-        rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-        while ((line = rd.readLine()) != null) {
-           result += line;
-        }
-        rd.close();
-     } catch (Exception e) {
-        e.printStackTrace();
-     }
-     return result;
-  }
 
 @Override
 public Authentication authenticateOAuth(String token, OAuthType type, String[] admins) {
