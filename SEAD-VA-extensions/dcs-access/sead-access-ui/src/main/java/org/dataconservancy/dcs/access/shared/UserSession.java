@@ -25,6 +25,7 @@ public class UserSession
 	private Role role;
 	private String fName;
 	private String lName;
+	private String sessionType;
 	private boolean session;
 	public String getEmail() {
 		return email;
@@ -55,6 +56,12 @@ public class UserSession
 	}
 	public void setlName(String lName) {
 		this.lName = lName;
+	}
+	public String getSessionType() {
+		return sessionType;
+	}
+	public void setSessionType(String sessionType) {
+		this.sessionType = sessionType;
 	}
 	
 	

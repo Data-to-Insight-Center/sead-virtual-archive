@@ -558,13 +558,27 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
 		(new DepositServiceImpl()).loadDuIds(previousUrls);
 
 		String submitterId = (String)getThreadLocalRequest().getSession().getAttribute("email");
+		String sessionType = (String)getThreadLocalRequest().getSession().getAttribute("sessionType");
+		String passwordToken  = (String)getThreadLocalRequest().getSession().getAttribute("password");
+		/*if(sessionType.equalsIgnoreCase("database")){
+			
+		}
+		else{
+//			passwordToken = "";//token
+			submitterId = "seadva@gmail.com";
+			passwordToken = new UserServiceImpl().hashPassword("password");
+		}*/
+		
 		int i = 0;
 		
 		if(datasetId==null){
 			String[] arr = sipBasePath.split("_sip")[0].split("/");
 			datasetId = "tag:cet.ncsa.uiuc.edu,2008:/bean/Collection/"+arr[arr.length-1];
 		}
-		String datasetTitle = getDuTitle(datasetId, appBaseUrl, acrUser, sparqlEndpoint);
+		String datasetTitle = datasetId;
+		
+		if(sparqlEndpoint!=null)
+			datasetTitle = getDuTitle(datasetId, appBaseUrl, acrUser, sparqlEndpoint);
 		
 		SimpleDateFormat ft = 
 			      new SimpleDateFormat ("yyyy-MM-dd");
@@ -585,8 +599,8 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
 					HashMap<String,HashMap<String,String>> resultMap
 					= submitSIPFile(sipEndpoint,
 								sipBasePath + "_" + startSipNum + ".xml",
-								"",
-								"", 
+								"seadva@gmail.com",
+								new UserServiceImpl().hashPassword("password"), 
 								false//restrict access
 								);
 					totalNumOfFiles = Integer.parseInt(resultMap.entrySet().iterator().next().getKey());	

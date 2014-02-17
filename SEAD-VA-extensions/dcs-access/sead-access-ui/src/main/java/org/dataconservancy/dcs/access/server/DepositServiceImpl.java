@@ -102,12 +102,16 @@ public class DepositServiceImpl
 
         AbderaClient.registerTrustManager(); // needed for SSL
         AbderaClient.registerScheme(AuthPolicy.BASIC, BasicScheme.class);
+        
         client.setAuthenticationSchemePriority(AuthPolicy.BASIC);
+        
+        
         client.usePreemptiveAuthentication(false);
         client.addCredentials(endpoint,
                               null,
                               "basic",
                               new UsernamePasswordCredentials(user, pass));
+        //set credentials (for database & google oauth authentication)
               return client;
         
     }
@@ -153,8 +157,7 @@ public class DepositServiceImpl
             if (status == 200 || status == 201 || status == 202) {
                 return result.toString();
             } else {
-            	// System.out.println(result.toString());
-                throw new RPCException("Package deposit failed: " + result);
+            	throw new RPCException("Package deposit failed: " + result);
             }
         } catch (IOException e) {
             throw new RPCException(e.getMessage());

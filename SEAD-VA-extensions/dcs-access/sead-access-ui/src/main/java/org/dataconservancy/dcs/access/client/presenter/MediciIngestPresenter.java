@@ -32,6 +32,8 @@ import org.dataconservancy.dcs.access.client.api.LogService;
 import org.dataconservancy.dcs.access.client.api.LogServiceAsync;
 import org.dataconservancy.dcs.access.client.api.MediciService;
 import org.dataconservancy.dcs.access.client.api.MediciServiceAsync;
+import org.dataconservancy.dcs.access.client.api.UserService;
+import org.dataconservancy.dcs.access.client.api.UserServiceAsync;
 import org.dataconservancy.dcs.access.client.event.CollectionClickEvent;
 import org.dataconservancy.dcs.access.client.event.CollectionPassiveSelectEvent;
 import org.dataconservancy.dcs.access.client.event.CollectionSelectEvent;
@@ -458,38 +460,57 @@ public class MediciIngestPresenter  implements Presenter {
 																																						mediciService.generateWfInstanceId(new AsyncCallback<String>() {
 																																							
 																																							@Override
-																																							public void onSuccess(String wfInstanceId) {
-																																								mediciService.submitMultipleSips(SeadApp.deposit_endpoint + "sip",
-																																										(String) pair.getKey(),
-																																										sparqlEndpoint,
-																																										SeadApp.tmpHome+guid+"_sip", 
-																																										wfInstanceId,
-																																										null,
-																																										l, n, "", "", false, GWT.getModuleBaseURL(),SeadApp.tmpHome, SeadApp.acrUsername,
-																																										new AsyncCallback<String>() {
-																																											
-																																											@Override
-																																											public void onSuccess(final String result) {
-																																												l=-1;
-																																												final Label notify = Util.label("!", "Notification");
-																																												notify.addClickHandler(new ClickHandler() {
+																																							public void onSuccess(final String wfInstanceId) {
+																																								UserServiceAsync user =
+																																							            GWT.create(UserService.class);
+																																								user.checkSession(null,new AsyncCallback<UserSession>() {
+
+																																									@Override
+																																									public void onFailure(
+																																											Throwable caught) {
+																																										// TODO Auto-generated method stub
+																																										
+																																									}
+
+																																									@Override
+																																									public void onSuccess(
+																																											UserSession result) {
+
+																																										mediciService.submitMultipleSips(SeadApp.deposit_endpoint + "sip",
+																																												(String) pair.getKey(),
+																																												sparqlEndpoint,
+																																												SeadApp.tmpHome+guid+"_sip", 
+																																												wfInstanceId,
+																																												null,
+																																												l, n, "", "", false, GWT.getModuleBaseURL(),SeadApp.tmpHome, SeadApp.acrUsername,
+																																												new AsyncCallback<String>() {
 																																													
 																																													@Override
-																																													public void onClick(ClickEvent event) {
-																																														StatusPopupPanel mediciWait = new StatusPopupPanel("Retrieving","done",false);
-																																														MessagePopupPanel popUpPanel = new MessagePopupPanel(result, "done", true);
-																																														popUpPanel.show();
-																																														nPanel.remove(notify);
+																																													public void onSuccess(final String result) {
+																																														l=-1;
+																																														final Label notify = Util.label("!", "Notification");
+																																														notify.addClickHandler(new ClickHandler() {
+																																															
+																																															@Override
+																																															public void onClick(ClickEvent event) {
+																																																StatusPopupPanel mediciWait = new StatusPopupPanel("Retrieving","done",false);
+																																																MessagePopupPanel popUpPanel = new MessagePopupPanel(result, "done", true);
+																																																popUpPanel.show();
+																																																nPanel.remove(notify);
+																																															}
+																																														});
+																																														nPanel.add(notify);
+																																													}
+																																													
+																																													@Override
+																																													public void onFailure(Throwable caught) {
+																																														Window.alert("Workflow failed.");
 																																													}
 																																												});
-																																												nPanel.add(notify);
-																																											}
-																																											
-																																											@Override
-																																											public void onFailure(Throwable caught) {
-																																												Window.alert("Workflow failed.");
-																																											}
-																																										});
+																																									
+																																									}
+																																									
+																																								});
 																																							}
 
 																																							@Override

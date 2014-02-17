@@ -18,7 +18,12 @@
     <servlet-name>fileUploadServlet</servlet-name>
     <servlet-class>org.dataconservancy.dcs.access.server.FileUploadServlet</servlet-class>
   </servlet>
-    <servlet>
+  
+  <servlet>
+    <servlet-name>bagUploadServlet</servlet-name>
+    <servlet-class>org.dataconservancy.dcs.access.server.BagUploadServlet</servlet-class>
+  </servlet>
+   <servlet>
     <servlet-name>dbServlet</servlet-name>
     <servlet-class>org.dataconservancy.dcs.access.server.DbQueryImpl</servlet-class>
   </servlet>
@@ -69,6 +74,10 @@
   <servlet-mapping>
     <servlet-name>fileUploadServlet</servlet-name>
     <url-pattern>/sead_access/fileupload</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>bagUploadServlet</servlet-name>
+    <url-pattern>/sead_access/bagupload</url-pattern>
   </servlet-mapping>
    <servlet-mapping>
     <servlet-name>userServlet</servlet-name>

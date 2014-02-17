@@ -102,10 +102,6 @@ public class UploadFileDialog {
                 }
 
                 String filesrc = parts[1].trim();
-                // TODO String fileatomurl = parts[2].trim();
-
-                System.out.println("upfile.getFilename()"+upfile.getFilename());
-                System.out.println("filesrc"+filesrc);
                 files.setVisible(true);
                 String id = nextFileId();
                 fileids.add(id);

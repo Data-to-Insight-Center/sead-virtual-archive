@@ -75,6 +75,8 @@ public class UserServiceImpl extends RemoteServiceServlet
           getSession().setAttribute("role", person.getRole());//Role.ROLE_ADMIN);
           getSession().setAttribute("fName", person.getFirstName());
           getSession().setAttribute("lName", person.getLastName());
+          getSession().setAttribute("sessionType", "database");
+          getSession().setAttribute("password", person.getPassword());
           authentication = new Authentication(true);
           return authentication;
        }
@@ -181,6 +183,7 @@ public class UserServiceImpl extends RemoteServiceServlet
       userSession.setRole((Role)getSession().getAttribute("role"));
       userSession.setfName((String)getSession().getAttribute("fName"));
       userSession.setlName((String)getSession().getAttribute("lName"));
+      userSession.setSessionType((String)getSession().getAttribute("sessionType"));
       userSession.setSession(true);
       return userSession;
     }
@@ -269,6 +272,7 @@ public Authentication authenticateOAuth(String token, OAuthType type, String[] a
 		          getSession().setAttribute("role", person.getRole());
 		          getSession().setAttribute("fName", firstName);
 		          getSession().setAttribute("lName", lastName);
+		          getSession().setAttribute("sessionType", "oauth");
 		          authentication = new Authentication(true);
 		      }
 		      else

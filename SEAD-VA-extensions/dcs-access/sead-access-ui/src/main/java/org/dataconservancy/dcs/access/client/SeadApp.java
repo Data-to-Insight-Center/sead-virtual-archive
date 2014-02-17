@@ -119,11 +119,14 @@ public class SeadApp implements EntryPoint {
     TabPanel uploadPanel;
     Panel localUpload;
     Panel mediciUpload;
+    Panel bagUpload;
     Panel facetOuterPanel ;
     Label loginLabel;
     Panel notificationPanel;
     public static final String FILE_UPLOAD_URL =
             GWT.getModuleBaseURL() + "fileupload";
+    public static final String BAG_UPLOAD_URL =
+            GWT.getModuleBaseURL() + "bagupload";
     public static final String GET_SPARQL_URL =
             GWT.getModuleBaseURL() + "sparql";
     
@@ -305,10 +308,10 @@ public class SeadApp implements EntryPoint {
         
         localUpload = new FlowPanel();
         mediciUpload = new FlowPanel();
+        bagUpload = new FlowPanel();
         uploadPanel.add(localUpload,"Local Upload");
         uploadPanel.add(mediciUpload,"Medici Upload");
-       
-
+        
         
         uploadPanel.selectTab(1);
         uploadPanel.setSize("100%", "100%");
@@ -785,7 +788,7 @@ public class SeadApp implements EntryPoint {
         	
             presenter = new UploadPresenter(new UploadView());
         	presenter.display(localUpload, facetContent, header, loginPanel, notificationPanel);
-            
+        	            
         }else if (state == SeadState.ADMIN) {
         	
         	if(!centerPanel.isAttached())

@@ -14,6 +14,7 @@ import org.dataconservancy.dcs.access.client.api.DepositService;
 import org.dataconservancy.dcs.access.client.api.DepositServiceAsync;
 import org.dataconservancy.dcs.access.client.api.MediciService;
 import org.dataconservancy.dcs.access.client.api.MediciServiceAsync;
+import org.dataconservancy.dcs.access.client.ui.UploadBagDialog;
 import org.dataconservancy.dcs.access.client.ui.UploadCollectionDialog;
 import org.dataconservancy.dcs.access.client.ui.UploadFileDialog;
 import org.dataconservancy.dcs.access.client.upload.CollectionEditor;
@@ -107,6 +108,7 @@ public class UploadView extends Composite implements org.dataconservancy.dcs.acc
 	        	  }
 	        	});
 			//}
+			uploadPanel.selectTab(0);
 	}
 	
 	 void loadFilesTab() {
@@ -131,8 +133,10 @@ public class UploadView extends Composite implements org.dataconservancy.dcs.acc
         Button uploadMediciFile = new Button("Add Medici file");
         Button uploadMediciCollection = new Button("Add Medici Collection");
         Button getPubCollection = new Button("Get Pub Collection");
+        Button uploadBag = new Button("Upload bag");
         
         Button remove = new Button("Remove");
+        
 
         final HorizontalPanel buttons = new HorizontalPanel();
         buttons.setSpacing(5);
@@ -141,62 +145,70 @@ public class UploadView extends Composite implements org.dataconservancy.dcs.acc
   //      buttons.add(uploadMediciFile);
   //      buttons.add(uploadMediciCollection);
         buttons.add(getPubCollection);
+        buttons.add(uploadBag);
         
         buttons.add(remove);
-
+        
         filesTab.add(files);
         filesTab.add(buttons);
+        
+        uploadBag.addClickHandler(new ClickHandler() {
 
-	        remove.addClickHandler(new ClickHandler() {
+	        public void onClick(ClickEvent event) {
+	            new UploadBagDialog(SeadApp.bagIturl);
+	        }
+        });
 
-	            public void onClick(ClickEvent arg0) {
-	                int tab = files.getTabBar().getSelectedTab();
+        remove.addClickHandler(new ClickHandler() {
 
-	                if (tab != -1) {
-	                	files.remove(tab);
-	                	fileids.remove(tab);
+            public void onClick(ClickEvent arg0) {
+                int tab = files.getTabBar().getSelectedTab();
 
-	                    if (files.getWidgetCount() > 0) {
-	                    	files.selectTab(0);
-	                    } else {
-	                    	files.setVisible(false);
-	                    }
-	                }
-	            }
-	        });
+                if (tab != -1) {
+                	files.remove(tab);
+                	fileids.remove(tab);
 
-	        uploadremote.addClickHandler(new ClickHandler() {
+                    if (files.getWidgetCount() > 0) {
+                    	files.selectTab(0);
+                    } else {
+                    	files.setVisible(false);
+                    }
+                }
+            }
+        });
 
-	            public void onClick(ClickEvent arg0) {
-	            	files.setVisible(true);
-	                String id = nextFileId();
-	                fileids.add(id);
-	                files.add(new FileEditor(id, "name", "http://"), id);
-	                files.selectTab(files.getWidgetCount() - 1);
-	            }
-	        });
-	        
-	            upload.addClickHandler(new ClickHandler() {
+        uploadremote.addClickHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent arg0) {
+            	files.setVisible(true);
+                String id = nextFileId();
+                fileids.add(id);
+                files.add(new FileEditor(id, "name", "http://"), id);
+                files.selectTab(files.getWidgetCount() - 1);
+            }
+        });
+        
+            upload.addClickHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+                new UploadFileDialog(files,fileids,SeadApp.deposit_endpoint + "file");
+            }
+        });
+            
+            uploadMediciFile.addClickHandler(new ClickHandler() {
+
+                public void onClick(ClickEvent event) {
+                    displayEnterFileDialog();
+                }
+            });
+            
+            uploadMediciCollection.addClickHandler(new ClickHandler() {
 
 	            public void onClick(ClickEvent event) {
-	                new UploadFileDialog(files,fileids,SeadApp.deposit_endpoint + "file");
+	              //  new UploadCollectionDialog(files,dus, fileids, duids,colids, Application.deposit_endpoint + "file");
+	            	displayEnterCollectionDialog(files,dus, fileids, duids,colids, SeadApp.deposit_endpoint + "file");
 	            }
 	        });
-	            
-	            uploadMediciFile.addClickHandler(new ClickHandler() {
-
-	                public void onClick(ClickEvent event) {
-	                    displayEnterFileDialog();
-	                }
-	            });
-	            
-	            uploadMediciCollection.addClickHandler(new ClickHandler() {
-
-		            public void onClick(ClickEvent event) {
-		              //  new UploadCollectionDialog(files,dus, fileids, duids,colids, Application.deposit_endpoint + "file");
-		            	displayEnterCollectionDialog(files,dus, fileids, duids,colids, SeadApp.deposit_endpoint + "file");
-		            }
-		        });
 	           
 	 }
 	 
