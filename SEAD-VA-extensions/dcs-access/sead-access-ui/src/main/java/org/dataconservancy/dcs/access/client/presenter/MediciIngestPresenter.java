@@ -330,7 +330,7 @@ public class MediciIngestPresenter  implements Presenter {
 										       
 										        flagHyperlink =0;
 										        String tagRetrieveUrl =
-										        		SeadApp.accessurl+"squery/?q=resourceValue:"+
+										        		SeadApp.accessurl+"query/?q=resourceValue:"+
 										        		"("+
 										        		URL.encodeQueryString(((String)pair.getKey()).replace(":", "\\:"))+
 										        		")";

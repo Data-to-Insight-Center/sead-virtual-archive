@@ -16,6 +16,7 @@
 
 package org.dataconservancy.dcs.access.server.util;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
@@ -61,8 +62,11 @@ public class ServerConstants{
 
 	private Map<String,String> loadPasswords() throws IOException{
 		Map<String,String> passwords = new HashMap<String,String>();
-		System.out.println(getClass().getResource("../../../../../../passwords.xml").getPath());
-		InputStream inputStream = getClass().getResourceAsStream("../../../../../../passwords.xml");
+//		System.out.println(getClass().getResource("../../../../../../passwords.xml").getPath());
+		InputStream inputStream = 
+				getClass().getResourceAsStream(
+				"../../../../../../passwords.xml"
+				);
 		StringWriter writer = new StringWriter();
 		IOUtils.copy(inputStream, writer);
 		
@@ -121,7 +125,10 @@ public class ServerConstants{
 	
 	private List<MediciInstance> loadAcrInstances() throws IOException{
 		List<MediciInstance> instances = new ArrayList<MediciInstance>();
-		InputStream inputStream = getClass().getResourceAsStream("../../../../../../acrInstances.xml");
+		InputStream inputStream = 
+				getClass().getResourceAsStream(
+				"../../../../../../acrInstances.xml"
+				);
 		StringWriter writer = new StringWriter();
 		IOUtils.copy(inputStream, writer);
 		
