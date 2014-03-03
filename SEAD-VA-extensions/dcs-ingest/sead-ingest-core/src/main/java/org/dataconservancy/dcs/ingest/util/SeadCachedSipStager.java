@@ -96,7 +96,7 @@ public class SeadCachedSipStager
     public ResearchObject getSIP(String id) {
         if (cache.containsKey(id)) {
             // Return a copy of the cached Dcp, because Dcp is not thread-safe.
-            return new ResearchObject(cache.get(id));
+            return cache.get(id);
         } else {
             return (ResearchObject)delegate.getSIP(id);
         }
