@@ -99,6 +99,13 @@ public class SeadXstreamStaxModelBuilder extends DcsXstreamStaxModelBuilder{
         return sip;
     }
 
+    public void buildSip(Dcp sip, OutputStream sink)
+    {
+        Assertion.notNull(sip);
+        Assertion.notNull(sink);
+        this.x.toXML((ResearchObject)sip, sink);
+    }
+
     public void buildSip(ResearchObject sip, OutputStream sink) {
         Assertion.notNull(sip);
         Assertion.notNull(sink);
