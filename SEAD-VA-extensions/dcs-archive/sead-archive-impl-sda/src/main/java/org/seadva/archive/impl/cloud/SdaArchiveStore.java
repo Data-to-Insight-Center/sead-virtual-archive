@@ -196,32 +196,34 @@ public class SdaArchiveStore implements SeadArchiveStore {
 
         String sipDirectory =null;
         for(DcsDeliverableUnit rootDu:rootDUs){
-            if(((SeadDeliverableUnit)rootDu).getPrimaryLocation().getLocation()!=null){
-                //archive metadata files
-                for(DcsMetadataRef metadataRef:rootDu.getMetadataRef()){
-                    for(DcsFile file:files){
-                        if(file.getId().equalsIgnoreCase(metadataRef.getRef())){
-                            sipDirectory = ((SeadDeliverableUnit)rootDu).getPrimaryLocation().getLocation();
-                            String fileName = file.getName();
-                            sftp.uploadFile(file.getSource().replace("file://", ""), sipDirectory + "/" + fileName, useMount);
-                            SeadDataLocation dataLocation = new SeadDataLocation();
-                            dataLocation.setType(ArchiveEnum.Archive.SDA.getType().getText());
-                            dataLocation.setLocation(
-                                    sipDirectory + "/" + fileName);
-                            dataLocation.setName(ArchiveEnum.Archive.SDA.getArchive());
-                            ((SeadFile)file).setPrimaryLocation(dataLocation);
-                        }
+            if(((SeadDeliverableUnit)rootDu).getPrimaryLocation().getLocation()==null){
+                sipDirectory = rootDu.getTitle();
+                sftp.createDirectory(rootDu.getTitle());
+            }
+            else{
+                sipDirectory = ((SeadDeliverableUnit)rootDu).getPrimaryLocation().getLocation();
+            }
+            //archive metadata files
+            for(DcsMetadataRef metadataRef:rootDu.getMetadataRef()){
+                for(DcsFile file:files){
+                    if(file.getId().equalsIgnoreCase(metadataRef.getRef())){
+                        String fileName = file.getName();
+                        sftp.uploadFile(file.getSource().replace("file://", ""), sipDirectory + "/" + fileName, useMount);
+                        SeadDataLocation dataLocation = new SeadDataLocation();
+                        dataLocation.setType(ArchiveEnum.Archive.SDA.getType().getText());
+                        dataLocation.setLocation(
+                                sipDirectory + "/" + fileName);
+                        dataLocation.setName(ArchiveEnum.Archive.SDA.getArchive());
+                        ((SeadFile)file).setPrimaryLocation(dataLocation);
                     }
-
                 }
 
-                continue;
             }
-            sipDirectory = rootDu.getTitle();
+
+
             String id = rootDu.getId();
             if(leftOverParents.contains(id))
                 leftOverParents.remove(id);
-            sftp.createDirectory(rootDu.getTitle());
 
             for(DcsDeliverableUnit du:dus){
                 if(du.getId().equals(rootDu.getId())){
