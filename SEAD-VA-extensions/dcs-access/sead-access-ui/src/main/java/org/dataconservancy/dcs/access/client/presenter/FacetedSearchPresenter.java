@@ -633,7 +633,7 @@ public class FacetedSearchPresenter implements Presenter {
       
         String s = 
         		SeadApp.accessurl+
-        		"query/?q=" + URL.encodeQueryString(query)
+        		SeadApp.queryPath+"?q=" + URL.encodeQueryString(query)
                 + "&offset=" + offset + "&max=" + max;
 
         if (context) {
