@@ -77,13 +77,13 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
 
             if (entity instanceof SeadDeliverableUnit) {
                 if(((SeadDeliverableUnit) entity).getPrimaryLocation()!=null)
-                url =((SeadDeliverableUnit) entity).getPrimaryLocation().getLocation();
+                    url =((SeadDeliverableUnit) entity).getPrimaryLocation().getLocation();
             } else if (entity instanceof SeadFile) {
                 url =((SeadFile) entity).getPrimaryLocation().getLocation();
 //            } else if (entity instanceof DcsEvent) {
-              ;//  return DcsSolrMapper.toSolr((DcsEvent) entity);
+                ;//  return DcsSolrMapper.toSolr((DcsEvent) entity);
 //            } else if (entity instanceof DcsManifestation) {
-               ;// return DcsSolrMapper.toSolr((DcsManifestation) entity, store);
+                ;// return DcsSolrMapper.toSolr((DcsManifestation) entity, store);
             } else {
                 throw new IllegalArgumentException("Unhandled entity type: "
                         + entity.getClass().getName());
@@ -131,8 +131,8 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
 
         Set<SeadRepository> institionalRepositories = pkg.getRepositories();
 
-       duDspaceCollection = new HashMap<String, String>();
-       manFile = new HashMap<String, List<DcsFile>>();
+        duDspaceCollection = new HashMap<String, String>();
+        manFile = new HashMap<String, List<DcsFile>>();
 
 
         Map<String,Credential> repoCredentials = null;
@@ -258,6 +258,7 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
                         if(file1.getId().equals(f.getId())){
                             SeadDataLocation dataLocation = new SeadDataLocation();
                             dataLocation.setType("dspace");
+                            fileUrl = fileUrl.replace("https://scholarworks.iu.edu/","http://maple.dlib.indiana.edu:8245/");
                             dataLocation.setLocation(fileUrl);
                             dataLocation.setName(repoName);
                             ((SeadFile)file1).setPrimaryLocation(dataLocation);
@@ -277,7 +278,9 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
                 if(file.getId().equalsIgnoreCase(metadataRef.getRef())){
                     String[] tempArr = rootDu.getPrimaryLocation().getLocation().split("/");
                     int number = Integer.parseInt(tempArr[tempArr.length-1]);
-                    String collectionId = rootDu.getPrimaryLocation().getLocation().replace(String.valueOf(tempArr[tempArr.length - 1]), String.valueOf(number + 1));
+                    String collectionId = rootDu.getPrimaryLocation().getLocation()
+                            .replace("https://scholarworks.iu.edu/","http://maple.dlib.indiana.edu:8245/")
+                            .replace("iuswdark/handle","sword/deposit");
                     System.out.print("submit to "+collectionId);
                     firstDspaceCollection = collectionId;
                     dspaceClient.descriptiveMetadata(file.getName(), "",creator+"(Submitted as part of SEAD project)","",rootDu.getRights());
@@ -294,6 +297,7 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
 
                     SeadDataLocation dataLocation = new SeadDataLocation();
                     dataLocation.setType("dspace");
+                    fileUrl = fileUrl.replace("https://scholarworks.iu.edu/","http://maple.dlib.indiana.edu:8245/");
                     dataLocation.setLocation(fileUrl);
                     dataLocation.setName(repoName);
                     ((SeadFile)file).setPrimaryLocation(dataLocation);
@@ -355,9 +359,9 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
                 {
                     //any parent whose children are leaf nodes, start creating collection
                     String dspaceCollection =
-                             dspaceClient.createCollection(projectCommunity.getId(),node.title+"_collection"+i);
+                            dspaceClient.createCollection(projectCommunity.getId(),node.title+"_collection"+i);
 
-                   //TODO : Do not create collections for empty deliverable units
+                    //TODO : Do not create collections for empty deliverable units
                     duDspaceCollection.put(child.id,dspaceCollection);     //manifestation id for which a collection in DSpace has been created
                     i++;
                 }

@@ -91,6 +91,7 @@ public class SeadApp implements EntryPoint {
 
     //Load from configuration file
     public static String accessurl;
+    public static String queryPath;
     public static String bagIturl;
     public static String deposit_endpoint;
     public static String tmpHome;
@@ -452,6 +453,11 @@ public class SeadApp implements EntryPoint {
                                 if (name.equals("bagItServiceURL")) {
                                     bagIturl = value;
                                 }
+                                
+                                if (name.equals("queryPath")) {
+                                	queryPath = value;
+                                }
+                                
                                 if (name.equals("tmp")) {
                                 	tmpHome = value;
                                 }

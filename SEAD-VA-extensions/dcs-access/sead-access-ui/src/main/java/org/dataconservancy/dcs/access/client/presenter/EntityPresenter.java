@@ -96,7 +96,7 @@ public class EntityPresenter implements Presenter {
 	      
 	        String s = 
 	        		SeadApp.accessurl+
-	        		"squery/?q=" + URL.encodeQueryString(query)
+	        		SeadApp.queryPath+"?q=" + URL.encodeQueryString(query)
 	                + "&offset=" + offset + "&max=" + max;
 
 	        if (context) {

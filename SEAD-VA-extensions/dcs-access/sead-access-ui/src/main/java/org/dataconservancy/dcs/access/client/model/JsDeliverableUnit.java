@@ -244,21 +244,28 @@ public final class JsDeliverableUnit
 	        	else 
 	        		image= new Image
         			("images/local.jpg");
-        		
-        		
-        		Label locationLabel = Util.label(
-        				location
-        				,"Hyperlink");
+
+
+                Label locationLabel;
         		
     			final String finalLink = location;
-    			locationLabel.addClickHandler(new ClickHandler() {
-					
-					@Override
-					public void onClick(ClickEvent event) {
-						Window.open(finalLink, "_blank", "");
-						
-					}
-				});
+                if(!locs.get(i).getName().contains("SDA")){
+                    locationLabel = Util.label(
+                            location
+                            ,"Hyperlink");
+                    locationLabel.addClickHandler(new ClickHandler() {
+
+                        @Override
+                        public void onClick(ClickEvent event) {
+                            Window.open(finalLink, "_blank", "");
+
+                        }
+                    });
+                }
+                else{
+                    locationLabel = new Label();
+                    locationLabel.setText(location);
+                }
     			
     			FlexTable smallTable = Util.createTable();
     			smallTable.setWidget(0, 0, locationLabel);

@@ -114,7 +114,7 @@ public class RelationsPresenter implements Presenter {
 	            int max, String... params) {
 	        String accessurl = 
 	    			SeadApp.accessurl;
-	        String s = accessurl + "squery/?q=" + URL.encodeQueryString(query)
+	        String s = accessurl + SeadApp.queryPath+"?q=" + URL.encodeQueryString(query)
 	                + "&offset=" + offset + "&max=" + max;
 
 	        if (context) {
