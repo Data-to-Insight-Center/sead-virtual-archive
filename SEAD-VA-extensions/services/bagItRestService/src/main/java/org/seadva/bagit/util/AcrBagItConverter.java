@@ -49,9 +49,9 @@ public class AcrBagItConverter {
             "collection",
             mediciInstance
         );
-        return generateORE(collectionId,mediciInstance);
+        return generateOREPackage(collectionId, mediciInstance);
     }
-        private String generateORE(String collectionId,MediciInstance mediciInstance) throws IOException, JSONException {
+        private String generateOREPackage(String collectionId,MediciInstance mediciInstance) throws IOException, JSONException {
         Map<String,List<FileNode>> existingFiles = new HashMap<String, List<FileNode>>();
 
         Map<String,CollectionNode>  tempDuMp = new HashMap<String, CollectionNode>(MediciServiceImpl.relations.getDuAttrMap());
@@ -73,10 +73,16 @@ public class AcrBagItConverter {
 
 
         String guid = null;
-        if(collectionId.contains("/"))
-            guid = collectionId.split("/")[collectionId.split("/").length-1];
+
+        if(collectionId==null)
+            guid = UUID.randomUUID().toString();
         else
-            guid = collectionId.split(":")[collectionId.split(":").length-1];
+        {
+            if(collectionId.contains("/"))
+                guid = collectionId.split("/")[collectionId.split("/").length-1];
+            else
+                guid = collectionId.split(":")[collectionId.split(":").length-1];
+        }
 
         String bagPath = Constants.bagDir+guid+"/";
         (new File(bagPath)).mkdirs();
@@ -89,11 +95,13 @@ public class AcrBagItConverter {
 
         manifest.write("0000000000000000000" + "  " + "data/" + guid + "_fgdc.xml");
 
-        fgdc = new BufferedWriter(fgdcStream);
 
-        String xml = FgdcGenerator.createFGDC((CollectionNode) MediciServiceImpl.relations.getDuAttrMap().get(collectionId));
-        fgdc.write(xml);
-        fgdc.close();
+        if(collectionId!=null){
+            fgdc = new BufferedWriter(fgdcStream);
+            String xml = FgdcGenerator.createFGDC((CollectionNode) MediciServiceImpl.relations.getDuAttrMap().get(collectionId));
+            fgdc.write(xml);
+            fgdc.close();
+        }
 
         String dataPath = "data/";
         try {
@@ -192,7 +200,61 @@ public class AcrBagItConverter {
         }
 
         createORE("null");
-        return generateORE(ids.get(parents.get("null").get(0).getTitle()),null);
+        return generateOREPackage(ids.get(parents.get("null").get(0).getTitle()), null);
+    }
+
+    public String convertDirectoryToORE(File dataDirectory) throws IOException, JSONException {
+
+        getDirectoryStructure(dataDirectory);
+        List<Node> dataNode = new ArrayList<Node>();
+        CollectionNode collectionNode = new CollectionNode();
+        collectionNode.setTitle(dataDirectory.getName());
+        String id = UUID.randomUUID().toString();
+        collectionNode.setId(id);
+        dataNode.add(collectionNode);
+        parents.put("null",dataNode);
+        if(!ids.containsKey(dataDirectory.getName())){
+            ids.put(dataDirectory.getName(), id);
+        }
+
+        createORE("null");
+        return generateOREPackage(ids.get(parents.get("null").get(0).getTitle()), null);
+
+    }
+
+    void getDirectoryStructure(File directory){
+        File[] list = directory.listFiles();
+        for(File file: list){
+            if(file.isDirectory()){
+                List<Node> children = new ArrayList<Node>();
+                if(!ids.containsKey(file.getName())){
+                    if(parents.containsKey(directory.getName()))
+                        children = parents.get(directory.getName());
+                    String id = UUID.randomUUID().toString();
+                    ids.put(file.getName(), id);
+                    CollectionNode collectionNode = new CollectionNode();
+                    collectionNode.setTitle(file.getName());
+                    collectionNode.setId(id);
+                    children.add(collectionNode);
+                    parents.put(directory.getName(), children);
+                    getDirectoryStructure(file);
+                }
+            }
+            else{
+                List<Node> children = new ArrayList<Node>();
+                if(parents.containsKey(directory.getName()))
+                    children = parents.get(directory.getName());
+                FileNode fileNode = new FileNode();
+                fileNode.setTitle(file.getName());
+                fileNode.setId(UUID.randomUUID().toString());
+                fileNode.setSource(file.getAbsolutePath());
+                //fileNode.setFileSize(Long.parseLong(size)); get this from fetch file if available
+                children.add(fileNode);
+                parents.put(directory.getName(), children);
+
+            }
+
+        }
 
     }
 

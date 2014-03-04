@@ -130,34 +130,33 @@ public class MediciServiceImpl {
         }
         catch (JSONException e) {
             JSONObject binding = null;
-            try {
-                for(int i =0; i< resultArray.length();i++){
-                    binding = resultArray.getJSONObject(i).getJSONObject("binding");
-                    String title = "";
-                    String key = (String)binding.get("name");
-                    if(key.equalsIgnoreCase(attribute))
-                    {
-                        if(binding.get("literal") instanceof String)
-                            title = (String)binding.get("literal");
-                        else{
-                            JSONObject temp = (JSONObject)binding.get("literal");
-                            title = temp.get("content").toString();
-                        }
-                        result.add(title);
-                    }
-                }
-
-            } catch (JSONException e1) {
-                assert binding != null;
-                String value = null;
+            for(int i =0; i< resultArray.length();i++){
                 try {
-                    value = (String)binding.get("uri");
-                } catch (JSONException e2) {
-                    e2.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
-                result.add(value);
-            }
 
+                        binding = resultArray.getJSONObject(i).getJSONObject("binding");
+                        String title = "";
+                        String key = (String)binding.get("name");
+                        if(key.equalsIgnoreCase(attribute))
+                        {
+                            if(binding.get("literal") instanceof String)
+                                title = (String)binding.get("literal");
+                            else{
+                                JSONObject temp = (JSONObject)binding.get("literal");
+                                title = temp.get("content").toString();
+                            }
+                            result.add(title);
+                        }
+                } catch (JSONException e1) {
+                    assert binding != null;
+                    String value = null;
+                    try {
+                        value = (String)binding.get("uri");
+                    } catch (JSONException e2) {
+                        e2.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    }
+                    result.add(value);
+                }
+            }
         }
         return result;
     }

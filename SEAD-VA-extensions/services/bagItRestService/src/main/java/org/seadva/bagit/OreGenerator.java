@@ -149,6 +149,7 @@ public class OreGenerator {
         Map<String,CollectionNode> duMap = relation.getDuAttrMap();
 
         String guid = null;
+
         if(id.contains("/"))
             guid = id.split("/")[id.split("/").length-1];
         else
@@ -488,11 +489,12 @@ public class OreGenerator {
                     selector.setSubjectURI(aggregatedResource.getURI());
                     selector.setPredicate(DC_TERMS_FORMAT);
                     triples = aggregatedResource.listAllTriples(selector);
-                    DcsFormat format = new DcsFormat();
-                    format.setSchemeUri(Constants.FORMAT_IANA_SCHEME);
-                    format.setFormat(triples.get(0).getObjectLiteral());
-                    file.addFormat(format);
-
+                    if(triples.size()>0){
+                        DcsFormat format = new DcsFormat();
+                        format.setSchemeUri(Constants.FORMAT_IANA_SCHEME);
+                        format.setFormat(triples.get(0).getObjectLiteral());
+                        file.addFormat(format);
+                    }
 
                     file.setExtant(true);
 

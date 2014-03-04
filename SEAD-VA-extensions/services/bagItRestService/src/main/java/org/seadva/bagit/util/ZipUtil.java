@@ -52,8 +52,7 @@ public class ZipUtil {
 
             String currentEntry = entry.getName();
 
-            File destFile = new File(unzipDestinationDirectory, currentEntry);
-            destFile = new File(unzipDestinationDirectory, destFile.getName());
+            File destFile = new File(unzipDestinationDirectory.getAbsolutePath()+"/"+currentEntry);
 
             if (currentEntry.endsWith(".zip")) {
                 zipFiles.add(destFile.getAbsolutePath());
