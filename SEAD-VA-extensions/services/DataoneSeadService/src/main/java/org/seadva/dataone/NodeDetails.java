@@ -29,6 +29,7 @@ import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.namespace.QName;
+import javax.xml.transform.TransformerException;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.StringWriter;
@@ -45,7 +46,7 @@ public class NodeDetails {
 
     @GET
     @Produces(MediaType.APPLICATION_XML)
-    public String getMNDetails() throws JiBXException {
+    public String getMNDetails() throws JiBXException, TransformerException {
         return SeadQueryService.marshal(getBaseMNDetails());
     }
 
@@ -61,14 +62,14 @@ public class NodeDetails {
     @GET
     @Path("/v1")
     @Produces(MediaType.APPLICATION_XML)
-    public String getDupMNDetails() throws JiBXException, FileNotFoundException {
+    public String getDupMNDetails() throws JiBXException, FileNotFoundException, TransformerException {
         return SeadQueryService.marshal(getBaseMNDetails());
     }
 
     @GET
     @Path("/v1/node")
     @Produces(MediaType.APPLICATION_XML)
-    public String getDup2MNDetails() throws JiBXException {
+    public String getDup2MNDetails() throws JiBXException, TransformerException {
         return SeadQueryService.marshal(getBaseMNDetails());
     }
 

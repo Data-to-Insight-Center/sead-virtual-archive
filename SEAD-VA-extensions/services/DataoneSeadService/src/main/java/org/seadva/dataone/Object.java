@@ -41,12 +41,15 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /*
@@ -158,7 +161,7 @@ public class Object{
                                    @QueryParam("formatId") String formatId,
                                    @QueryParam("fromDate") String fromDate,
                                    @QueryParam("toDate") String toDate)
-            throws QueryServiceException, JiBXException {
+            throws QueryServiceException, JiBXException, ParseException, TransformerException {
 
 
 
@@ -220,33 +223,6 @@ public class Object{
 
 
             String date =  dcsFile.getMetadataUpdateDate();
-
-            if(date == null)
-                date = "2012-10-27T22:05:20.809Z";
-            String[] temp = date.split("-");
-            int year = Integer.parseInt(temp[0]);
-            int month = Integer.parseInt(temp[1]);
-            int day = Integer.parseInt(temp[2].split("T")[0]);
-            String[] time = temp[2].split("T")[1].split(":");
-
-
-            int hour = Integer.parseInt(time[0]);
-            int minute = Integer.parseInt(time[1]);
-            //  String[] temptime =time[2].split(".");
-            int second = Integer.parseInt(time[2].substring(0,2));
-            int millisecond = Integer.parseInt(time[2].substring(3,6));
-            TimeZone utc = TimeZone.getTimeZone("UTC");
-            XMLGregorianCalendar calendar = null;
-            try {
-                calendar = DatatypeFactory.newInstance()
-                        .newXMLGregorianCalendar(year, month, day, hour, minute, second, millisecond,0);
-            } catch (DatatypeConfigurationException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            }
-
-
-
-
             ObjectInfo objectInfo =  new ObjectInfo();
             Identifier identifier = new Identifier();
             String id = null;
@@ -292,7 +268,8 @@ public class Object{
                 objectInfo.setFormatId(formatIdentifier);
             }
 
-            objectInfo.setDateSysMetadataModified(calendar.toGregorianCalendar().getTime());
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+            objectInfo.setDateSysMetadataModified(simpleDateFormat.parse(date));
 
             Checksum checksum = new Checksum();
             checksum.setAlgorithm("MD5");

@@ -25,6 +25,9 @@ import org.seadva.ingest.Events;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.*;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -52,14 +55,20 @@ public class SeadQueryService {
     public static SeadDataModelQueryService queryService;
     public static DataOneLogService dataOneLogService;
 
+    static TransformerFactory factory;
+    static Source xslt;
+    static Transformer transformer;
+
     static {
 
            try {
+               factory = TransformerFactory.newInstance();
+               xslt = new StreamSource(SeadQueryService.class.getResourceAsStream("./DateFormat.xslt"));
+               transformer = factory.newTransformer(xslt);
 
                StringWriter writer = new StringWriter();
-               IOUtils.copy(new FileInputStream(
-                       "../../../../Config.properties"
-               ), writer);
+               IOUtils.copy(SeadQueryService.class.getResourceAsStream("./Config.properties")
+               , writer);
 
                String content = writer.toString();
                String[] pairs = content.trim().split(
@@ -133,7 +142,9 @@ public class SeadQueryService {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (SAXException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
+        } catch (TransformerConfigurationException e) {
+               e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+           }
     }
 
     private static void loadMimeTypes(){
@@ -188,7 +199,7 @@ public class SeadQueryService {
 
     }
 
-    static String marshal(Serializable object) throws JiBXException {
+    static String marshal(Serializable object) throws JiBXException, TransformerException {
         IBindingFactory bfact =
                 BindingDirectory.getFactory(object.getClass());
         IMarshallingContext mctx = bfact.createMarshallingContext();
@@ -197,7 +208,10 @@ public class SeadQueryService {
 
         mctx.marshalDocument(object, "UTF-8", true,
                 outputWriter);
-        return outputWriter.toString();
+
+        StringWriter finaloutWriter = new StringWriter();
+        transformer.transform(new StreamSource(new StringReader(outputWriter.toString())), new StreamResult(finaloutWriter));
+        return finaloutWriter.toString();
     }
 
     static Serializable unmarshal(InputStream xml, Class className) throws JiBXException {

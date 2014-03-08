@@ -39,9 +39,12 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URLEncoder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -68,7 +71,7 @@ public class Metadata{
     @Path("{objectId}")
     public String getMetadata(@Context HttpServletRequest request,
                                       @HeaderParam("user-agent") String userAgent,
-                                      @PathParam("objectId") String objectId) throws JiBXException {
+                                      @PathParam("objectId") String objectId) throws JiBXException, ParseException, TransformerException {
 
 
         String test ="<error name=\"NotFound\" errorCode=\"404\" detailCode=\"1060\" pid=\""+ URLEncoder.encode(objectId)+"\" nodeId=\""+SeadQueryService.NODE_IDENTIFIER+"\">\n" +
@@ -188,53 +191,10 @@ public class Metadata{
         replicationPolicy.setReplicationAllowed(false);
         metadata.setReplicationPolicy(replicationPolicy);
 
-        if(date == null)
-            date = "2012-10-27T22:05:20.809Z";
-        String[] tmp = date.split("-");
-        int year = Integer.parseInt(tmp[0]);
-        int month = Integer.parseInt(tmp[1]);
-        int day = Integer.parseInt(tmp[2].split("T")[0]);
-        String[] time = tmp[2].split("T")[1].split(":");
 
-
-        int hour = Integer.parseInt(time[0]);
-        int minute = Integer.parseInt(time[1]);
-        //  String[] temptime =time[2].split(".");
-        int second = Integer.parseInt(time[2].substring(0,2));
-        int millisecond = Integer.parseInt(time[2].substring(3, 6));
-        TimeZone utc = TimeZone.getTimeZone("UTC");
-        XMLGregorianCalendar calendar = null;
-        try {
-            calendar = DatatypeFactory.newInstance()
-                    .newXMLGregorianCalendar(year, month, day, hour, minute, second, millisecond,0);
-        } catch (DatatypeConfigurationException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-
-        metadata.setDateSysMetadataModified(calendar.toGregorianCalendar().getTime());
-
-        if(depositDate == null)
-            depositDate = "2012-10-27T22:05:20.809Z";
-        tmp = depositDate.split("-");
-        year = Integer.parseInt(tmp[0]);
-        month = Integer.parseInt(tmp[1]);
-        day = Integer.parseInt(tmp[2].split("T")[0]);
-        time = tmp[2].split("T")[1].split(":");
-
-
-        hour = Integer.parseInt(time[0]);
-        minute = Integer.parseInt(time[1]);
-        second = Integer.parseInt(time[2].substring(0,2));
-        millisecond = Integer.parseInt(time[2].substring(3, 6));
-        utc = TimeZone.getTimeZone("UTC");
-        XMLGregorianCalendar depositCalendar = null;
-        try {
-            depositCalendar = DatatypeFactory.newInstance()
-                    .newXMLGregorianCalendar(year, month, day, hour, minute, second, millisecond,0);
-        } catch (DatatypeConfigurationException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-        metadata.setDateUploaded(depositCalendar.toGregorianCalendar().getTime());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        metadata.setDateSysMetadataModified(simpleDateFormat.parse(date));
+        metadata.setDateUploaded(simpleDateFormat.parse(depositDate));
 
 
         NodeReference nodeReference = new NodeReference();

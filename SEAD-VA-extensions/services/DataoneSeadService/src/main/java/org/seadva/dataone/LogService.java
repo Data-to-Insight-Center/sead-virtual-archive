@@ -27,6 +27,9 @@ import javax.ws.rs.QueryParam;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.transform.TransformerException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
 /*
@@ -45,7 +48,7 @@ public class LogService{
                              @QueryParam("event") String event,
                              @QueryParam("pidFilter") String pidFilter,
                              @QueryParam("fromDate") String fromDate,
-                             @QueryParam("toDate") String toDate) throws QueryServiceException, DatatypeConfigurationException, JiBXException {
+                             @QueryParam("toDate") String toDate) throws QueryServiceException, DatatypeConfigurationException, JiBXException, ParseException, TransformerException {
 
 
         Log log = new Log();
@@ -75,26 +78,9 @@ public class LogService{
 
             logEntry.setIpAddress(ipaddress);
 
-            String date = "1800-10-27T22:05:20.809Z";//default wrong date
-
-           if(d1log.getDate()!=null)
-                date = d1log.getDate();
-           String[] temp = date.split("-");
-           final int year = Integer.parseInt(temp[0]);
-           final int month = Integer.parseInt(temp[1]);
-           final int day = Integer.parseInt(temp[2].split("T")[0]);
-           String[] time = temp[2].split("T")[1].split(":");
-
-
-           final int hour = Integer.parseInt(time[0]);
-           final int minute = Integer.parseInt(time[1]);
-           final int second = Integer.parseInt(time[2].substring(0,2));
-           final int millisecond = Integer.parseInt(time[2].substring(3,6));
-           TimeZone utc = TimeZone.getTimeZone("UTC");
-           XMLGregorianCalendar calendar = DatatypeFactory.newInstance()
-                   .newXMLGregorianCalendar(year, month, day, hour, minute, second, millisecond,0);
-
-           logEntry.setDateLogged(calendar.toGregorianCalendar().getTime());
+            String date = d1log.getDate();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+            logEntry.setDateLogged(simpleDateFormat.parse(date));
 
 
 

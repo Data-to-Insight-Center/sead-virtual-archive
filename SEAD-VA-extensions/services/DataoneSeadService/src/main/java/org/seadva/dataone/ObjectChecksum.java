@@ -34,6 +34,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.xml.transform.TransformerException;
 import java.net.URLEncoder;
 import java.util.List;
 
@@ -56,7 +57,7 @@ public class ObjectChecksum {
     public String getChecksum(@Context HttpServletRequest request,
                                 @HeaderParam("user-agent") String userAgent,
                                 @PathParam("pid") String objectId,
-                                @QueryParam("checksumAlgorithm") String checksumAlgorithm) throws JiBXException {
+                                @QueryParam("checksumAlgorithm") String checksumAlgorithm) throws JiBXException, TransformerException {
 
         String test ="<error name=\"NotFound\" errorCode=\"404\" detailCode=\"1060\" pid=\""+ URLEncoder.encode(objectId)+"\" nodeId=\""+SeadQueryService.NODE_IDENTIFIER+"\">\n" +
                 "<description>The specified object does not exist on this node.</description>\n" +
