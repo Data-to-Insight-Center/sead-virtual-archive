@@ -195,7 +195,7 @@ public class SolrField {
     public enum CoreMetadataField
     implements SolrName {
         TITLE("title"), CREATOR("creator"),
-        SUBJECT("subject"), TYPE("type"), ABSTRACT("abstract"),DATE("pubdate"),LOCATION("site");
+        SUBJECT("subject"), TYPE("type"), ABSTRACT("abstract"),DATE("pubdate"),LOCATION("location");
 
         private final String fieldname;
 
