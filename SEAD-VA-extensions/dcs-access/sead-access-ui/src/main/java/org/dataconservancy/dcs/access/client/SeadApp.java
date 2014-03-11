@@ -239,8 +239,8 @@ public class SeadApp implements EntryPoint {
 		});
 		
 		externalLinksPanel.add(notificationPanel);
-        externalLinksPanel.add(seadAcr);
-        externalLinksPanel.add(seadVivo);
+//        externalLinksPanel.add(seadAcr);
+//        externalLinksPanel.add(seadVivo);
         
         
         middlePanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);

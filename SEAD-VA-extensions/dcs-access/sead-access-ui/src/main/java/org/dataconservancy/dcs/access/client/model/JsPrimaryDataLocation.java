@@ -62,14 +62,23 @@ public final class JsPrimaryDataLocation
     			if(getType().contains("dspace")&&getName().contains("Ideals"))
     				location = location.replace("xmlui/", "");
     		final String locationLink = location;
-        	Label locationLabel = Util.label(location,"Hyperlink");
-        	locationLabel.addClickHandler(new ClickHandler() {
-				
-				@Override
-				public void onClick(ClickEvent event) {
-					Window.open(locationLink, "_blank", "");
-				}
-			});
+    		Label locationLabel;
+    		if(!getName().contains("SDA")){
+    			locationLabel = Util.label(location,"Hyperlink");
+	    		locationLabel.addClickHandler(new ClickHandler() {
+					
+					@Override
+					public void onClick(ClickEvent event) {
+						Window.open(locationLink, "_blank", "");
+					}
+				});
+    		}
+    		else{
+    			 locationLabel = new Label();
+    			 locationLabel.setText(location);
+    		 }
+
+        	
         	smallTable.setWidget(0, 0, locationLabel);
     	}
     	
@@ -82,6 +91,11 @@ public final class JsPrimaryDataLocation
         	else if(getType().contains("dspace")&&getName().contains("IU"))
     		{
         		image= new Image("images/IU_Scholarworks.jpg");
+        		smallTable.setWidget(0, 1,image);
+    		}
+        	else if(getName().contains("SDA"))
+    		{
+        		image= new Image("images/hpss.jpg");
         		smallTable.setWidget(0, 1,image);
     		}
         	else if(getType().contains("dspace")&&getName().contains("Ideals"))
