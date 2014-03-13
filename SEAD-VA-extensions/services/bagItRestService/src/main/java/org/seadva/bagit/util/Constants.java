@@ -24,7 +24,9 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Constants
@@ -41,6 +43,7 @@ public class Constants {
         try {
 
             acrInstances = new Constants().loadAcrInstances();
+            metadataPredicateMap = new Constants().loadMetadataMapping();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -48,6 +51,29 @@ public class Constants {
     }
 
     public static List<MediciInstance> acrInstances;
+    public static Map<String,String> metadataPredicateMap;
+
+    private Map<String,String>  loadMetadataMapping() throws IOException {
+        Map<String,String> metadataPredicateMap = new HashMap<String, String>();
+        StringWriter writer = new StringWriter();
+        InputStream inputStream =
+                getClass().getResourceAsStream(
+                        "../../../../../ACR_to_ORE_MappingConfig.properties"
+                );
+        IOUtils.copy(inputStream, writer);
+        String result = writer.toString();
+        String[] pairs = result.trim().split(
+                "\n|\\=");
+
+
+        for (int i = 0; i + 1 < pairs.length;) {
+            String name = pairs[i++].trim();
+            String value = pairs[i++].trim();
+            metadataPredicateMap.put(name,value);
+        }
+        return metadataPredicateMap;
+    }
+
 
     private List<MediciInstance> loadAcrInstances() throws IOException{
         List<MediciInstance> instances = new ArrayList<MediciInstance>();
