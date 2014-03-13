@@ -21,6 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import org.dataconservancy.model.dcs.*;
 import org.dspace.foresite.*;
 import org.dspace.foresite.jena.TripleJena;
+import org.sead.acr.common.utilities.json.JSONException;
 import org.seadva.bagit.model.CollectionNode;
 import org.seadva.bagit.model.DatasetRelation;
 import org.seadva.bagit.model.FileNode;
@@ -36,6 +37,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -47,7 +49,6 @@ public class OreGenerator {
     private static final String RESOURCE_MAP_SERIALIZATION_FORMAT = "RDF/XML";
 
     private static Predicate DC_TERMS_IDENTIFIER = null;
-    private static Predicate DC_TERMS_SOURCE = null;
     private static Predicate DC_TERMS_TITLE = null;
     private static Predicate DC_TERMS_FORMAT = null;
     private static Predicate DC_TERMS_ABSTRACT = null;
@@ -56,14 +57,14 @@ public class OreGenerator {
     private static Predicate DC_TERMS_TYPE = null;
 
     private static Predicate CITO_DOCUMENTS = null;
-    private static String DEFAULT_URL_PREFIX = "http://";
 
-    //Aggregation agg = null;
+    VAQueryUtil util;
+
 
     private static Log log = LogFactory.getLog(OreGenerator.class);
 
     public OreGenerator() throws URISyntaxException, OREException {
-
+        util=new VAQueryUtil();
         // use as much as we can from the included Vocab for dcterms:Agent
         DC_TERMS_IDENTIFIER = new Predicate();
         DC_TERMS_IDENTIFIER.setNamespace(Vocab.dcterms_Agent.ns().toString());
@@ -125,44 +126,47 @@ public class OreGenerator {
                 + CITO_DOCUMENTS.getName()));
     }
 
+    private static String DEFAULT_URL_PREFIX = "http://seadva.d2i.indiana.edu/";
 
-    public ResourceMap getMainRem() {
+    public OREResource getMainRem() {
         return mainRem;
     }
 
-    public void setMainRem(ResourceMap mainRem) {
+    public void setMainRem(OREResource mainRem) {
         this.mainRem = mainRem;
     }
 
-    ResourceMap mainRem = null;
+    OREResource mainRem = null;
+
+    private static Predicate DC_TERMS_SOURCE = null;
 
     public void toOAIORE(Aggregation agg,
-                         ResourceMap rem,
-                         DatasetRelation relation,
-                         String id, String parent,
-                         Map<String,List<FileNode>> existingFiles,
-                         String bagPath, String dataPath,
-                         MediciInstance mediciInstance,
-                         BufferedWriter fetch, BufferedWriter manifest) throws IOException, OREException, URISyntaxException, ORESerialiserException {
-
-
-        Map<String,CollectionNode> duMap = relation.getDuAttrMap();
+                             OREResource rem,
+                             String tagId,
+                             String type, String bagPath,
+                             String dataPath,
+                             MediciInstance mediciInstance,
+                             BufferedWriter fetch, BufferedWriter manifest) throws IOException, JSONException, URISyntaxException, OREException, ORESerialiserException {
 
         String guid = null;
 
-        if(id.contains("/"))
-            guid = id.split("/")[id.split("/").length-1];
+        if(tagId.contains("/"))
+            guid = tagId.split("/")[tagId.split("/").length-1];
         else
-            guid = id.split(":")[id.split(":").length-1];
+            guid = tagId.split(":")[tagId.split(":").length-1];
+        String json = "";
 
-        CollectionNode node = duMap.get(id);
-        //if(relation.getRootDuId().equals(id))
-        if(parent.equals(id)){
-            String remId = DEFAULT_URL_PREFIX + URLEncoder.encode(node.getId());
+        if(dataPath==null)
+            dataPath = "data/";
+        if(type.equals("collection")){
+
+
+
+            String remId = DEFAULT_URL_PREFIX + URLEncoder.encode(tagId);
             if(mediciInstance!=null)
-                remId =  mediciInstance.getUrl()+"#collection?uri="+ URLEncoder.encode(node.getId());
+                remId =  mediciInstance.getUrl()+"#collection?uri="+ URLEncoder.encode(tagId);
             agg = OREFactory.createAggregation(new URI(
-                remId  +"_Aggregation"
+                    remId + "_Aggregation"
             ));
 
             rem = agg.createResourceMap(
@@ -170,189 +174,145 @@ public class OreGenerator {
                             remId
                     ));
             mainRem = rem;
+        }
+        Iterator iterator = Constants.metadataPredicateMap.entrySet().iterator();
+        String title = "";
+        long size =0;
+        while (iterator.hasNext()){
 
-            Triple identifier = new TripleJena();
-            identifier.initialise(rem);
-            identifier.relate(DC_TERMS_IDENTIFIER, node.getId());
-            rem.addTriple(identifier);
 
-            Triple resourceMapTitle = new TripleJena();
-            resourceMapTitle.initialise(rem);
-            resourceMapTitle.relate(DC_TERMS_TITLE, node.getTitle());
-            rem.addTriple(resourceMapTitle);
 
-            Triple metadata = new TripleJena();
-            metadata.initialise(rem);
-            metadata.relate(CITO_IS_DOCUMENTED_BY,
-                    bagPath+ guid + "_fgdc.xml");
-            rem.addTriple(metadata);
+            Map.Entry pair = (Map.Entry)iterator.next();
 
-            if(mediciInstance!=null){
-                Triple altId = new TripleJena();
-                altId.initialise(rem);
-                altId.relate(DC_TERMS_TYPE,
-                        mediciInstance.getType());
-                rem.addTriple(altId);
+            json = util.getJsonResponse(mediciInstance, (String) pair.getKey(),tagId);
+            List<String> results = util.parseJsonAttribute(json, "object");
+            if(((String) pair.getKey()).contains("hasPart")){
+                for(String child:results){
+
+
+
+                    if(child.contains("Collection")){
+
+
+                        //create new file and aggregation for this sub-collection
+                        FileWriter oreStream = new FileWriter(bagPath + guid + "_oaiore.xml");
+
+                        String uri = DEFAULT_URL_PREFIX + URLEncoder.encode(child);
+                        if(mediciInstance!=null)
+                            uri =  mediciInstance.getUrl()+"#collection?uri="+ URLEncoder.encode(child);
+
+                        //Based on http://www.openarchives.org/ore/0.1/datamodel#nestedAggregations
+                        AggregatedResource subAggResource = agg.createAggregatedResource(
+                                new URI(
+                                        uri
+                                )
+
+                        );
+                        subAggResource.addType(new URI(agg.getTypes().get(0).toString()));//type aggregation
+
+                        Triple resourceMapSource = new TripleJena();
+                        resourceMapSource.initialise(subAggResource);
+
+                        String childguid = null;
+                        if(child.contains("/"))
+                            childguid = tagId.split("/")[child.split("/").length-1];
+                        else
+                            childguid = tagId.split(":")[child.split(":").length-1];
+
+                        resourceMapSource.relate(DC_TERMS_SOURCE,
+                                bagPath+ childguid + "_oaiore.xml");                         //make this a file path or just the is and the oai-ore can be tracked from here
+                        rem.addTriple(resourceMapSource);
+
+                        agg.addAggregatedResource(subAggResource);
+
+                        String remChildId =  DEFAULT_URL_PREFIX + URLEncoder.encode(child);
+                        if(mediciInstance!=null)
+                            remChildId = mediciInstance.getUrl()+"#collection?uri="+ URLEncoder.encode(child);
+
+                        Aggregation newAgg = OREFactory.createAggregation(new URI(
+                                remChildId+"_Aggregation"
+                        ));
+                        ResourceMap newRem = newAgg.createResourceMap(new URI(
+                                remChildId
+                        ));
+
+
+                        toOAIORE(newAgg, newRem, child, "collection",bagPath, dataPath, mediciInstance, fetch, manifest);
+                    }
+                    else{
+                        String uri = DEFAULT_URL_PREFIX + URLEncoder.encode(child);
+                        if(mediciInstance!=null)
+                            uri =  mediciInstance.getUrl()+"#dataset?uri="+URLEncoder.encode(child);
+
+                        AggregatedResource dataResource = agg.createAggregatedResource(new URI(uri));
+                        agg.addAggregatedResource(dataResource);
+
+                        toOAIORE(agg, dataResource, child, "file",bagPath, dataPath, mediciInstance, fetch, manifest);
+                    }
+                }
+            }
+            else{
+
+                for(String result: results){
+                    if(((String) pair.getKey()).contains("title"))
+                        title = result;
+                    if(((String) pair.getKey()).contains("size"))
+                        size = Long.parseLong(result);
+
+                    Triple triple = new TripleJena();
+                    triple.initialise(rem);
+
+                    Predicate ORE_TERM_PREDICATE =  new Predicate();
+                    ORE_TERM_PREDICATE.setNamespace(Vocab.dcterms_Agent.ns().toString());
+                    ORE_TERM_PREDICATE.setPrefix(Vocab.dcterms_Agent.schema());
+                    URI uri = new URI(Constants.metadataPredicateMap.get((String)pair.getKey()));
+                    ORE_TERM_PREDICATE.setName(uri.toString().substring(uri.toString().lastIndexOf("/")));
+                    ORE_TERM_PREDICATE.setURI(uri);
+                    triple.relate(ORE_TERM_PREDICATE, result);
+                    rem.addTriple(triple);
+
+                }
+
+
             }
 
-
+        }
+        if(type.equals("collection")){
+            dataPath+=title+"/";
             Agent creator = OREFactory.createAgent();
             creator.addName("SEAD_VA BagItService");
 
-
             rem.addCreator(creator);
-                      Constants.bagDir = Constants.homeDir+"bag/";
+
             agg.addCreator(creator);
-            agg.addTitle("Transit BagIt");
-        }
-
-
-
-        dataPath+=node.getTitle()+"/";
-
-        if(existingFiles.get(id)!=null)
-            for(FileNode file:existingFiles.get(id)){
-                String uri = DEFAULT_URL_PREFIX + URLEncoder.encode(file.getId());
-                if(mediciInstance!=null)
-                    uri =  mediciInstance.getUrl()+"#dataset?uri="+URLEncoder.encode(file.getId());
-
-                AggregatedResource dataResource = agg.createAggregatedResource(new URI(uri));
-
-                Triple resourceMapIdentifier = new TripleJena();
-                resourceMapIdentifier.initialise(dataResource);
-                resourceMapIdentifier.relate(DC_TERMS_IDENTIFIER, file.getId());
-                rem.addTriple(resourceMapIdentifier);
-
-                if(mediciInstance!=null){
-                    Triple altId = new TripleJena();
-                    altId.initialise(dataResource);
-                    altId.relate(DC_TERMS_TYPE,
-                            mediciInstance.getType());
-                    rem.addTriple(altId);
-                }
-                Triple resourceMapTitle = new TripleJena();
-                resourceMapTitle.initialise(dataResource);
-                resourceMapTitle.relate(DC_TERMS_TITLE, file.getTitle());
-                rem.addTriple(resourceMapTitle);
-
-
-                Triple source = new TripleJena();
-                source.initialise(dataResource);
-                source.relate(DC_TERMS_SOURCE, file.getSource());
-                rem.addTriple(source);
-
-
-                agg.addAggregatedResource(dataResource);
-
-                for(String format:file.getFormats()){
-                    Triple resourceMapFormat = new TripleJena();
-                    resourceMapFormat.initialise(dataResource);
-                    resourceMapFormat.relate(DC_TERMS_FORMAT, format);
-                    rem.addTriple(resourceMapFormat);
-                    agg.addAggregatedResource(dataResource);
-                }
-
-                if(dataPath==null)
-                    dataPath = "null";
-
-
-                fetch.write(file.getSource()+" "+file.getFileSize()+" "+dataPath+file.getTitle()+"\n");
-                manifest.write("0000000000000000000" + "  " +dataPath+file.getTitle()+"\n");
-            }
-
-
-
-
-        List<String> subCollections = node.getSub().get(CollectionNode.SubType.Collection);
-        if(subCollections==null||subCollections.size()==0)   {//finish collection
-
-            if(!parent.equals(id)){
-                Triple resourceMapTitle = new TripleJena();
-                resourceMapTitle.initialise(rem);
-                resourceMapTitle.relate(DC_TERMS_TITLE, node.getTitle());
-                rem.addTriple(resourceMapTitle);
-            }
-
+            agg.addTitle("Transit BagIt - Sub Collection");
             FileWriter oreStream = new FileWriter(bagPath + guid + "_oaiore.xml");
             BufferedWriter ore = new BufferedWriter(oreStream);
 
             String resourceMapXml = "";
             ORESerialiser serial = ORESerialiserFactory.getInstance(RESOURCE_MAP_SERIALIZATION_FORMAT);
-            ResourceMapDocument doc = serial.serialise(rem);
+            ResourceMapDocument doc = serial.serialise((ResourceMap)rem);
             resourceMapXml = doc.toString();
 
             ore.write(resourceMapXml);
             ore.close();
-
-            manifest.write("0000000000000000000" + "  " + guid+"_oaiore.xml"+"\n");
-
         }
-        if(subCollections!=null)
-            if(subCollections.size()>0){
-                for(String child:subCollections){
+        else {
+            Triple triple = new TripleJena();
+            triple.initialise(rem);
 
-                    FileWriter oreStream = new FileWriter(bagPath + guid + "_oaiore.xml");
+            Predicate ORE_TERM_PREDICATE =  new Predicate();
+            ORE_TERM_PREDICATE.setNamespace(Vocab.dcterms_Agent.ns().toString());
+            ORE_TERM_PREDICATE.setPrefix(Vocab.dcterms_Agent.schema());
+            URI uri = new URI("http://purl.org/dc/elements/1.1/source");
+            ORE_TERM_PREDICATE.setName("source");
+            ORE_TERM_PREDICATE.setURI(uri);
+            triple.relate(ORE_TERM_PREDICATE, mediciInstance.getUrl()+ "/api/image/download/"+tagId);
+            rem.addTriple(triple);
+            fetch.write(mediciInstance.getUrl()+ "/api/image/download/"+tagId+" "+size+" "+dataPath+title+"\n");
+            manifest.write("0000000000000000000" + "  " +dataPath+title+"\n");
+        }
 
-                    String uri = DEFAULT_URL_PREFIX + URLEncoder.encode(child);
-                    if(mediciInstance!=null)
-                        uri =  mediciInstance.getUrl()+"#collection?uri="+ URLEncoder.encode(child);
-
-                    //Based on http://www.openarchives.org/ore/0.1/datamodel#nestedAggregations
-                    AggregatedResource subAggResource = agg.createAggregatedResource(
-                            new URI(
-                                   uri
-                            )
-
-                    );
-                    subAggResource.addType(new URI(agg.getTypes().get(0).toString()));//type aggregation
-
-                    Triple resourceMapSource = new TripleJena();
-                    resourceMapSource.initialise(subAggResource);
-
-                    String childguid = null;
-                    if(child.contains("/"))
-                        childguid = id.split("/")[child.split("/").length-1];
-                    else
-                        childguid = id.split(":")[child.split(":").length-1];
-
-                    resourceMapSource.relate(DC_TERMS_SOURCE,
-                                    bagPath+ childguid + "_oaiore.xml");                         //make this a file path or just the is and the oai-ore can be tracked from here
-                    rem.addTriple(resourceMapSource);
-
-                    agg.addAggregatedResource(subAggResource);
-
-                    String remId =  DEFAULT_URL_PREFIX + URLEncoder.encode(child);
-                    if(mediciInstance!=null)
-                        remId = mediciInstance.getUrl()+"#collection?uri="+ URLEncoder.encode(child);
-
-                    Aggregation newAgg = OREFactory.createAggregation(new URI(
-                            remId+"_Aggregation"
-                    ));
-                    ResourceMap newRem = newAgg.createResourceMap(new URI(
-                            remId
-                    ));
-                    Agent creator = OREFactory.createAgent();
-                    creator.addName("SEAD_VA BagItService");
-
-                    newRem.addCreator(creator);
-
-                    newAgg.addCreator(creator);
-                    newAgg.addTitle("Transit BagIt - Sub Collection");
-
-                    BufferedWriter ore = new BufferedWriter(oreStream);
-
-                    String resourceMapXml = "";
-                    ORESerialiser serial = ORESerialiserFactory.getInstance(RESOURCE_MAP_SERIALIZATION_FORMAT);
-                    ResourceMapDocument doc = serial.serialise(rem);
-                    resourceMapXml = doc.toString();
-
-                    ore.write(resourceMapXml);
-                    ore.close();
-                    manifest.write("0000000000000000000" + "  " + guid+"_oaiore.xml"+"\n");
-
-                    toOAIORE(newAgg, newRem, relation, child, id, existingFiles, bagPath, dataPath, mediciInstance, fetch, manifest);
-                }
-            }
     }
 
     ResearchObject sip = new ResearchObject();

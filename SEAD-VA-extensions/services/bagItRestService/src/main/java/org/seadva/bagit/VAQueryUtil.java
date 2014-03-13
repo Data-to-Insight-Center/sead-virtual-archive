@@ -17,23 +17,24 @@
 package org.seadva.bagit;
 
 import org.sead.acr.common.MediciProxy;
+import org.sead.acr.common.utilities.json.JSONArray;
 import org.sead.acr.common.utilities.json.JSONException;
+import org.sead.acr.common.utilities.json.JSONObject;
 import org.seadva.bagit.model.MediciInstance;
 import org.seadva.bagit.model.Query;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class VAQueryUtil{
 
 	String query;
        public String getJsonResponse(MediciInstance t_instance,String queryTitle, String tagId) throws IOException, JSONException {
 
-
-        	query = Query.fromTitle(queryTitle).getQuery();
-        	
-        	if(tagId!=null)
-        		query = query.replace("tagId", tagId);
-        	
+           query ="SELECT ?object WHERE { "+
+               "<"+tagId+"> <"+queryTitle+"> ?object ."+
+                       " }";
            return getProxy(t_instance).getSparqlJSONResponse("query="+query);
         }
 
@@ -44,6 +45,80 @@ public class VAQueryUtil{
                     t_instance.getRemoteAPI());
 	    	return _mp;
 		}
-		
+
+    public List<String> parseJsonAttribute(String json, String attribute) {
+
+        List<String> result = new ArrayList<String>();
+
+        JSONObject jsonObject;
+        JSONArray resultArray = new JSONArray();
+        try {
+            jsonObject = new JSONObject(json);
+
+
+            JSONObject resultObject = jsonObject.getJSONObject("sparql")
+                    .getJSONObject("results");
+
+            if(resultObject.has("result")){
+                try{
+                    resultArray.put(0, resultObject.getJSONObject("result"));
+                }
+                catch(Exception e){
+                    resultArray = resultObject.getJSONArray("result");
+                }
+
+            }
+        }catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try{
+            for(int i =0; i< resultArray.length();i++){
+                JSONArray binding = resultArray.getJSONObject(i).getJSONArray("binding");
+                String title = "";
+                String id = "";
+                for(int j =0; j< binding.length();j++){
+                    if(((String)binding.getJSONObject(j).get("name")).equalsIgnoreCase("id"))
+                        id = (String)binding.getJSONObject(j).get("literal");
+                    if(id.equalsIgnoreCase(attribute))
+                        if(((String)binding.getJSONObject(j).get("name")).equalsIgnoreCase("name"))
+                        {
+                            title = (String)binding.getJSONObject(j).get("literal");
+                            result.add(title);
+                        }
+                }
+            }
+        }
+        catch (JSONException e) {
+            JSONObject binding = null;
+            for(int i =0; i< resultArray.length();i++){
+                try {
+
+                    binding = resultArray.getJSONObject(i).getJSONObject("binding");
+                    String title = "";
+                    String key = (String)binding.get("name");
+                    if(key.equalsIgnoreCase(attribute))
+                    {
+                        if(binding.get("literal") instanceof String)
+                            title = (String)binding.get("literal");
+                        else{
+                            JSONObject temp = (JSONObject)binding.get("literal");
+                            title = temp.get("content").toString();
+                        }
+                        result.add(title);
+                    }
+                } catch (JSONException e1) {
+                    assert binding != null;
+                    String value = null;
+                    try {
+                        value = (String)binding.get("uri");
+                    } catch (JSONException e2) {
+                        e2.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    }
+                    result.add(value);
+                }
+            }
+        }
+        return result;
+    }
 		
 }

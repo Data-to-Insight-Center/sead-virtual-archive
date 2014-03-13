@@ -16,12 +16,10 @@
 
 package org.seadva.bagit.util;
 
-import com.sun.syndication.feed.rss.Guid;
 import org.apache.commons.io.IOUtils;
 import org.dspace.foresite.*;
 import org.sead.acr.common.utilities.json.JSONException;
 import org.seadva.bagit.model.*;
-import org.seadva.bagit.MediciServiceImpl;
 import org.seadva.bagit.OreGenerator;
 
 import java.io.*;
@@ -33,9 +31,8 @@ import java.util.*;
  */
 public class AcrBagItConverter {
 
-    MediciServiceImpl mediciService;
-    public AcrBagItConverter(){
-        mediciService = new MediciServiceImpl();
+    public static DatasetRelation relations = new DatasetRelation();
+    public AcrBagItConverter() throws URISyntaxException {
     }
 
     //#1 Convert ACR metadata into a bag
@@ -43,32 +40,9 @@ public class AcrBagItConverter {
     public String convertRdfToBagit(String collectionId,
                                     MediciInstance mediciInstance
                                     ) throws IOException, JSONException {
-
-        mediciService.populateKids(
-            collectionId,
-            "collection",
-            mediciInstance
-        );
         return generateOREPackage(collectionId, mediciInstance);
     }
         private String generateOREPackage(String collectionId,MediciInstance mediciInstance) throws IOException, JSONException {
-        Map<String,List<FileNode>> existingFiles = new HashMap<String, List<FileNode>>();
-
-        Map<String,CollectionNode>  tempDuMp = new HashMap<String, CollectionNode>(MediciServiceImpl.relations.getDuAttrMap());
-        Iterator iterator = tempDuMp.entrySet().iterator();
-        while(iterator.hasNext()){
-            Map.Entry pairs = (Map.Entry)iterator.next();
-            List<FileNode> tempFileNodes = new ArrayList<FileNode>();
-
-            List<String> files = ((CollectionNode)pairs.getValue()).getSub().get(CollectionNode.SubType.File);
-            if(files!=null)
-                for(String file:files){
-                    tempFileNodes.add(MediciServiceImpl.relations.getFileAttrMap().get(file));
-                }
-            existingFiles.put((String)pairs.getKey(),tempFileNodes);
-
-            iterator.remove();
-        }
 
 
 
@@ -93,28 +67,23 @@ public class AcrBagItConverter {
         manifest = new BufferedWriter(manifestStream);
 
 
-        manifest.write("0000000000000000000" + "  " + "data/" + guid + "_fgdc.xml");
+        /*manifest.write("0000000000000000000" + "  " + "data/" + guid + "_fgdc.xml");
 
 
         if(collectionId!=null){
             fgdc = new BufferedWriter(fgdcStream);
-            String xml = FgdcGenerator.createFGDC((CollectionNode) MediciServiceImpl.relations.getDuAttrMap().get(collectionId));
+            String xml = FgdcGenerator.createFGDC(null);
             fgdc.write(xml);
             fgdc.close();
-        }
+        }*/
 
         String dataPath = "data/";
         try {
             OreGenerator oreGenerator = new OreGenerator();
-            oreGenerator.toOAIORE(null,null,MediciServiceImpl.relations,
-                    collectionId,
-                    collectionId,
-                    existingFiles,
-                    bagPath,
-                    dataPath,
-                    mediciInstance,
-                    fetch,
-                    manifest);
+            oreGenerator.toOAIORE(
+                    null, null, collectionId,
+                    "collection", bagPath, null,
+                    mediciInstance, fetch, manifest);
 
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -264,24 +233,24 @@ public class AcrBagItConverter {
 
 
         for(Node child:children){
-            MediciServiceImpl.relations.getParentMap().put(ids.get(child.getTitle()),parent);
+            relations.getParentMap().put(ids.get(child.getTitle()),parent);
 
             if(!parents.containsKey(child.getTitle()))   {//file
                 if(parent.equalsIgnoreCase("null"))
                     continue;
-                MediciServiceImpl.relations.getFileAttrMap().put(child.getId(),(FileNode)child);
-                CollectionNode parentDu = MediciServiceImpl.relations.getDuAttrMap().get(ids.get(parent));
+                relations.getFileAttrMap().put(child.getId(),(FileNode)child);
+                CollectionNode parentDu = relations.getDuAttrMap().get(ids.get(parent));
                 parentDu.addSub(CollectionNode.SubType.File, child.getId());
-                MediciServiceImpl.relations.getDuAttrMap().put(ids.get(parent),parentDu);
+                relations.getDuAttrMap().put(ids.get(parent),parentDu);
             }
             else{
 
                 if(!parent.equalsIgnoreCase("null"))      {
-                    CollectionNode parentDu = MediciServiceImpl.relations.getDuAttrMap().get(ids.get(parent));
+                    CollectionNode parentDu = relations.getDuAttrMap().get(ids.get(parent));
                     parentDu.addSub(CollectionNode.SubType.Collection, ids.get(child.getTitle()));
-                    MediciServiceImpl.relations.getDuAttrMap().put(ids.get(parent),parentDu);
+                    relations.getDuAttrMap().put(ids.get(parent),parentDu);
                 }
-                MediciServiceImpl.relations.getDuAttrMap().put(child.getId(), (CollectionNode)child);
+                relations.getDuAttrMap().put(child.getId(), (CollectionNode)child);
                 createORE(child.getTitle());
              }
         }
