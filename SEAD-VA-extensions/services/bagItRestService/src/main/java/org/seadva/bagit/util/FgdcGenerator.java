@@ -18,21 +18,17 @@ package org.seadva.bagit.util;
 
 import noNamespace.*;
 import org.apache.xmlbeans.XmlException;
-import org.seadva.bagit.model.CollectionNode;
-import org.seadva.bagit.model.Creator;
 import org.seadva.model.SeadDeliverableUnit;
 import org.seadva.model.SeadPerson;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * FGDC generator
  */
 public class FgdcGenerator {
-    public static String createFGDC(CollectionNode parentCollection){
+    /*public static String createFGDC(CollectionNode parentCollection){
         Set<String> creators = new HashSet<String>();
         if(parentCollection.getCreators()!=null)
             for(Creator creator:parentCollection.getCreators())
@@ -46,7 +42,7 @@ public class FgdcGenerator {
                 parentCollection.getAbstract(),
                 parentCollection.getDate());
     }
-
+*/
     public static SeadDeliverableUnit fromFGDC(String fgdcFilePath, SeadDeliverableUnit du){
         try {
             //title, abstract,creator,bounding boxes,date

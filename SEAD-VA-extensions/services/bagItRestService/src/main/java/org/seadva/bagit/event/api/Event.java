@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 The Trustees of Indiana University
+ * Copyright 2013 The Trustees of Indiana University
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.seadva.bagit.model;
+package org.seadva.bagit.event.api;
 
 /**
- * Metadata details are set in implementations of interface Node.
+ * Events in generation of Bags
  */
-public interface Node {
-
-    void setTitle(String title);
-
-    String getTitle();
-
-    public String getId();
-
-    public void setId(String id);
+public enum Event {
+    UNZIP_BAG,
+    PARSE_FETCH,
+    PARSE_DIRECTORY,
+    PARSE_ACR_COLLECTION,
+    GENERATE_ORE,
+    GENERATE_FGDC,
+    GENERATE_FETCH,
+    GENERATE_MANIFEST,
+    ZIP_BAG,
+    GENERATE_SIP,
+    GENERATE_DATA_DIR,
+    ERROR
 }

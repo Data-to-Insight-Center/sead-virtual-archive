@@ -1,0 +1,2 @@
+http://ashbha.ads.iu.edu/sample/sample.pdf 81818 data/sample/sample.pdf
+http://ashbha.ads.iu.edu/sample/sample.xls 23040 data/sample/sample.xls

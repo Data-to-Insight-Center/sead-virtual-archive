@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<instances>
+    <instance>
+        <id>1</id>
+        <url>http://nced.ncsa.illinois.edu/acr</url>
+        <remoteAPI>the-remote-api-key-of-the-instance</remoteAPI>
+        <title>NCED Project</title>
+        <type>medici</type>
+        <user>your-username-in-acr</user>
+        <password>your-acr-password</password>
+    </instance>
+    <instance>
+        <id>2</id>
+        <url>http://sead.ncsa.illinois.edu/acr</url>
+        <remoteAPI>the-remote-api-key-of-the-instance</remoteAPI>
+        <title>SEAD demo Project</title>
+        <type>demo</type>
+        <user>your-username-in-acr</user>
+        <password>your-acr-password</password>
+    </instance>
+    <instance>
+        <id>3</id>
+        <url>http://sead-demo.ncsa.illinois.edu/acr</url>
+        <remoteAPI>the-remote-api-key-of-the-instance</remoteAPI>
+        <title>Public Project</title>
+        <type>public</type>
+        <user>your-username-in-acr</user>
+        <password>your-acr-password</password>
+    </instance>
+</instances>

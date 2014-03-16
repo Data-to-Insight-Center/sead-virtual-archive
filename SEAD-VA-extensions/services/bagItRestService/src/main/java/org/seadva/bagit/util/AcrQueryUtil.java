@@ -14,27 +14,25 @@
  * limitations under the License.
  */
 
-package org.seadva.bagit;
+package org.seadva.bagit.util;
 
 import org.sead.acr.common.MediciProxy;
 import org.sead.acr.common.utilities.json.JSONArray;
 import org.sead.acr.common.utilities.json.JSONException;
 import org.sead.acr.common.utilities.json.JSONObject;
 import org.seadva.bagit.model.MediciInstance;
-import org.seadva.bagit.model.Query;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VAQueryUtil{
+public class AcrQueryUtil{
 
 	String query;
-       public String getJsonResponse(MediciInstance t_instance,String queryTitle, String tagId) throws IOException, JSONException {
-
+       public String getJsonResponse(MediciInstance t_instance,String predicate, String tagId) throws IOException, JSONException {
            query ="SELECT ?object WHERE { "+
-               "<"+tagId+"> <"+queryTitle+"> ?object ."+
-                       " }";
+                   "<"+tagId+"> <"+predicate+"> ?object ."+
+                   " }";
            return getProxy(t_instance).getSparqlJSONResponse("query="+query);
         }
 
@@ -120,5 +118,4 @@ public class VAQueryUtil{
         }
         return result;
     }
-		
 }

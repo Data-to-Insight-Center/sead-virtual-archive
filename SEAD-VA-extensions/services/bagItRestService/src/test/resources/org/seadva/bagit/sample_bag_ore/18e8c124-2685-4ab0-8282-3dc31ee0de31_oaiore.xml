@@ -1,0 +1,38 @@
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:foaf="http://xmlns.com/foaf/0.1/"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:ore="http://www.openarchives.org/ore/terms/"
+    xmlns:dcterms="http://purl.org/dc/terms/" > 
+  <rdf:Description rdf:about="http://seadva.d2i.indiana.edu/325ded04-83b8-4a6b-ad33-e52355d46281">
+    <ore:isAggregatedBy>http://seadva.d2i.indiana.edu/18e8c124-2685-4ab0-8282-3dc31ee0de31_Aggregation</ore:isAggregatedBy>
+    <dc:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#string">325ded04-83b8-4a6b-ad33-e52355d46281</dc:identifier>
+    <dcterms:title rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sample.pdf</dcterms:title>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A0">
+    <foaf:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">SEAD_VA BagItService</foaf:name>
+    <rdf:type rdf:resource="http://purl.org/dc/terms/Agent"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://seadva.d2i.indiana.edu/18e8c124-2685-4ab0-8282-3dc31ee0de31_Aggregation">
+    <rdf:type rdf:resource="http://www.openarchives.org/ore/terms/Aggregation"/>
+    <ore:isDescribedBy rdf:resource="http://seadva.d2i.indiana.edu/18e8c124-2685-4ab0-8282-3dc31ee0de31"/>
+    <ore:aggregates rdf:resource="http://seadva.d2i.indiana.edu/325ded04-83b8-4a6b-ad33-e52355d46281"/>
+    <ore:aggregates rdf:resource="http://seadva.d2i.indiana.edu/84f8fd73-f79e-4914-83ca-abc7e54b799c"/>
+    <dc:creator rdf:nodeID="A0"/>
+    <dc:title>Transit BagIt - Sub Collection</dc:title>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://seadva.d2i.indiana.edu/18e8c124-2685-4ab0-8282-3dc31ee0de31">
+    <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2014-03-16T09:25:34-0400</dcterms:modified>
+    <ore:describes rdf:resource="http://seadva.d2i.indiana.edu/18e8c124-2685-4ab0-8282-3dc31ee0de31_Aggregation"/>
+    <rdf:type rdf:resource="http://www.openarchives.org/ore/terms/ResourceMap"/>
+    <dc:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#string">18e8c124-2685-4ab0-8282-3dc31ee0de31</dc:identifier>
+    <dcterms:title rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sample</dcterms:title>
+    <dc:creator rdf:nodeID="A0"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://seadva.d2i.indiana.edu/84f8fd73-f79e-4914-83ca-abc7e54b799c">
+    <ore:isAggregatedBy>http://seadva.d2i.indiana.edu/18e8c124-2685-4ab0-8282-3dc31ee0de31_Aggregation</ore:isAggregatedBy>
+    <dc:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#string">84f8fd73-f79e-4914-83ca-abc7e54b799c</dc:identifier>
+    <dcterms:title rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sample.xls</dcterms:title>
+  </rdf:Description>
+</rdf:RDF>

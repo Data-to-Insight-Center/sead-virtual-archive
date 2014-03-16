@@ -1,0 +1,3 @@
+0000000000000000000  data/sample_bag_fgdc.xml0000000000000000000  data/sample/sample.pdf
+0000000000000000000  data/sample/sample.xls
+0000000000000000000  sample_bag_oaiore.xml

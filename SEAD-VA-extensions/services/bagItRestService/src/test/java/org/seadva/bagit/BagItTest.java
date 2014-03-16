@@ -23,12 +23,19 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
 import com.sun.jersey.multipart.FormDataMultiPart;
 import com.sun.jersey.multipart.file.FileDataBodyPart;
 import com.sun.jersey.test.framework.JerseyTest;
+import com.sun.jersey.test.framework.WebAppDescriptor;
 import com.thoughtworks.xstream.XStream;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.seadva.bagit.model.ActiveWorkspace;
 import org.seadva.bagit.model.ActiveWorkspaces;
+import org.seadva.bagit.service.Bag;
+import org.seadva.bagit.service.BagItUtil;
+import org.springframework.mock.web.MockServletContext;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import java.io.*;
@@ -40,7 +47,8 @@ import static org.junit.Assert.assertEquals;
 public class BagItTest extends JerseyTest {
 
     public BagItTest() throws Exception {
-        super("org.seadva.bagit");
+        super(new WebAppDescriptor.Builder("org.seadva.bagit").
+                contextParam("testPath","/src/main/webapp/").build());
     }
 
     @Test
@@ -53,7 +61,9 @@ public class BagItTest extends JerseyTest {
         ClientResponse response = webResource.path("acrToBag")
                 .path("bag")
                 .path(
-                        URLEncoder.encode("tag:cet.ncsa.uiuc.edu,2008:/bean/Collection/E012014D-7379-4556-8A87-6AD262965C89")
+                        URLEncoder.encode(
+                                "tag:cet.ncsa.uiuc.edu,2008:/bean/Collection/E012014D-7379-4556-8A87-6AD262965C89"
+                        )
                 )
                 .queryParams(params)
                 .accept("application/zip")
@@ -89,7 +99,7 @@ public class BagItTest extends JerseyTest {
 
     @Test
     public void testListACR(){
-        AcrToBagItService service= new AcrToBagItService();
+        Bag service= new Bag();
         XStream xStream = new XStream();
 
         ActiveWorkspaces workspaceList = new ActiveWorkspaces();
@@ -102,7 +112,7 @@ public class BagItTest extends JerseyTest {
 
         WebResource webResource = resource();
 
-        File file = new File(getClass().getResource("sample_bag.zip").getFile());
+        File file = new File(getClass().getResource("E012014D-7379-4556-8A87-6AD262965C89.zip").getFile());
         FileDataBodyPart fdp = new FileDataBodyPart("file", file,
                 MediaType.APPLICATION_OCTET_STREAM_TYPE);
 
@@ -121,10 +131,10 @@ public class BagItTest extends JerseyTest {
     }
 
     @Test
-    public void testOREUtil() {
+    public void testOreHoleyBagUtil() {
         WebResource webResource = resource();
 
-        File file = new File(getClass().getResource("org/seadva/bagit/no_ORE_bag.zip").getFile());
+        File file = new File(getClass().getResource("no_ore_bag.zip").getFile());
         FileDataBodyPart fdp = new FileDataBodyPart("file", file,
                 MediaType.APPLICATION_OCTET_STREAM_TYPE);
 
@@ -134,6 +144,28 @@ public class BagItTest extends JerseyTest {
 
         ClientResponse response = webResource.path("bagUtil")
                 .path("OreBag")
+                .type(MediaType.MULTIPART_FORM_DATA)
+                .post(ClientResponse.class, formDataMultiPart);
+        assertEquals(200,response.getStatus());
+
+    }
+
+    @Context
+    ServletContext servletConfig;
+    @Test
+    public void testOreDataBagUtil() {
+        WebResource webResource = resource();
+
+        File file = new File(getClass().getResource("sample_bag.zip").getFile());
+        FileDataBodyPart fdp = new FileDataBodyPart("file", file,
+                MediaType.APPLICATION_OCTET_STREAM_TYPE);
+
+        FormDataMultiPart formDataMultiPart = new FormDataMultiPart();
+
+        formDataMultiPart.bodyPart(fdp);
+
+        ClientResponse response = webResource.path("bagUtil")
+                .path("OreDataBag")
                 .type(MediaType.MULTIPART_FORM_DATA)
                 .post(ClientResponse.class, formDataMultiPart);
         assertEquals(200,response.getStatus());

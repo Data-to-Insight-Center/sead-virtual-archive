@@ -14,22 +14,12 @@
  * limitations under the License.
  */
 
-package org.seadva.bagit;
+package org.seadva.bagit.api;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+/**
+ * Bootstrap interface for loading configurations
+ */
 
-public class NotFoundException extends WebApplicationException {
-     public NotFoundException(String message) {
-
-         super(Response
-                 .status(Response.Status.NOT_FOUND)
-                 .header("SEAD-Exception-Name", "NotFound")
-                 .header("SEAD-Exception-Description", "The specified object does not exist on this node.")
-                 .entity(message)
-                 .type(MediaType.APPLICATION_XML)
-                 .build());
-
-     }
+public interface Bootstrap {
+    void load();
 }

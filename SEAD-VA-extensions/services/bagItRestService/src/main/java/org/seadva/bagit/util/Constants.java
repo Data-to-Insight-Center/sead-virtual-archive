@@ -38,29 +38,36 @@ public class Constants {
     public static String unzipDir = null;
     public static String sipDir = null;
     public static String FORMAT_IANA_SCHEME = "http://www.iana.org/assignments/media-types/";
+    public static String titleTerm = "http://purl.org/dc/terms/title";
+    public static String identifierTerm = "http://purl.org/dc/elements/1.1/identifier";
+    public static String sizeTerm = "http://purl.org/dc/terms/SizeOrDuration";
+    public static String sourceTerm = "http://purl.org/dc/elements/1.1/source";
+    public static String formatTerm = "http://purl.org/dc/elements/1.1/format";
 
     static{
         try {
 
             acrInstances = new Constants().loadAcrInstances();
-            metadataPredicateMap = new Constants().loadMetadataMapping();
+            metadataPredicateMap = new Constants().loadAcrMetadataMapping();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     public static List<MediciInstance> acrInstances;
-    public static Map<String,String> metadataPredicateMap;
 
-    private Map<String,String>  loadMetadataMapping() throws IOException {
-        Map<String,String> metadataPredicateMap = new HashMap<String, String>();
-        StringWriter writer = new StringWriter();
+    public static Map<String, String> metadataPredicateMap;
+
+    private  Map<String, String> loadAcrMetadataMapping() throws IOException{
+        Map<String, String> metadataPredicateMap = new HashMap<String, String>();
+
         InputStream inputStream =
                 getClass().getResourceAsStream(
-                        "../../../../../ACR_to_ORE_MappingConfig.properties"
+                        "../ACR_to_ORE_MappingConfig.properties"
                 );
+        StringWriter writer = new StringWriter();
         IOUtils.copy(inputStream, writer);
+
         String result = writer.toString();
         String[] pairs = result.trim().split(
                 "\n|\\=");
@@ -74,12 +81,11 @@ public class Constants {
         return metadataPredicateMap;
     }
 
-
     private List<MediciInstance> loadAcrInstances() throws IOException{
         List<MediciInstance> instances = new ArrayList<MediciInstance>();
         InputStream inputStream =
                   getClass().getResourceAsStream(
-                        "../../../../../acrInstances.xml"
+                        "../acrInstances.xml"
                );
         StringWriter writer = new StringWriter();
         IOUtils.copy(inputStream, writer);
