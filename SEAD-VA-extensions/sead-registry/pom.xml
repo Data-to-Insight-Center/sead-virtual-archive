@@ -26,6 +26,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>sead-registry-api</module>
+        <module>sead-registry-dao-impl</module>
         <module>sead-registry-impl</module>
         <module>sead-registry-jdbc-support</module>
         <module>sead-registry-mapper</module>
