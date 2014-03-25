@@ -74,8 +74,8 @@ public class DatabaseSingleton {
 	   public static DatabaseSingleton getInstance() throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException, IOException {
 	      if(instance == null) {
               InputStream inputStream =
-                DatabaseSingleton.class.getClassLoader().getResourceAsStream(
-                              "./multi-valued-field.properties"
+                DatabaseSingleton.class.getResourceAsStream(
+                              "./Config.properties"
                       );
               StringWriter writer = new StringWriter();
               IOUtils.copy(inputStream, writer);

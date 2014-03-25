@@ -29,6 +29,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Read/Write EntityType from db
@@ -45,6 +46,8 @@ public class EntityTypeJdbcDaoImpl extends EntityTypeDaoImpl {
         String sql = "INSERT INTO "+tableName+" (entity_type_id, entity_type_name, entity_id) VALUES (?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
+        if(entityTypeDao.getEntityTypeId()==null)
+            entityTypeDao.setEntityTypeId(UUID.randomUUID().toString());
         preparedStatement.setString(1, entityTypeDao.getEntityTypeId());
         preparedStatement.setString(2, entityTypeDao.getEntityTypeName());
         preparedStatement.setString(3, entityTypeDao.getEntity_id());
