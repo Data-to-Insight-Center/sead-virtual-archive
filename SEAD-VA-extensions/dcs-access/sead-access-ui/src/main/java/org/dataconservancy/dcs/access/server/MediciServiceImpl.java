@@ -50,6 +50,8 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 
 import org.apache.abdera.Abdera;
 import org.apache.abdera.protocol.client.AbderaClient;
@@ -99,6 +101,11 @@ import org.seadva.model.builder.xstream.SeadXstreamStaxModelBuilder;
 import org.seadva.model.pack.ResearchObject;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.core.util.MultivaluedMapImpl;
+import com.sun.jersey.multipart.FormDataMultiPart;
+import com.sun.jersey.multipart.file.FileDataBodyPart;
 
 
 
@@ -217,10 +224,11 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
 
 	int count =0 ;
 
+	ResearchObject masterSip;
 	public void populateKids(String sipPath) {
 		relations = new DatasetRelation();
 		try {
-			ResearchObject masterSip = (ResearchObject)new SeadXstreamStaxModelBuilder().buildSip(new FileInputStream(new File(sipPath)));
+			masterSip = (ResearchObject)new SeadXstreamStaxModelBuilder().buildSip(new FileInputStream(new File(sipPath)));
 			for(DcsDeliverableUnit deliverableUnit:masterSip.getDeliverableUnits()){
 				CollectionNode collection = relations.getDuAttrMap().get(deliverableUnit.getId());
 				if(collection==null)
@@ -353,7 +361,7 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
 		
 	}
 	
-	public String getDuTitle(String tagId, String baseUrl, String acrUser,MediciInstance sparqlEndpoint){
+	public String getDuTitle(String tagId, String baseUrl, MediciInstance sparqlEndpoint){
 		//Http call to VA query servlet
 		String url = baseUrl+ "acrcommon"+"?instance="+
 				java.net.URLEncoder.encode(sparqlEndpoint.getTitle())
@@ -361,10 +369,6 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
         		"query="+
         		java.net.URLEncoder.encode(Query.DU_TITLE.getTitle())+
         		"&"+
-        		"user="+
-        		java.net.URLEncoder.encode(
-        				acrUser
-        		)+"&"+
         		"tagid="+
         		java.net.URLEncoder.encode(tagId)
         		;
@@ -551,7 +555,7 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
                String pass,
                boolean restrictAccess, 
                String appBaseUrl,
-               String tmpHome, String acrUser){
+               String tmpHome){
 		
 		
 
@@ -578,7 +582,7 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
 		String datasetTitle = datasetId;
 		
 		if(sparqlEndpoint!=null)
-			datasetTitle = getDuTitle(datasetId, appBaseUrl, acrUser, sparqlEndpoint);
+			datasetTitle = getDuTitle(datasetId, appBaseUrl, sparqlEndpoint);
 		
 		SimpleDateFormat ft = 
 			      new SimpleDateFormat ("yyyy-MM-dd");
@@ -898,105 +902,78 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public String getBag(String tagId, MediciInstance sparqlEndpoint, String bagitEp, String tmpHome) {
 		
-        String url = bagitEp + "bag/"+
-                URLEncoder.encode(tagId)+"?sparqlEpEnum="+sparqlEndpoint.getId()
-        		;
+		String splitChar = "/";
+		if(!tagId.contains("/"))
+			 splitChar = ":";
+		String guid = tagId.split(splitChar)[tagId.split(splitChar).length-1];
+		
+		Client client = Client.create();
+		com.sun.jersey.api.client.WebResource webResource = client
+				   .resource(bagitEp + "bag/");
 
-        String[] arr = tagId.split("/");
-        BufferedInputStream in = null;
-        FileOutputStream fout = null;
-        try
-        {
-            in = new BufferedInputStream(new URL(url).openStream());
-            fout = new FileOutputStream(tmpHome+arr[arr.length-1]+".zip");
-
-            byte data[] = new byte[1024];
-            int count;
-            while ((count = in.read(data, 0, 1024)) != -1)
-            {
-                fout.write(data, 0, count);
-            }
-            if (in != null)
-                in.close();
-            if (fout != null)
-                fout.close();
-        } catch (MalformedURLException e) {
+	     MultivaluedMap<String, String> params = new MultivaluedMapImpl();
+	     params.add("sparqlEpEnum", String.valueOf(sparqlEndpoint.getId()));
+	
+	     com.sun.jersey.api.client.ClientResponse response = webResource
+	                .path(
+	                        URLEncoder.encode(
+	                                tagId
+	                        )
+	                )
+	                .queryParams(params)
+	                .accept("application/zip")
+	                .get(com.sun.jersey.api.client.ClientResponse.class);
+	 
+        StringWriter writer = new StringWriter();
+        try {
+			IOUtils.copy(response.getEntityInputStream(),new FileOutputStream(tmpHome+guid+".zip"));
+		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-       
-		return null;
+        return tmpHome+guid+".zip";
 	}
 
 
 	@Override
-	public String getSipFromBag(String collectionId, String sipPath, String tmpHome, MediciInstance sparqlInstance) {
-		String guid;
-        if(collectionId.contains("/"))
-            guid = collectionId.split("/")[collectionId.split("/").length-1];
-        else
-            guid = collectionId.split(":")[collectionId.split(":").length-1];
+	public String getSipFromBag(String bagPath, String sipPath, String bagitEp) {
+		
+		 
+		Client client = Client.create();
+		com.sun.jersey.api.client.WebResource webResource = client
+				   .resource(bagitEp + "sip/");
 
-        String zippedBag = tmpHome+guid+".zip";
-        String unzipDir = tmpHome+guid+"/";
-        String sipDir = sipPath.substring(sipPath.lastIndexOf("/"));
-        try {
-	        if(!(new File(unzipDir).exists()))
-	            (new File(unzipDir)).mkdirs();
-	        if(!(new File(sipDir).exists()))
-	            (new File(sipDir)).mkdirs();
-	        ZipUtil.unzip(zippedBag, unzipDir);
-	
-	        OreGenerator oreGenerator = new OreGenerator();
-	        oreGenerator.fromOAIORE(collectionId, null, unzipDir,sparqlInstance);
-	
-	        File sipFile = new File(sipPath);
-	        
-	        OutputStream out = FileUtils.openOutputStream(sipFile);
-	        new SeadXstreamStaxModelBuilder().buildSip(oreGenerator.sip, out);
-			out.close();
-			populateKids(sipPath);
-			fileNos = oreGenerator.sip.getFiles().size();
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (OREException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        File file = new File(bagPath);
+        FileDataBodyPart fdp = new FileDataBodyPart("file", file,
+                MediaType.APPLICATION_OCTET_STREAM_TYPE);
+
+        FormDataMultiPart formDataMultiPart = new FormDataMultiPart();
+
+        formDataMultiPart.bodyPart(fdp);
+
+        com.sun.jersey.api.client.ClientResponse response = webResource
+        		.type(MediaType.MULTIPART_FORM_DATA)
+                .post(com.sun.jersey.api.client.ClientResponse.class, formDataMultiPart);
+        
+        	try {
+				IOUtils.copy(response.getEntityInputStream(),new FileOutputStream(sipPath));
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        	populateKids(sipPath);
+			fileNos = masterSip.getFiles().size();
+       
         return sipPath;
 	}
 
-	private void saveUrl(String filename, InputStream in) throws MalformedURLException, IOException
-    {
-        FileOutputStream fout = null;
-        try
-        {
-            fout = new FileOutputStream(filename);
-
-            byte data[] = new byte[1024];
-            int count;
-            while ((count = in.read(data, 0, 1024)) != -1)
-            {
-                fout.write(data, 0, count);
-            }
-        }
-        finally
-        {
-            if (in != null)
-                in.close();
-            if (fout != null)
-                fout.close();
-        }
-    }
-	
+		
 	ResearchObject sipNew = new ResearchObject();
 	
 	@Override

@@ -42,9 +42,7 @@ public class ServerConstants{
 			Iterator pwds = passwords.entrySet().iterator();
 			while(pwds.hasNext()){
 				Map.Entry<String, String> pwd = (Map.Entry<String, String> )pwds.next();
-				if(pwd.getKey().equals("acr"))
-					acrPassword = pwd.getValue();
-				else if(pwd.getKey().equals("email-sender"))
+				if(pwd.getKey().equals("email-sender"))
 					emailPassword = pwd.getValue();
 			}
 			acrInstances = new ServerConstants().loadAcrInstances();
@@ -156,7 +154,9 @@ public class ServerConstants{
 	        int remoteAPI = 0;
 	        int title = 0;
 	        int type = 0;
-	        
+	        int pwd = 0;
+	        int user = 0;
+
 	        MediciInstance instance = null;
 	        
 	        while (eventType != xpp.END_DOCUMENT) {
@@ -165,6 +165,10 @@ public class ServerConstants{
 	            	instance = new MediciInstance();         		
 	            if(xpp.getName().equals("id"))
 	            	id = 1;
+	            if(xpp.getName().equals("user"))
+	            	user = 1;
+	            if(xpp.getName().equals("password"))
+	            	pwd = 1;
 	            if(xpp.getName().equals("url"))
 	            	url = 1;
 	            if(xpp.getName().equals("remoteAPI"))
@@ -191,9 +195,17 @@ public class ServerConstants{
 	        		 instance.setTitle(xpp.getText());
 	        		 title = 0;
 	        	 }
+	        	 else if(pwd ==1){
+	        		 instance.setPassword(xpp.getText());
+	        		 pwd = 0;
+	        	 }
 	        	 else if(type==1){
 	        		 instance.setType(xpp.getText());
 	        		 type = 0;
+	        	 }
+	        	 else if(user==1){
+	        		 instance.setUser(xpp.getText());
+	        		 user = 0;
 	        	 }
 	         }
 	         else if(eventType == xpp.END_TAG) {

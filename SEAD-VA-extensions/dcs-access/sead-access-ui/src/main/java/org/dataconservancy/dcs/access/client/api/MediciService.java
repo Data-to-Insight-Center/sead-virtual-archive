@@ -34,8 +34,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 @RemoteServiceRelativePath("sparql")
 public interface MediciService extends RemoteService {
 	
-	String getSipFromBag(String tagId, String bagPath, String tmpHome,
-			MediciInstance sparqlInstance);
+	String getSipFromBag(String bagPath, String sipPath, String bagitEp);
 	public DatasetRelation getRelations();
 	public String generateWfInstanceId();
 	void toVAmodel(String id, String parent, MediciInstance sparqlEp,
@@ -46,7 +45,7 @@ public interface MediciService extends RemoteService {
 			MediciInstance sparqlInstance, String sipBasePath,
 			String wfInstanceId, List<String> perviousUrls, int startSipNum,
 			int numberOfSips, String username, String pass,
-			boolean restrictAccess, String baseUrl, String tmpHome, String acrUsername);
+			boolean restrictAccess, String baseUrl, String tmpHome);
 	int getFileNos();
 
 	String getBag(String tagId, MediciInstance sparqlEndpoint, String bagitEp, String tmpHome);

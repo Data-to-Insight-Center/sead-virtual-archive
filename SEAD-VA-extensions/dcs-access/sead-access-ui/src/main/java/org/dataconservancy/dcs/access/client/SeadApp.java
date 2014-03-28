@@ -100,7 +100,6 @@ public class SeadApp implements EntryPoint {
     	
     static TextBox accessurl_tb;
     static String datastreamUrl;
-    public static String acrUsername;
     public static String[] admins;
 
     static DockLayoutPanel main;
@@ -460,11 +459,6 @@ public class SeadApp implements EntryPoint {
                                 
                                 if (name.equals("tmp")) {
                                 	tmpHome = value;
-                                }
-                                
-
-                                if (name.equals("acrusername")) {
-                               	 acrUsername = value;
                                 }
                                 
                                 if (name.equals("admins")) {

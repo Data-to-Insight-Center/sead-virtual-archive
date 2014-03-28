@@ -138,8 +138,8 @@ public class UploadBagDialog {
         									sipPath.replace("_0.xml", ""), 
         									wfInstanceId,
         									null,
-        									0, 0, "", "", false, GWT.getModuleBaseURL(),SeadApp.tmpHome, SeadApp.acrUsername
-        									, new AsyncCallback<String>() {
+        									0, 0, "", "", false, GWT.getModuleBaseURL(),SeadApp.tmpHome,
+        									new AsyncCallback<String>() {
         										
         										@Override
         										public void onSuccess(String result) {

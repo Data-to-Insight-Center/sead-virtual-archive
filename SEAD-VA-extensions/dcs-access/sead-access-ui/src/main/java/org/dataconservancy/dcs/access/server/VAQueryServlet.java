@@ -40,7 +40,7 @@ public class VAQueryServlet extends SparqlQueryServlet {
         	String mediciTitle = (String)request.getParameter("instance").replace("+"," ");
         	String queryTitle = (String)request.getParameter("query").replace("+"," ");
         	String tagId = (String)request.getParameter("tagid");
-        	acrUsername = (String)request.getParameter("user");
+        	
         	for(MediciInstance t_instance:ServerConstants.acrInstances)
         		if(t_instance.getTitle().equalsIgnoreCase(mediciTitle))
         			instance = t_instance;
@@ -59,7 +59,7 @@ public class VAQueryServlet extends SparqlQueryServlet {
 		@Override
 		protected MediciProxy getProxy(){
 			MediciProxy _mp = new MediciProxy();
-			_mp. setCredentials(acrUsername, ServerConstants.acrPassword, 
+			_mp. setCredentials(instance.getUser(), instance.getPassword(), 
 	            		 instance.getUrl(),
 	            		 instance.getRemoteAPI());
 	    	return _mp;

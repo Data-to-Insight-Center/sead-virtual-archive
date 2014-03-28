@@ -37,7 +37,7 @@ public interface MediciServiceAsync {
 			AsyncCallback<Void> callback);
 	void getBag(String tagId, MediciInstance sparqlEndpoint, String bagitEp,
 			String tmpHome, AsyncCallback<String> callback);
-	void getSipFromBag(String tagId, String bagPath, String tmpHome, MediciInstance sparqlInstance,
+	void getSipFromBag(String bagPath, String sipPath, String bagitEp,
 			AsyncCallback<String> callback);
 	void addMetadata(String fileSrc, String sipFilePath,
 			AsyncCallback<Void> callback);
@@ -50,7 +50,7 @@ public interface MediciServiceAsync {
 			String wfInstanceId, List<String> perviousUrls, int startSipNum,
 			int numberOfSips, String username, String pass,
 			boolean restrictAccess, String baseUrl, String tmpHome,
-			String acrUsername, AsyncCallback<String> callback);
+			AsyncCallback<String> callback);
 	void generateWfInstanceId(AsyncCallback<String> callback);
 	void parseJson(String json, AsyncCallback<Map<String, String>> callback);
 	void getAcrInstances(AsyncCallback<List<MediciInstance>> callback); 

@@ -282,10 +282,6 @@ public class MediciIngestPresenter  implements Presenter {
 				        		URL.encodeQueryString(
 				        		sparqlEndpoint.getTitle()
 				        		)+"&"+
-				        		"user="+
-				        		URL.encodeQueryString(
-				        		SeadApp.acrUsername
-				        		)+"&"+
 				        		"query="+
 				        		URL.encodeQueryString(
 				        		Query.PROPOSED_FOR_PUBLICATION.getTitle()
@@ -377,7 +373,7 @@ public class MediciIngestPresenter  implements Presenter {
 																					SeadApp.bagIturl, SeadApp.tmpHome,
 																					 new AsyncCallback<String>() {
 																						@Override
-																						public void onSuccess(final String result) {
+																						public void onSuccess(final String bagPath) {
 																							collectionWait.setValue("Converting to SEAD SIP", "wait");
 																						
 																							final Timer getSIPTimer = new Timer() {
@@ -393,9 +389,9 @@ public class MediciIngestPresenter  implements Presenter {
 																						            [((String) pair.getKey()).split(":").length-1];
 																						        final String guid = tempguid;
 																								mediciService.getSipFromBag(
-																									(String) pair.getKey(),
+																										bagPath,
 																									SeadApp.tmpHome+guid+"_sip.xml",
-																									SeadApp.tmpHome,sparqlEndpoint,
+																									SeadApp.bagIturl,
 																									new AsyncCallback<String>() {
 																								
 																								@Override
@@ -482,7 +478,7 @@ public class MediciIngestPresenter  implements Presenter {
 																																												SeadApp.tmpHome+guid+"_sip", 
 																																												wfInstanceId,
 																																												null,
-																																												l, n, "", "", false, GWT.getModuleBaseURL(),SeadApp.tmpHome, SeadApp.acrUsername,
+																																												l, n, "", "", false, GWT.getModuleBaseURL(),SeadApp.tmpHome,
 																																												new AsyncCallback<String>() {
 																																													
 																																													@Override
@@ -690,7 +686,7 @@ public class MediciIngestPresenter  implements Presenter {
 																																											SeadApp.tmpHome+guid+"_sip",
 																																											wfInstanceId,
 																																											null,
-																																											l, n, "", "", false, GWT.getModuleBaseURL(),SeadApp.tmpHome, SeadApp.acrUsername,
+																																											l, n, "", "", false, GWT.getModuleBaseURL(),SeadApp.tmpHome,
 																																											new AsyncCallback<String>() {
 																																												
 																																												@Override
@@ -796,7 +792,7 @@ public class MediciIngestPresenter  implements Presenter {
 																						result.getResumeSipPath().replace("_"+l+".xml", ""),
 																						wfInstanceId,
 																						result.getPreviousStatusUrls(),
-																						l, n, "", "", false, GWT.getModuleBaseURL(),SeadApp.tmpHome,SeadApp.acrUsername,
+																						l, n, "", "", false, GWT.getModuleBaseURL(),SeadApp.tmpHome,
 																						new AsyncCallback<String>() {
 																							
 																							@Override
