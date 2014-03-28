@@ -32,6 +32,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Handler to generate SIP from ORE
@@ -84,8 +85,7 @@ public class SipGenerationHandler implements Handler{
         DC_TERMS_SOURCE.setNamespace(Vocab.dcterms_Agent.ns().toString());
         DC_TERMS_SOURCE.setPrefix(Vocab.dcterms_Agent.schema());
         DC_TERMS_SOURCE.setName("source");
-        DC_TERMS_SOURCE.setURI(new URI(DC_TERMS_SOURCE.getNamespace()
-                + DC_TERMS_SOURCE.getName()));
+        DC_TERMS_SOURCE.setURI(new URI(Constants.sourceTerm));
 
         // create the CITO:isDocumentedBy predicate
         CITO_IS_DOCUMENTED_BY = new Predicate();
@@ -175,6 +175,15 @@ public class SipGenerationHandler implements Handler{
 
             du.setId(duId);
 
+            TripleSelector abstractSelector = new TripleSelector();
+            abstractSelector.setSubjectURI(rem.getURI());
+            abstractSelector.setPredicate(DC_TERMS_ABSTRACT);
+            List<Triple> abstractTriples = rem.listAllTriples(abstractSelector);
+
+            if(abstractTriples.size()>0){
+                du.setAbstrct(abstractTriples.get(0).getObjectLiteral());
+            }
+
             TripleSelector typeSelector = new TripleSelector();
             typeSelector.setSubjectURI(rem.getURI());
             typeSelector.setPredicate(DC_TERMS_TYPE);
@@ -235,7 +244,10 @@ public class SipGenerationHandler implements Handler{
                     selector.setSubjectURI(aggregatedResource.getURI());
                     selector.setPredicate(DC_TERMS_IDENTIFIER);
                     List<Triple> triples = aggregatedResource.listAllTriples(selector);
-                    file.setId(triples.get(0).getObjectLiteral());
+                    if(triples.size()>0)
+                        file.setId(triples.get(0).getObjectLiteral());
+                    else
+                        file.setId(UUID.randomUUID().toString());
 
 
                     TripleSelector filetypeSelector = new TripleSelector();
@@ -269,7 +281,8 @@ public class SipGenerationHandler implements Handler{
                     selector.setSubjectURI(aggregatedResource.getURI());
                     selector.setPredicate(DC_TERMS_TITLE);
                     triples = aggregatedResource.listAllTriples(selector);
-                    file.setName(triples.get(0).getObjectLiteral());
+                    if(triples.size()>0)
+                        file.setName(triples.get(0).getObjectLiteral());
 
 
                     selector = new TripleSelector();

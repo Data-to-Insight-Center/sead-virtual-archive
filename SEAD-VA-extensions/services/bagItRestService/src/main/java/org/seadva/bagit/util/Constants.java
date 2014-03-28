@@ -39,7 +39,7 @@ public class Constants {
     public static String sipDir = null;
     public static String FORMAT_IANA_SCHEME = "http://www.iana.org/assignments/media-types/";
     public static String titleTerm = "http://purl.org/dc/terms/title";
-    public static String identifierTerm = "http://purl.org/dc/elements/1.1/identifier";
+    public static String identifierTerm = "http://purl.org/dc/terms/identifier";
     public static String sizeTerm = "http://purl.org/dc/terms/SizeOrDuration";
     public static String sourceTerm = "http://purl.org/dc/elements/1.1/source";
     public static String formatTerm = "http://purl.org/dc/elements/1.1/format";

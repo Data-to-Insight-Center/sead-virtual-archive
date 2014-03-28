@@ -138,13 +138,12 @@ public class Bag {
         if(packageDescriptor.getBagPath()==null)
             throw new NotFoundException(test);
 
-        String[] filename = packageDescriptor.getBagPath().split("/");
 
         javax.ws.rs.core.Response.ResponseBuilder responseBuilder = javax.ws.rs.core.Response.ok(new FileInputStream(packageDescriptor.getBagPath()));
 
         responseBuilder.header("Content-Type", "application/zip");
         responseBuilder.header("Content-Disposition",
-                "inline; filename=" + filename[filename.length-1]);
+                "inline; filename=" + packageDescriptor.getPackageId().substring(packageDescriptor.getPackageId().lastIndexOf("/")+1)+".zip");
         return responseBuilder.build();
     }
 
