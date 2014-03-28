@@ -114,12 +114,11 @@ public final class JsFile
 
             b.addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent event) {
-                	String source = getSource().replace("%2F","/");
+                	String source = SeadApp.datastreamURLnoEncoding(getId().replace(":", "%3A"));
                 	
                 	String strWindowFeatures = "menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes";
                     Window.open(
-                            //"http://bluespruce.pti.indiana.edu:8181/dcs/datastream/http://bluespruce.pti.indiana.edu:8181/dcs/entity/199"
-                    		source
+                            source
                             , "_blank", strWindowFeatures);
                 }
             });
@@ -153,7 +152,7 @@ public final class JsFile
 
         
     	JsonpRequestBuilder rb = new JsonpRequestBuilder();
-    	String parentdu = SeadApp.accessurl+"/squery/?q="+"id:(\""+getParent()+"\")"+"&offset=0&max=200";
+    	String parentdu = SeadApp.accessurl+SeadApp.queryPath+"?q="+"id:(\""+getParent()+"\")"+"&offset=0&max=200";
     	rb.requestObject(parentdu, new AsyncCallback<JsSearchResult>() {
 
             public void onFailure(Throwable caught) {
