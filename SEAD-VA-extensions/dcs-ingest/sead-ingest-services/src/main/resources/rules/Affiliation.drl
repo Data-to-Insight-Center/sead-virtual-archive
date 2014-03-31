@@ -1,0 +1,23 @@
+package org.seadva.matchmaker.drools.impl
+
+import org.slf4j.LoggerFactory;
+import function org.drools.core.util.StringUtils.isEmpty;
+import org.seadva.model.SeadDeliverableUnit;
+import org.seadva.model.SeadPerson;
+import function org.dataconservancy.dcs.ingest.services.util.VivoUtil.getEmail;
+import function org.dataconservancy.dcs.ingest.services.runners.RulesExecutorBootstrap.addIngestServicesName;
+
+
+rule "Affiliation rule"
+	dialect "mvel"
+when
+     SeadDeliverableUnit($contributors:dataContributors )
+     $seadPerson: SeadPerson( idType == "vivo"&& getEmail(id)=="University of Illinois") from $contributors;
+     $seadDu : SeadDeliverableUnit(sizeBytes < 10000000000 )
+     SeadDeliverableUnit(fileNo < 1000 )
+     SeadDeliverableUnit( "CC" in (rights) )
+
+then
+    addIngestServicesName("test");
+
+end

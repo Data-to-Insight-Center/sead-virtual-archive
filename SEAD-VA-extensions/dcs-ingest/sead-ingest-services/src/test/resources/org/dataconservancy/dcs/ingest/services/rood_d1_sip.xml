@@ -1,0 +1,51 @@
+
+<dcp xmlns="http://dataconservancy.org/schemas/dcp/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://dataconservancy.org/schemas/dcp/1.0 http://dataconservancy.org/schemas/dcp/1.0">
+    <DeliverableUnits>
+        <DeliverableUnit id="http://bluespruce.pti.indiana.edu:8181/dcs-nced/entity/956">
+            <alternateIdentifier><typeId>doi</typeId><idValue>http://dx.doi.org/10.5967/M0TB14V4 </idValue></alternateIdentifier>
+            <alternateIdentifier><typeId>medici</typeId><idValue>tag:cet.ncsa.uiuc.edu,2008:/bean/Collection/d6d250ba-e54d-4ae0-937d-c23d5e8b5de8</idValue></alternateIdentifier>
+            <title>1</title>
+            <creator>
+				<name>Kumar, Praveen</name>
+				<id>http://sead-vivo.d2i.indiana.edu:8080/sead-vivo/individual/a1434</id>
+				<idType>vivo</idType>
+				</creator>
+            <subject>Eel Watershed</subject><subject>Angelo Reserve</subject>
+            <rights>CC</rights>
+            <site>Eel Watershed</site>
+            <site>Angelo Reserve</site>
+            <site>North Fork Eel</site>
+            <site>Eel River</site>
+            <site>South Fork Eel</site>
+            <abstract>Data compiled from various sources on 284 streams and rivers: river morphology, river process, discharge, hydraulic geometry and grain size.</abstract>
+            <pubdate>2007-01-01</pubdate>
+            <metadataUpdateDate>2013-04-18T00:56:59.271Z</metadataUpdateDate>
+            <sizeBytes>0</sizeBytes><fileNo>0</fileNo>
+            <contact>Nguyen, Charles </contact>
+            <primaryDataLocationName>IU SDA</primaryDataLocationName>
+            <primaryDataLocationType>cloud</primaryDataLocationType>
+            <primaryDataLocationValue>Church and Rood Alluvial River Channel Regime Data</primaryDataLocationValue>
+            <metadata ref="http://seadva.d2i.indiana.edu:8181/dcs-nced/entity/239289" />
+        </DeliverableUnit>
+    </DeliverableUnits>
+    <Files>
+        <File id="http://seadva.d2i.indiana.edu:8181/dcs-nced/entity/239289" src="file:///tmp/Metadata/church_and_rood.xml">
+            <alternateIdentifier>
+                <typeId>dataone</typeId>
+                <idValue>sead-Nguyen-Charles-bea5c447-f5a8-4c28-90e9-1f77f87b5bc5</idValue>
+            </alternateIdentifier>
+            <fileName>church_and_rood_fgdc_v2.xml</fileName>
+            <extant>true</extant>
+            <format><id scheme="http://www.iana.org/assignments/media-types/">http://www.fgdc.gov/schemas/metadata/fgdc-std-001-1998.xsd</id></format>
+            <size>17431</size>
+        </File>
+    </Files>
+    <Repositories>
+        <Repository>
+            <irId>1</irId>
+            <url>http://sda.iu.edu</url>
+            <type>cloud</type>
+            <name>IU SDA</name>
+        </Repository>
+    </Repositories>
+</dcp>

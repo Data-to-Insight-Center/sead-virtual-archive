@@ -57,6 +57,12 @@
 
       <dependency>
           <groupId>org.dataconservancy.dcs</groupId>
+          <artifactId>dcs-id-impl</artifactId>
+          <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+          <groupId>org.dataconservancy.dcs</groupId>
           <artifactId>sead-id-extension</artifactId>
           <version>${project.parent.version}</version>
       </dependency>
@@ -70,6 +76,12 @@
       <dependency>
           <groupId>org.seadva.model</groupId>
           <artifactId>sead-model-builder-xstream</artifactId>
+          <version>${project.parent.version}</version>
+      </dependency>
+
+      <dependency>
+          <groupId>org.dataconservancy.dcs</groupId>
+          <artifactId>sead-ingest-core</artifactId>
           <version>${project.parent.version}</version>
       </dependency>
 
@@ -112,12 +124,6 @@
 
       <dependency>
           <groupId>org.springframework</groupId>
-          <artifactId>spring-context</artifactId>
-          <scope>test</scope>
-      </dependency>
-
-      <dependency>
-          <groupId>org.springframework</groupId>
           <artifactId>spring-beans</artifactId>
           <version>2.0</version>
           <scope>provided</scope>
@@ -152,5 +158,37 @@
           <artifactId>commons-exec</artifactId>
           <version>1.1</version>
       </dependency>
+
+      <dependency>
+          <groupId>org.apache.commons</groupId>
+          <artifactId>commons-exec</artifactId>
+          <version>1.1</version>
+      </dependency>
+
+     <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-spring</artifactId>
+        <version>5.4.0.Final</version>
+     </dependency>
+
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-core</artifactId>
+    </dependency>
+
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context-support</artifactId>
+    </dependency>
+
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-beans</artifactId>
+      </dependency>
+
   </dependencies>
 </project>
