@@ -121,7 +121,7 @@ public final class JsDeliverableUnit
         
 
 
-        FlexTable table =
+        /*FlexTable table =
                 Util.createTable(
                 		"Publication Date:",
                 		"Abstract:",
@@ -137,44 +137,73 @@ public final class JsDeliverableUnit
                         "Surrogate:",
                         "Alternate Ids:",
                         "Location:",
-                        "ACR Location:");
+                        "Active Version:");*/
+        FlexTable table = Util.createTable("");
         panel.add(table);
         
         
         
         if(getPubdate()!=null){
-        	table.setWidget(0, 1, new Label(getPubdate()));
+        	if(!getPubdate().isEmpty()){
+        		//table.setText(0, 0, "Publication Date:");
+        		Util.addRow(table, "Publication Date:");
+        		table.setWidget(table.getRowCount()-1, 1, new Label(getPubdate()));
+        	}
         }
         
         if(getAbstract()!=null){
-        	FlowPanel abstractPanel = new FlowPanel();
-        	abstractPanel.add(new Label(getAbstract()));
-        	table.setWidget(1, 1, abstractPanel);
+        	if(!getAbstract().isEmpty()){
+	        	FlowPanel abstractPanel = new FlowPanel();
+	        	abstractPanel.add(new Label(getAbstract()));
+	        	//table.setText(1, 0, "Abstract:");
+	        	Util.addRow(table, "Abstract:");
+	        	table.setWidget(table.getRowCount()-1, 1, abstractPanel);
+	        }
         }
 
-        if(getSite()!=null){
+      /*  if(getSite()!=null){
+        	System.out.println("getSite()2"+ getSite());
         	table.setWidget(2, 1, new Label(getSite()));
+        }*/
+        if(!getSite().isEmpty()){
+        	System.out.println("getSite Length:"+getSite().length());
+        	//table.setText(2, 0, "Site:");
+        	Util.addRow(table, "Site:");
+        	table.setWidget(table.getRowCount()-1, 1, new Label(getSite()));
         }
         
-        
-        
 
-         //table.setWidget(3, 1, Util.entityLink(getId()));
-
-      
-        table.setText(3, 1, "Collection");
-        table.setWidget(4, 1, JsCreator.display(getCreators()));
-        if (getParents() != null) {
-            table.setWidget(5, 1, Util.entityLinks(getParents()));
+        Util.addRow(table, "Entity Type");
+        System.out.println("RowCount:" +table.getRowCount());
+        table.setText(table.getRowCount()-1, 1, "Collection");
+        
+        if(getCreators().length()>0){
+        	Util.addRow(table, "Creators:");
+        	table.setWidget(table.getRowCount()-1, 1, JsCreator.display(getCreators()));
+        }
+        
+        if (getParents().length()>0) {
+        	Util.addRow(table, "Parents:");
+        	System.out.println("Parents Count:"+getParents().length());
+            table.setWidget(table.getRowCount()-1, 1, Util.entityLinks(getParents()));
         }
 
-        if (getCollections() != null) {
-            table.setWidget(6, 1, Util.entityLinks(getCollections()));
+        if (getCollections().length()>0) {
+        	Util.addRow(table, "Collections:");
+            table.setWidget(table.getRowCount()-1, 1, Util.entityLinks(getCollections()));
         }
-
-        table.setText(7, 1, toString(getFormerExternalRefs()));
-        table.setWidget(8, 1, Util.metadataLinks(getMetadataRefs()));
-        table.setText(10, 1, isDigitalSurrogate() == null ? "Unknown" : ""
+        if(getFormerExternalRefs().length()>0){
+        	Util.addRow(table, "Former refs");
+        	table.setText(table.getRowCount()-1, 1, toString(getFormerExternalRefs()));
+        }
+        
+        if(getMetadataRefs().length()>0){
+        	Util.addRow(table, "Metadata refs");
+        	table.setWidget(table.getRowCount()-1, 1, Util.metadataLinks(getMetadataRefs()));
+        }
+        
+        Util.addRow(table, "Surrogate");
+        table.setText(table.getRowCount()-1, 1, isDigitalSurrogate() == null ? "Unknown" : ""
                 + isDigitalSurrogate());
         
         Panel locationPanel = new FlowPanel();
@@ -218,8 +247,14 @@ public final class JsDeliverableUnit
     				altIdPanel.add(altIdLabel);
         		
         	}
-        	table.setWidget(11, 1, altIdPanel);
-            table.setWidget(13, 1, altLocPanel);
+        	
+        	if(getAlternateIds().length()>0){
+        		Util.addRow(table, "PIDs");
+            	table.setWidget(table.getRowCount()-1, 1, altIdPanel);
+        	}
+        	
+        	Util.addRow(table, "Location");
+            table.setWidget(table.getRowCount()-1, 1, altLocPanel);
         	
         }
 
@@ -274,7 +309,9 @@ public final class JsDeliverableUnit
     			locationPanel.add(smallTable);
         	}
         }
-        table.setWidget(12, 1, locationPanel);
+        
+        Util.addRow(table, "Active Version");
+        table.setWidget(table.getRowCount()-1, 1, locationPanel);
         
  
 //        if (getMetadata() != null && getMetadata().length() > 0) {

@@ -64,8 +64,10 @@ public class Util {
         FlexTable table = new FlexTable();
 
         for (int i = 0; i < headers.length; i++) {
-            table.getCellFormatter().addStyleName(i, 0, "TableHeader");
-            table.setText(i, 0, headers[i]);
+            /*table.getCellFormatter().addStyleName(i, 0, "TableHeader");
+            table.getCellFormatter().addStyleName(i, 1, "TableHeader");
+            */
+        	table.setText(i, 0, headers[i]);
         }
 
         return table;
@@ -76,6 +78,7 @@ public class Util {
 
         for (int i = 0; i < headers.length; i++) {
             table.getCellFormatter().addStyleName(i, 0, "TableHeader");
+           // table.getCellFormatter().addStyleName(i, 1, "TableHeader");
             table.setText(i, 0, headers[i]);
         }
 
@@ -96,6 +99,17 @@ public class Util {
         for (int i = 0; i < values.length; i++) {
             table.setWidget(i, col, values[i]);
         }
+    }
+    
+    public static void addRow(FlexTable table, String... values){
+    	int numRows = table.getRowCount();
+    	
+    	for(int i = 0; i<values.length; i++){
+    		
+    		table.setText(numRows, i, values[i]);
+    		table.getCellFormatter().addStyleName(numRows, 1, "GridTableColumn2");
+    		table.getCellFormatter().addStyleName(numRows, 0, "GridTableColumn1");
+    	}
     }
 
     public static Widget entityLinks(JsArrayString ids) {

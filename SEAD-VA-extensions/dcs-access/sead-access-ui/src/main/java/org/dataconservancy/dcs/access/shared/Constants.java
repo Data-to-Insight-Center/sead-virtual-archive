@@ -45,20 +45,20 @@ public class Constants
 	public Constants()
 	{
 		facets.put("entityType","object type");
-		facets.put("author","data contributor");
-		facets.put("format", "format/standard");
+		facets.put("author","creator");
+		facets.put("format", "format");
 		facets.put("subject", "keyword");
 		facets.put("location", "location");
-		facets.put("primaryDataLocationName","institutional repository");
+		facets.put("primaryDataLocationName","repository");
 		facetValues.put("Collection","DeliverableUnit");
 		
 		
 		order.put("object type",1);
-		order.put("data contributor",5);
-		order.put("format/standard", 2);
+		order.put("creator",5);
+		order.put("format", 2);
 		order.put("keyword", 4);
 		order.put("location", 0);
-		order.put("institutional repository", 3);
+		order.put("repository", 3);
 		
 		displayOrder.put(1, "object type");
 		displayOrder.put(5, "data contributor");

@@ -75,11 +75,10 @@ public final class JsCoreMetadata
     public static final DepositServiceAsync depositService = GWT.create(DepositService.class);
    
     public Widget display(final String entityId, final CellTree tree) {
-    	final Grid grid = //new Grid(7,2);
-        
-      	Util.createGrid(7, 2, 
-    					"Title:","", "Creators:", "Contact:","Subjects:", "Type:", "Rights:");
-        
+    	final Grid grid = 	Util.createGrid(7, 2, "Title:");
+    	/*Util.createGrid(7, 2, 
+				"Title:","", "Creators:", "Contact:","Subjects:", "Type:", "Rights:");
+        */
         grid.getCellFormatter().setStyleName(1, 1, "PaddedCell");
 
         final HorizontalPanel hp = new HorizontalPanel();
@@ -196,11 +195,25 @@ public final class JsCoreMetadata
 	   };
 
 	   SeadApp.userService.checkSession(null,cb);
+	   //"Title:","", "Creators:", "Contact:","Subjects:", "Type:", "Rights:
         
+       int gridRows = grid.getRowCount(); 
+	   grid.setWidget(0, 1, hp);
+	   if(getContact().length()>0){
+		   gridRows = grid.getRowCount();
+		   
+		   grid.setText(gridRows, 0, "Contact:");
+		   grid.getCellFormatter().addStyleName(gridRows, 0, "GridTableColumn1");
+		   grid.setWidget(gridRows, 1, new Label(getContact()));   
+	   }
+	   if(getSubjects().length()>0){
+		   gridRows = grid.getRowCount();
+		   
+		   grid.setText(gridRows, 0, "Subjects:");
+		   grid.getCellFormatter().addStyleName(gridRows, 0, "GridTableColumn1");
+		   grid.setWidget(gridRows, 1, new Label(toString(getSubjects())));
+	   }
         
-        grid.setWidget(0, 1, hp);
-        grid.setWidget(2, 1, new Label(getContact()));
-        grid.setWidget(3, 1, new Label(toString(getSubjects())));
         grid.setWidget(4, 1, new Label(getType()));
         grid.setWidget(5, 1, new Label(getRights()));
 

@@ -181,8 +181,7 @@ public class FacetedSearchPresenter implements Presenter {
     			     						   );
     			     				   String facets = "";
     			     				   	 
-    			     				  			   
-    			     				   
+
     			     				   Iterator it = constants.facets.entrySet().iterator();
     			     				   	   while (it.hasNext()) {
     			     				   	       Map.Entry pairs = (Map.Entry)it.next();
@@ -255,7 +254,7 @@ public class FacetedSearchPresenter implements Presenter {
 	        if(result.total()>0)
 	    	{
 		        grid.setStylePrimaryName("FacetedResults");
-		        grid.setWidget(0, 0, Util.label("Dataset Name","SubSectionHeader"));
+		        grid.setWidget(0, 0, Util.label("Dataset Name","SearchRow"));
 	    	}
 	        
 	        for (int i = 0; i < result.matches().length(); i++) {
@@ -268,8 +267,13 @@ public class FacetedSearchPresenter implements Presenter {
 	            String entityId = m.getEntity().getId();
 	            String entityNumber = entityId.substring(entityId.lastIndexOf('/')+1,entityId.length()).replace("-", "");
 	            FlowPanel desc = new FlowPanel();
+	            desc.setStyleName("SearchTable");
 	            grid.setWidget(resultrow, 0, desc);
-	            grid.getCellFormatter().addStyleName(resultrow,0,"SearchRow");
+	            if(i%2==0){
+	            	grid.getCellFormatter().addStyleName(resultrow,0,"SearchRow");
+	            }else{
+	            	grid.getCellFormatter().addStyleName(resultrow,0,"SearchRowAlt");
+	            }
 
 	            Hyperlink title = new Hyperlink(m.getSummaryStr(), true, SeadState.ENTITY
                         .toToken(entity.getId()));
@@ -304,12 +308,13 @@ public class FacetedSearchPresenter implements Presenter {
 	                String context = m.getContext().replaceAll(
 	                        "\\w+\\:|\\'\\[|\\]\\'", " ");
 	                context = context.substring(0,context.indexOf("FacetCategory"));
-	                desc.add(new HTML("<span class='ResultSnippet'>" +"Appears in:</span>"+ context
+	                desc.add(new HTML("<span class='ResultSnippet'> Appears in:"+ context + "</span>"
 	                        ));
 	            }
+	           // desc.add(title);
 	        }
 
-	        grid.setWidth("100%");
+	        grid.setWidth("60%");
 	        content.add(grid);
 	        //panel.add(new ResultNavigationWidget(page, numpages,query,facets));
 	    }
@@ -360,7 +365,7 @@ public class FacetedSearchPresenter implements Presenter {
 	    		Map<String,List<String>> facets
 	           )
 	    {
-			facetPanel.add(Util.label("Browse", "GradientFacet"));
+			facetPanel.add(Util.label("Browse By", "GradientFacet"));
         	FlexTable table = Util.createTable();
 	 		Tree tree = new Tree();
 	 		facetPanel.add(table);
@@ -387,8 +392,8 @@ public class FacetedSearchPresenter implements Presenter {
 	 			List<String> tempFacets = facets.get(Constants.displayOrder.get(orderIndex));//pairs.getValue();
 	 		
 	 			TreeItem rootItem = new TreeItem();//pairs.getKey());
-	 			rootItem.setHTML("<b>By " +Constants.displayOrder.get(orderIndex)+"</b>");
-	 			
+	 			//rootItem.setHTML("<b>By " +Constants.displayOrder.get(orderIndex)+"</b>");
+	 			rootItem.setHTML("<b>" +Constants.displayOrder.get(orderIndex)+"</b>");
 	 			
 	 			
 	 			String key ="";

@@ -53,12 +53,17 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOutHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.http.client.URL;
+import com.google.gwt.thirdparty.guava.common.util.concurrent.MoreExecutors;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -107,6 +112,8 @@ public class SeadApp implements EntryPoint {
     static Panel centerPanel;
     static Panel facetContent;
     static Panel loginPanel;
+    static Panel loginPanel1;
+    HorizontalPanel outerMoreLinks;
     Panel header;
 
     HorizontalPanel OptionsHorz;
@@ -115,6 +122,12 @@ public class SeadApp implements EntryPoint {
     Label uploadData;
     Label dataHistory;
     Label adminPage;
+    Label home;
+    Label features;
+    Label team; 
+    Label resources;
+    Label partners;
+    
     
     TabPanel uploadPanel;
     Panel localUpload;
@@ -122,6 +135,7 @@ public class SeadApp implements EntryPoint {
     Panel bagUpload;
     Panel facetOuterPanel ;
     Label loginLabel;
+    Label registerLabel;
     Panel notificationPanel;
     public static final String FILE_UPLOAD_URL =
             GWT.getModuleBaseURL() + "fileupload";
@@ -178,16 +192,93 @@ public class SeadApp implements EntryPoint {
         main.setStyleName("orientation-style");
         main.setSize("100%", "100%");
         
+        //header parameters
         header = new VerticalPanel();
         header.setStylePrimaryName("TopHeader");
         header.setHeight(Window.getClientHeight()/4 + "px");
-
+        System.out.println("ClientHeight: " +Window.getClientHeight());
+        System.out.println("Cient Width: "+Window.getClientWidth());
         
         Panel footer = new FlowPanel();
         footer.setStylePrimaryName("Footer");
+        
+        outerMoreLinks = new HorizontalPanel();
+        outerMoreLinks.setHorizontalAlignment(HorizontalPanel.ALIGN_CENTER);
+        //outerMoreLinks.setWidth(Window.getClientWidth()/3+"px");
+        final Grid moreLinks = new Grid(1,4);
+        moreLinks.setWidth(Window.getClientWidth()/3+"px");
+        //moreLinks.setWidth(Window.getClientWidth()/10 + "px");
+        
+        //moreLinks.setCellSpacing(Window.getClientWidth()/25);
+        
+        //outerMoreLinks.set
+        //Label browseData = Util.label("Browse Data", "MoreOptionLabels");
+        //Label uploadData = Util.label("Upload Data", "MoreOptionLabels");
+        //Label downloadSead = Util.label("Download SEAD-VA", "MoreOptionLabels");
+        Image more = new Image(GWT.getModuleBaseURL()+ "../images/more.png");
+        final Image browseLabel = new Image(GWT.getModuleBaseURL()+ "../images/browse_label.jpg");
+        final Image browseAnimeLabel = new Image(GWT.getModuleBaseURL()+ "../images/browse1.jpg");
+        final Image uploadAnimeLabel = new Image(GWT.getModuleBaseURL()+ "../images/upload1.jpg");
+        final Image uploadLabel = new Image(GWT.getModuleBaseURL()+ "../images/upload_label.jpg");
+        
+        browseLabel.setStyleName("OptionLabel");
+        uploadLabel.setStyleName("OptionLabel");
+        browseAnimeLabel.setStyleName("OptionLabel");
+        uploadAnimeLabel.setStyleName("OptionLabel");
+        loginLabel = Util.label("LOG IN","LoginButton");
+           
+        ClickHandler goUploadData1 = new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                History.newItem(SeadState.AUTH.toToken());
+            }
+        };
+        
+        class MyMouseListener implements  MouseOutHandler,MouseOverHandler{
 
+			@Override
+			public void onMouseOut(final MouseOutEvent event) {
+				//moreLinks.remove(browseAnimeLabel);
+				if (event.getSource() == uploadAnimeLabel){
+					moreLinks.setWidget(0, 2, uploadLabel);
+				}
+				if (event.getSource() == browseAnimeLabel){
+					moreLinks.setWidget(0, 1, browseLabel);
+				}
+			}
+
+			@Override
+			public void onMouseOver(MouseOverEvent event) {
+				if (event.getSource() == uploadLabel){
+					moreLinks.setWidget(0, 2, uploadAnimeLabel);
+				}
+				if (event.getSource() == browseLabel){
+					moreLinks.setWidget(0, 1, browseAnimeLabel);
+				}
+			}
+        	
+        }
+
+		
+        uploadAnimeLabel.addClickHandler(goUploadData1);
+        uploadLabel.addMouseOverHandler(new MyMouseListener());
+        uploadAnimeLabel.addMouseOutHandler(new MyMouseListener());
+        browseLabel.addMouseOverHandler(new MyMouseListener());
+        browseAnimeLabel.addMouseOutHandler(new MyMouseListener());
+        
+        moreLinks.setWidget(0, 0, more);
+        moreLinks.setWidget(0, 1, browseLabel);
+        moreLinks.setWidget(0, 2, uploadLabel);
+        //moreLinks.setWidget(0, 3, downloadSead);
+        //moreLinks.add(more);
+        //moreLinks.add(browseData);
+        //moreLinks.add(uploadData);
+        //moreLinks.add(downloadSead);
+        
         main.addNorth(header, 150);//,DockPanel.NORTH);
-        main.addSouth(footer,40);//,DockPanel.SOUTH);
+        main.addSouth(footer, Window.getClientHeight()/17);
+        outerMoreLinks.add(moreLinks);
+        main.addSouth(outerMoreLinks,Window.getClientHeight()/5);
+       
         
         
         facetOuterPanel = new FlowPanel(); 
@@ -198,8 +289,23 @@ public class SeadApp implements EntryPoint {
         facetOuterPanel.setStyleName("FacetPanel");
         facetOuterPanel.add(facetContent);
       
-        main.addWest(facetOuterPanel,250);
-
+        main.addWest(facetOuterPanel,0);
+        
+        loginPanel1 = new FlowPanel();
+        loginLabel = Util.label("LOG IN","LoginButton");
+        registerLabel = Util.label("Register or Login to curate or upload data","RegisterLabel");
+        loginPanel1.add(loginLabel);
+        loginPanel1.add(registerLabel);
+        loginLabel.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				
+				History.newItem("login");
+			}
+		});
+        
+        main.addEast(loginPanel1, 200);
        
         final Panel headerOuterPanel = new FlowPanel();
         headerOuterPanel.setStyleName("HeaderOuter");
@@ -208,19 +314,30 @@ public class SeadApp implements EntryPoint {
         
         OptionsHorz = new HorizontalPanel();
         dataSearch =Util.label("Data Search", "Option");
-        OptionsHorz.add(dataSearch);
+      //  OptionsHorz.add(dataSearch);
         uploadData =Util.label("Upload Data", "Option");
-        OptionsHorz.add(uploadData);
+      //  OptionsHorz.add(uploadData);
+        home = Util.label("Home", "Option");
+        features = Util.label("Features", "Option");
+        team = Util.label("Team", "Option");
+        resources = Util.label("Resources", "Option");
+        partners = Util.label("Partners", "Option");
+        
+        OptionsHorz.add(home);
+        OptionsHorz.add(features);
+        OptionsHorz.add(team);
+        OptionsHorz.add(resources);
+        OptionsHorz.add(partners);
         
         middlePanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
         middlePanel.add(OptionsHorz);
         
         HorizontalPanel externalLinksPanel = new HorizontalPanel();
-        notificationPanel = new FlowPanel();
+      //  notificationPanel = new FlowPanel();
         
         Label seadAcr =Util.label("SEAD ACR", "Option");
         Label seadVivo =Util.label("SEAD VIVO", "Option");
-        
+ 
         seadAcr.addClickHandler( new ClickHandler() {
 			
 			@Override
@@ -237,9 +354,9 @@ public class SeadApp implements EntryPoint {
 			}
 		});
 		
-		externalLinksPanel.add(notificationPanel);
-//        externalLinksPanel.add(seadAcr);
-//        externalLinksPanel.add(seadVivo);
+	//	 externalLinksPanel.add(notificationPanel);
+    //   externalLinksPanel.add(seadAcr);   
+    //   externalLinksPanel.add(seadVivo); 
         
         
         middlePanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
@@ -300,7 +417,7 @@ public class SeadApp implements EntryPoint {
         dataHistory.addClickHandler(dataHistoryPage);
         
        
-        centerPanel = new ScrollPanel();
+        centerPanel = new FlowPanel();
         main.add(centerPanel);
         
         uploadPanel =
@@ -317,8 +434,10 @@ public class SeadApp implements EntryPoint {
         uploadPanel.setSize("100%", "100%");
  
         
+       /* Image logo = new Image(GWT.getModuleBaseURL()
+                + "../images/sead_logo_2.png");*/
         Image logo = new Image(GWT.getModuleBaseURL()
-                + "../images/sead_logo_2.png");
+                + "../images/sead_logoV2_a.png");
 
         ClickHandler gohome = new ClickHandler() {
             public void onClick(ClickEvent event) {
@@ -331,7 +450,7 @@ public class SeadApp implements EntryPoint {
         
 
         Image toptext = new Image(GWT.getModuleBaseURL()
-                + "../images/topic.png");
+                + "../images/topic_V2_a.png");
 
        
         toptext.addClickHandler(gohome);
@@ -354,7 +473,7 @@ public class SeadApp implements EntryPoint {
         
 
     	
-        logoPanel.add(loginPanel);
+        //logoPanel.add(loginPanel);
         header.setWidth("100%");
         header.add(logoPanel);
 
@@ -362,12 +481,12 @@ public class SeadApp implements EntryPoint {
         header.add(headerOuterPanel);
         
         footer.add(createAccessServiceUrlEditor());
-        footer.add(new HTML(
-                "<a href='http://sead-data.net/'>http://sead-data.net/</a>"));
+       /* footer.add(new HTML(
+                "<a href='http://sead-data.net/'>http://sead-data.net/</a>"));*/
 
     
         RootLayoutPanel.get().add(main);
-        
+        //dbt
         final AsyncCallback<UserSession> cb =
                 new AsyncCallback<UserSession>() {
 
@@ -424,7 +543,11 @@ public class SeadApp implements EntryPoint {
             // load config
 
         	String temp = GWT.getModuleBaseURL() + "Config.properties";
+        	
+        	System.out.println("temp URL:" +temp);
+        	System.out.println("getmoduleBaseURL:"+GWT.getModuleBaseURL());
             HttpGet.request(GWT.getModuleBaseURL() + "Config.properties",
+            		
                     new HttpGet.Callback<String>() {
 
                         public void failure(String error) {
@@ -442,6 +565,7 @@ public class SeadApp implements EntryPoint {
 
                                 if (name.equals("accessServiceURL")) {
                                     accessurl = value;
+                                    accessurl = "http://seadva-test.d2i.indiana.edu/sead-wf/";
                                     updateAccessServiceUrl();
                                     deposit_endpoint =
                                     		accessurl+"deposit/";
@@ -461,13 +585,20 @@ public class SeadApp implements EntryPoint {
                                 	tmpHome = value;
                                 }
                                 
+
+                                if (name.equals("acrusername")) {
+                               	 acrUsername = value;
+                                }
+                                
                                 if (name.equals("admins")) {
                                	 String adminStr = value;
                                	 admins = adminStr.split(";");
                                 }
                             }
                             userService.checkSession(null,cb);
+                            System.out.println("Token:" + History.getToken());
                             History.fireCurrentHistoryState();
+                           
                         }
                     });
         }     
@@ -482,6 +613,7 @@ public class SeadApp implements EntryPoint {
     private void historyChanged(String token) {
     	
     	 if (token.isEmpty()) {
+    		System.out.println("empty token: " + History.getToken());
         	dataSearch.setStyleName("OptionSelected");
         	uploadData.setStyleName("Option");
         	adminPage.setStyleName("Option");
@@ -505,7 +637,6 @@ public class SeadApp implements EntryPoint {
         }
 
         if (state == SeadState.HOME) {
-        	
         	if(facetOuterPanel.isAttached()){
         		main.setWidgetSize(facetOuterPanel,250);
         	}
@@ -534,6 +665,12 @@ public class SeadApp implements EntryPoint {
         		main.addWest(facetOuterPanel,250);
         	if(!centerPanel.isAttached())
         		main.add(centerPanel);
+        	if(loginPanel1.isAttached()){
+        		main.setWidgetSize(loginPanel1, 0);
+        	}
+        	if(outerMoreLinks.isAttached()){
+        		main.setWidgetSize(outerMoreLinks, 0);
+        	}
         	
             if (args.size() == 0) {
             	SearchInput input = new SearchInput(null, null, 0, new String[0],new String[0]);
@@ -618,7 +755,7 @@ public class SeadApp implements EntryPoint {
                 handleHistoryTokenError(token);
                 return;
             }
-
+            System.out.println("in entity View");
             presenter = new EntityPresenter(new EntityView(args.get(0)));
         	presenter.display(centerPanel, facetContent, header, loginPanel, notificationPanel);
 
@@ -628,6 +765,12 @@ public class SeadApp implements EntryPoint {
         	}
         	if(!centerPanel.isAttached())
         		main.add(centerPanel);
+        	if(loginPanel1.isAttached()){
+        		main.setWidgetSize(loginPanel1, 0);
+        	}
+        	if(outerMoreLinks.isAttached()){
+        		main.setWidgetSize(outerMoreLinks, 0);
+        	}
             if (args.size() != 1) {
                 handleHistoryTokenError(token);
                 return;
@@ -640,6 +783,12 @@ public class SeadApp implements EntryPoint {
         		main.setWidgetSize(facetOuterPanel,0);
         	if(!centerPanel.isAttached())
         		main.add(centerPanel);
+        	if(loginPanel1.isAttached()){
+        		main.setWidgetSize(loginPanel1, 0);
+        	}
+        	if(outerMoreLinks.isAttached()){
+        		main.setWidgetSize(outerMoreLinks, 0);
+        	}
             
             //DataUpload.viewUpload(centerPanel);
         	presenter = new LoginPresenter(new LoginView());
@@ -883,16 +1032,26 @@ public class SeadApp implements EntryPoint {
     }
 
     private Widget createAccessServiceUrlEditor() {
-        FlexTable table = Util.createTable("Access service:");
+        FlexTable table = Util.createTable("");
 
-        Button set = new Button("Set");
+        //Button set = new Button("Set");
 
-        Util.addColumn(table, accessurl_tb);
-        Util.addColumn(table, set);
+        //Util.addColumn(table, accessurl_tb);
+        //Util.addColumn(table, set);
         Label aboutLabel = Util.label("About", "Hyperlink");
         Util.addColumn(table, aboutLabel);
         aboutLabel.addStyleName("LeftPad");
         aboutLabel.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				Window.open("http://sead-data.net/","_blank","");
+			}
+		});
+        
+        Label faq = Util.label("FAQ", "Hyperlink");
+        Util.addColumn(table, faq);
+        faq.addStyleName("LeftPad");
+        faq.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				Window.open("http://sead-data.net/","_blank","");
@@ -908,8 +1067,18 @@ public class SeadApp implements EntryPoint {
 				Window.open("mailto:seadva-l@indiana.edu","_blank","");
 			}
 		});
+        
+        Label privacyLabel = Util.label("Privay Policy", "Hyperlink");
+        Util.addColumn(table, privacyLabel);
+        privacyLabel.addStyleName("LeftPad");
+        privacyLabel.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				
+			}
+		});
 
-        set.addClickHandler(new ClickHandler() {
+        /*set.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
                 String s = accessurl_tb.getText().trim();
@@ -919,7 +1088,7 @@ public class SeadApp implements EntryPoint {
                     History.fireCurrentHistoryState();
                 }
             }
-        });
+        });*/
 
         return table;
     }

@@ -33,6 +33,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Grid;
 
 public class SeadAdvancedSearchWidget extends Composite{
 
@@ -42,12 +43,19 @@ public class SeadAdvancedSearchWidget extends Composite{
     
 		advancedPanel = new FlowPanel();
 		initWidget(advancedPanel);
-        Button search = new Button("Search");
 
         final FlexTable table = new FlexTable();
-
+        Label intro = new Label();
+        intro.setText("Virtual Archive (Sead-VA) is a discovery and preservation layer of the SEAD services suite. SEAD-VA federates over multiple institutional repositories and archives and provides a coherent view on published data in sustainability science.");
+        intro.setStylePrimaryName("IntroLabel");
+        
+        Label lbl = new Label();
+        lbl.setText("Search SEAD-VA data registry");
+        lbl.setStylePrimaryName("SearchLabel");
         Button add = new Button("Add field");
-
+        
+        advancedPanel.add(intro);
+        advancedPanel.add(lbl);
         advancedPanel.add(table);
 
         // Called to search filled in query
@@ -56,32 +64,34 @@ public class SeadAdvancedSearchWidget extends Composite{
 
             public void onClick(ClickEvent event) {
                 // Build up search history token
-
+            	System.out.println("In search");
                 String[] data = new String[(table.getRowCount() * 2) + 1+1];
                 int dataindex = 0;
                 boolean emptyquery = true;
 
                 for (int i = 0; i < table.getRowCount(); i++) {
-                    ListBox lb = (ListBox) table.getWidget(i, 2);
+                   // ListBox lb = (ListBox) table.getWidget(i, 2);
                     TextBox tb = (TextBox) table.getWidget(i, 0);
 
-                    int sel = lb.getSelectedIndex();
+                   /* int sel = lb.getSelectedIndex();
 
-                    if (sel != -1) {
+                    if (sel != -1) {*/
                         String userquery = tb.getText().trim();
-                        String userfield = Search.UserField.values()[sel]
-                                .name();
-
+                      /*  String userfield = Search.UserField.values()[sel]
+                                .name();*/
+                        String userfield = "ALL";
                         if (userquery.isEmpty()) {
                             userfield = null;
                             userquery = null;
                         } else {
                             emptyquery = false;
                         }
-
+                        System.out.println("UserField: "+userfield);
+                        System.out.println("UserAuery" + userquery);
                         data[dataindex++] = userfield;
                         data[dataindex++] = userquery;
-                    }
+                        System.out.println("Data.0: "+data[0] + "Data.1: "+data[1]);
+                    //}
                 }
 
                 data[dataindex] = "0";
@@ -97,15 +107,24 @@ public class SeadAdvancedSearchWidget extends Composite{
 
             public void onClick(ClickEvent event) {
                 int row = table.getRowCount();
-
-                TextBox tb = new TextBox();
-                tb.setStyleName("Pad");
-                table.setWidget(row, 0, tb);
-                table.setWidget(row, 1, new Label("in"));
-                table.setWidget(row, 2 , createAdvancedSearchFieldSelector());
-
                 
+                
+                
+                final TextBox tb = new TextBox();
+                tb.setStyleName("Pad");
+                tb.setValue("Type name,date or keyword");
+                table.setWidget(row, 0, tb);
+             //   table.setWidget(row, 1, new Label("in1"));
+             //   table.setWidget(row, 2 , createAdvancedSearchFieldSelector());
 
+                tb.addClickHandler(new ClickHandler() {
+					
+					@Override
+					public void onClick(ClickEvent event) {
+						// TODO Auto-generated method stub
+						tb.setValue(null);
+					}
+				});
                 tb.addKeyDownHandler(new KeyDownHandler() {
 
                     public void onKeyDown(KeyDownEvent event) {
@@ -115,7 +134,7 @@ public class SeadAdvancedSearchWidget extends Composite{
                     }
                 });
 
-                final Button remove = new Button("Remove");
+          /*    final Button remove = new Button("Remove");
 
                 table.setWidget(row, 3, remove);
 
@@ -128,7 +147,7 @@ public class SeadAdvancedSearchWidget extends Composite{
                             }
                         }
                     }
-                });
+                });*/
             }
         };
 
@@ -143,8 +162,8 @@ public class SeadAdvancedSearchWidget extends Composite{
                 int row = table.getRowCount();
                 addlistener.onClick(null);
 
-                ListBox lb = (ListBox) table.getWidget(row,2);
-                lb.setItemSelected(userfields[i].ordinal(), true);
+           //     ListBox lb = (ListBox) table.getWidget(row,2);
+            //    lb.setItemSelected(userfields[i].ordinal(), true);
                 TextBox tb = (TextBox) table.getWidget(row, 0);
                 tb.setText(userqueries[i]);
             }
@@ -152,12 +171,24 @@ public class SeadAdvancedSearchWidget extends Composite{
             addlistener.onClick(null);
         }
 
-        HorizontalPanel hp = new HorizontalPanel();
+      /*  HorizontalPanel hp = new HorizontalPanel();
         hp.setSpacing(5);
-        hp.add(add);
+      //  hp.add(add);
         hp.add(search);
 
-        advancedPanel.add(hp);
+        advancedPanel.add(hp);*/
+        
+        Grid grid = new Grid(1, 2);
+        advancedPanel.add(grid);
+        grid.setSize("240px", "60px");
+        
+        FlexTable flexTable = new FlexTable();
+        grid.setWidget(0, 0, table);
+        
+        Button search = new Button("Search");
+        search.setStyleName("SearchButton");
+        grid.setWidget(0, 1, search);
+       // search.setWidth("82px");
         search.addClickHandler(searchlistener);
 
     }
@@ -169,7 +200,7 @@ public class SeadAdvancedSearchWidget extends Composite{
         for (Search.UserField uf : Search.UserField.values()) {
             lb.addItem(uf.display);
         }
-
+        lb.setSelectedIndex(8);
         return lb;
     }
 }
