@@ -55,7 +55,7 @@ a:active {
  color: #3299CC;
 }
 
-body {
+.body {
   background-color: #FFFFFF;
 }
 .arrow {
@@ -353,12 +353,24 @@ white-space:normal;
 	background-color: #F0F0F0 ;
 	color: #000000;
 	border-style:solid;
-	border-width2px;
+	border-width:0px;
 	border-color:#FFFFFF;
-	
+	width:100px;
 	font-family:Arial,Georgia,Serif;
-	
-	padding: 2em;
+	padding: 1em;
+}
+.SearchRowAlt{
+	background-color: #F0F0D0 ;
+	color: #000000;
+	border-style:solid;
+	border-width:0px;
+	border-color:#FFFFFF;
+	width:100px;
+	font-family:Arial,Georgia,Serif;
+	padding: 1em;
+}
+.SearchTable{
+	width:800px;
 }
 .RowTopBorder{
 	border-style:solid;
@@ -370,6 +382,22 @@ white-space:normal;
 	position:absolute;
 	right: 280px;
 	margin-top:40px;
+}
+
+.SearchButton{
+	color: #FFFFFF;
+	width: 97px;
+  	height: 40px;
+	background-color: #4C8FFC;
+	border-width: 2px;
+	border-radius: 8px;
+	border-style: outset;
+	border-color:#3079ED;
+  	padding: 5px;
+	font-weight:bold;
+	font-size: 10pt;
+	text-align: center;
+	cursor:pointer;
 }
 .SimpleButton{
 	color: #FFFFFF;
@@ -405,7 +433,38 @@ white-space:normal;
 	text-align: right;
 	cursor:pointer;
 }
-
+.LoginButton{
+	color: #FFFFFF;
+	width: 97px;
+  	height: 30px;
+	background-color: #259325;
+	border-width: 2px;
+	border-radius: 8px;
+	border-style: outset;
+	border-color:#3079ED;
+  	padding: 5px;
+	font-weight:bold;
+	font-size: 10pt;
+	text-align: center;
+	cursor:pointer;
+	margin-top:60px;
+	margin-right:100px;
+}
+.RegisterLabel{
+	
+	width: 97px;
+  	height: 70px;
+	border-width: 2px;
+	border-radius: 8px;
+	border-style: outset;
+	border-color:#3079ED;
+  	padding: 5px;
+	font-size: 10pt;
+	text-align: center;
+	cursor:pointer;
+	margin-top:10px;
+	margin-right:100px;
+}
 .SimpleGreenButton{
 	color: #FFFFFF;
 	background-color: #8EAF2F;
@@ -429,7 +488,7 @@ white-space:normal;
 	font-size: 118%;
 	/*previous green border-color:#528B8B;*/
 	font-weight:bold;
-	text-decoration:underline;
+	/* text-decoration:underline; */
 	padding: 1em;
 	cursor:pointer;
 }
@@ -568,6 +627,73 @@ white-space:normal;
   margin-top: 60px;
 
 }
+.SearchLabel
+{
+  color: #24478F;
+  font-weight: bold;
+  font-size:14pt;
+  margin-left: 150px;
+  margin-top: 20px;
+
+}
+.IntroLabel
+{
+  color: #6F7074;
+  /*font-weight: bold;*/
+  font-size:14px;
+  margin-left: 50px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  width: 920px;
+}
+.Pad
+{
+  color: #6F7074;
+  font-size: 18px;
+  margin-left: 150px;
+  margin-top: 20px;
+  margin-bottom: 30px;
+  margin-right: 20px;
+  border-radius: 7px;
+  border-width: 3px;
+  width: 550px;
+  height: 60px;
+
+}
+.OptionLabel
+{
+  margin-left: 50px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-right: 10px;
+  border-radius: 7px;
+  border-width: 3px;
+}
+.MoreLabel
+{
+  margin-left: 150px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-right: 10px;
+  border-radius: 7px;
+  border-width: 3px;
+}
+.MoreOptionLabels{
+	
+	width: 97px;
+  	height: 60px;
+	border-width: 2px;
+	border-radius: 8px;
+	border-style: outset;
+	border-color:#000000;
+  	padding: 5px;
+	font-size: 13pt;
+	text-align: center;
+	vertical-align: middle;
+	cursor:pointer;
+	margin-top:2px;
+	margin-right:20px;
+}
 
 
 .FilterHeader {
@@ -602,10 +728,50 @@ white-space:normal;
 }
 .TableHeader {
   font-weight: bold;
+  background-color: #F0F0F0 ;
+  color: #000000;
+  border-style:solid;
+  border-width:0px;
+  border-color:#FFFFFF;
+  width:100px;
+  font-family:Arial,Georgia,Serif;
+  padding: 1em;
+}
+.GridTableColumn1 {
+  font-weight: bold;
+  background-color: #F0F0F0 ;
+  color: #000000;
+  border-style:solid;
+  border-width:0px;
+  border-color:#FFFFFF;
+  width:400px;
+  font-family:Arial,Georgia,Serif;
+  padding: 1em;
+}
+.GridTableColumn2 {
+  font-weight: bold;
+  background-color: #F0F0F0 ;
+  color: #000000;
+  border-style:solid;
+  border-width:0px;
+  border-color:#FFFFFF;
+  width:700px;
+  font-family:Arial,Georgia,Serif;
+  padding: 1em;
 }
 
+
 .Entity {
-  margin-left: 1em;
+	width: 800px;
+  	border-width: 2px;
+	border-radius: 8px;
+	border-style: outset;
+	border-color:#3079ED;
+  	padding: 5px;
+	font-size: 10pt;
+	/* text-align: center; */
+	margin-left: 150px;
+	padding-left:50px;
 }
 
 .LeftPad{
@@ -639,7 +805,7 @@ white-space:normal;
 }
 
 .FacetedResults {
-  
+  width:1000px;
 }
 
 .statusPopupPanelContainer {
