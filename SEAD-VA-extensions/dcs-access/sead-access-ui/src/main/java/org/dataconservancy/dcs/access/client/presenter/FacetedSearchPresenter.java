@@ -68,6 +68,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 
 public class FacetedSearchPresenter implements Presenter {
@@ -117,6 +118,7 @@ public class FacetedSearchPresenter implements Presenter {
     			public void onMessageReceived(final SearchEvent event) {
     				   content.clear();
     				   facetPanel.clear();
+    				   final VerticalPanel verticalPanel = new VerticalPanel(); 
     				   final HorizontalPanel middlePanel = new HorizontalPanel();
 			           middlePanel.setWidth("100%");
 			           final Label viewData = Util.label("View Collections uploaded by you","LogoutButton");
@@ -139,8 +141,11 @@ public class FacetedSearchPresenter implements Presenter {
     			     			          
     			     			            middlePanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
     			     			            
-    			     			            content.add(middlePanel);
+    			     			            verticalPanel.add(middlePanel);
+    			     			            verticalPanel.add(SeadApp.outerMoreLinks);
+    			     			            content.add(verticalPanel);
     			     			            middlePanel.add(new SeadAdvancedSearchWidget(searchInput.getUserfields(), searchInput.getUserqueries()));
+    			     			            
 	    			     			        if(result.isSession()){
 	    			     			        	middlePanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 	    			     			        	viewData.addClickHandler(new ClickHandler() {

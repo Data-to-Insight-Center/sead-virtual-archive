@@ -113,7 +113,7 @@ public class SeadApp implements EntryPoint {
     static Panel facetContent;
     static Panel loginPanel;
     static Panel loginPanel1;
-    HorizontalPanel outerMoreLinks;
+    public static HorizontalPanel outerMoreLinks;
     Panel header;
 
     HorizontalPanel OptionsHorz;
@@ -203,10 +203,11 @@ public class SeadApp implements EntryPoint {
         footer.setStylePrimaryName("Footer");
         
         outerMoreLinks = new HorizontalPanel();
-        outerMoreLinks.setHorizontalAlignment(HorizontalPanel.ALIGN_CENTER);
-        //outerMoreLinks.setWidth(Window.getClientWidth()/3+"px");
+        outerMoreLinks.setStyleName("Pad");
+       // outerMoreLinks.setHorizontalAlignment(HorizontalPanel.ALIGN_CENTER);
+        //outerMoreLinks.setWidth(Window.getClientWidth()+"px");
         final Grid moreLinks = new Grid(1,4);
-        moreLinks.setWidth(Window.getClientWidth()/3+"px");
+        //moreLinks.setWidth(Window.getClientWidth()/3+"px");
         //moreLinks.setWidth(Window.getClientWidth()/10 + "px");
         
         //moreLinks.setCellSpacing(Window.getClientWidth()/25);
@@ -277,7 +278,7 @@ public class SeadApp implements EntryPoint {
         main.addNorth(header, 150);//,DockPanel.NORTH);
         main.addSouth(footer, Window.getClientHeight()/17);
         outerMoreLinks.add(moreLinks);
-        main.addSouth(outerMoreLinks,Window.getClientHeight()/5);
+        //main.addSouth(outerMoreLinks,Window.getClientHeight()/5);
        
         
         
@@ -586,9 +587,7 @@ public class SeadApp implements EntryPoint {
                                 }
                                 
 
-                                if (name.equals("acrusername")) {
-                               	 acrUsername = value;
-                                }
+                               
                                 
                                 if (name.equals("admins")) {
                                	 String adminStr = value;
