@@ -1,2 +1,13 @@
 .idea
 *.iml
+*.bak
+*.js
+*.cache.*
+*.classpath
+*.project
+*.settings
+*.rpc
+*.log
+*.txt
+*.properties
+
