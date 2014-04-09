@@ -100,6 +100,7 @@ public class SeadApp implements EntryPoint {
     public static String bagIturl;
     public static String deposit_endpoint;
     public static String tmpHome;
+    public static boolean isHome;
     
     public static Map<String,List<String>> selectedItems = new HashMap<String,List<String>>();  
     	
@@ -107,6 +108,7 @@ public class SeadApp implements EntryPoint {
     static String datastreamUrl;
     public static String[] admins;
 
+    static HorizontalPanel mainHorz;
     static DockLayoutPanel main;
    
     static Panel centerPanel;
@@ -186,11 +188,18 @@ public class SeadApp implements EntryPoint {
     //Module Load function
     public void onModuleLoad() {
   
+    	mainHorz = new HorizontalPanel();
+    	mainHorz.setSize("100%", "100%");
+    	mainHorz.setHorizontalAlignment(HorizontalPanel.ALIGN_CENTER);
+    	mainHorz.setStylePrimaryName("MainHorz");
+    	
     	accessurl_tb = new TextBox();
         main = new DockLayoutPanel(Unit.PX);
         main.setStylePrimaryName("Main");
-        main.setStyleName("orientation-style");
-        main.setSize("100%", "100%");
+        //main.setStyleName("orientation-style");
+        main.setSize("80%", "100%");
+        
+        mainHorz.add(main);
         
         //header parameters
         header = new VerticalPanel();
@@ -417,12 +426,11 @@ public class SeadApp implements EntryPoint {
         };
         dataHistory.addClickHandler(dataHistoryPage);
         
-       
-        centerPanel = new FlowPanel();
+        centerPanel = new ScrollPanel();
+        
         main.add(centerPanel);
         
-        uploadPanel =
-        		new TabPanel();
+        uploadPanel = new TabPanel();
         
         localUpload = new FlowPanel();
         mediciUpload = new FlowPanel();
@@ -486,7 +494,7 @@ public class SeadApp implements EntryPoint {
                 "<a href='http://sead-data.net/'>http://sead-data.net/</a>"));*/
 
     
-        RootLayoutPanel.get().add(main);
+        RootLayoutPanel.get().add(mainHorz);
         //dbt
         final AsyncCallback<UserSession> cb =
                 new AsyncCallback<UserSession>() {
@@ -618,12 +626,17 @@ public class SeadApp implements EntryPoint {
         	adminPage.setStyleName("Option");
         	dataHistory.setStyleName("Option");
         	
+        	if(facetOuterPanel.isAttached()){
+        		main.setWidgetSize(facetOuterPanel,0);
+        	}
+        	
         	FacetedSearchPresenter.EVENT_BUS = GWT.create(SimpleEventBus.class);
         	SearchInput input = new SearchInput(null, null, 0, new String[0],new String[0]);
          	presenter = new FacetedSearchPresenter(new FacetedSearchView());
          	presenter.display(centerPanel, facetContent, header, loginPanel, notificationPanel);
         	selectedItems = new HashMap<String, List<String>>();
         	FacetedSearchPresenter.EVENT_BUS.fireEvent(new SearchEvent(input));
+        	isHome = true;
             return;
         }
 
@@ -637,10 +650,10 @@ public class SeadApp implements EntryPoint {
 
         if (state == SeadState.HOME) {
         	if(facetOuterPanel.isAttached()){
-        		main.setWidgetSize(facetOuterPanel,250);
+        		main.setWidgetSize(facetOuterPanel,0);
         	}
-        	else
-        		main.addWest(facetOuterPanel,250);
+        /*	else
+        		main.addWest(facetOuterPanel,250);*/
         	if(!centerPanel.isAttached())
         		main.add(centerPanel);
             
@@ -648,6 +661,7 @@ public class SeadApp implements EntryPoint {
         	uploadData.setStyleName("Option");
         	adminPage.setStyleName("Option");
         	dataHistory.setStyleName("Option");
+        	isHome = true;
         	        	
         	selectedItems = new HashMap<String, List<String>>();
         	SearchInput input = new SearchInput(null, null, 0, new String[0],new String[0]);
@@ -667,9 +681,9 @@ public class SeadApp implements EntryPoint {
         	if(loginPanel1.isAttached()){
         		main.setWidgetSize(loginPanel1, 0);
         	}
-        	if(outerMoreLinks.isAttached()){
+        	/*if(outerMoreLinks.isAttached()){
         		main.setWidgetSize(outerMoreLinks, 0);
-        	}
+        	}*/
         	
             if (args.size() == 0) {
             	SearchInput input = new SearchInput(null, null, 0, new String[0],new String[0]);
@@ -707,6 +721,7 @@ public class SeadApp implements EntryPoint {
             
            selectedItems = new HashMap<String, List<String>>();
          
+            isHome = false;	//flag set to not display outerLinks in the FacetedsearchPresenter.java
             int userFieldsLength =(args.size() - 2-facetCount*2)/2;
             Search.UserField[] userfields = new Search.UserField[userFieldsLength];
             String[] userqueries = new String[userFieldsLength];
@@ -740,6 +755,7 @@ public class SeadApp implements EntryPoint {
 
             FacetedSearchPresenter.EVENT_BUS = GWT.create(SimpleEventBus.class);
             presenter = new FacetedSearchPresenter(new FacetedSearchView());//);
+            System.out.println("isHome 0"+ SeadApp.isHome);
         	presenter.display(centerPanel, facetContent, header, loginPanel, notificationPanel);
         	
         	FacetedSearchPresenter.EVENT_BUS.fireEvent(new SearchEvent(input));
@@ -1031,12 +1047,9 @@ public class SeadApp implements EntryPoint {
     }
 
     private Widget createAccessServiceUrlEditor() {
-        FlexTable table = Util.createTable("");
-
-        //Button set = new Button("Set");
-
-        //Util.addColumn(table, accessurl_tb);
-        //Util.addColumn(table, set);
+       
+    	FlexTable table = new FlexTable();
+    	table.setText(0, 0, "");
         Label aboutLabel = Util.label("About", "Hyperlink");
         Util.addColumn(table, aboutLabel);
         aboutLabel.addStyleName("LeftPad");

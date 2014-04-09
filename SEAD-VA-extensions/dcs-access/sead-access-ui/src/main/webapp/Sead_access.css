@@ -65,6 +65,13 @@ a:active {
 .Main {
   color: #000000;
   background-color: #FFFFFF;
+  width: 70%;
+  height: 100%;
+  border-collapse: collapse;
+}
+.MainHorz{
+  color: #000000;
+  background-color: #E0E0D1;
   width: 100%;
   height: 100%;
   border-collapse: collapse;
@@ -265,7 +272,7 @@ white-space:normal;
 .Footer {
   background-color: #e0e0e0;
   font-size: smaller;
-  border-top:thick solid #0F9246;
+  border-top:thick solid #4C8FFC;
 }
 
 .FooterHyperlink {
