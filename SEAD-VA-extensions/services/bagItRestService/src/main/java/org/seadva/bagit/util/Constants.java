@@ -41,8 +41,17 @@ public class Constants {
     public static String titleTerm = "http://purl.org/dc/terms/title";
     public static String identifierTerm = "http://purl.org/dc/terms/identifier";
     public static String sizeTerm = "http://purl.org/dc/terms/SizeOrDuration";
-    public static String sourceTerm = "http://purl.org/dc/elements/1.1/source";
+    public static String rightsTerm = "http://purl.org/dc/terms/rights";
+    public static String sourceTerm = "http://www.loc.gov/METS/FLocat";
     public static String formatTerm = "http://purl.org/dc/elements/1.1/format";
+    public static String creatorTerm = "http://purl.org/dc/terms/creator";
+    public static String issuedTerm = "http://purl.org/dc/terms/issued";
+    public static String contactTerm = "http://purl.org/dc/terms/mediator";
+    public static String locationTerm = "http://purl.org/dc/terms/Location";
+    public static String abstractTerm = "http://purl.org/dc/terms/abstract";
+    public static String contentSourceTerm = "http://purl.org/dc/terms/source";
+    public static String contributor = "http://purl.org/dc/terms/contributor";
+    public static String documentedBy  = "http://purl.org/spar/cito/isDocumentedBy";
 
     static{
         try {
@@ -62,9 +71,8 @@ public class Constants {
         Map<String, String> metadataPredicateMap = new HashMap<String, String>();
 
         InputStream inputStream =
-                getClass().getResourceAsStream(
-                        "../ACR_to_ORE_MappingConfig.properties"
-                );
+                Constants.class.getResourceAsStream("ACR_to_ORE_MappingConfig.properties");
+
         StringWriter writer = new StringWriter();
         IOUtils.copy(inputStream, writer);
 
@@ -83,10 +91,9 @@ public class Constants {
 
     private List<MediciInstance> loadAcrInstances() throws IOException{
         List<MediciInstance> instances = new ArrayList<MediciInstance>();
+
         InputStream inputStream =
-                  getClass().getResourceAsStream(
-                        "../acrInstances.xml"
-               );
+                Constants.class.getResourceAsStream("acrInstances.xml");
         StringWriter writer = new StringWriter();
         IOUtils.copy(inputStream, writer);
 

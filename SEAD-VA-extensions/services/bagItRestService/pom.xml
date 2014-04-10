@@ -26,7 +26,6 @@
     <name>BagIt REST Service</name>
 
     <build>
-        <finalName>bagit</finalName>
         <plugins>
 
             <plugin>
@@ -62,6 +61,17 @@
                 </executions>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 

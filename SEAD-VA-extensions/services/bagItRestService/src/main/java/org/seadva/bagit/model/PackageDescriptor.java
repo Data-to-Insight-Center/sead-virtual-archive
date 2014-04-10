@@ -18,8 +18,22 @@ public class PackageDescriptor {
     private String oreFilePath;
     private String manifestFilePath;
     private String sipPath;
+
+    /**
+     * Contains aggregations with structure:
+     * <parent-entity-id, List<String> of child-entity-ids>
+     */
     private Map<String,List<String>> aggregation;
+
+    /**
+     * Contains type collection or file for each entity
+     */
     private Map<String, AggregationType> type;
+
+    /**
+     * Stores the properties for each entity:
+     * entity-id: <predicate-key, List<String> of object-values>
+     */
     private Map<String,Map<String,List<String>>> properties;
 
     public PackageDescriptor(String packageName, String bagPath, String unzippedBagPath){

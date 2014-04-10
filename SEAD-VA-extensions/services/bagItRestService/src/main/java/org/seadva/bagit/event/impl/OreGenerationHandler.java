@@ -38,7 +38,6 @@ import java.util.Map;
  */
 public class OreGenerationHandler implements Handler{
 
-    String sourceTerm = "http://purl.org/dc/elements/1.1/source";
     private static final String RESOURCE_MAP_SERIALIZATION_FORMAT = "RDF/XML";
 
     Map<String,List<String>> aggregation;
@@ -65,20 +64,31 @@ public class OreGenerationHandler implements Handler{
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
-        //  packageDescriptor.set
+        String guid = null;
+
+        if(packageDescriptor.getPackageId().contains("/"))
+            guid = packageDescriptor.getPackageId().split("/")[packageDescriptor.getPackageId().split("/").length-1];
+        else
+            guid = packageDescriptor.getPackageId().split(":")[packageDescriptor.getPackageId().split(":").length-1];
+        packageDescriptor.setOreFilePath(packageDescriptor.getUnzippedBagPath() +"/" + guid + "_oaiore.xml");
         return packageDescriptor;
     }
 
     private static String DEFAULT_URL_PREFIX = "http://seadva.d2i.indiana.edu/";
-    public OREResource getMainRem() {
-        return mainRem;
-    }
 
-    public void setMainRem(OREResource mainRem) {
-        this.mainRem = mainRem;
-    }
-
-    OREResource mainRem = null;
+    /**
+     * Creates an ORE for a given id  that is passed as argument
+     * @param agg
+     * @param rem
+     * @param id
+     * @param bagPath
+     * @param dataPath
+     * @throws IOException
+     * @throws JSONException
+     * @throws URISyntaxException
+     * @throws OREException
+     * @throws ORESerialiserException
+     */
     public void toOAIORE(Aggregation agg,
                          OREResource rem,
                          String id,
@@ -97,7 +107,10 @@ public class OreGenerationHandler implements Handler{
 
         if(type == AggregationType.COLLECTION){
 
-            String remId = DEFAULT_URL_PREFIX + URLEncoder.encode(id);
+            String remId = id;
+
+            if(!remId.startsWith("http:"))
+                remId = DEFAULT_URL_PREFIX + URLEncoder.encode(id);
             agg = OREFactory.createAggregation(new URI(
                     remId + "_Aggregation"
             ));
@@ -106,7 +119,6 @@ public class OreGenerationHandler implements Handler{
                     new URI(
                             remId
                     ));
-            mainRem = rem;// why is this being done?
         }
 
 
@@ -115,13 +127,23 @@ public class OreGenerationHandler implements Handler{
 
         List<String> results = aggregation.get(id);
 
-        if(results!=null)
+        if(results!=null)           //This part checks for child entities (files or sub-collections) so their properties can also be populated in the ORE.
             for(String child:results){
 
+                /*
+                If current entity has child ids, then it checks whether they are collection or file  and recursively calls the method to populate child properties in the ORE
+                 */
                 if(typeProperty.get(child) == AggregationType.COLLECTION){
+                //If collection, a  new ORE file is generated for the aggregation and the toOAIORE is called recursively to
+                // populate the properties of the collection
 
 
-                     String uri = DEFAULT_URL_PREFIX + URLEncoder.encode(child);
+                    String uri = child;
+                    try {
+                        new URI(child);
+                    } catch (URISyntaxException x) {
+                        uri = DEFAULT_URL_PREFIX + URLEncoder.encode(child);
+                    }
 
                     //Based on http://www.openarchives.org/ore/0.1/datamodel#nestedAggregations
                     AggregatedResource subAggResource = agg.createAggregatedResource(
@@ -144,16 +166,21 @@ public class OreGenerationHandler implements Handler{
                     Predicate DC_TERMS_SOURCE =  new Predicate();
                     DC_TERMS_SOURCE.setNamespace(Vocab.dcterms_Agent.ns().toString());
                     DC_TERMS_SOURCE.setPrefix(Vocab.dcterms_Agent.schema());
-                    URI sourceUri = new URI(sourceTerm);
-                    DC_TERMS_SOURCE.setName("source");
+                    URI sourceUri = new URI(Constants.sourceTerm);
+                    DC_TERMS_SOURCE.setName("FLocat");
                     DC_TERMS_SOURCE.setURI(sourceUri);
                     resourceMapSource.relate(DC_TERMS_SOURCE,
-                            bagPath + "/" + childguid + "_oaiore.xml");                         //make this a file path or just the is and the oai-ore can be tracked from here
+                            bagPath + "/" + childguid + "_oaiore.xml");
                     rem.addTriple(resourceMapSource);
 
                     agg.addAggregatedResource(subAggResource);
 
-                    String remChildId =  DEFAULT_URL_PREFIX + URLEncoder.encode(child);
+                    String remChildId = child;
+                    try {
+                        new URI(child);
+                    } catch (URISyntaxException x) {
+                        remChildId = DEFAULT_URL_PREFIX + URLEncoder.encode(child);
+                    }
 
                     Aggregation newAgg = OREFactory.createAggregation(new URI(
                             remChildId+"_Aggregation"
@@ -163,18 +190,24 @@ public class OreGenerationHandler implements Handler{
                     ));
 
 
-                    toOAIORE(newAgg, newRem, child, bagPath, dataPath);
+                    toOAIORE(newAgg, newRem, child, bagPath, dataPath);  //the new aggregation and  resourceMap is passed recursively, so that the sub-collection(sub-aggregation) properties are populated
                 }
                 else{
-                    String uri = DEFAULT_URL_PREFIX + URLEncoder.encode(child);
+                    /*
+                    If child is a file, the toOAIORE method is recursively called to populate the properties of the file.
+                     */
+                    String uri = child;
+                    if(!uri.startsWith("http:"))
+                        uri = DEFAULT_URL_PREFIX + URLEncoder.encode(child);
 
                     AggregatedResource dataResource = agg.createAggregatedResource(new URI(uri));
-                    agg.addAggregatedResource(dataResource);
+                    agg.addAggregatedResource(dataResource);   // The dataResource for the file is added to the current aggregation i.e connection is made between the aggregation and file resource
 
-                    toOAIORE(agg, dataResource, child, bagPath, dataPath);
+                    toOAIORE(agg, dataResource, child, bagPath, dataPath); //the file resource is passed recursively, so that the file properties are populated in the recursive call
                 }
             }
 
+        //This section gets properties of the current entity (collection/file) and puts them in the ORE map. The properties data structure should be populated beforehand by querying ACR for metadata by ACRQueryHandler
             Iterator props = properties.get(id).entrySet().iterator();
             while(props.hasNext()) {
                 Map.Entry<String,List<String>> pair = (Map.Entry) props.next();
@@ -194,6 +227,7 @@ public class OreGenerationHandler implements Handler{
                 }
             }
 
+        //Finally, a check is made to see if the entity is a Collection (if file, do nothing). If it is a collection, then the ORE strcuture in memory is serialized as a file.
         if(typeProperty.get(id)==AggregationType.COLLECTION){
             dataPath+=title+"/";
             Agent creator = OREFactory.createAgent();

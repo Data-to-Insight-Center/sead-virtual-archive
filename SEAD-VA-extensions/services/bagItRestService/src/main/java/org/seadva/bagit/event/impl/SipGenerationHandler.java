@@ -15,6 +15,8 @@
  */
 package org.seadva.bagit.event.impl;
 
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.apache.commons.io.FileUtils;
 import org.dataconservancy.model.dcs.*;
 import org.dspace.foresite.*;
@@ -24,6 +26,7 @@ import org.seadva.bagit.model.MediciInstance;
 import org.seadva.bagit.util.Constants;
 import org.seadva.model.SeadDeliverableUnit;
 import org.seadva.model.SeadFile;
+import org.seadva.model.SeadPerson;
 import org.seadva.model.builder.xstream.SeadXstreamStaxModelBuilder;
 import org.seadva.model.pack.ResearchObject;
 
@@ -31,8 +34,7 @@ import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Handler to generate SIP from ORE
@@ -41,15 +43,22 @@ public class SipGenerationHandler implements Handler{
 
     private static Predicate DC_TERMS_IDENTIFIER = null;
     private static Predicate DC_TERMS_SOURCE = null;
+    private static Predicate METS_LOCATION = null;
     private static Predicate DC_TERMS_TITLE = null;
     private static Predicate DC_TERMS_FORMAT = null;
     private static Predicate DC_TERMS_ABSTRACT = null;
+    private static Predicate DC_REFERENCES = null;
+    private static Predicate DC_TERMS_RIGHTS = null;
+    private static Predicate DC_TERMS_CONTRIBUTOR = null;
 
     private static Predicate CITO_IS_DOCUMENTED_BY = null;
     private static Predicate DC_TERMS_TYPE = null;
 
     private static Predicate CITO_DOCUMENTS = null;
     private static String DEFAULT_URL_PREFIX = "http://";
+
+    List<URI> knownCollectionPredicates;
+    List<URI> knownFilePredicates;
 
 
     public SipGenerationHandler() throws URISyntaxException, OREException {
@@ -87,6 +96,18 @@ public class SipGenerationHandler implements Handler{
         DC_TERMS_SOURCE.setName("source");
         DC_TERMS_SOURCE.setURI(new URI(Constants.sourceTerm));
 
+        DC_TERMS_CONTRIBUTOR = new Predicate();
+        DC_TERMS_CONTRIBUTOR.setNamespace(Vocab.dcterms_Agent.ns().toString());
+        DC_TERMS_CONTRIBUTOR.setPrefix(Vocab.dcterms_Agent.schema());
+        DC_TERMS_CONTRIBUTOR.setName("contributor");
+        DC_TERMS_CONTRIBUTOR.setURI(new URI(Constants.contributor));
+
+        METS_LOCATION = new Predicate();
+        METS_LOCATION.setNamespace("http://www.loc.gov/METS");
+        METS_LOCATION.setPrefix("http://www.loc.gov/METS");
+        METS_LOCATION.setName("FLocat");
+        METS_LOCATION.setURI(new URI("http://www.loc.gov/METS/FLocat"));
+
         // create the CITO:isDocumentedBy predicate
         CITO_IS_DOCUMENTED_BY = new Predicate();
         CITO_IS_DOCUMENTED_BY.setNamespace("http://purl.org/spar/cito/");
@@ -102,6 +123,20 @@ public class SipGenerationHandler implements Handler{
         DC_TERMS_TYPE.setURI(new URI(DC_TERMS_TYPE.getNamespace()
                 + DC_TERMS_TYPE.getName()));
 
+        DC_TERMS_RIGHTS = new Predicate();
+        DC_TERMS_RIGHTS.setNamespace(Vocab.dcterms_Agent.ns().toString());
+        DC_TERMS_RIGHTS.setPrefix(Vocab.dcterms_Agent.schema());
+        DC_TERMS_RIGHTS.setName("rights");
+        DC_TERMS_RIGHTS.setURI(new URI(DC_TERMS_RIGHTS.getNamespace()
+                + DC_TERMS_RIGHTS.getName()));
+
+        DC_REFERENCES = new Predicate();
+        DC_REFERENCES.setNamespace(Vocab.dcterms_Agent.ns().toString());
+        DC_REFERENCES.setPrefix(Vocab.dcterms_Agent.schema());
+        DC_REFERENCES.setName("references");
+        DC_REFERENCES.setURI(new URI(DC_REFERENCES.getNamespace()
+                + DC_REFERENCES.getName()));
+
         // create the CITO:documents predicate
         CITO_DOCUMENTS = new Predicate();
         CITO_DOCUMENTS.setNamespace(CITO_IS_DOCUMENTED_BY.getNamespace());
@@ -109,6 +144,31 @@ public class SipGenerationHandler implements Handler{
         CITO_DOCUMENTS.setName("documents");
         CITO_DOCUMENTS.setURI(new URI(CITO_DOCUMENTS.getNamespace()
                 + CITO_DOCUMENTS.getName()));
+
+        knownCollectionPredicates = new ArrayList<URI>();
+        knownCollectionPredicates.add(DC_TERMS_IDENTIFIER.getURI());
+        knownCollectionPredicates.add(DC_TERMS_TITLE.getURI());
+        knownCollectionPredicates.add(DC_TERMS_FORMAT.getURI());
+        knownCollectionPredicates.add(DC_TERMS_ABSTRACT.getURI());
+        knownCollectionPredicates.add(DC_TERMS_SOURCE.getURI());
+        knownCollectionPredicates.add(CITO_IS_DOCUMENTED_BY.getURI());
+        knownCollectionPredicates.add(DC_TERMS_TYPE.getURI());
+        knownCollectionPredicates.add(DC_TERMS_RIGHTS.getURI());
+        knownCollectionPredicates.add(CITO_DOCUMENTS.getURI());
+        knownCollectionPredicates.add(DC_REFERENCES.getURI());
+        knownCollectionPredicates.add(DC_TERMS_CONTRIBUTOR.getURI());
+
+        knownFilePredicates = new ArrayList<URI>();
+        knownFilePredicates.add(DC_TERMS_IDENTIFIER.getURI());
+        knownFilePredicates.add(DC_TERMS_TITLE.getURI());
+        knownFilePredicates.add(DC_TERMS_FORMAT.getURI());
+        knownFilePredicates.add(METS_LOCATION.getURI());
+        knownFilePredicates.add(CITO_IS_DOCUMENTED_BY.getURI());
+        knownFilePredicates.add(DC_TERMS_TYPE.getURI());
+        knownFilePredicates.add(new URI("http://www.openarchives.org/ore/terms/isAggregatedBy"));
+        knownFilePredicates.add(DC_REFERENCES.getURI());
+        knownFilePredicates.add(new URI("http://purl.org/dc/terms/isReferencedBy"));//we do only references and not referencedBy
+
     }
 
     @Override
@@ -211,10 +271,90 @@ public class SipGenerationHandler implements Handler{
             if(metadataTriples!=null && metadataTriples.size()>0){
                 for(Triple metadataTriple: metadataTriples){
                     DcsMetadataRef metadataRef = new DcsMetadataRef();
-                    metadataRef.setRef(metadataTriples.get(0).getObjectLiteral());
-                    du.addMetadataRef();
+                    metadataRef.setRef(metadataTriple.getObjectLiteral());
+                    du.addMetadataRef(metadataRef);
                 }
             }
+
+            TripleSelector refTripleSelector = new TripleSelector();
+            refTripleSelector.setSubjectURI(rem.getURI());
+            refTripleSelector.setPredicate(DC_REFERENCES);
+            metadataTriples = rem.listAllTriples(refTripleSelector);
+
+            if(metadataTriples!=null && metadataTriples.size()>0){
+                for(Triple metadataTriple: metadataTriples){
+                    DcsMetadataRef metadataRef = new DcsMetadataRef();
+                    metadataRef.setRef(metadataTriple.getObjectLiteral());
+                    du.addMetadataRef(metadataRef);
+                }
+            }
+
+            TripleSelector contributorTripleSelector = new TripleSelector();
+            contributorTripleSelector.setSubjectURI(rem.getURI());
+            contributorTripleSelector.setPredicate(DC_TERMS_CONTRIBUTOR);
+            List<Triple> contributorTriples = rem.listAllTriples(contributorTripleSelector);
+
+            if(contributorTriples!=null && contributorTriples.size()>0){
+                for(Triple contributorTriple: contributorTriples){
+                    SeadPerson person = new SeadPerson();
+                    person.setName(contributorTriple.getObjectLiteral());
+                    //person.setId(UUID.randomUUID().toString());
+                    du.addDataContributor(person);
+                }
+            }
+
+
+            //get any rights associated with DU
+            TripleSelector rightsTripleSelector = new TripleSelector();
+            rightsTripleSelector.setSubjectURI(rem.getURI());
+            rightsTripleSelector.setPredicate(DC_TERMS_RIGHTS);
+            List<Triple> rightsTriples = rem.listAllTriples(rightsTripleSelector);
+
+            if(rightsTriples!=null && rightsTriples.size()>0){
+                for(Triple rightsTriple: rightsTriples){
+                    du.setRights(rightsTriple.getObjectLiteral());
+                }
+            }
+
+            //Get all triples not already assigned to a known predicate and add them as key value pairs that still get indexed
+
+            List<Triple> allTriples = rem.listTriples();
+            if(allTriples!=null)
+                for(Triple triple: allTriples){
+                    if(triple.getPredicate()!=null)
+                        if(!knownCollectionPredicates.contains(triple.getPredicate().getURI())){
+
+                            String predicate = triple.getPredicate().getURI().toString();
+
+                            String objValue;
+                            if(!triple.isLiteral()){
+                                Object temp = triple.getObject();
+                                if(temp==null)
+                                    continue;
+                                objValue = temp.toString();
+                            }
+                            else
+                                objValue = triple.getObjectLiteral();
+
+                            DcsMetadata dcsMetadata = new DcsMetadata();
+
+                            String splitChar = "/";
+                            if(predicate.contains("#"))
+                                splitChar="#";
+                            String ns = predicate.substring(0, predicate.lastIndexOf(splitChar));
+                            dcsMetadata.setSchemaUri(ns);
+
+
+                            Map<String,Object> map = new HashMap<String,Object>();
+                            map.put(predicate, objValue);
+                            XStream xStream = new XStream(new DomDriver());
+                            xStream.alias("map", java.util.Map.class);
+                            String metadata = xStream.toXML(map);
+                            dcsMetadata.setMetadata(metadata);
+                            du.addMetadata(dcsMetadata);
+                        }
+                }
+
             //get root DU
 
             Aggregation agg = rem.getAggregation();
@@ -250,8 +390,9 @@ public class SipGenerationHandler implements Handler{
                         file.setId(UUID.randomUUID().toString());
 
 
+
                     TripleSelector filetypeSelector = new TripleSelector();
-                    filetypeSelector.setSubjectURI(rem.getURI());
+                    filetypeSelector.setSubjectURI(aggregatedResource.getURI());
                     filetypeSelector.setPredicate(DC_TERMS_TYPE);
                     List<Triple> filetypeTriples = rem.listAllTriples(filetypeSelector);
 
@@ -271,11 +412,16 @@ public class SipGenerationHandler implements Handler{
 
                     TripleSelector sourceselector = new TripleSelector();
                     sourceselector.setSubjectURI(aggregatedResource.getURI());
-                    selector.setPredicate(DC_TERMS_SOURCE);
-                    List<Triple> sourcetriples = aggregatedResource.listAllTriples(selector);
+                    sourceselector.setPredicate(METS_LOCATION);
+                    List<Triple> sourcetriples = aggregatedResource.listAllTriples(sourceselector);
 
                     if(sourcetriples.size()>0)
-                        file.setSource(sourcetriples.get(0).getObjectLiteral());
+                    {
+                        if(sourcetriples.get(0).getObjectLiteral().startsWith("http"))
+                            file.setSource(sourcetriples.get(0).getObjectLiteral());
+                        else
+                            file.setSource(unzippedDir+sourcetriples.get(0).getObjectLiteral());
+                    }
 
                     selector = new TripleSelector();
                     selector.setSubjectURI(aggregatedResource.getURI());
@@ -284,6 +430,19 @@ public class SipGenerationHandler implements Handler{
                     if(triples.size()>0)
                         file.setName(triples.get(0).getObjectLiteral());
 
+
+                    refTripleSelector = new TripleSelector();
+                    refTripleSelector.setSubjectURI(aggregatedResource.getURI());
+                    refTripleSelector.setPredicate(DC_REFERENCES);
+                    metadataTriples = aggregatedResource.listAllTriples(refTripleSelector);
+
+                    if(metadataTriples!=null && metadataTriples.size()>0){
+                        for(Triple metadataTriple: metadataTriples){
+                            DcsMetadataRef metadataRef = new DcsMetadataRef();
+                            metadataRef.setRef(metadataTriple.getObjectLiteral());
+                            file.addMetadataRef(metadataRef);
+                        }
+                    }
 
                     selector = new TripleSelector();
                     selector.setSubjectURI(aggregatedResource.getURI());
@@ -297,6 +456,47 @@ public class SipGenerationHandler implements Handler{
                     }
 
                     file.setExtant(true);
+
+                    //get any metadata file associated   with file
+                    TripleSelector mdTripleSelector = new TripleSelector();
+                    mdTripleSelector.setSubjectURI(aggregatedResource.getURI());
+                    mdTripleSelector.setPredicate(CITO_IS_DOCUMENTED_BY);
+                    List<Triple> fileMetadataTriples = aggregatedResource.listAllTriples(mdTripleSelector);
+
+                    if(fileMetadataTriples!=null && fileMetadataTriples.size()>0){
+                        for(Triple metadataTriple: fileMetadataTriples){
+                            DcsMetadataRef metadataRef = new DcsMetadataRef();
+                            metadataRef.setRef(metadataTriple.getObjectLiteral());
+                            file.addMetadataRef(metadataRef);
+                        }
+                    }
+
+                    //Get all triples not already assigned to a known predicate and add them as text metadata
+
+                    List<Triple> allFileTriples = aggregatedResource.listTriples();
+                    if(allFileTriples!=null)
+                        for(Triple triple: allFileTriples){
+                            if(triple.getPredicate()!=null)
+                                if(!knownFilePredicates.contains(triple.getPredicate().getURI())){
+                                    if(!triple.isLiteral())
+                                        continue;
+                                    DcsMetadata dcsMetadata = new DcsMetadata();
+                                    String predicate = triple.getPredicate().getURI().toString();
+                                    String splitChar = "/";
+                                    if(predicate.contains("#"))
+                                        splitChar="#";
+                                    String ns = predicate.substring(0, predicate.lastIndexOf(splitChar));
+                                    dcsMetadata.setSchemaUri(ns);
+
+                                    Map<String,String> map = new HashMap<String, String>();
+                                    map.put(predicate, triple.getObjectLiteral());
+                                    XStream xStream = new XStream(new DomDriver());
+                                    xStream.alias("map", java.util.Map.class);
+                                    String metadata = xStream.toXML(map);
+                                    dcsMetadata.setMetadata(metadata);
+                                    file.addMetadata(dcsMetadata);
+                                }
+                        }
 
                     DcsManifestationFile manifestationFile = new DcsManifestationFile();
                     DcsFileRef ref = new DcsFileRef();
@@ -321,6 +521,8 @@ public class SipGenerationHandler implements Handler{
         catch (OREParserException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (OREException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }

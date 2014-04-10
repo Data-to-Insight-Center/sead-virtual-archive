@@ -21,6 +21,7 @@ package org.seadva.bagit.event.api;
 public enum Event {
     UNZIP_BAG,
     PARSE_FETCH,
+    PARSE_SIP,
     PARSE_DIRECTORY,
     PARSE_ACR_COLLECTION,
     GENERATE_ORE,

@@ -87,6 +87,10 @@ public class DirectoryParseHandler implements Handler{
             existingProperties.put(Constants.identifierTerm,existingIdValues);
             properties.put(childId,existingProperties);
 
+            List<String> existingSourceValues = new ArrayList<String>();
+            existingSourceValues.add(file.getAbsolutePath());
+            existingProperties.put(Constants.sourceTerm,existingSourceValues);
+            properties.put(childId,existingProperties);
 
             if(!typeProperty.containsKey(childId)){
                 if(file.isDirectory()){

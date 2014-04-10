@@ -38,6 +38,6 @@ public class ConfigBootstrap implements Bootstrap {
         packageListener.map(Event.GENERATE_MANIFEST, ManifestGenerationHandler.class.getName());
         packageListener.map(Event.GENERATE_FETCH, FetchGenerationHandler.class.getName());
         packageListener.map(Event.GENERATE_DATA_DIR, DataDirCreationHandler.class.getName());
-
+        packageListener.map(Event.PARSE_SIP, SipParseHandler.class.getName());
     }
 }
