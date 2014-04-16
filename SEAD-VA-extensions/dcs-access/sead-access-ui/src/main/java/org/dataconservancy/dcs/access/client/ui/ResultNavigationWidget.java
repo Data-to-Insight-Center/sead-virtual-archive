@@ -31,54 +31,54 @@ import com.google.gwt.user.client.ui.Label;
 
 public class ResultNavigationWidget extends Composite{
 
-	HorizontalPanel navigationPanel;
-	public ResultNavigationWidget(final int page, final int numpages, final SearchInput searchInput) {
-		navigationPanel = new HorizontalPanel();
-		initWidget(navigationPanel);
-		navigationPanel.setStylePrimaryName("ResultsNav");
-		navigationPanel.setSpacing(2);
+    HorizontalPanel navigationPanel;
+    public ResultNavigationWidget(final int page, final int numpages, final SearchInput searchInput, final boolean isAdvanced) {
+        navigationPanel = new HorizontalPanel();
+        initWidget(navigationPanel);
+        navigationPanel.setStylePrimaryName("ResultsNav");
+        navigationPanel.setSpacing(2);
 
         if (numpages > 1) {
             if (page > 0) {
-            	
-            	Label first = Util.label("<<", "Hyperlink");
-            	first.addClickHandler(new ClickHandler() {
-    				
-    				@Override
-    				public void onClick(ClickEvent event) {
-    		        	FacetedSearchPresenter.EVENT_BUS.fireEvent(
-    		        			new SearchEvent(
-    		        			new SearchInput(
-    							searchInput.getUserfields(),
-    							searchInput.getUserqueries(),
-    							0,
-    							searchInput.getFacetField(),
-    							searchInput.getFacetValue()
-    							))); 
-    					
-    				}
-    			});
-            	navigationPanel.add(first);
-            		
+
+                Label first = Util.label("<<", "Hyperlink");
+                first.addClickHandler(new ClickHandler() {
+
+                    @Override
+                    public void onClick(ClickEvent event) {
+                        FacetedSearchPresenter.EVENT_BUS.fireEvent(
+                                new SearchEvent(
+                                        new SearchInput(
+                                                searchInput.getUserfields(),
+                                                searchInput.getUserqueries(),
+                                                0,
+                                                searchInput.getFacetField(),
+                                                searchInput.getFacetValue()
+                                        ),isAdvanced));
+
+                    }
+                });
+                navigationPanel.add(first);
+
                 final int offset = (page - 1) * Constants.MAX_SEARCH_RESULTS;
-                
+
                 Label previous = Util.label("Previous", "Hyperlink");
                 previous.addClickHandler(new ClickHandler() {
-    				
-    				@Override
-    				public void onClick(ClickEvent event) {
-    		        	FacetedSearchPresenter.EVENT_BUS.fireEvent(
-    		        			new SearchEvent(
-    		        			new SearchInput(
-    							searchInput.getUserfields(),
-    							searchInput.getUserqueries(),
-    							offset,
-    							searchInput.getFacetField(),
-    							searchInput.getFacetValue()
-    							))); 
-    					
-    				}
-    			});
+
+                    @Override
+                    public void onClick(ClickEvent event) {
+                        FacetedSearchPresenter.EVENT_BUS.fireEvent(
+                                new SearchEvent(
+                                        new SearchInput(
+                                                searchInput.getUserfields(),
+                                                searchInput.getUserqueries(),
+                                                offset,
+                                                searchInput.getFacetField(),
+                                                searchInput.getFacetValue()
+                                        ),isAdvanced));
+
+                    }
+                });
                 navigationPanel.add(previous);
             }
 
@@ -97,27 +97,27 @@ public class ResultNavigationWidget extends Composite{
 
             for (int i = startpage; i < endpage; i++) {
                 if (i == page) {
-                	navigationPanel.add(Util.label("" + (i + 1), "CurrentNavigationPage"));
+                    navigationPanel.add(Util.label("" + (i + 1), "CurrentNavigationPage"));
                 } else {
                     final int offset = i * Constants.MAX_SEARCH_RESULTS;
-                  
+
                     Label pageIndex = Util.label(String.valueOf(i + 1), "Hyperlink");
                     pageIndex.addClickHandler(new ClickHandler() {
-        				
-        				@Override
-        				public void onClick(ClickEvent event) {
-        		        	FacetedSearchPresenter.EVENT_BUS.fireEvent(
-        		        			new SearchEvent(
-        		        			new SearchInput(
-        							searchInput.getUserfields(),
-        							searchInput.getUserqueries(),
-        							offset,
-        							searchInput.getFacetField(),
-        							searchInput.getFacetValue()
-        							))); 
-        					
-        				}
-        			});
+
+                        @Override
+                        public void onClick(ClickEvent event) {
+                            FacetedSearchPresenter.EVENT_BUS.fireEvent(
+                                    new SearchEvent(
+                                            new SearchInput(
+                                                    searchInput.getUserfields(),
+                                                    searchInput.getUserqueries(),
+                                                    offset,
+                                                    searchInput.getFacetField(),
+                                                    searchInput.getFacetValue()
+                                            ), isAdvanced));
+
+                        }
+                    });
 
                     navigationPanel.add(pageIndex);
                 }
@@ -125,50 +125,50 @@ public class ResultNavigationWidget extends Composite{
 
             if (page < numpages - 1) {
                 final int offset = (page + 1) * Constants.MAX_SEARCH_RESULTS;
-                
+
                 Label next = Util.label("Next", "Hyperlink");
                 next.addClickHandler(new ClickHandler() {
-    				
-    				@Override
-    				public void onClick(ClickEvent event) {
-    		        	FacetedSearchPresenter.EVENT_BUS.fireEvent(
-    		        			new SearchEvent(
-    		        			new SearchInput(
-    							searchInput.getUserfields(),
-    							searchInput.getUserqueries(),
-    							offset,
-    							searchInput.getFacetField(),
-    							searchInput.getFacetValue()
-    							))); 
-    					
-    				}
-    			});
+
+                    @Override
+                    public void onClick(ClickEvent event) {
+                        FacetedSearchPresenter.EVENT_BUS.fireEvent(
+                                new SearchEvent(
+                                        new SearchInput(
+                                                searchInput.getUserfields(),
+                                                searchInput.getUserqueries(),
+                                                offset,
+                                                searchInput.getFacetField(),
+                                                searchInput.getFacetValue()
+                                        ), isAdvanced));
+
+                    }
+                });
 
                 navigationPanel.add(next);
-                
-                
+
+
                 Label last = Util.label(">>", "Hyperlink");
                 last.addClickHandler(new ClickHandler() {
-    				
-    				@Override
-    				public void onClick(ClickEvent event) {
-    		        	FacetedSearchPresenter.EVENT_BUS.fireEvent(
-    		        			new SearchEvent(
-    		        			new SearchInput(
-    							searchInput.getUserfields(),
-    							searchInput.getUserqueries(),
-    							(numpages - 1) * Constants.MAX_SEARCH_RESULTS,
-    							searchInput.getFacetField(),
-    							searchInput.getFacetValue()
-    							))); 
-    					
-    				}
-    			});
+
+                    @Override
+                    public void onClick(ClickEvent event) {
+                        FacetedSearchPresenter.EVENT_BUS.fireEvent(
+                                new SearchEvent(
+                                        new SearchInput(
+                                                searchInput.getUserfields(),
+                                                searchInput.getUserqueries(),
+                                                (numpages - 1) * Constants.MAX_SEARCH_RESULTS,
+                                                searchInput.getFacetField(),
+                                                searchInput.getFacetValue()
+                                        ), isAdvanced));
+
+                    }
+                });
 
                 navigationPanel.add(last);
-               }
             }
         }
+    }
 
 }
 

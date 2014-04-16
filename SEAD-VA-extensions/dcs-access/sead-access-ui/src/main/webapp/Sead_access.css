@@ -227,6 +227,16 @@ white-space:normal;
 	padding-left:10px;
 	padding-top:5px;
 }
+
+.PadHyperlink {
+  color: blue;
+  font-weight:bold
+  text-decoration: underline;
+  cursor: pointer;
+  padding-left:10px;
+  margin-left:350px;
+}
+
 .LeftPad{
 	padding-left:50px;
 	padding-top:5px;

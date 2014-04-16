@@ -635,7 +635,7 @@ public class SeadApp implements EntryPoint {
          	presenter = new FacetedSearchPresenter(new FacetedSearchView());
          	presenter.display(centerPanel, facetContent, header, loginPanel, notificationPanel);
         	selectedItems = new HashMap<String, List<String>>();
-        	FacetedSearchPresenter.EVENT_BUS.fireEvent(new SearchEvent(input));
+        	FacetedSearchPresenter.EVENT_BUS.fireEvent(new SearchEvent(input, false));
         	isHome = true;
             return;
         }
@@ -669,8 +669,28 @@ public class SeadApp implements EntryPoint {
         	presenter = new FacetedSearchPresenter(new FacetedSearchView());
         	presenter.display(centerPanel, facetContent, header, loginPanel, notificationPanel);
         	
-        	FacetedSearchPresenter.EVENT_BUS.fireEvent(new SearchEvent(input));
-        } else if (state == SeadState.SEARCH) {
+        	FacetedSearchPresenter.EVENT_BUS.fireEvent(new SearchEvent(input, false));
+        } if (state == SeadState.ADVANCED) {
+            if(facetOuterPanel.isAttached()){
+                main.setWidgetSize(facetOuterPanel,250);
+
+                if(!centerPanel.isAttached())
+                    main.add(centerPanel);
+
+                dataSearch.setStyleName("OptionSelected");
+                uploadData.setStyleName("Option");
+                adminPage.setStyleName("Option");
+                dataHistory.setStyleName("Option");
+
+                selectedItems = new HashMap<String, List<String>>();
+                SearchInput input = new SearchInput(null, null, 0, new String[0],new String[0]);
+                FacetedSearchPresenter.EVENT_BUS = GWT.create(SimpleEventBus.class);
+                presenter = new FacetedSearchPresenter(new FacetedSearchView());
+                presenter.display(centerPanel, facetContent, header, loginPanel, notificationPanel);
+
+                FacetedSearchPresenter.EVENT_BUS.fireEvent(new SearchEvent(input, true));
+            }
+        }else if (state == SeadState.SEARCH) {
         	if(facetOuterPanel.isAttached()){
         		main.setWidgetSize(facetOuterPanel,250);
         	}
@@ -692,7 +712,7 @@ public class SeadApp implements EntryPoint {
             	presenter.display(centerPanel, facetContent, header, loginPanel, notificationPanel);
             	selectedItems = new HashMap<String, List<String>>();
             	
-            	FacetedSearchPresenter.EVENT_BUS.fireEvent(new SearchEvent(input));
+            	FacetedSearchPresenter.EVENT_BUS.fireEvent(new SearchEvent(input, false));
                 return;
             }
             
@@ -758,7 +778,7 @@ public class SeadApp implements EntryPoint {
             System.out.println("isHome 0"+ SeadApp.isHome);
         	presenter.display(centerPanel, facetContent, header, loginPanel, notificationPanel);
         	
-        	FacetedSearchPresenter.EVENT_BUS.fireEvent(new SearchEvent(input));
+        	FacetedSearchPresenter.EVENT_BUS.fireEvent(new SearchEvent(input, false));
         } else if (state == SeadState.ENTITY) {
         	if(facetOuterPanel.isAttached()){
         		main.setWidgetSize(facetOuterPanel,0);

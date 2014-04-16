@@ -18,7 +18,7 @@ package org.dataconservancy.dcs.access.client.view;
 
 import org.dataconservancy.dcs.access.client.Util;
 import org.dataconservancy.dcs.access.client.model.JsDcp;
-import org.dataconservancy.dcs.access.client.ui.SeadAdvancedSearchWidget;
+import org.dataconservancy.dcs.access.client.ui.SeadSimpleSearchWidget;
 
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
@@ -39,7 +39,7 @@ public class EntityView extends Composite implements org.dataconservancy.dcs.acc
 		content = new FlowPanel();
 	    content.setStylePrimaryName("Content");
 	    contentScrollPanel = new ScrollPanel(content);
-		content.add(new SeadAdvancedSearchWidget(null, null));
+		content.add(new SeadSimpleSearchWidget(null, null));
 		content.add(Util.label("Entity", "SectionHeader"));
 		
 	}

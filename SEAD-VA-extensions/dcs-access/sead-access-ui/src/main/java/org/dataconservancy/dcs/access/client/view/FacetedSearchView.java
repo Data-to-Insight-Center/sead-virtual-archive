@@ -35,7 +35,6 @@ public class FacetedSearchView extends Composite implements org.dataconservancy.
 	Button search;
 	Button add;
 	FlexTable table;
-	SeadAdvancedSearchWidget advWidget;
 	Panel content;
 //	SearchInput searchInput;
 	//SearchInput input;
@@ -43,20 +42,13 @@ public class FacetedSearchView extends Composite implements org.dataconservancy.
 	
 	public FacetedSearchView()
 	{
-	//	searchInput = input;
-		//Widgets for displaying search
+		//Widgets for displaying search results
 		content = new FlowPanel();
         content.setStylePrimaryName("Content");
         contentScrollPanel = new ScrollPanel(content);
-             
-        //content.add(Util
-          //      .label("Search for scientific data from projects from various disciplines of science, archived for long-term preservation." ,
-            //            "Explanation"));
-        
-        //content.add(new AdvancedSearchWidget(null, null));
-        
-        //Widgets for displaying facet Content 
-        
+
+        //Widgets for displaying facet Content
+
         facetContent = new FlowPanel();
         facetContent.setStylePrimaryName("Facets");
 	}

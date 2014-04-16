@@ -24,7 +24,7 @@ import java.util.List;
  */
 
 public enum SeadState {
-    HOME("home"), SEARCH("search"), ENTITY("entity"), 
+    HOME("home"), SEARCH("search"), ENTITY("entity"), ADVANCED("advanced"),
     RELATED("related"),GEOSEARCH("geosearch"),GEORESULT("georesult"),GEOENTITY("geoentity"),
     LOGIN("login"),LOGOUT("logout"),REGISTER("register"),AUTH("auth"),
     OAUTH("oauthcallback"),UPLOAD("upload"),FILE("file"), DELIVERABLE_UNIT("deliverableunit"),

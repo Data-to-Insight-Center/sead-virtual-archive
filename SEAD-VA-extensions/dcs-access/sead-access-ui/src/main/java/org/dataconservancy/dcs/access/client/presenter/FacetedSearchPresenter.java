@@ -38,6 +38,7 @@ import org.dataconservancy.dcs.access.client.model.JsSearchResult;
 import org.dataconservancy.dcs.access.client.model.SearchInput;
 import org.dataconservancy.dcs.access.client.ui.ResultNavigationWidget;
 import org.dataconservancy.dcs.access.client.ui.SeadAdvancedSearchWidget;
+import org.dataconservancy.dcs.access.client.ui.SeadSimpleSearchWidget;
 import org.dataconservancy.dcs.access.shared.Constants;
 import org.dataconservancy.dcs.access.shared.UserSession;
 import org.dataconservancy.dcs.access.ui.client.model.JsModel;
@@ -143,10 +144,13 @@ public class FacetedSearchPresenter implements Presenter {
     			     			            
     			     			            verticalPanel.add(middlePanel);
     			     			            System.out.println("isHome1 :" + SeadApp.isHome);
-    			     			            if(SeadApp.isHome)
+    			     			            if(SeadApp.isHome&&!((SearchEvent)event).getIsAdvanced())
     			     			            	verticalPanel.add(SeadApp.outerMoreLinks);
     			     			            content.add(verticalPanel);
-    			     			            middlePanel.add(new SeadAdvancedSearchWidget(searchInput.getUserfields(), searchInput.getUserqueries()));
+                                           if(((SearchEvent)event).getIsAdvanced())
+                                               middlePanel.add(new SeadAdvancedSearchWidget(searchInput.getUserfields(), searchInput.getUserqueries()));
+                                           else
+                                               middlePanel.add(new SeadSimpleSearchWidget(searchInput.getUserfields(), searchInput.getUserqueries()));
     			     			            
 	    			     			        if(result.isSession()){
 	    			     			        	middlePanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
@@ -171,7 +175,10 @@ public class FacetedSearchPresenter implements Presenter {
     			     			        }	
 
     			     			       content.add(middlePanel);
-    			     			      middlePanel.add(new SeadAdvancedSearchWidget(searchInput.getUserfields(), searchInput.getUserqueries()));
+                                        if(((SearchEvent)event).getIsAdvanced())
+                                            middlePanel.add(new SeadAdvancedSearchWidget(searchInput.getUserfields(), searchInput.getUserqueries()));
+                                        else
+                                            middlePanel.add(new SeadSimpleSearchWidget(searchInput.getUserfields(), searchInput.getUserqueries()));
     			     			     if(result.isSession()){
     			     			    	 middlePanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
     			     			    	middlePanel.add(viewData);
@@ -207,7 +214,8 @@ public class FacetedSearchPresenter implements Presenter {
     			     				   getQueryResults(
     			     						   searchUrl,
     			     						   facets,
-    			     						   searchInput
+    			     						   searchInput,
+                                               ((SearchEvent)event).getIsAdvanced()
     			     						   );
     			     				  
     			     			
@@ -239,7 +247,7 @@ public class FacetedSearchPresenter implements Presenter {
 	}
 	 
 	private void displaySearchResults(String query,
-	            JsSearchResult result, String facets, SearchInput searchInput) {
+	            JsSearchResult result, String facets, SearchInput searchInput, boolean isAdvanced) {
 
 	    	
     		content.add(Util.label("Total matches: " + result.total(),
@@ -253,7 +261,7 @@ public class FacetedSearchPresenter implements Presenter {
 
 	        int page = result.offset() / Constants.MAX_SEARCH_RESULTS;
 
-	        content.add(new ResultNavigationWidget(page, numpages,searchInput));
+	        content.add(new ResultNavigationWidget(page, numpages,searchInput, isAdvanced));
 
 	        Grid grid = new Grid(Constants.MAX_SEARCH_RESULTS,
 	        					 1);
@@ -614,7 +622,7 @@ public class FacetedSearchPresenter implements Presenter {
 	     }
 	 
 	private void getQueryResults(final String searchUrl,
-			final String facets, final SearchInput searchInput)
+			final String facets, final SearchInput searchInput, final boolean isAdvanced)
 	{
 
         JsonpRequestBuilder rb = new JsonpRequestBuilder();
@@ -626,7 +634,7 @@ public class FacetedSearchPresenter implements Presenter {
             }
 
             public void onSuccess(JsModel result) {
-            	 displaySearchResults(searchUrl, (JsSearchResult)result, facets, searchInput);
+            	 displaySearchResults(searchUrl, (JsSearchResult)result, facets, searchInput, isAdvanced);
             	
             	 Map<String,List<String>> facetsList = //JsFacet.getFacets();
 	                		((JsFacet)result).getFacets();

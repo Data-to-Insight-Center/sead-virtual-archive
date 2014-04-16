@@ -29,18 +29,20 @@ public class SearchEvent extends Event<SearchEvent.Handler> {
     }
 
     private static final Type<SearchEvent.Handler> TYPE =
-        new Type<SearchEvent.Handler>();
+            new Type<SearchEvent.Handler>();
 
-   
+
     public static HandlerRegistration register(EventBus eventBus,
-    		SearchEvent.Handler handler) {
-      return eventBus.addHandler(TYPE, handler);
-    }    
+                                               SearchEvent.Handler handler) {
+        return eventBus.addHandler(TYPE, handler);
+    }
 
     private final SearchInput searchInput;
+    private final boolean isAdvanced;
 
-    public SearchEvent(SearchInput searchInput) {
+    public SearchEvent(SearchInput searchInput, boolean isAdvanced) {
         this.searchInput = searchInput;
+        this.isAdvanced = isAdvanced;
     }
 
     @Override
@@ -51,7 +53,11 @@ public class SearchEvent extends Event<SearchEvent.Handler> {
     public SearchInput getSearchInput() {
         return this.searchInput;
     }
-   
+
+    public boolean getIsAdvanced() {
+        return this.isAdvanced;
+    }
+
     @Override
     protected void dispatch(Handler handler) {
         handler.onMessageReceived(this);
