@@ -1,6 +1,0 @@
-CREATE DATABASE va_registry2;
-GRANT ALL ON va_registry.* TO 'username'@'localhost' IDENTIFIED BY 'password';
-GRANT SELECT ON mysql.proc TO 'va_registry'@'localhost';
-
-
-mysql -u username -p va_registry < ./va_registry_common.sql

@@ -25,13 +25,10 @@
     <name>SEAD's registry</name>
     <packaging>pom</packaging>
     <modules>
-        <module>sead-registry-api</module>
-        <module>sead-registry-dao-impl</module>
-        <module>sead-registry-impl</module>
         <module>sead-registry-jdbc-support</module>
-        <module>sead-registry-mapper</module>
         <module>sead-registry-webapp</module>
         <module>sead-registry-client</module>
+        <module>sead-registry-mapper</module>
     </modules>
 
     <build>
@@ -47,54 +44,18 @@
                 </configuration>
             </plugin>
 
-
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <archiveClasses>false</archiveClasses>
-                    <webResources>
-                        <resource>
-                            <filtering>true</filtering>
-                            <directory>${basedir}/src/main/webapp</directory>
-                            <includes>
-                                <include>WEB-INF/web.xml</include>
-                            </includes>
-                        </resource>
-                    </webResources>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>prepare-package</phase>
-                    </execution>
-                </executions>
-            </plugin>
-
         </plugins>
     </build>
-
     <repositories>
         <repository>
-            <id>m2.java.net</id>
-            <name>Java.net Maven 2 Repository</name>
-            <url>http://download.java.net/maven/2</url>
-        </repository>
-        <repository>
-            <id>org.dspace</id>
-            <name>Dspace Repository</name>
-            <url>http://mvnrepository.com</url>
-        </repository>
-
-        <repository>
-            <id>localhost</id>
-            <name>localhost-releases</name>
+            <id>sead-repo-snapshot</id>
+            <name>sead-repo-snapshot</name>
             <url>http://seadva-test.d2i.indiana.edu:8081/artifactory/ext-snapshot-local</url>
         </repository>
 
         <repository>
-            <id>localhost2</id>
-            <name>localhost-releases2</name>
+            <id>sead-repo-release</id>
+            <name>sead-repo-release</name>
             <url>http://seadva-test.d2i.indiana.edu:8081/artifactory/ext-release-local</url>
         </repository>
 
@@ -107,20 +68,6 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-
     </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>m2.java.net</id>
-            <name>Java.net Maven 2 Repository</name>
-            <url>http://download.java.net/maven/2</url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>org.dspace</id>
-            <name>Dspace Repository</name>
-            <url>http://mvnrepository.com</url>
-        </pluginRepository>
-    </pluginRepositories>
-
 
 </project>
