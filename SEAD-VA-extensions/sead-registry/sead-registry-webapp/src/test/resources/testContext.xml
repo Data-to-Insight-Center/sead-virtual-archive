@@ -19,19 +19,19 @@
 
 
     <bean id="entityDaoImpl"
-    class="org.seadva.registry.dao.jdbc.impl.EntityJdbcDaoImpl" />
+    class="org.seadva.org.seadva.registry.dao.jdbc.impl.EntityJdbcDaoImpl" />
 
     <bean id="entityTypeDaoImpl"
-          class="org.seadva.registry.dao.jdbc.impl.EntityTypeJdbcDaoImpl" />
+          class="org.seadva.org.seadva.registry.dao.jdbc.impl.EntityTypeJdbcDaoImpl" />
 
     <bean id="aggregationDaoImpl"
-          class="org.seadva.registry.dao.jdbc.impl.AggregationJdbcDaoImpl" />
+          class="org.seadva.org.seadva.registry.dao.jdbc.impl.AggregationJdbcDaoImpl" />
 
     <bean id="relationDaoImpl"
-          class="org.seadva.registry.dao.jdbc.impl.RelationJdbcDaoImpl" />
+          class="org.seadva.org.seadva.registry.dao.jdbc.impl.RelationJdbcDaoImpl" />
 
     <bean id="propertyDaoImpl"
-          class="org.seadva.registry.dao.jdbc.impl.PropertyJdbcDaoImpl" />
+          class="org.seadva.org.seadva.registry.dao.jdbc.impl.PropertyJdbcDaoImpl" />
 
 
 </beans>
