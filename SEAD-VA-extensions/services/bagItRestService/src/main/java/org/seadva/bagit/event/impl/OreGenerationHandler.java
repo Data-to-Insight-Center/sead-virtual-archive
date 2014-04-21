@@ -83,11 +83,11 @@ public class OreGenerationHandler implements Handler{
      * @param id
      * @param bagPath
      * @param dataPath
-     * @throws IOException
-     * @throws JSONException
-     * @throws URISyntaxException
-     * @throws OREException
-     * @throws ORESerialiserException
+     * @throws java.io.IOException
+     * @throws org.sead.acr.common.utilities.json.JSONException
+     * @throws java.net.URISyntaxException
+     * @throws org.dspace.foresite.OREException
+     * @throws org.dspace.foresite.ORESerialiserException
      */
     public void toOAIORE(Aggregation agg,
                          OREResource rem,
@@ -139,11 +139,12 @@ public class OreGenerationHandler implements Handler{
 
 
                     String uri = child;
-                    try {
+                    /*try {
                         new URI(child);
-                    } catch (URISyntaxException x) {
+                    } catch (URISyntaxException x) {*/
+                    if(!child.startsWith("http:"))
                         uri = DEFAULT_URL_PREFIX + URLEncoder.encode(child);
-                    }
+                    //}
 
                     //Based on http://www.openarchives.org/ore/0.1/datamodel#nestedAggregations
                     AggregatedResource subAggResource = agg.createAggregatedResource(
@@ -176,11 +177,12 @@ public class OreGenerationHandler implements Handler{
                     agg.addAggregatedResource(subAggResource);
 
                     String remChildId = child;
-                    try {
+                    /*try {
                         new URI(child);
-                    } catch (URISyntaxException x) {
+                    } catch (URISyntaxException x) {*/
+                    if(!child.startsWith("http:"))
                         remChildId = DEFAULT_URL_PREFIX + URLEncoder.encode(child);
-                    }
+                    //}
 
                     Aggregation newAgg = OREFactory.createAggregation(new URI(
                             remChildId+"_Aggregation"

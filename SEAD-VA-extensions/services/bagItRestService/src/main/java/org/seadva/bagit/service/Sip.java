@@ -76,8 +76,12 @@ public class Sip {
         if(Constants.homeDir==null){
             StringWriter writer = new StringWriter();
             String path =  context.getRealPath("/WEB-INF/Config.properties");
-            if(context.getInitParameter("testPath")!=null)
-                path = path.replace("/./",context.getInitParameter("testPath"));
+            if(context.getInitParameter("testPath")!=null) {
+                if(path.contains("/"))
+                    path = path.replace("/./", context.getInitParameter("testPath"));
+                else if(path.contains("\\"))
+                    path = path.replace("\\.\\", context.getInitParameter("testPath"));
+            }
 
             IOUtils.copy(new FileInputStream(
                     path
@@ -101,10 +105,12 @@ public class Sip {
                 fileDetail.getFileName().replace(".zip","")+"/";
 
 
-        if(!(new File(Constants.sipDir).exists()))
+        if(!(new File(Constants.sipDir).exists())) {
             (new File(Constants.sipDir)).mkdirs();
-        if(!(new File(unzipDir).exists()))
+        }
+        if(!(new File(unzipDir).exists())) {
             (new File(unzipDir)).mkdirs();
+        }
 
 
         String zippedBag = Constants.sipDir+"/"+fileDetail.getFileName();

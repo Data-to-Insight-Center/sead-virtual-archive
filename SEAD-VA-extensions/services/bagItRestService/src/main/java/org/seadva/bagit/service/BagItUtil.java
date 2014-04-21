@@ -79,8 +79,12 @@ public class BagItUtil {
         if(Constants.homeDir==null){
             StringWriter writer = new StringWriter();
             String path =  context.getRealPath("/WEB-INF/Config.properties");
-            if(context.getInitParameter("testPath")!=null)
-                path = path.replace("/./",context.getInitParameter("testPath"));
+            if(context.getInitParameter("testPath")!=null){
+                if(path.contains("/"))
+                    path = path.replace("/./",context.getInitParameter("testPath"));
+                else if(path.contains("\\"))
+                    path = path.replace("\\.\\",context.getInitParameter("testPath"));
+            }
 
             IOUtils.copy(new FileInputStream(
                 path
@@ -102,6 +106,14 @@ public class BagItUtil {
 
         Constants.bagDir = Constants.homeDir + "bag/";
         Constants.unzipDir = Constants.bagDir + "unzip/";
+
+        if(!new File(Constants.bagDir).exists()) {
+            new File(Constants.bagDir).mkdirs();
+        }
+        if(!new File(Constants.unzipDir).exists()) {
+            new File(Constants.unzipDir).mkdirs();
+        }
+
         String zippedBag = Constants.unzipDir + fileDetail.getFileName();
 
         IOUtils.copy(uploadedInputStream, new FileOutputStream(zippedBag));
@@ -159,8 +171,12 @@ public class BagItUtil {
             StringWriter writer = new StringWriter();
 
             String path =  context.getRealPath("/WEB-INF/Config.properties");
-            if(context.getInitParameter("testPath")!=null)
-                path = path.replace("/./",context.getInitParameter("testPath"));
+            if(context.getInitParameter("testPath")!=null) {
+                if (path.contains("/"))
+                    path = path.replace("/./", context.getInitParameter("testPath"));
+                else if (path.contains("\\"))
+                    path = path.replace("\\.\\", context.getInitParameter("testPath"));
+            }
 
             IOUtils.copy(new FileInputStream(
                    path)
@@ -182,6 +198,13 @@ public class BagItUtil {
 
         Constants.bagDir = Constants.homeDir + "bag/";
         Constants.unzipDir = Constants.bagDir + "unzip/";
+
+        if(!new File(Constants.bagDir).exists()) {
+            new File(Constants.bagDir).mkdirs();
+        }
+        if(!new File(Constants.unzipDir).exists()) {
+            new File(Constants.unzipDir).mkdirs();
+        }
 
         String zippedBag = Constants.unzipDir+"/"+fileDetail.getFileName();
 

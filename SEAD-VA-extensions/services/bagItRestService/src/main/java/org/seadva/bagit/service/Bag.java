@@ -89,8 +89,13 @@ public class Bag {
         if(Constants.homeDir==null){
             StringWriter writer = new StringWriter();
             String path =  context.getRealPath("/WEB-INF/Config.properties");
-            if(context.getInitParameter("testPath")!=null)
-                path = path.replace("/./",context.getInitParameter("testPath"));
+            if(context.getInitParameter("testPath")!=null){
+                if(path.contains("/"))
+                    path = path.replace("/./",context.getInitParameter("testPath"));
+                else if(path.contains("\\"))
+                    path = path.replace("\\.\\",context.getInitParameter("testPath"));
+            }
+
 
             IOUtils.copy(new FileInputStream(
                     path
@@ -111,11 +116,12 @@ public class Bag {
             }
         }
 
-        if(!new File(Constants.bagDir).exists())
+        if(!new File(Constants.bagDir).exists()) {
             new File(Constants.bagDir).mkdirs();
-        if(!new File(Constants.unzipDir).exists())
+        }
+        if(!new File(Constants.unzipDir).exists()) {
             new File(Constants.unzipDir).mkdirs();
-
+        }
         //String packageName, String bagPath, String unzippedBagPath
         new ConfigBootstrap().load();
         PackageDescriptor packageDescriptor = new PackageDescriptor("","",Constants.unzipDir);
