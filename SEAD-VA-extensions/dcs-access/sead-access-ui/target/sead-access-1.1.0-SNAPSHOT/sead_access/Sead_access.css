@@ -33,33 +33,29 @@ a:active {
  color: #666666;
 }
 
-.my-HyperLink{
-margin-bottom:10px;
-}
 
 .my-HyperLink a:link {
   color: #0737FF;
-  font-weight: bold;
+  font-weight: normal;
   text-decoration:underline;
 }
 
 .my-HyperLink a:visited {
   color: #3299CC;
   /*color: #F0999B;*/
-  font-weight: bold;
+  font-weight: normal;
 }
 
 .my-HyperLink a:hover {
   color:  #000000;
-  font-weight: bold;
+  font-weight: normal;
 }
 
 .my-HyperLink a:active {
  color: #3299CC;
- font-weight: bold;
 }
 
-.body {
+body {
   background-color: #FFFFFF;
 }
 .arrow {
@@ -68,14 +64,6 @@ margin-bottom:10px;
 }
 .Main {
   color: #000000;
-  background-color: #FFFFFF;
-  width: 100%;
-  height: 100%;
-  border-collapse: collapse;
-}
-.MainHorz{
-  color: #000000;
-  /*background-color: #E0E0D1; */
   background-color: #FFFFFF;
   width: 100%;
   height: 100%;
@@ -232,16 +220,6 @@ white-space:normal;
 	padding-left:10px;
 	padding-top:5px;
 }
-
-.PadHyperlink {
-  color: blue;
-  font-weight:bold
-  text-decoration: underline;
-  cursor: pointer;
-  padding-left:10px;
-  margin-left:350px;
-}
-
 .LeftPad{
 	padding-left:50px;
 	padding-top:5px;
@@ -284,14 +262,10 @@ white-space:normal;
   cursor: pointer;
 }
 
-.Footer1 {
-  background-color:#FFFFFF;
+.Footer {
+  background-color: #e0e0e0;
   font-size: smaller;
-  border-top:thick solid #4C8FFC;
-}
-.FooterTable{
-	float:left;
-	margin-left:5%;
+  border-top:thick solid #0F9246;
 }
 
 .FooterHyperlink {
@@ -310,7 +284,7 @@ white-space:normal;
 
 .GradientFacet{
   /*background-image: url(images/gradient_orange.png);*/
-  background-image: url(images/gradient.png);
+  background-image: url(images/gradient_olive.png);
   background-repeat: repeat-x; 
   border-top-left-radius: 15px;
   border-top-right-radius: 15px;
@@ -375,32 +349,16 @@ white-space:normal;
 	padding-top:5px;
 	padding-bottom:5px;
 }
-.SearchRow{
-	background-color: #F4F4F3 ;
+.ResultRow{
+	background-color: #F0F0F0 ;
 	color: #000000;
 	border-style:solid;
-	border-width:1px;
-	border-radius:6px;
-	border-color:#C3C3C0;
-	width:100px;
+	border-width2px;
+	border-color:#FFFFFF;
+	
 	font-family:Arial,Georgia,Serif;
+	
 	padding: 2em;
-	margin-bottom: 10px;
-}
-.SearchRowAlt{
-	background-color: #FFFFFF ;
-	color: #000000;
-	border-style:solid;
-	border-width:1px;
-	border-radius:6px;
-	border-color:#C3C3C0;
-	width:100px;
-	font-family:Arial,Georgia,Serif;
-	padding: 2em;
-	margin-bottom: 10px;
-}
-.SearchTable{
-	width:800px;
 }
 .RowTopBorder{
 	border-style:solid;
@@ -412,22 +370,6 @@ white-space:normal;
 	position:absolute;
 	right: 280px;
 	margin-top:40px;
-}
-
-.SearchButton{
-	color: #FFFFFF;
-	width: 97px;
-  	height: 40px;
-	background-color: #4C8FFC;
-	border-width: 2px;
-	border-radius: 8px;
-	border-style: outset;
-	border-color:#3079ED;
-  	padding: 5px;
-	font-weight:bold;
-	font-size: 10pt;
-	text-align: center;
-	cursor:pointer;
 }
 .SimpleButton{
 	color: #FFFFFF;
@@ -463,38 +405,7 @@ white-space:normal;
 	text-align: right;
 	cursor:pointer;
 }
-.LoginButton{
-	color: #FFFFFF;
-	width: 97px;
-  	height: 30px;
-	background-color: #259325;
-	border-width: 2px;
-	border-radius: 8px;
-	border-style: outset;
-	border-color:#3079ED;
-  	padding: 5px;
-	font-weight:bold;
-	font-size: 10pt;
-	text-align: center;
-	cursor:pointer;
-	margin-top:60px;
-	margin-right:100px;
-}
-.RegisterLabel{
-	
-	width: 97px;
-  	height: 70px;
-	border-width: 2px;
-	border-radius: 8px;
-	border-style: outset;
-	border-color:#3079ED;
-  	padding: 5px;
-	font-size: 10pt;
-	text-align: center;
-	cursor:pointer;
-	margin-top:10px;
-	margin-right:100px;
-}
+
 .SimpleGreenButton{
 	color: #FFFFFF;
 	background-color: #8EAF2F;
@@ -510,57 +421,35 @@ white-space:normal;
 }
 
 
-.Option{
+.SearchOption{
 	color: #FFFFFF;
 	border-style:solid;
 	border-width:2px;
 	border-color:#4F81BD;
-	font-size: 118%;
+	font-size: 10pt;
 	/*previous green border-color:#528B8B;*/
 	font-weight:bold;
-	/* text-decoration:underline; */
+	text-decoration:underline;
 	padding: 1em;
 	cursor:pointer;
 }
 
-.OptionSelected{
+.SearchSelected{
 	color: #FFFFFF;
 	border-style:solid;
 	border-width:2px;
 	border-color:#4F81BD;
-	font-size:118%;
+	font-size: 10pt;
 	/*previous green border-color:#528B8B;*/
 	font-weight:bold;
 	padding: 1em;
 }
-
-.Notification{
-	color: #FFFFFF;
-	border-style:solid;
-	border-width:2px;
-	border-color:#bf0000;
-	background-color:#bf0000;
-	font-size: 80%;
-	font-weight:bold;
-	padding: 1em;
-	cursor:pointer;
-	border-radius:10px;
-}
-
 .SectionHeader {
   /*color: #204D9B;*/
   color: #6F7074;
   font-weight: bold;
   font-size: larger;
   padding: 1em;
-}
-
-.SubHeader {
-  margin-left: auto;
-  margin-right: auto;
-  border-style:solid;
-  border-width:1px;
-  border-color:#0;
 }
 
 .GreenHeader {
@@ -657,73 +546,6 @@ white-space:normal;
   margin-top: 60px;
 
 }
-.SearchLabel
-{
-  color: #24478F;
-  font-weight: bold;
-  font-size:14pt;
-  margin-left: 150px;
-  margin-top: 20px;
-
-}
-.IntroLabel
-{
-  color: #6F7074;
-  /*font-weight: bold;*/
-  font-size:14px;
-  margin-left: 50px;
-  margin-top: 30px;
-  margin-bottom: 30px;
-  width: 920px;
-}
-.Pad
-{
-  color: #6F7074;
-  font-size: 18px;
-  margin-left: 150px;
-  margin-top: 20px;
-  margin-bottom: 30px;
-  margin-right: 20px;
-  border-radius: 7px;
-  border-width: 3px;
-  width: 550px;
-  height: 60px;
-
-}
-.OptionLabel
-{
-  margin-left: 50px;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  margin-right: 10px;
-  border-radius: 7px;
-  border-width: 3px;
-}
-.MoreLabel
-{
-  margin-left: 150px;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  margin-right: 10px;
-  border-radius: 7px;
-  border-width: 3px;
-}
-.MoreOptionLabels{
-	
-	width: 97px;
-  	height: 60px;
-	border-width: 2px;
-	border-radius: 8px;
-	border-style: outset;
-	border-color:#000000;
-  	padding: 5px;
-	font-size: 13pt;
-	text-align: center;
-	vertical-align: middle;
-	cursor:pointer;
-	margin-top:2px;
-	margin-right:20px;
-}
 
 
 .FilterHeader {
@@ -736,7 +558,7 @@ white-space:normal;
 .FacetPanel{
   padding-top:10px;
   padding-left:10px;
-	float:left;
+
 }
 .CurvedPanel{
   border-style:solid;
@@ -744,7 +566,6 @@ white-space:normal;
   border-color:#8BAB2E;
   /* previous orange color border-color:#FF8E2B;*/
   border-radius: 17px;
-  text-align:left;
 }
 .SubSectionHeader {
   text-decoration:underline;
@@ -759,50 +580,10 @@ white-space:normal;
 }
 .TableHeader {
   font-weight: bold;
-  background-color: #F0F0F0 ;
-  color: #000000;
-  border-style:solid;
-  border-width:0px;
-  border-color:#FFFFFF;
-  width:100px;
-  font-family:Arial,Georgia,Serif;
-  padding: 1em;
 }
-.GridTableColumn1 {
-  font-weight: bold;
-  background-color: #F0F0F0 ;
-  color: #000000;
-  border-style:solid;
-  border-width:0px;
-  border-color:#FFFFFF;
-  width:400px;
-  font-family:Arial,Georgia,Serif;
-  padding: 1em;
-}
-.GridTableColumn2 {
-  font-weight: bold;
-  background-color: #F0F0F0 ;
-  color: #000000;
-  border-style:solid;
-  border-width:0px;
-  border-color:#FFFFFF;
-  width:700px;
-  font-family:Arial,Georgia,Serif;
-  padding: 1em;
-}
-
 
 .Entity {
-	width: 800px;
-  	border-width: 2px;
-	border-radius: 8px;
-	border-style: outset;
-	border-color:#3079ED;
-  	padding: 5px;
-	font-size: 10pt;
-	/* text-align: center; */
-	margin-left: 150px;
-	padding-left:50px;
+  margin-left: 1em;
 }
 
 .LeftPad{
@@ -835,11 +616,17 @@ white-space:normal;
   margin-left: 10%;
 }
 
-.FacetedResults {
-  width:1000px;
+.SearchResults {
+  
 }
 
-
+.statusPopupPanelContainer {
+ position: fixed !important;
+ top: 0px;
+ margin-left: auto;
+ margin-right: auto;
+ width: 80%;
+}
 
 .progressBarContainer {
 	height:52%;
@@ -896,33 +683,20 @@ white-space:normal;
 .statusPopupPanel {
 
  background-color: #F7F7F7; 
- height:1%;
- width:10%;
- padding: 1px;
- border-style:solid;
- border-radius:10px;
- /*-moz-border-radius-bottomleft: 5px;
+ margin-top: 200px;
+ margin-left: 400px;
+ height:200px;
+ width:30%;
+ padding: 0 5px;
+ border-style:groove;
+ -moz-border-radius-bottomleft: 5px;
  -webkit-border-bottom-left-radius: 5px;
  moz-border-radius-topleft: 5px;
  -webkit-border-top-left-radius: 5px;
  -moz-border-radius-bottomright: 5px;
  -webkit-border-bottom-right-radius: 5px;
  -moz-border-radius-topright: 5px;
- -webkit-border-top-right-radius: 5px;*/
-}
-
-.statusPopupPanelText {
- font-weight: bold;
- font-color: #333333;
- text-align:center;
-}
-
-.statusPopupPanelContainer {
- position: fixed !important;
- top: 0px;
- margin-left: auto;
- margin-right: auto;
- width: 100%;
+ -webkit-border-top-right-radius: 5px;
 }
 
 .dialogBox {
@@ -945,7 +719,10 @@ white-space:normal;
  -webkit-border-top-right-radius: 5px;
 }
  
-
+.statusPopupPanelText {
+ font-weight: bold;
+ font-color: #333;
+}
 
 .emailPopupPanelContainer {
  position: fixed !important;
@@ -997,12 +774,6 @@ white-space:normal;
 
 .gwt-TextBox { width: 25em; }
 
-.retrievePopoup{
-	border-style:groove;
-	border-width: 2px;
-	width:10%;
-	height:10%;
-}
 
 }
 

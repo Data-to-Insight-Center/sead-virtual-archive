@@ -99,6 +99,9 @@ public final class JsDeliverableUnit
     public Widget display(CellTree tree) {
         FlowPanel panel = new FlowPanel();
 
+        try{
+        	
+        
         panel.setStylePrimaryName("Entity");
         Button b = new Button("Download (Email download link)");
         if(!getCoreMd().getRights().equalsIgnoreCase("restricted"))
@@ -114,9 +117,14 @@ public final class JsDeliverableUnit
             }
         });
         
-        panel.add(Util.label("Core metadata", "SubSectionHeader"));
-        
-        panel.add(getCoreMd().display(getId(),tree));
+      // panel.add(Util.label("Core metadata", "SubSectionHeader"));
+     
+        try{
+       panel.add(getCoreMd().display(getId(),tree));
+        }
+        catch(Exception e){
+        	e.printStackTrace();
+        }
         
         
 
@@ -324,7 +332,11 @@ public final class JsDeliverableUnit
             JsRelation.display(panel, getRelations());
         }
 
-       
+        }
+        catch(Exception e){
+        	e.printStackTrace();
+        }
+        
         return panel;
     }
 

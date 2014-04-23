@@ -36,6 +36,8 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.Tree;
+import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class MediciIngestView extends Composite implements org.dataconservancy.dcs.access.client.presenter.MediciIngestPresenter.Display{
@@ -43,6 +45,7 @@ public class MediciIngestView extends Composite implements org.dataconservancy.d
 	HorizontalPanel content;
 	Panel mainContentPanel;
 	Button getPub;
+	Button sort;
 	Button ingestButton;
 	Panel leftPanel;
 	Panel rightPanel;
@@ -52,6 +55,7 @@ public class MediciIngestView extends Composite implements org.dataconservancy.d
 	CheckBox uploadMetadata;
 	Label datasetLbl;
 	Label fileLbl;
+	Tree tree;
 //	Panel uploadPanel;
 //	Panel fileCharacPanel;
 //	Panel archivePanel;
@@ -68,6 +72,7 @@ public class MediciIngestView extends Composite implements org.dataconservancy.d
 
 		
 		getPub = new Button("View Collections to Publish");
+		sort = new Button("Sort");
 		ingestButton = new Button("Ingest Dataset");
 		//getPub.setStyleName("ButtonPosition");
 		
@@ -80,7 +85,9 @@ public class MediciIngestView extends Composite implements org.dataconservancy.d
 		leftPanel.setHeight((height/2-50)+"px");
 		leftPanel.setWidth((width/2.5-5)+"px");
 		
-		datasetLbl = Util.label("Dataset Collections","BoxHeader");
+		
+		
+		datasetLbl = Util.label("Select Data from Active Content Repository","BoxHeader");
 		coverLeftPanel.setStyleName("CollectionBorder");
 		coverLeftPanel.add(datasetLbl);
 		coverLeftPanel.add(leftPanel);
@@ -110,21 +117,11 @@ public class MediciIngestView extends Composite implements org.dataconservancy.d
 		final Panel buttonPanel = new HorizontalPanel();
 		
 		final Grid buttonTable = new Grid(2,2);
-		
-		
+
 		
 		ir = new ListBox();
 		ir.setStyleName("droplist");
-        
-					/*
-			 tag:cet.ncsa.uiuc.edu,2008:/bean/Collection/c6fa1779-296a-41ba-9a62-3342be9f58a2, Experimental Study of Delta Erosion Due to Dam Removal
-			 tag:cet.ncsa.uiuc.edu,2008:/bean/Collection/9248d474-7100-4fac-ba7d-4b1519354d22, Eel River Quads
-			 tag:cet.ncsa.uiuc.edu,2008:/bean/Collection/82f12ed4-a6ba-41ce-9dd9-27f10fb68152, Eel River Steelhead Study
-			 tag:cet.ncsa.uiuc.edu,2008:/bean/Collection/35ffbd8f-c3fc-465f-b437-1588b9d028c0, Eel River Flipchart
-			 tag:cet.ncsa.uiuc.edu,2008:/bean/Collection/d6d250ba-e54d-4ae0-937d-c23d5e8b5de8, Church and Rood Alluvial River Channel Regime Data
-			*/
-	        
-	        
+            
 	        
 	        restrictCopy = new CheckBox();
 	        
@@ -144,6 +141,7 @@ public class MediciIngestView extends Composite implements org.dataconservancy.d
 	        //buttonTable.setWidget(1,0,cloudCopy);
 	     //  buttonTable.setStyleName("TableBorder");
 	        buttonTable.setWidget(0,1,getPub);
+	       buttonTable.setWidget(1, 1, sort);
 	        Panel tempPanel2 = new FlowPanel();
 	        tempPanel2.setWidth((width/10)+"px");
 	        buttonPanel.add(tempPanel2); 
@@ -206,6 +204,11 @@ public class MediciIngestView extends Composite implements org.dataconservancy.d
 	@Override
 	public Button getPub() {
 		return this.getPub;
+	}
+	
+	
+	public Button getSort() {
+		return this.sort;
 	}
 
 	@Override

@@ -209,7 +209,8 @@ public class SeadApp implements EntryPoint {
         System.out.println("Cient Width: "+Window.getClientWidth());
         
         Panel footer = new FlowPanel();
-        footer.setStylePrimaryName("Footer");
+        footer.setStylePrimaryName("Footer1");
+        //footer.getElement().getStyle().setFloat(Float.LEFT);
         
         outerMoreLinks = new HorizontalPanel();
         outerMoreLinks.setStyleName("Pad");
@@ -226,8 +227,8 @@ public class SeadApp implements EntryPoint {
         //Label uploadData = Util.label("Upload Data", "MoreOptionLabels");
         //Label downloadSead = Util.label("Download SEAD-VA", "MoreOptionLabels");
         Image more = new Image(GWT.getModuleBaseURL()+ "../images/more.png");
-        final Image browseLabel = new Image(GWT.getModuleBaseURL()+ "../images/browse_label.jpg");
-        final Image browseAnimeLabel = new Image(GWT.getModuleBaseURL()+ "../images/browse1.jpg");
+        final Image browseLabel = new Image(GWT.getModuleBaseURL()+ "../images/browse3.jpg");
+        final Image browseAnimeLabel = new Image(GWT.getModuleBaseURL()+ "../images/browse4.jpg");
         final Image uploadAnimeLabel = new Image(GWT.getModuleBaseURL()+ "../images/upload1.jpg");
         final Image uploadLabel = new Image(GWT.getModuleBaseURL()+ "../images/upload_label.jpg");
         
@@ -935,6 +936,10 @@ public class SeadApp implements EntryPoint {
 
         	if(!centerPanel.isAttached())
         		main.add(centerPanel);
+        	
+        	if(loginPanel1.isAttached()){
+        		main.setWidgetSize(loginPanel1, 0);
+        	}
         	AsyncCallback<UserSession> cb =
                     new AsyncCallback<UserSession>() {
 
@@ -1070,6 +1075,7 @@ public class SeadApp implements EntryPoint {
        
     	FlexTable table = new FlexTable();
     	table.setText(0, 0, "");
+    	table.setStyleName("FooterTable");
         Label aboutLabel = Util.label("About", "Hyperlink");
         Util.addColumn(table, aboutLabel);
         aboutLabel.addStyleName("LeftPad");

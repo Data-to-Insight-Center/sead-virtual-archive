@@ -18,10 +18,14 @@ package org.dataconservancy.dcs.access.client.presenter;
 
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 import org.dataconservancy.dcs.access.client.SeadApp;
@@ -87,6 +91,8 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.Tree;
+import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.ListDataProvider;
@@ -104,6 +110,7 @@ public class MediciIngestPresenter  implements Presenter {
 	Panel content;
 	Panel mainContentPanel;
 	Button getPub;
+	Button sort;
 	Button ingestButton;
 	Panel leftPanel;
 	Panel rightPanel;
@@ -113,6 +120,7 @@ public class MediciIngestPresenter  implements Presenter {
 	CheckBox cloudCopy;
 	public static CheckBox mdCb;
 	Date latestDate = new Date();
+	Tree rootTree;
 
 	
 	Map<String,FileTable> existingFileSets;
@@ -124,6 +132,9 @@ public class MediciIngestPresenter  implements Presenter {
 	
 	
 	Label dataset;
+	
+	Map<String, ArrayList<Label>> collectionList;
+	
 	int flagHyperlink;
 	int first=0;
 	int last;
@@ -144,6 +155,7 @@ public class MediciIngestPresenter  implements Presenter {
 		CheckBox getMetadataCheckBox();
 		Label getDatasetLbl();
 		Label getFileLbl();
+		Button getSort();
 	}
 	
 	Display display;
@@ -151,6 +163,8 @@ public class MediciIngestPresenter  implements Presenter {
 	public MediciIngestPresenter(Display view)
 	{
 		this.display = view;
+		rootTree = new Tree();
+		collectionList = new HashMap<String, ArrayList<Label>> ();
 		
 	}
 	
@@ -177,6 +191,7 @@ public class MediciIngestPresenter  implements Presenter {
 		ir = this.display.getIr();
 		cloudCopy = this.display.getCloudCopy();
 		mdCb = this.display.getMetadataCheckBox();
+		sort = this.display.getSort();
 		
 //		registerSubmitSipEvent();
 //		registerWorkflowEvent();
@@ -200,6 +215,24 @@ public class MediciIngestPresenter  implements Presenter {
 						{
 							for(MediciInstance instance:instances){
 								ir.addItem(instance.getTitle());
+								
+								
+								FlexTable grid1 = new FlexTable(
+										);
+								grid1.setWidth("100%");
+								grid1.setHeight("100%");
+								
+								grid1.setWidget(0, 0, new Label("test11"));
+								
+								if(instance.getTitle().charAt(0)=='S'||instance.getTitle().charAt(0)=='N'){
+									TreeItem parent = new TreeItem(instance.getTitle());
+									ArrayList<Label> datasetList = new ArrayList<Label>();
+									collectionList.put(instance.getTitle(), datasetList);
+									getPublications(instance.getTitle(),parent,datasetList);
+									//parent.addItem(grid1);
+									//rootTree.addItem(parent);
+								}
+								
 							}
 							ir.setVisibleItemCount(instances.size());
 						}
@@ -213,12 +246,12 @@ public class MediciIngestPresenter  implements Presenter {
 						
 					     ir.setItemSelected(0, true);
 					     getPub.setEnabled(true);
-					     addGetPubHandler();
+					     addSortHandler();
+					     leftPanel.clear();
+						 leftPanel.add(rootTree);
 						
 					}
-				
-				
-				
+
 				});
 				}
 				@Override
@@ -255,161 +288,379 @@ public class MediciIngestPresenter  implements Presenter {
 			});
 	}
 	
-	void addGetPubHandler(){
-		getPub.addClickHandler(new ClickHandler() {
-			
+	void getPublications(String passedInstance, TreeItem passedParent, ArrayList<Label> passedDatasetList){
+		
+		try{
+		final StatusPopupPanel mediciWait = new StatusPopupPanel("Retrieving","wait",false);
+		//mediciWait.setStyleName("retrievePopoup");
+		mediciWait.setPopupPosition(Window.getClientWidth()*4/10, Window.getClientHeight()/3);
+		mediciWait.show();
+		existingFileSets = new HashMap<String, FileTable>();
+		previousSelectedFiles = new HashMap<String,List<FileNode>>();
+		final String instance = passedInstance;
+		final TreeItem parent = passedParent;
+		final ArrayList<Label> datasetList = passedDatasetList;
+        
+		mediciService.getAcrInstances(new AsyncCallback<List<MediciInstance>>() {
 			
 			@Override
-			public void onClick(ClickEvent event) {
-				final StatusPopupPanel mediciWait = new StatusPopupPanel("Retrieving","wait",false);
-				mediciWait.show();
-				existingFileSets = new HashMap<String, FileTable>();
-				previousSelectedFiles = new HashMap<String,List<FileNode>>();
-				int selected = ir.getSelectedIndex();
-				
-	        	final String instance = ir.getValue(selected);
+			public void onSuccess(List<MediciInstance> result) {
+
+				for(MediciInstance ins:result)
+					if(ins.getTitle().equalsIgnoreCase(instance))
+						sparqlEndpoint = ins;
 		        
-				mediciService.getAcrInstances(new AsyncCallback<List<MediciInstance>>() {
-					
-					@Override
-					public void onSuccess(List<MediciInstance> result) {
+		        RequestBuilder rb = new RequestBuilder(RequestBuilder.GET, SeadApp.ACRCOMMON+"?instance="+
+		        		URL.encodeQueryString(
+		        		sparqlEndpoint.getTitle()
+		        		)+"&"+
+		        		"query="+
+		        		URL.encodeQueryString(
+		        		Query.PROPOSED_FOR_PUBLICATION.getTitle()
+		        		)
+		        );
 
-						for(MediciInstance ins:result)
-							if(ins.getTitle().equalsIgnoreCase(instance))
-								sparqlEndpoint = ins;
-				        
-				        RequestBuilder rb = new RequestBuilder(RequestBuilder.GET, SeadApp.ACRCOMMON+"?instance="+
-				        		URL.encodeQueryString(
-				        		sparqlEndpoint.getTitle()
-				        		)+"&"+
-				        		"query="+
-				        		URL.encodeQueryString(
-				        		Query.PROPOSED_FOR_PUBLICATION.getTitle()
-				        		)
-				        );
+		        rb.setHeader("Content-type", "application/x-www-form-urlencoded");
 
-				        rb.setHeader("Content-type", "application/x-www-form-urlencoded");
-
-				        try {
-							Request response = rb.sendRequest(null, new RequestCallback() {
-								@Override
-								public void onError(Request request, Throwable exception) {
-									Window.alert("Failed");
-								}
+		        try {
+					Request response = rb.sendRequest(null, new RequestCallback() {
+						@Override
+						public void onError(Request request, Throwable exception) {
+							Window.alert("Failed");
+						}
+						
+						@Override
+						public void onResponseReceived(Request request,
+								Response response) {
+							String json = response.getText();
+							mediciService.parseJson(json, new AsyncCallback<Map<String,String>>() {
 								
 								@Override
-								public void onResponseReceived(Request request,
-										Response response) {
-									String json = response.getText();
-									mediciService.parseJson(json, new AsyncCallback<Map<String,String>>() {
-										
-										@Override
-										public void onSuccess(Map<String,String> result) {
-											
-											leftPanel.clear();
-										  	JsonpRequestBuilder rb = new JsonpRequestBuilder();
-										    rb.setTimeout(100000);
-										        
-											mediciWait.hide();
-											last =
-													result.size()-1;
-											final FlexTable grid = new FlexTable(
-													);
-											grid.setWidth("100%");
-											grid.setHeight("100%");
-											
-											
-											final Iterator it = result.entrySet().iterator();
-										    while (it.hasNext()) {
-										        final Map.Entry pair = (Map.Entry)it.next();
-										        final String dName =(String) pair.getValue();
-										       
-										        flagHyperlink =0;
-										        String tagRetrieveUrl =
-										        		SeadApp.accessurl+SeadApp.queryPath+"?q=resourceValue:"+
-										        		"("+
-										        		URL.encodeQueryString(((String)pair.getKey()).replace(":", "\\:"))+
-										        		")";
-										        rb.requestObject(tagRetrieveUrl, new AsyncCallback<JsSearchResult>() {
+								public void onSuccess(Map<String,String> result) {
+									
+									//srt
+									
+									//leftPanel.clear();
+								  	JsonpRequestBuilder rb = new JsonpRequestBuilder();
+								    rb.setTimeout(100000);
+								        
+									//mediciWait.hide();
+									last =
+											result.size()-1;
+									final FlexTable grid = new FlexTable(
+											);
+									grid.setWidth("100%");
+									grid.setHeight("100%");
+									
+									
+									final Iterator it = result.entrySet().iterator();
+								    while (it.hasNext()) {
+								        final Map.Entry pair = (Map.Entry)it.next();
+								        final String dName =(String) pair.getValue();
+								       
+								        flagHyperlink =0;
+								        String tagRetrieveUrl =
+								        		SeadApp.accessurl+SeadApp.queryPath+"?q=resourceValue:"+
+								        		"("+
+								        		URL.encodeQueryString(((String)pair.getKey()).replace(":", "\\:"))+
+								        		")";
+								        rb.requestObject(tagRetrieveUrl, new AsyncCallback<JsSearchResult>() {
 
-										            public void onFailure(Throwable caught) {
-										                Util.reportInternalError("Matching collection in VA failed", caught);
-										            
-										            }
-										           
-										            public void onSuccess(JsSearchResult result) {
-//									            	if(result.matches().length()==0||sparqlEndpoint.equals("http://sead.ncsa.illinois.edu/acr/resteasy/sparql"))
-//									            	{
-										            		dataset = Util.label(dName.substring(dName.lastIndexOf("/")+1),"Hyperlink");
-										            		flagHyperlink =1;					            		
-//									            	}				            	
-//									            	else
-//									                	flagHyperlink =0;
-										           
-										        
-										       if(flagHyperlink==1){
-										        dataset.addClickHandler(new ClickHandler() {
+								            public void onFailure(Throwable caught) {
+								                Util.reportInternalError("Matching collection in VA failed", caught);
+								            
+								            }
+								           
+								            public void onSuccess(JsSearchResult result) {
+//							            	if(result.matches().length()==0||sparqlEndpoint.equals("http://sead.ncsa.illinois.edu/acr/resteasy/sparql"))
+//							            	{
+								            		dataset = Util.label(dName.substring(dName.lastIndexOf("/")+1),"Hyperlink");
+								            		//datasetList.add
+								            		//collectionList.put(instance, dataset);
+								            		datasetList.add(
+								            				dataset);
+								            	//			dName.substring(dName.lastIndexOf("/")+1));
+								            		flagHyperlink =1;					            		
+//							            	}				            	
+//							            	else
+//							                	flagHyperlink =0;
+								           
+								        
+								       if(flagHyperlink==1){
+								        dataset.addClickHandler(new ClickHandler() {
+											@Override
+											public void onClick(ClickEvent event) {
+												mediciService.restartIngest((String)pair.getKey(), SeadApp.tmpHome, new AsyncCallback<CheckPointDetail>(){
+
 													@Override
-													public void onClick(ClickEvent event) {
-														mediciService.restartIngest((String)pair.getKey(), SeadApp.tmpHome, new AsyncCallback<CheckPointDetail>(){
+													public void onFailure(
+															Throwable caught) {
+														Window.alert("Error in estimating reingest scenario. \n" + caught.getMessage());
+													}
 
-															@Override
-															public void onFailure(
-																	Throwable caught) {
-																Window.alert("Error in estimating reingest scenario. \n" + caught.getMessage());
-															}
-
-															@Override
-															public void onSuccess(
-																	final CheckPointDetail result) {
-																if(!result.isCheckPointed()){
-																	final StatusPopupPanel collectionWait = new StatusPopupPanel("Querying for BagIt Bag","bag",false);
-																	collectionWait.show();
+													@Override
+													public void onSuccess(
+															final CheckPointDetail result) {
+														if(!result.isCheckPointed()){
+															final StatusPopupPanel collectionWait = new StatusPopupPanel("Querying for BagIt Bag","bag",false);
+															collectionWait.show();
+															
+													            	final MultiSelectionModel<CollectionNode> selectionModel = new MultiSelectionModel<CollectionNode>();
 																	
-															            	final MultiSelectionModel<CollectionNode> selectionModel = new MultiSelectionModel<CollectionNode>();
-																			
-																			mediciService.getBag( 
-																					(String) pair.getKey(), sparqlEndpoint,
-																					SeadApp.bagIturl, SeadApp.tmpHome,
-																					 new AsyncCallback<String>() {
+																	mediciService.getBag( 
+																			(String) pair.getKey(), sparqlEndpoint,
+																			SeadApp.bagIturl, SeadApp.tmpHome,
+																			 new AsyncCallback<String>() {
+																				@Override
+																				public void onSuccess(final String bagPath) {
+																					collectionWait.setValue("Converting to SEAD SIP", "wait");
+																				
+																					final Timer getSIPTimer = new Timer() {
+																				
+																					@Override
+																					public void run() {
+																						String tempguid = null;
+																				        if(((String) pair.getKey()).contains("/"))
+																				        	tempguid = ((String) pair.getKey()).split("/")
+																				            [((String) pair.getKey()).split("/").length-1];
+																				        else
+																				        	tempguid = ((String) pair.getKey()).split(":")
+																				            [((String) pair.getKey()).split(":").length-1];
+																				        final String guid = tempguid;
+																						mediciService.getSipFromBag(
+																								bagPath,
+																							SeadApp.tmpHome+guid+"_sip.xml",
+																							SeadApp.bagIturl,
+																							new AsyncCallback<String>() {
+																						
 																						@Override
-																						public void onSuccess(final String bagPath) {
-																							collectionWait.setValue("Converting to SEAD SIP", "wait");
-																						
-																							final Timer getSIPTimer = new Timer() {
-																						
-																							@Override
-																							public void run() {
-																								String tempguid = null;
-																						        if(((String) pair.getKey()).contains("/"))
-																						        	tempguid = ((String) pair.getKey()).split("/")
-																						            [((String) pair.getKey()).split("/").length-1];
-																						        else
-																						        	tempguid = ((String) pair.getKey()).split(":")
-																						            [((String) pair.getKey()).split(":").length-1];
-																						        final String guid = tempguid;
-																								mediciService.getSipFromBag(
-																										bagPath,
-																									SeadApp.tmpHome+guid+"_sip.xml",
-																									SeadApp.bagIturl,
-																									new AsyncCallback<String>() {
-																								
+																						public void onSuccess(String result) {
+
+																							mediciService.getFileNos(new AsyncCallback<Integer>(){
 																								@Override
-																								public void onSuccess(String result) {
+																								public void onFailure(
+																										Throwable caught) {
+																									Window.alert("Failed:"+caught.getMessage());
+																									
+																								}
 
-																									mediciService.getFileNos(new AsyncCallback<Integer>(){
-																										@Override
-																										public void onFailure(
-																												Throwable caught) {
-																											Window.alert("Failed:"+caught.getMessage());
+																								@Override
+																								public void onSuccess(Integer size) {
+																									if(size>Constants.MAX){
+																										Window.alert("This collection has more than "+Constants.MAX+" files.\n"+
+																													 "Hence preview is not possible. But you can start the ingest");
+																										if(collectionWait.isShowing())
+																											collectionWait.hide();
+																										getPub.setEnabled(false);
+																										cloudCopy.setEnabled(true);
+																										mdCb.setEnabled(true);
+																										ingestButton.setEnabled(true);
+																										ir.setEnabled(false);
+																										ir.setStyleName("greyFont");
+																								        getPub.setStyleName("greyFont");
+																										cloudCopy.setStyleName("greenFont");
+																										mdCb.setStyleName("greenFont");
+																										ingestButton.setStyleName("greenFont");
+																										
+																								       
+																										ingestButton.addClickHandler(new ClickHandler() {
 																											
-																										}
+																											@Override
+																											public void onClick(ClickEvent event) {
+																											    ingestButton.setEnabled(false);
+																										        cloudCopy.setEnabled(false);
+																										        ir.setEnabled(false);
+																										        getPub.setEnabled(true);
+																												String rootMediciId= (String) pair.getKey();
+																												
+																												
+																												AsyncCallback<Void> vaModelCb = new AsyncCallback<Void>() {
+																														@Override
+																														public void onSuccess(Void result) {
+																															mediciService.addMetadata(metadataSrc,SeadApp.tmpHome+guid+"_sip", new AsyncCallback<Void>() {
+																																
+																																@Override
+																																public void onSuccess(Void result) {
+																																	
+																																	
+																																	mediciService.splitSip(
+																																			SeadApp.tmpHome+guid+"_sip",
+																																			new AsyncCallback<Integer>() {
+																																		
+																																		@Override
+																																		public void onSuccess(Integer result) {
+																																			n=result;
+																																			l++;
+																																			if(l<=n){
+																																				mediciService.generateWfInstanceId(new AsyncCallback<String>() {
+																																					
+																																					@Override
+																																					public void onSuccess(final String wfInstanceId) {
+																																						UserServiceAsync user =
+																																					            GWT.create(UserService.class);
+																																						user.checkSession(null,new AsyncCallback<UserSession>() {
 
-																										@Override
-																										public void onSuccess(Integer size) {
-																											if(size>Constants.MAX){
-																												Window.alert("This collection has more than "+Constants.MAX+" files.\n"+
-																															 "Hence preview is not possible. But you can start the ingest");
+																																							@Override
+																																							public void onFailure(
+																																									Throwable caught) {
+																																								// TODO Auto-generated method stub
+																																								
+																																							}
+
+																																							@Override
+																																							public void onSuccess(
+																																									UserSession result) {
+
+																																								mediciService.submitMultipleSips(SeadApp.deposit_endpoint + "sip",
+																																										(String) pair.getKey(),
+																																										sparqlEndpoint,
+																																										SeadApp.tmpHome+guid+"_sip", 
+																																										wfInstanceId,
+																																										null,
+																																										l, n, "", "", false, GWT.getModuleBaseURL(),SeadApp.tmpHome,
+																																										new AsyncCallback<String>() {
+																																											
+																																											@Override
+																																											public void onSuccess(final String result) {
+																																												l=-1;
+																																												final Label notify = Util.label("!", "Notification");
+																																												notify.addClickHandler(new ClickHandler() {
+																																													
+																																													@Override
+																																													public void onClick(ClickEvent event) {
+																																														StatusPopupPanel mediciWait = new StatusPopupPanel("Retrieving","done",false);
+																																														MessagePopupPanel popUpPanel = new MessagePopupPanel(result, "done", true);
+																																														popUpPanel.show();
+																																														nPanel.remove(notify);
+																																													}
+																																												});
+																																												nPanel.add(notify);
+																																											}
+																																											
+																																											@Override
+																																											public void onFailure(Throwable caught) {
+																																												Window.alert("Workflow failed.");
+																																											}
+																																										});
+																																							
+																																							}
+																																							
+																																						});
+																																					}
+
+																																					@Override
+																																					public void onFailure(
+																																							Throwable caught) {
+																																						// TODO Auto-generated method stub
+																																						
+																																					}
+																																				});
+																																			
+																																			}
+																																			else{
+																																				Window.alert("This dataset is already ingested. Please clear checkpointing if you want to rerun the workflow");
+																																			}
+																																		}
+																																		
+																																		@Override
+																																		public void onFailure(Throwable caught) {
+																																			// TODO Auto-generated method stub
+																																			
+																																		}
+																																	});
+																																}
+																																
+																																@Override
+																																public void onFailure(Throwable caught) {
+																																	// TODO Auto-generated method stub
+																																	
+																																}
+																															});
+																														}
+																													
+																													@Override
+																													public void onFailure(Throwable caught) {
+																														// TODO Auto-generated method stub
+																														
+																													}
+																												};
+																												mediciService.toVAmodel(rootMediciId,rootMediciId,sparqlEndpoint, SeadApp.tmpHome, vaModelCb );
+
+																											}
+																										});
+																										
+																										coverRightPanel.setVisible(true);
+																									}
+																									else{
+																										mediciService.getRelations(new AsyncCallback<DatasetRelation>(){
+
+
+																											
+																											@Override
+																											public void onFailure(
+																													Throwable caught) {
+																												Window.alert("Failed:"+caught.getMessage());
+																												
+																											}
+
+																											@Override
+																											public void onSuccess(
+																													final DatasetRelation relations) {
+
+																												
+																											
+																												display.getDatasetLbl().setText("Browse Collection and sub-Collections");
+																												display.getFileLbl().setText("Browse Files");
+																													TreeViewModel model =
+																												    		new CollectionTreeViewModel(selectionModel, relations, (String) pair.getKey());
+																													CellTree.Resources resource = GWT.create(TreeResources.class);
+																												    CellTree tree = new CellTree(model, null,resource);
+																												    //collection select
+																													CollectionSelectEvent.register(EVENT_BUS, new CollectionSelectEvent.Handler() {
+																														   public void onMessageReceived(final CollectionSelectEvent event) {
+																																		
+																																rightPanel.clear();
+																																rightPanel.add(getFiles(relations.getDuAttrMap(), relations.getFileAttrMap(), event.getCollection().getId(),event.getValue()));
+																														   }
+																													});
+																													
+																													//collection click
+																													CollectionClickEvent.register(EVENT_BUS, new CollectionClickEvent.Handler() {
+																														   public void onMessageReceived(final CollectionClickEvent event) {
+																															  
+																															   if(existingFileSets.containsKey(event.getCollection().getId())){
+																																    rightPanel.clear();
+																																	rightPanel.add(existingFileSets.get(event.getCollection().getId()).cellTable);
+																																}
+																																else{	
+																																  
+																																	rightPanel.clear();
+																																	rightPanel.add(getFiles(relations.getDuAttrMap(), relations.getFileAttrMap(), event.getCollection().getId(),false));														
+																															   }
+																														   }
+																														});
+																													//collection passive click
+																													CollectionPassiveSelectEvent.register(EVENT_BUS, new CollectionPassiveSelectEvent.Handler() {
+																														   public void onMessageReceived(final CollectionPassiveSelectEvent event) {
+																															  
+																															   CellTable files ;
+																															   if(existingFileSets.containsKey(event.getCollection().getId())){
+																																   files = existingFileSets.get(event.getCollection().getId()).cellTable;
+																																   for(String file:relations.getDuAttrMap().get(event.getCollection().getId()).getSub().get(SubType.File)){
+																																	   files.getSelectionModel().setSelected((FileNode)relations.getFileAttrMap().get(file),event.getValue());
+																																   }
+																															   }
+																															   else{
+																																   files = (CellTable) getFiles(relations.getDuAttrMap(), relations.getFileAttrMap(), event.getCollection().getId(),event.getValue());
+																															   }
+																															  
+																														   }
+																														});
+
+																													collectionWait.hide();
+																													leftPanel.clear();
+																													leftPanel.add(tree);
+																												
 																												if(collectionWait.isShowing())
 																													collectionWait.hide();
 																												getPub.setEnabled(false);
@@ -423,7 +674,6 @@ public class MediciIngestPresenter  implements Presenter {
 																												mdCb.setStyleName("greenFont");
 																												ingestButton.setStyleName("greenFont");
 																												
-																										       
 																												ingestButton.addClickHandler(new ClickHandler() {
 																													
 																													@Override
@@ -433,16 +683,24 @@ public class MediciIngestPresenter  implements Presenter {
 																												        ir.setEnabled(false);
 																												        getPub.setEnabled(true);
 																														String rootMediciId= (String) pair.getKey();
-																														
+																														CollectionNode root = relations.getDuAttrMap().get(rootMediciId);
+																													
 																														
 																														AsyncCallback<Void> vaModelCb = new AsyncCallback<Void>() {
 																																@Override
 																																public void onSuccess(Void result) {
-																																	mediciService.addMetadata(metadataSrc,SeadApp.tmpHome+guid+"_sip", new AsyncCallback<Void>() {
+																																	mediciService.addMetadata(metadataSrc, SeadApp.tmpHome+guid+"_sip",new AsyncCallback<Void>() {
 																																		
 																																		@Override
 																																		public void onSuccess(Void result) {
-																																			
+																																			String tempguid = null;
+																																	        if(((String) pair.getKey()).contains("/"))
+																																	        	tempguid = ((String) pair.getKey()).split("/")
+																																	            [((String) pair.getKey()).split("/").length-1];
+																																	        else
+																																	        	tempguid = ((String) pair.getKey()).split(":")
+																																	            [((String) pair.getKey()).split(":").length-1];
+																																	        final String guid = tempguid;
 																																			
 																																			mediciService.splitSip(
 																																					SeadApp.tmpHome+guid+"_sip",
@@ -452,280 +710,54 @@ public class MediciIngestPresenter  implements Presenter {
 																																				public void onSuccess(Integer result) {
 																																					n=result;
 																																					l++;
-																																					if(l<=n){
-																																						mediciService.generateWfInstanceId(new AsyncCallback<String>() {
-																																							
-																																							@Override
-																																							public void onSuccess(final String wfInstanceId) {
-																																								UserServiceAsync user =
-																																							            GWT.create(UserService.class);
-																																								user.checkSession(null,new AsyncCallback<UserSession>() {
-
-																																									@Override
-																																									public void onFailure(
-																																											Throwable caught) {
-																																										// TODO Auto-generated method stub
-																																										
-																																									}
-
-																																									@Override
-																																									public void onSuccess(
-																																											UserSession result) {
-
-																																										mediciService.submitMultipleSips(SeadApp.deposit_endpoint + "sip",
-																																												(String) pair.getKey(),
-																																												sparqlEndpoint,
-																																												SeadApp.tmpHome+guid+"_sip", 
-																																												wfInstanceId,
-																																												null,
-																																												l, n, "", "", false, GWT.getModuleBaseURL(),SeadApp.tmpHome,
-																																												new AsyncCallback<String>() {
-																																													
-																																													@Override
-																																													public void onSuccess(final String result) {
-																																														l=-1;
-																																														final Label notify = Util.label("!", "Notification");
-																																														notify.addClickHandler(new ClickHandler() {
-																																															
-																																															@Override
-																																															public void onClick(ClickEvent event) {
-																																																StatusPopupPanel mediciWait = new StatusPopupPanel("Retrieving","done",false);
-																																																MessagePopupPanel popUpPanel = new MessagePopupPanel(result, "done", true);
-																																																popUpPanel.show();
-																																																nPanel.remove(notify);
-																																															}
-																																														});
-																																														nPanel.add(notify);
-																																													}
-																																													
-																																													@Override
-																																													public void onFailure(Throwable caught) {
-																																														Window.alert("Workflow failed.");
-																																													}
-																																												});
-																																									
-																																									}
-																																									
-																																								});
-																																							}
-
-																																							@Override
-																																							public void onFailure(
-																																									Throwable caught) {
-																																								// TODO Auto-generated method stub
-																																								
-																																							}
-																																						});
 																																					
-																																					}
-																																					else{
-																																						Window.alert("This dataset is already ingested. Please clear checkpointing if you want to rerun the workflow");
-																																					}
-																																				}
-																																				
-																																				@Override
-																																				public void onFailure(Throwable caught) {
-																																					// TODO Auto-generated method stub
-																																					
-																																				}
-																																			});
-																																		}
-																																		
-																																		@Override
-																																		public void onFailure(Throwable caught) {
-																																			// TODO Auto-generated method stub
-																																			
-																																		}
-																																	});
-																																}
-																															
-																															@Override
-																															public void onFailure(Throwable caught) {
-																																// TODO Auto-generated method stub
-																																
-																															}
-																														};
-																														mediciService.toVAmodel(rootMediciId,rootMediciId,sparqlEndpoint, SeadApp.tmpHome, vaModelCb );
-
-																													}
-																												});
-																												
-																												coverRightPanel.setVisible(true);
-																											}
-																											else{
-																												mediciService.getRelations(new AsyncCallback<DatasetRelation>(){
-
-
-																													
-																													@Override
-																													public void onFailure(
-																															Throwable caught) {
-																														Window.alert("Failed:"+caught.getMessage());
-																														
-																													}
-
-																													@Override
-																													public void onSuccess(
-																															final DatasetRelation relations) {
-
-																														
-																													
-																														display.getDatasetLbl().setText("Browse Collection and sub-Collections");
-																														display.getFileLbl().setText("Browse Files");
-																															TreeViewModel model =
-																														    		new CollectionTreeViewModel(selectionModel, relations, (String) pair.getKey());
-																															CellTree.Resources resource = GWT.create(TreeResources.class);
-																														    CellTree tree = new CellTree(model, null,resource);
-																														    //collection select
-																															CollectionSelectEvent.register(EVENT_BUS, new CollectionSelectEvent.Handler() {
-																																   public void onMessageReceived(final CollectionSelectEvent event) {
-																																				
-																																		rightPanel.clear();
-																																		rightPanel.add(getFiles(relations.getDuAttrMap(), relations.getFileAttrMap(), event.getCollection().getId(),event.getValue()));
-																																   }
-																															});
-																															
-																															//collection click
-																															CollectionClickEvent.register(EVENT_BUS, new CollectionClickEvent.Handler() {
-																																   public void onMessageReceived(final CollectionClickEvent event) {
-																																	  
-																																	   if(existingFileSets.containsKey(event.getCollection().getId())){
-																																		    rightPanel.clear();
-																																			rightPanel.add(existingFileSets.get(event.getCollection().getId()).cellTable);
-																																		}
-																																		else{	
-																																		  
-																																			rightPanel.clear();
-																																			rightPanel.add(getFiles(relations.getDuAttrMap(), relations.getFileAttrMap(), event.getCollection().getId(),false));														
-																																	   }
-																																   }
-																																});
-																															//collection passive click
-																															CollectionPassiveSelectEvent.register(EVENT_BUS, new CollectionPassiveSelectEvent.Handler() {
-																																   public void onMessageReceived(final CollectionPassiveSelectEvent event) {
-																																	  
-																																	   CellTable files ;
-																																	   if(existingFileSets.containsKey(event.getCollection().getId())){
-																																		   files = existingFileSets.get(event.getCollection().getId()).cellTable;
-																																		   for(String file:relations.getDuAttrMap().get(event.getCollection().getId()).getSub().get(SubType.File)){
-																																			   files.getSelectionModel().setSelected((FileNode)relations.getFileAttrMap().get(file),event.getValue());
-																																		   }
-																																	   }
-																																	   else{
-																																		   files = (CellTable) getFiles(relations.getDuAttrMap(), relations.getFileAttrMap(), event.getCollection().getId(),event.getValue());
-																																	   }
-																																	  
-																																   }
-																																});
-
-																															collectionWait.hide();
-																															leftPanel.clear();
-																															leftPanel.add(tree);
-																														
-																														if(collectionWait.isShowing())
-																															collectionWait.hide();
-																														getPub.setEnabled(false);
-																														cloudCopy.setEnabled(true);
-																														mdCb.setEnabled(true);
-																														ingestButton.setEnabled(true);
-																														ir.setEnabled(false);
-																														ir.setStyleName("greyFont");
-																												        getPub.setStyleName("greyFont");
-																														cloudCopy.setStyleName("greenFont");
-																														mdCb.setStyleName("greenFont");
-																														ingestButton.setStyleName("greenFont");
-																														
-																														ingestButton.addClickHandler(new ClickHandler() {
-																															
-																															@Override
-																															public void onClick(ClickEvent event) {
-																															    ingestButton.setEnabled(false);
-																														        cloudCopy.setEnabled(false);
-																														        ir.setEnabled(false);
-																														        getPub.setEnabled(true);
-																																String rootMediciId= (String) pair.getKey();
-																																CollectionNode root = relations.getDuAttrMap().get(rootMediciId);
-																															
-																																
-																																AsyncCallback<Void> vaModelCb = new AsyncCallback<Void>() {
-																																		@Override
-																																		public void onSuccess(Void result) {
-																																			mediciService.addMetadata(metadataSrc, SeadApp.tmpHome+guid+"_sip",new AsyncCallback<Void>() {
-																																				
-																																				@Override
-																																				public void onSuccess(Void result) {
-																																					String tempguid = null;
-																																			        if(((String) pair.getKey()).contains("/"))
-																																			        	tempguid = ((String) pair.getKey()).split("/")
-																																			            [((String) pair.getKey()).split("/").length-1];
-																																			        else
-																																			        	tempguid = ((String) pair.getKey()).split(":")
-																																			            [((String) pair.getKey()).split(":").length-1];
-																																			        final String guid = tempguid;
-																																					
-																																					mediciService.splitSip(
-																																							SeadApp.tmpHome+guid+"_sip",
-																																							new AsyncCallback<Integer>() {
+//																																					Window.alert("Starting ingest of dataset");//. We already have the cached SIP for this dataset.");
+																																					mediciService.generateWfInstanceId(new AsyncCallback<String>() {
 																																						
 																																						@Override
-																																						public void onSuccess(Integer result) {
-																																							n=result;
-																																							l++;
-																																							
-//																																							Window.alert("Starting ingest of dataset");//. We already have the cached SIP for this dataset.");
-																																							mediciService.generateWfInstanceId(new AsyncCallback<String>() {
-																																								
-																																								@Override
-																																								public void onSuccess(String wfInstanceId) {
-																																									//Open a status panel that self queries the database for changes
-																																									WfEventRefresherPanel eventRefresher = new WfEventRefresherPanel(submitterId, wfInstanceId);
-																																									eventRefresher.show();
-																																									mediciService.submitMultipleSips(SeadApp.deposit_endpoint + "sip",
-																																											(String)pair.getKey(),
-																																											sparqlEndpoint,
-																																											SeadApp.tmpHome+guid+"_sip",
-																																											wfInstanceId,
-																																											null,
-																																											l, n, "", "", false, GWT.getModuleBaseURL(),SeadApp.tmpHome,
-																																											new AsyncCallback<String>() {
+																																						public void onSuccess(String wfInstanceId) {
+																																							//Open a status panel that self queries the database for changes
+																																							WfEventRefresherPanel eventRefresher = new WfEventRefresherPanel(submitterId, wfInstanceId);
+																																							eventRefresher.show();
+																																							mediciService.submitMultipleSips(SeadApp.deposit_endpoint + "sip",
+																																									(String)pair.getKey(),
+																																									sparqlEndpoint,
+																																									SeadApp.tmpHome+guid+"_sip",
+																																									wfInstanceId,
+																																									null,
+																																									l, n, "", "", false, GWT.getModuleBaseURL(),SeadApp.tmpHome,
+																																									new AsyncCallback<String>() {
+																																										
+																																										@Override
+																																										public void onSuccess(final String result) {
+																																											l=-1;
+																																											final Label notify = Util.label("!", "Notification");
+																																											notify.addClickHandler(new ClickHandler() {
 																																												
 																																												@Override
-																																												public void onSuccess(final String result) {
-																																													l=-1;
-																																													final Label notify = Util.label("!", "Notification");
-																																													notify.addClickHandler(new ClickHandler() {
-																																														
-																																														@Override
-																																														public void onClick(ClickEvent event) {
-																																															MessagePopupPanel popUpPanel = new MessagePopupPanel(result, "done", true);
-																																															popUpPanel.show();
-																																															nPanel.remove(notify);
-																																														}
-																																													});
-//																																													nPanel.add(notify);
-																																												}
-																																												
-																																												@Override
-																																												public void onFailure(Throwable caught) {
-																																													
+																																												public void onClick(ClickEvent event) {
+																																													MessagePopupPanel popUpPanel = new MessagePopupPanel(result, "done", true);
+																																													popUpPanel.show();
+																																													nPanel.remove(notify);
 																																												}
 																																											});
-																																								
-																																								}
-																																								
-																																								@Override
-																																								public void onFailure(Throwable caught) {
-																																									
-																																								}
-																																							});
-																																							
+//																																											nPanel.add(notify);
+																																										}
+																																										
+																																										@Override
+																																										public void onFailure(Throwable caught) {
+																																											
+																																										}
+																																									});
+																																						
 																																						}
 																																						
 																																						@Override
 																																						public void onFailure(Throwable caught) {
-																																							Window.alert("Failed. \n"+caught.getMessage());
+																																							
 																																						}
 																																					});
+																																					
 																																				}
 																																				
 																																				@Override
@@ -734,34 +766,29 @@ public class MediciIngestPresenter  implements Presenter {
 																																				}
 																																			});
 																																		}
-																																	
-																																	@Override
-																																	public void onFailure(Throwable caught) {
-																																		Window.alert("Failed. \n"+caught.getMessage());
-																																	}
-																																};
-																																mediciService.toVAmodel(rootMediciId,rootMediciId, sparqlEndpoint, SeadApp.tmpHome, vaModelCb );
-
+																																		
+																																		@Override
+																																		public void onFailure(Throwable caught) {
+																																			Window.alert("Failed. \n"+caught.getMessage());
+																																		}
+																																	});
+																																}
+																															
+																															@Override
+																															public void onFailure(Throwable caught) {
+																																Window.alert("Failed. \n"+caught.getMessage());
 																															}
-																														});
-																														coverRightPanel.setVisible(true);
+																														};
+																														mediciService.toVAmodel(rootMediciId,rootMediciId, sparqlEndpoint, SeadApp.tmpHome, vaModelCb );
+
 																													}
 																												});
+																												coverRightPanel.setVisible(true);
 																											}
-																										}
-																									});
+																										});
+																									}
 																								}
-																								
-																								@Override
-																								public void onFailure(Throwable caught) {
-																									Window.alert("Failed:"+caught.getMessage());
-																									
-																								}
-																							});						
-																					
-																						}
-																					};
-																					getSIPTimer.schedule(5000);
+																							});
 																						}
 																						
 																						@Override
@@ -769,125 +796,181 @@ public class MediciIngestPresenter  implements Presenter {
 																							Window.alert("Failed:"+caught.getMessage());
 																							
 																						}
-																					});						 	
-															            		
-																}
-																else{
-																	//restart ingest
-																	
-																	n=result.getNumSplitSIPs();
-																	String[] arr = result.getResumeSipPath().split("_");
-																	int sipNumber = Integer.parseInt(arr[arr.length-1].split("\\.")[0]);
-																	l = sipNumber;																					
-																	if(l<=n){
-																		
-																		Window.alert("Starting reingest of dataset. We already have the cached SIP for this dataset.");
-																		mediciService.generateWfInstanceId(new AsyncCallback<String>() {
+																					});						
 																			
-																			@Override
-																			public void onSuccess(String wfInstanceId) {
-																				mediciService.submitMultipleSips(SeadApp.deposit_endpoint + "sip",
-																						null,
-																						sparqlEndpoint,
-																						result.getResumeSipPath().replace("_"+l+".xml", ""),
-																						wfInstanceId,
-																						result.getPreviousStatusUrls(),
-																						l, n, "", "", false, GWT.getModuleBaseURL(),SeadApp.tmpHome,
-																						new AsyncCallback<String>() {
+																				}
+																			};
+																			getSIPTimer.schedule(5000);
+																				}
+																				
+																				@Override
+																				public void onFailure(Throwable caught) {
+																					Window.alert("Failed:"+caught.getMessage());
+																					
+																				}
+																			});						 	
+													            		
+														}
+														else{
+															//restart ingest
+															
+															n=result.getNumSplitSIPs();
+															String[] arr = result.getResumeSipPath().split("_");
+															int sipNumber = Integer.parseInt(arr[arr.length-1].split("\\.")[0]);
+															l = sipNumber;																					
+															if(l<=n){
+																
+																Window.alert("Starting reingest of dataset. We already have the cached SIP for this dataset.");
+																mediciService.generateWfInstanceId(new AsyncCallback<String>() {
+																	
+																	@Override
+																	public void onSuccess(String wfInstanceId) {
+																		mediciService.submitMultipleSips(SeadApp.deposit_endpoint + "sip",
+																				null,
+																				sparqlEndpoint,
+																				result.getResumeSipPath().replace("_"+l+".xml", ""),
+																				wfInstanceId,
+																				result.getPreviousStatusUrls(),
+																				l, n, "", "", false, GWT.getModuleBaseURL(),SeadApp.tmpHome,
+																				new AsyncCallback<String>() {
+																					
+																					@Override
+																					public void onSuccess(final String result) {
+																						l=-1;
+																						final Label notify = Util.label("!", "Notification");
+																						notify.addClickHandler(new ClickHandler() {
 																							
 																							@Override
-																							public void onSuccess(final String result) {
-																								l=-1;
-																								final Label notify = Util.label("!", "Notification");
-																								notify.addClickHandler(new ClickHandler() {
-																									
-																									@Override
-																									public void onClick(ClickEvent event) {
-																										MessagePopupPanel popUpPanel = new MessagePopupPanel(result, "done", true);
-																										popUpPanel.show();
-																										nPanel.remove(notify);
-																									}
-																								});
-																								nPanel.add(notify);
-																							}
-																							
-																							@Override
-																							public void onFailure(Throwable caught) {
-																								
+																							public void onClick(ClickEvent event) {
+																								MessagePopupPanel popUpPanel = new MessagePopupPanel(result, "done", true);
+																								popUpPanel.show();
+																								nPanel.remove(notify);
 																							}
 																						});
-																				//Open a status panel that self queries the database for changes
-																			WfEventRefresherPanel eventRefresher = new WfEventRefresherPanel(submitterId, wfInstanceId);
-																			eventRefresher.show();
-																			}
-																			
-																			@Override
-																			public void onFailure(Throwable caught) {
-																				
-																			}
-																		});
+																						nPanel.add(notify);
+																					}
+																					
+																					@Override
+																					public void onFailure(Throwable caught) {
+																						
+																					}
+																				});
+																		//Open a status panel that self queries the database for changes
+																	WfEventRefresherPanel eventRefresher = new WfEventRefresherPanel(submitterId, wfInstanceId);
+																	eventRefresher.show();
+																	}
+																	
+																	@Override
+																	public void onFailure(Throwable caught) {
 																		
 																	}
-																	else{
-																		Window.alert("This dataset is already ingested. Please clear checkpointing if you want to rerun the workflow.");
-																	}
-																	//MediciIngestPresenter.EVENT_BUS.fireEvent(new SubmitSipEvent(
-//																result.getResumeSipPath().replace("_"+l+".xml", ""),
-//																result.getPreviousStatusUrls()
-//																));
-																}
+																});
 																
 															}
-										            	});
+															else{
+																Window.alert("This dataset is already ingested. Please clear checkpointing if you want to rerun the workflow.");
+															}
+															//MediciIngestPresenter.EVENT_BUS.fireEvent(new SubmitSipEvent(
+//														result.getResumeSipPath().replace("_"+l+".xml", ""),
+//														result.getPreviousStatusUrls()
+//														));
+														}
+														
 													}
-												});
-										            }
-										        int index;
-										        if(flagHyperlink ==1){
-										        	index = first;
-										        	first++;
-										        }
-										        else{
-										        	index= last;
-										        	last--;
-										        }
-										        	
-										        grid.setWidget(index,0,dataset);
-										        grid.getRowFormatter().setStyleName(index, "DatasetsRow");
-										        
-										       
-										            }
-										        });
-										        it.remove(); // avoids a ConcurrentModificationException
-										        }
-										    leftPanel.add(grid);		
-										    
-											
-										}
-										
-										@Override
-										public void onFailure(Throwable caught) {
-											// TODO Auto-generated method stub
-											
-										}
-									});
+								            	});
+											}
+										});
+								            }
+								        int index;
+								        if(flagHyperlink ==1){
+								        	index = first;
+								        	first++;
+								        }
+								        else{
+								        	index= last;
+								        	last--;
+								        }
+								        	
+								        grid.setWidget(index,0,dataset);
+								        grid.getRowFormatter().setStyleName(index, "DatasetsRow");
+								        
+								       
+								            }
+								        });
+								        it.remove(); // avoids a ConcurrentModificationException
+								        }
+								    parent.addItem(grid);
+								    rootTree.addItem(parent);
+								    
+									
+								}
+								
+								@Override
+								public void onFailure(Throwable caught) {
+									// TODO Auto-generated method stub
+									
 								}
 							});
-						} catch (RequestException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
 						}
-						
-					
-						
+					});
+				} catch (RequestException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			
+				
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				System.out.println("in Falilure");
+				System.out.println(caught.getLocalizedMessage());
+			}
+		});
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	void addSortHandler(){
+		
+		sort.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				leftPanel.clear();
+				
+				rootTree.clear();
+				leftPanel.add(rootTree);
+				
+				for(String key : collectionList.keySet()){
+					FlexTable grid1 = new FlexTable(
+						);
+					grid1.setWidth("100%");
+					grid1.setHeight("100%");
+					TreeItem parent = new TreeItem(key);
+					ArrayList<Label> datasetList= collectionList.get(key);
+					Collections.sort(datasetList, new Comparator<Label>(){
+						public int compare(Label l1, Label l2){
+							return l1.getText().compareToIgnoreCase(l2.getText());
+						}
+					});
+					for(int i=0;i<datasetList.size();i++){
+					    //System.out.println(datasetList.get(i));
+					    grid1.setWidget(i, 0, datasetList.get(i));
 					}
+					parent.addItem(grid1);
+				    rootTree.addItem(parent);
+				}
 					
-					@Override
-					public void onFailure(Throwable caught) {
-						// TODO Auto-generated method stub
-						
-					}
-				});
+				
+				//leftPanel.clear();
+				
+				
+				 
 			}
 		});
 	}

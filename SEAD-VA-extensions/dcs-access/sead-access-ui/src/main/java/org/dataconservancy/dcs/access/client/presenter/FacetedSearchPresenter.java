@@ -269,7 +269,7 @@ public class FacetedSearchPresenter implements Presenter {
 	        if(result.total()>0)
 	    	{
 		        grid.setStylePrimaryName("FacetedResults");
-		        grid.setWidget(0, 0, Util.label("Dataset Name","SearchRow"));
+		        //grid.setWidget(0, 0, Util.label("Dataset Name","SearchRow"));
 	    	}
 	        
 	        for (int i = 0; i < result.matches().length(); i++) {
@@ -304,7 +304,8 @@ public class FacetedSearchPresenter implements Presenter {
 	                	String authors="";
 	                	for(int j=0;j<creators.length();j++)
 	                		authors+=creators.get(j).getCreatorName();
-	                	desc.add(new HTML("<span class='ResultSnippet'>Author(s):</span>"+authors));	
+	                	desc.add(new HTML("<span class='ResultSnippet'>Author(s):</span>"+authors));
+	                	desc.add(new HTML("<br> "));
 	                }	
 	            }
 	            
@@ -316,6 +317,7 @@ public class FacetedSearchPresenter implements Presenter {
 	            		len = entity.getAbstract().length();
 	            	if(entity.getAbstract().length()>0)
 	            		desc.add(new HTML("<span class='ResultSnippet'>About:</span>"+entity.getAbstract().substring(0,len)+".."));
+	            		desc.add(new HTML("<br> "));
 	            }
 	            
 
@@ -325,6 +327,7 @@ public class FacetedSearchPresenter implements Presenter {
 	                context = context.substring(0,context.indexOf("FacetCategory"));
 	                desc.add(new HTML("<span class='ResultSnippet'> Appears in:"+ context + "</span>"
 	                        ));
+	                desc.add(new HTML("<br> "));
 	            }
 	           // desc.add(title);
 	        }
@@ -380,7 +383,7 @@ public class FacetedSearchPresenter implements Presenter {
 	    		Map<String,List<String>> facets
 	           )
 	    {
-			facetPanel.add(Util.label("Browse By", "GradientFacet"));
+			//facetPanel.add(Util.label("Browse By", "GradientFacet"));
         	FlexTable table = Util.createTable();
 	 		Tree tree = new Tree();
 	 		facetPanel.add(table);

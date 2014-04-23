@@ -142,8 +142,8 @@ public class UploadView extends Composite implements org.dataconservancy.dcs.acc
         buttons.setSpacing(5);
         buttons.add(upload);
         buttons.add(uploadremote);
-  //      buttons.add(uploadMediciFile);
-  //      buttons.add(uploadMediciCollection);
+   //   buttons.add(uploadMediciFile);
+   //   buttons.add(uploadMediciCollection);
         buttons.add(getPubCollection);
         buttons.add(uploadBag);
         

@@ -134,20 +134,6 @@ public class SeadSimpleSearchWidget extends Composite{
                     }
                 });
 
-          /*    final Button remove = new Button("Remove");
-
-                table.setWidget(row, 3, remove);
-
-                remove.addClickHandler(new ClickHandler() {
-
-                    public void onClick(ClickEvent event) {
-                        for (int row = 0; row < table.getRowCount(); row++) {
-                            if (table.getWidget(row, 3) == remove) {
-                                table.removeRow(row);
-                            }
-                        }
-                    }
-                });*/
             }
         };
 
@@ -171,12 +157,6 @@ public class SeadSimpleSearchWidget extends Composite{
             addlistener.onClick(null);
         }
 
-      /*  HorizontalPanel hp = new HorizontalPanel();
-        hp.setSpacing(5);
-      //  hp.add(add);
-        hp.add(search);
-
-        advancedPanel.add(hp);*/
 
         Grid grid = new Grid(2, 2);
         advancedPanel.add(grid);
