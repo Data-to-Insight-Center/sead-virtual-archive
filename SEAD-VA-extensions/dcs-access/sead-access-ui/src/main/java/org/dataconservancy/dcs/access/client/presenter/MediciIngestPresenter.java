@@ -65,6 +65,8 @@ import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.ImageResourceCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
@@ -110,7 +112,7 @@ public class MediciIngestPresenter  implements Presenter {
 	Panel content;
 	Panel mainContentPanel;
 	Button getPub;
-	Button sort;
+	ListBox sortOrderList;
 	Button ingestButton;
 	Panel leftPanel;
 	Panel rightPanel;
@@ -155,7 +157,7 @@ public class MediciIngestPresenter  implements Presenter {
 		CheckBox getMetadataCheckBox();
 		Label getDatasetLbl();
 		Label getFileLbl();
-		Button getSort();
+		ListBox getSortOrderList();
 	}
 	
 	Display display;
@@ -191,7 +193,7 @@ public class MediciIngestPresenter  implements Presenter {
 		ir = this.display.getIr();
 		cloudCopy = this.display.getCloudCopy();
 		mdCb = this.display.getMetadataCheckBox();
-		sort = this.display.getSort();
+		sortOrderList = this.display.getSortOrderList();
 		
 //		registerSubmitSipEvent();
 //		registerWorkflowEvent();
@@ -344,7 +346,7 @@ public class MediciIngestPresenter  implements Presenter {
 								  	JsonpRequestBuilder rb = new JsonpRequestBuilder();
 								    rb.setTimeout(100000);
 								        
-									//mediciWait.hide();
+									mediciWait.hide();
 									last =
 											result.size()-1;
 									final FlexTable grid = new FlexTable(
@@ -937,14 +939,17 @@ public class MediciIngestPresenter  implements Presenter {
 	
 	void addSortHandler(){
 		
-		sort.addClickHandler(new ClickHandler() {
+		sortOrderList.addChangeHandler(new ChangeHandler() {
 			
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onChange(ChangeEvent event) {
+				// TODO Auto-generated method stub
 				leftPanel.clear();
-				
 				rootTree.clear();
 				leftPanel.add(rootTree);
+				
+				final int index = sortOrderList.getSelectedIndex();
+				System.out.println("selected: "+index);
 				
 				for(String key : collectionList.keySet()){
 					FlexTable grid1 = new FlexTable(
@@ -955,7 +960,11 @@ public class MediciIngestPresenter  implements Presenter {
 					ArrayList<Label> datasetList= collectionList.get(key);
 					Collections.sort(datasetList, new Comparator<Label>(){
 						public int compare(Label l1, Label l2){
-							return l1.getText().compareToIgnoreCase(l2.getText());
+							// index value:  0 => Ascending sort, 1 => descending
+							if(index == 1)
+								return l1.getText().compareToIgnoreCase(l2.getText());
+							else
+								return l2.getText().compareToIgnoreCase(l1.getText());
 						}
 					});
 					for(int i=0;i<datasetList.size();i++){
@@ -965,12 +974,6 @@ public class MediciIngestPresenter  implements Presenter {
 					parent.addItem(grid1);
 				    rootTree.addItem(parent);
 				}
-					
-				
-				//leftPanel.clear();
-				
-				
-				 
 			}
 		});
 	}

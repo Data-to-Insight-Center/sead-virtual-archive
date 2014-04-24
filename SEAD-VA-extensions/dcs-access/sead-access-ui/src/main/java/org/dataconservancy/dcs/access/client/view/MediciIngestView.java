@@ -45,7 +45,6 @@ public class MediciIngestView extends Composite implements org.dataconservancy.d
 	HorizontalPanel content;
 	Panel mainContentPanel;
 	Button getPub;
-	Button sort;
 	Button ingestButton;
 	Panel leftPanel;
 	Panel rightPanel;
@@ -56,6 +55,7 @@ public class MediciIngestView extends Composite implements org.dataconservancy.d
 	Label datasetLbl;
 	Label fileLbl;
 	Tree tree;
+	ListBox sortOrderList;
 //	Panel uploadPanel;
 //	Panel fileCharacPanel;
 //	Panel archivePanel;
@@ -65,15 +65,15 @@ public class MediciIngestView extends Composite implements org.dataconservancy.d
 	public MediciIngestView(){
 		mainContentPanel = new VerticalPanel();
 		mainContentPanel.setStyleName("VerticalPanel");
-		mainContentPanel.add(Util.label("Data Publish in SEAD", "GreenHeader"));
+		mainContentPanel.add(Util.label("Select Data from Active Content Repository","BoxHeader"));
 		
 		Panel coverLeftPanel =new FlowPanel();
 		coverRightPanel =new FlowPanel();
 
 		
 		getPub = new Button("View Collections to Publish");
-		sort = new Button("Sort");
 		ingestButton = new Button("Ingest Dataset");
+		sortOrderList = new ListBox();
 		//getPub.setStyleName("ButtonPosition");
 		
 		int height = Window.getClientHeight();
@@ -85,11 +85,13 @@ public class MediciIngestView extends Composite implements org.dataconservancy.d
 		leftPanel.setHeight((height/2-50)+"px");
 		leftPanel.setWidth((width/2.5-5)+"px");
 		
-		
-		
-		datasetLbl = Util.label("Select Data from Active Content Repository","BoxHeader");
+		datasetLbl = Util.label("Active Content Repositories","BoxHeader");
 		coverLeftPanel.setStyleName("CollectionBorder");
 		coverLeftPanel.add(datasetLbl);
+		coverLeftPanel.add(sortOrderList);
+		sortOrderList.addItem("");
+		sortOrderList.addItem("A-Z");
+		sortOrderList.addItem("Z-A");
 		coverLeftPanel.add(leftPanel);
 		coverLeftPanel.setHeight(height/2+"px");
 		coverLeftPanel.setWidth((width/2.5)+"px");
@@ -141,7 +143,6 @@ public class MediciIngestView extends Composite implements org.dataconservancy.d
 	        //buttonTable.setWidget(1,0,cloudCopy);
 	     //  buttonTable.setStyleName("TableBorder");
 	        buttonTable.setWidget(0,1,getPub);
-	       buttonTable.setWidget(1, 1, sort);
 	        Panel tempPanel2 = new FlowPanel();
 	        tempPanel2.setWidth((width/10)+"px");
 	        buttonPanel.add(tempPanel2); 
@@ -205,12 +206,12 @@ public class MediciIngestView extends Composite implements org.dataconservancy.d
 	public Button getPub() {
 		return this.getPub;
 	}
-	
-	
-	public Button getSort() {
-		return this.sort;
-	}
 
+	public ListBox getSortOrderList(){
+		return this.sortOrderList;
+	}
+	
+	
 	@Override
 	public Panel getLeftPanel() {
 		return this.leftPanel;
