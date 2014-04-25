@@ -31,6 +31,7 @@ import org.dataconservancy.dcs.access.client.api.UserServiceAsync;
 import org.dataconservancy.dcs.access.client.event.SearchEvent;
 import org.dataconservancy.dcs.access.client.model.JsCreator;
 import org.dataconservancy.dcs.access.client.model.JsDeliverableUnit;
+import org.dataconservancy.dcs.access.client.model.JsFile;
 import org.dataconservancy.dcs.access.client.model.JsEntity;
 import org.dataconservancy.dcs.access.client.model.JsFacet;
 import org.dataconservancy.dcs.access.client.model.JsMatch;
@@ -290,8 +291,15 @@ public class FacetedSearchPresenter implements Presenter {
 	            	grid.getCellFormatter().addStyleName(resultrow,0,"SearchRowAlt");
 	            }
 
-	            Hyperlink title = new Hyperlink(m.getSummaryStr(), true, SeadState.ENTITY
+	            Hyperlink title;
+	            
+	            if (m.getEntityType().equals("file")) 
+	            	title = new Hyperlink(m.getSummaryStr(), true, SeadState.ENTITY
+	                        .toToken(((JsFile)m.getEntity()).getParent()));
+	            else
+	            	title = new Hyperlink(m.getSummaryStr(), true, SeadState.ENTITY
                         .toToken(entity.getId()));
+	            
 	            title.setStyleName("my-HyperLink");
 	            desc.add(
 	            		title
@@ -308,6 +316,7 @@ public class FacetedSearchPresenter implements Presenter {
 	                	desc.add(new HTML("<br> "));
 	                }	
 	            }
+	            
 	            
 	            
 	            if(entity.getAbstract()!=null)
