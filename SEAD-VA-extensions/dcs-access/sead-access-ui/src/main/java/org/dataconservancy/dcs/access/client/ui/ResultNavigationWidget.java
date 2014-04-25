@@ -32,15 +32,29 @@ import com.google.gwt.user.client.ui.Label;
 public class ResultNavigationWidget extends Composite{
 
     HorizontalPanel navigationPanel;
-    public ResultNavigationWidget(final int page, final int numpages, final SearchInput searchInput, final boolean isAdvanced) {
+    public ResultNavigationWidget(final int page, final int numpages, final SearchInput searchInput, long totalResults, final boolean isAdvanced) {
         navigationPanel = new HorizontalPanel();
+        navigationPanel.setWidth("100%");
         initWidget(navigationPanel);
         navigationPanel.setStylePrimaryName("ResultsNav");
         navigationPanel.setSpacing(2);
-
+        navigationPanel.setHorizontalAlignment(HorizontalPanel.ALIGN_LEFT);
+        
+        //Calculation of current results count range
+        int currentRangeMin = (page)*Constants.MAX_SEARCH_RESULTS+1;
+        int currentRangeMax = (page+1) * Constants.MAX_SEARCH_RESULTS;
+        if(currentRangeMax>totalResults){
+        	currentRangeMax = (int)totalResults;
+        }
+        
+        String showingString = "\""+searchInput.getUserqueries()[0]+ "\"\t Showing "+ currentRangeMin +" - "+currentRangeMax + " out of "+totalResults;
+        Label resultNavigator = Util.label(showingString, "ResultNavigator");
+        System.out.println("showing "+ (page+1) + "out of "+numpages);
+        navigationPanel.add(resultNavigator);
         if (numpages > 1) {
+        	
             if (page > 0) {
-
+            	
                 Label first = Util.label("<<", "Hyperlink");
                 first.addClickHandler(new ClickHandler() {
 
@@ -58,6 +72,7 @@ public class ResultNavigationWidget extends Composite{
 
                     }
                 });
+                
                 navigationPanel.add(first);
 
                 final int offset = (page - 1) * Constants.MAX_SEARCH_RESULTS;

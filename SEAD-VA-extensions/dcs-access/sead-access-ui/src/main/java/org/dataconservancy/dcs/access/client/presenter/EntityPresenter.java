@@ -34,6 +34,7 @@ import com.google.gwt.http.client.URL;
 import com.google.gwt.jsonp.client.JsonpRequestBuilder;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.web.bindery.event.shared.Event;
 
@@ -46,6 +47,7 @@ public class EntityPresenter implements Presenter {
 			String getEntityId();
 		    Panel getContentPanel();
 		    Panel getContentScrollPanel();
+		    Label getTitleLabel();
 		  }
 
 	public EntityPresenter(Display view)
@@ -57,6 +59,7 @@ public class EntityPresenter implements Presenter {
 	public void bind() {
 		final String entityurl = this.display.getEntityId();
         final Panel content = this.display.getContentPanel();
+        final Label titleLabel = this.display.getTitleLabel();
         String query = Search.createLiteralQuery("id", entityurl);
         String searchUrl  = searchURL(query, 
 	        		0, 
@@ -72,10 +75,12 @@ public class EntityPresenter implements Presenter {
             public void onSuccess(JsSearchResult result) {
             	JsMatch m = result.matches().get(0);
         	  if (m.getEntityType().equalsIgnoreCase("file")) {
-        		content.add((( org.dataconservancy.dcs.access.client.model.JsFile)m.getEntity()).display());
+        		  titleLabel.setText((( org.dataconservancy.dcs.access.client.model.JsFile)m.getEntity()).getName());
+        		  content.add((( org.dataconservancy.dcs.access.client.model.JsFile)m.getEntity()).display());
               }
         	  if (m.getEntityType().equalsIgnoreCase("deliverableunit")) {
-          		content.add((( org.dataconservancy.dcs.access.client.model.JsDeliverableUnit)m.getEntity()).display(null));
+        		  titleLabel.setText((( org.dataconservancy.dcs.access.client.model.JsDeliverableUnit)m.getEntity()).getCoreMd().getTitle());
+        		  content.add((( org.dataconservancy.dcs.access.client.model.JsDeliverableUnit)m.getEntity()).display(null));
                 }
             	
             }

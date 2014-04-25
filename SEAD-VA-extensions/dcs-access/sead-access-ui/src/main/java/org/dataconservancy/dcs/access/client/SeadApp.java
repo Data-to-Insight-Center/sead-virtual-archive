@@ -432,6 +432,8 @@ public class SeadApp implements EntryPoint {
         main.add(centerPanel);
         
         uploadPanel = new TabPanel();
+        uploadPanel.setStylePrimaryName("UploadTabPanel");
+        //uploadPanel.get
         
         localUpload = new FlowPanel();
         mediciUpload = new FlowPanel();

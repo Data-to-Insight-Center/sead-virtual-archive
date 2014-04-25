@@ -133,11 +133,13 @@ margin-bottom:10px;
 	border-width:5px;
 	border-color:#e0e0e0;
 	border-radius: 15px;
+	overflow: hidden;
 }
 .FileBorder
 {
 	margin-top: 40px;
 	margin-left: 0px;
+	width:65%;
 	height:80%;
 	border-style:double;
 	border-width:5px;
@@ -698,6 +700,7 @@ white-space:normal;
   margin-right: 10px;
   border-radius: 7px;
   border-width: 3px;
+  cursor:pointer;
 }
 .MoreLabel
 {
@@ -741,10 +744,11 @@ white-space:normal;
 .CurvedPanel{
   border-style:solid;
   border-width:1px;
-  border-color:#8BAB2E;
-  /* previous orange color border-color:#FF8E2B;*/
+  border-color:#FFFFFF;
   border-radius: 17px;
   text-align:left;
+  margin-left:15%;
+  margin-top: 15%;
 }
 .SubSectionHeader {
   text-decoration:underline;
@@ -838,8 +842,6 @@ white-space:normal;
 .FacetedResults {
   width:1000px;
 }
-
-
 
 .progressBarContainer {
 	height:52%;
@@ -1002,6 +1004,50 @@ white-space:normal;
 	border-width: 2px;
 	width:10%;
 	height:10%;
+}
+.ResultNavigator{
+
+margin-right: 200px;
+font-style: oblique;
+color: darkgray;
+}
+.UploadTabPanel{
+	padding: 2px; 
+	margin-right: 2px; 
+	margin-left: 2px; 
+}
+.gwt-TabBar {
+  padding-top: 2px;
+  border-bottom: 4px solid #878787;
+  background: #6699FF;
+  color:blue;
+}
+
+.gwt-TabBarItem-wrapper{
+	background-color: 6699FF;
+}
+/*.gwt-TabBarRest-wrapper{
+	background-color: blue;
+}
+.gwt-TabBarRest {
+ color:blue;
+}*/
+
+.gwt-TabBarItem {
+  padding: 4px;
+  cursor: pointer;
+  background-color: #e8e8e8;
+  border-bottom: 2px solid white;
+  margin-right: 2px;
+}
+
+.gwt-TabBarItem-selected {
+  padding: 4px;
+  font-weight: bold;
+  cursor: default;
+  background-color: #878787;
+  border-bottom: 2px solid #87ffff;
+  margin-right: 2px;
 }
 
 }

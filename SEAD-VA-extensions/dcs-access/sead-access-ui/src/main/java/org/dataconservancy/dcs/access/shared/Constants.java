@@ -44,28 +44,27 @@ public class Constants
 
 	public Constants()
 	{
-		facets.put("entityType","object type");
-		facets.put("author","creator");
-		facets.put("format", "format");
-		facets.put("subject", "keyword");
-		facets.put("location", "location");
-		facets.put("primaryDataLocationName","repository");
+		facets.put("author","Creator");
+		facets.put("format", "Format");
+		facets.put("subject", "Keyword");
+		facets.put("location", "Location");
+		facets.put("primaryDataLocationName","Repository");
 		facetValues.put("Collection","DeliverableUnit");
-		
-		
-		order.put("object type",1);
-		order.put("creator",5);
-		order.put("format", 2);
-		order.put("keyword", 4);
-		order.put("location", 0);
-		order.put("repository", 3);
-		
-		displayOrder.put(1, "object type");
-		displayOrder.put(5, "data contributor");
-		displayOrder.put(2, "format/standard");
-		displayOrder.put(0, "location");
-		displayOrder.put(4, "keyword");
-		displayOrder.put(3, "institutional repository");
+
+
+		//order.put("object type",1);
+		order.put("Creator",0);
+		order.put("Format", 1);
+		order.put("Keyword", 2);
+		order.put("Location", 3);
+		order.put("Repository", 4);
+
+		//displayOrder.put(1, "object type");
+		displayOrder.put(0, "Creator");
+		displayOrder.put(1, "Format");
+		displayOrder.put(3, "Location");
+		displayOrder.put(2, "Keyword");
+		displayOrder.put(4, "Repository");
 		
 		eventMessages.put(Events.ARCHIVE, "Archival in Repository");
 		eventMessages.put(org.seadva.ingest.Events.COLD_COPY, "Archival a cold copy of the collection");

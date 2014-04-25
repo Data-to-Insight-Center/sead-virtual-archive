@@ -16,6 +16,7 @@
 
 package org.dataconservancy.dcs.access.client.ui;
 
+import org.dataconservancy.dcs.access.client.SeadApp;
 import org.dataconservancy.dcs.access.client.SeadState;
 import org.dataconservancy.dcs.access.client.Search;
 
@@ -53,9 +54,12 @@ public class SeadSimpleSearchWidget extends Composite{
         lbl.setText("Search SEAD-VA data registry");
         lbl.setStylePrimaryName("SearchLabel");
         Button add = new Button("Add field");
-
-        advancedPanel.add(intro);
-        advancedPanel.add(lbl);
+        
+        if(SeadApp.isHome){
+        	advancedPanel.add(intro);
+        	advancedPanel.add(lbl);
+        }
+        
         advancedPanel.add(table);
 
         // Called to search filled in query

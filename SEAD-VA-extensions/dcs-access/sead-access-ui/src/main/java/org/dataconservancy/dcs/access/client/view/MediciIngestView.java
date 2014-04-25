@@ -147,7 +147,7 @@ public class MediciIngestView extends Composite implements org.dataconservancy.d
 	        tempPanel2.setWidth((width/10)+"px");
 	        buttonPanel.add(tempPanel2); 
 	    //    buttonTable.setStyleName("Center");
-	        buttonPanel.add(buttonTable);
+	       // buttonPanel.add(buttonTable);
 	        buttonTable.setStyleName("topPadding");
 	        
 	      

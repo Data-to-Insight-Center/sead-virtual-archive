@@ -24,6 +24,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 
@@ -31,6 +32,7 @@ public class EntityView extends Composite implements org.dataconservancy.dcs.acc
 
 	ScrollPanel contentScrollPanel;
 	Panel content;
+	Label titleLabel;
 	String entityId;
 	
 	public EntityView(String id){
@@ -40,7 +42,8 @@ public class EntityView extends Composite implements org.dataconservancy.dcs.acc
 	    content.setStylePrimaryName("Content");
 	    contentScrollPanel = new ScrollPanel(content);
 		content.add(new SeadSimpleSearchWidget(null, null));
-		content.add(Util.label("Entity", "SectionHeader"));
+		titleLabel = Util.label("Entity", "SectionHeader");
+		content.add(titleLabel);
 		
 	}
 
@@ -57,5 +60,10 @@ public class EntityView extends Composite implements org.dataconservancy.dcs.acc
 	@Override
 	public Panel getContentScrollPanel() {
 		return contentScrollPanel;
+	}
+
+	@Override
+	public Label getTitleLabel() {
+		return titleLabel;
 	}
 }

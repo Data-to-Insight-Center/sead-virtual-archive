@@ -405,6 +405,7 @@ public class MediciIngestPresenter  implements Presenter {
 															final CheckPointDetail result) {
 														if(!result.isCheckPointed()){
 															final StatusPopupPanel collectionWait = new StatusPopupPanel("Querying for BagIt Bag","bag",false);
+															collectionWait.setPopupPosition(Window.getClientWidth()*4/10, Window.getClientHeight()/3);
 															collectionWait.show();
 															
 													            	final MultiSelectionModel<CollectionNode> selectionModel = new MultiSelectionModel<CollectionNode>();
@@ -531,7 +532,9 @@ public class MediciIngestPresenter  implements Presenter {
 																																													@Override
 																																													public void onClick(ClickEvent event) {
 																																														StatusPopupPanel mediciWait = new StatusPopupPanel("Retrieving","done",false);
+																																														mediciWait.setPopupPosition(Window.getClientWidth()*4/10, Window.getClientHeight()/3);
 																																														MessagePopupPanel popUpPanel = new MessagePopupPanel(result, "done", true);
+																																														popUpPanel.setPopupPosition(Window.getClientWidth()*4/10, Window.getClientHeight()/3);
 																																														popUpPanel.show();
 																																														nPanel.remove(notify);
 																																													}
@@ -902,9 +905,8 @@ public class MediciIngestPresenter  implements Presenter {
 								        it.remove(); // avoids a ConcurrentModificationException
 								        }
 								    parent.addItem(grid);
+								    parent.setState(true);
 								    rootTree.addItem(parent);
-								    
-									
 								}
 								
 								@Override

@@ -260,8 +260,9 @@ public class FacetedSearchPresenter implements Presenter {
 	        }
 
 	        int page = result.offset() / Constants.MAX_SEARCH_RESULTS;
+	        System.out.println("PAge: " + page + "out of ");
 
-	        content.add(new ResultNavigationWidget(page, numpages,searchInput, isAdvanced));
+	        content.add(new ResultNavigationWidget(page, numpages,searchInput,result.total(), isAdvanced));
 
 	        Grid grid = new Grid(Constants.MAX_SEARCH_RESULTS,
 	        					 1);
@@ -274,7 +275,7 @@ public class FacetedSearchPresenter implements Presenter {
 	        
 	        for (int i = 0; i < result.matches().length(); i++) {
 	            JsMatch m = result.matches().get(i);
-
+	            
 	            int resultrow = (i+1) % Constants.MAX_SEARCH_RESULTS;
 	            
 
@@ -410,7 +411,8 @@ public class FacetedSearchPresenter implements Presenter {
 	 			List<String> tempFacets = facets.get(Constants.displayOrder.get(orderIndex));//pairs.getValue();
 	 		
 	 			TreeItem rootItem = new TreeItem();//pairs.getKey());
-	 			//rootItem.setHTML("<b>By " +Constants.displayOrder.get(orderIndex)+"</b>");
+	 			//rootItem.setHTML("<b>By " +Constants.displayOrder.get(orderIndex)+"</b>"); change here for bold
+	 			
 	 			rootItem.setHTML("<b>" +Constants.displayOrder.get(orderIndex)+"</b>");
 	 			
 	 			
