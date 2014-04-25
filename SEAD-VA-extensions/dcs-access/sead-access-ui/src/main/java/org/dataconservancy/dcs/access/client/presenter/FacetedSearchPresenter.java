@@ -530,7 +530,6 @@ public class FacetedSearchPresenter implements Presenter {
 			tree.addSelectionHandler(new SelectionHandler<TreeItem>() {
 				  @Override
 				  public void onSelection(SelectionEvent event) {
-					  System.out.println("Selection handler called");
 					  TreeItem item = (TreeItem) event.getSelectedItem();
 					  String key = "";
 					  Iterator iterator = constants.facets.entrySet().iterator();
@@ -630,10 +629,13 @@ public class FacetedSearchPresenter implements Presenter {
 	
     public static String searchURL(String query, int offset, boolean context,
             int max, String... params) {
-      
+    	
+    	String decodedQuery = URL.decode(query); //prevent double encoding (Firefox already encodes)
+    	String	encodedQuery = URL.encodeQueryString(decodedQuery);
+    	
         String s = 
         		SeadApp.accessurl+
-        		SeadApp.queryPath+"?q=" + URL.encodeQueryString(query)
+        		SeadApp.queryPath+"?q=" + encodedQuery
                 + "&offset=" + offset + "&max=" + max;
 
         if (context) {
