@@ -251,8 +251,7 @@ public class FacetedSearchPresenter implements Presenter {
 	            JsSearchResult result, String facets, SearchInput searchInput, boolean isAdvanced) {
 
 	    	
-    		content.add(Util.label("Total matches: " + result.total(),
-                "SectionHeader"));
+    		
 	    		
 	        int numpages = (int) result.total() / Constants.MAX_SEARCH_RESULTS;
 
@@ -342,7 +341,7 @@ public class FacetedSearchPresenter implements Presenter {
 	           // desc.add(title);
 	        }
 
-	        grid.setWidth("60%");
+	        
 	        content.add(grid);
 	        //panel.add(new ResultNavigationWidget(page, numpages,query,facets));
 	    }

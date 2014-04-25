@@ -241,6 +241,7 @@ white-space:normal;
   text-decoration: underline;
   cursor: pointer;
   padding-left:10px;
+  margin-bottom:4%;
   margin-left:350px;
 }
 
@@ -265,7 +266,7 @@ white-space:normal;
 }
 
 .DatasetsRow{
-	background-color: #F0F0F0 ;
+	background-color: #F0F0F0 ;vertical-al
 	color: #000000;
 	border-style:solid;
 	
@@ -417,6 +418,7 @@ white-space:normal;
 }
 
 .SearchButton{
+	margin-top: 30%;
 	color: #FFFFFF;
 	width: 97px;
   	height: 40px;
@@ -682,14 +684,14 @@ white-space:normal;
 {
   color: #6F7074;
   font-size: 18px;
-  margin-left: 150px;
-  margin-top: 20px;
+  margin-left: 15%;
+  margin-top: 10%;
   margin-bottom: 30px;
   margin-right: 20px;
   border-radius: 7px;
   border-width: 3px;
-  width: 550px;
-  height: 60px;
+  width: 75%;
+  height: 55%;
 
 }
 .OptionLabel
@@ -836,11 +838,12 @@ white-space:normal;
 }
 
 .ResultsNav {
-  margin-left: 10%;
 }
 
 .FacetedResults {
-  width:1000px;
+
+  width:80%;
+  horizontal-align:left;
 }
 
 .progressBarContainer {
@@ -1007,7 +1010,6 @@ white-space:normal;
 }
 .ResultNavigator{
 
-margin-right: 200px;
 font-style: oblique;
 color: darkgray;
 }

@@ -34,10 +34,10 @@ public class ResultNavigationWidget extends Composite{
     HorizontalPanel navigationPanel;
     public ResultNavigationWidget(final int page, final int numpages, final SearchInput searchInput, long totalResults, final boolean isAdvanced) {
         navigationPanel = new HorizontalPanel();
-        navigationPanel.setWidth("100%");
+        navigationPanel.setWidth("80%");
         initWidget(navigationPanel);
         navigationPanel.setStylePrimaryName("ResultsNav");
-        navigationPanel.setSpacing(2);
+//        navigationPanel.setSpacing(2);
         navigationPanel.setHorizontalAlignment(HorizontalPanel.ALIGN_LEFT);
         
         //Calculation of current results count range
