@@ -138,7 +138,7 @@ public class DcsDBField {
 
     public enum FileField
     implements DBPropertyName {
-        SIZE("fileSize"), NAME("fileName"), SOURCE("fileSource"), VALID("fileValid"), EXTANT("fileExtant");
+        SIZE("SizeOrDuration"), NAME("fileName"), SOURCE("fileSource"), VALID("fileValid"), EXTANT("fileExtant");
 
         private final String fieldname;
 

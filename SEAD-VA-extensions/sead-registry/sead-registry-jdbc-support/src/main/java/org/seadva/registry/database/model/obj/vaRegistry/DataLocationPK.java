@@ -9,6 +9,8 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
+
+import com.google.gson.annotations.Expose;
 import org.seadva.registry.database.model.obj.vaRegistry.iface.IDataLocationPK;
 
 
@@ -33,7 +35,8 @@ public class DataLocationPK implements Cloneable, Serializable,  IDataLocationPK
 	private BaseEntity entity;
 
 	/** Field mapping. */
-	@ManyToOne( cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY )
+    @Expose
+	@ManyToOne( cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER )
 	@org.hibernate.annotations.Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
 	@Basic( optional = false )
 	@JoinColumn(name = "location_type_id", nullable = false , insertable = false, updatable = false )
@@ -161,7 +164,7 @@ public class DataLocationPK implements Cloneable, Serializable,  IDataLocationPK
 	@Override
 	public int hashCode() {
 	int hash = 0;
-		hash = hash + getEntity().hashCode();
+		//hash = hash + getEntity().hashCode();
 		hash = hash + getLocationType().hashCode();
 	return hash;
 	}

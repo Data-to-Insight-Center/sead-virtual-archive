@@ -3,6 +3,7 @@ package org.seadva.registry.mapper;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.dataconservancy.model.dcs.*;
+import org.seadva.model.SeadDataLocation;
 import org.seadva.model.SeadDeliverableUnit;
 import org.seadva.model.SeadEvent;
 import org.seadva.model.SeadFile;
@@ -15,6 +16,8 @@ import org.seadva.registry.database.services.data.DataLayerVaRegistry;
 import org.seadva.registry.database.services.data.DataLayerVaRegistryImpl;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -26,7 +29,11 @@ import java.util.*;
  */
 public class DcsDBMapper {
 
-    RegistryClient client = new RegistryClient("http://localhost:8080/registry/rest/");
+    RegistryClient client;
+
+    public DcsDBMapper(String registryUrl){
+        client = new RegistryClient(registryUrl);
+    }
 
     /**
      * Converts SIP into smaller entities and makes POST calls through REST client to insert into Registry
@@ -35,7 +42,7 @@ public class DcsDBMapper {
      * @throws ClassNotFoundException
      */
 
-    public void mapfromSip(ResearchObject sip) throws IOException, ClassNotFoundException {
+    public void mapfromSip(ResearchObject sip) throws IOException, ClassNotFoundException, ParseException {
 
         java.util.Collection<DcsDeliverableUnit> deliverableUnits =  sip.getDeliverableUnits();
         for(DcsDeliverableUnit du:deliverableUnits){
@@ -94,6 +101,28 @@ public class DcsDBMapper {
             for(Property property1:properties)
                 collection.addProperty(property1);
 
+            SeadDataLocation seadDataLocation = ((SeadDeliverableUnit)du).getPrimaryLocation();
+            if(seadDataLocation!=null){
+                DataLocation dataLocation = new DataLocation();
+                DataLocationPK dataLocationPK = new DataLocationPK();
+                Repository repository = client.getRepositoryByName(seadDataLocation.getName());
+                dataLocationPK.setLocationType(repository);
+                dataLocation.setId(dataLocationPK);
+                dataLocation.setIsMasterCopy(1);
+                dataLocation.setLocationValue(seadDataLocation.getLocation());
+                collection.addDataLocation(dataLocation);
+            }
+
+            for(DcsResourceIdentifier alternateId: du.getAlternateIds()){
+                DataIdentifier dataIdentifier = new DataIdentifier();
+                DataIdentifierPK dataIdentifierPK = new DataIdentifierPK();
+                DataIdentifierType dataIdentifierType = client.getDataIdentifierType(alternateId.getTypeId());
+                dataIdentifierPK.setDataIdentifierType(dataIdentifierType);
+                dataIdentifier.setId(dataIdentifierPK);
+                dataIdentifier.setDataIdentifierValue(alternateId.getIdValue());
+                collection.addDataIdentifier(dataIdentifier);
+            }
+
             client.postCollection(collection);
 
 
@@ -103,13 +132,44 @@ public class DcsDBMapper {
                 File file = new File();
                 file.setId(dcsFile.getId());
                 file.setEntityName(dcsFile.getName());
-                file.setEntityCreatedTime(new Date());
-                file.setEntityLastUpdatedTime(new Date());
+                file.setEntityCreatedTime(simpleDateFormat.parse(((SeadFile)dcsFile).getDepositDate()));
+                file.setEntityLastUpdatedTime(simpleDateFormat.parse(((SeadFile)dcsFile).getMetadataUpdateDate()));
                 file.setVersionNum("1");
                 file.setSizeBytes(dcsFile.getSizeBytes());
                 file.setIsObsolete(0);
                 file.setFileName(dcsFile.getName());
 
+
+                for(DcsFormat dcsFormat:dcsFile.getFormats()){
+                    Format format = new Format();
+                    format.setType(dcsFormat.getSchemeUri());
+                    format.setValuestr(dcsFormat.getFormat());
+                    file.addFormat(format);
+                }
+
+
+                for(DcsResourceIdentifier alternateId: (dcsFile).getAlternateIds()){
+                    DataIdentifier dataIdentifier = new DataIdentifier();
+                    DataIdentifierPK dataIdentifierPK = new DataIdentifierPK();
+                    DataIdentifierType dataIdentifierType = client.getDataIdentifierType(alternateId.getTypeId());
+                    dataIdentifierPK.setDataIdentifierType(dataIdentifierType);
+                    dataIdentifier.setId(dataIdentifierPK);
+                    dataIdentifier.setDataIdentifierValue(alternateId.getIdValue());
+                    file.addDataIdentifier(dataIdentifier);
+                }
+
+
+                seadDataLocation = ((SeadFile)dcsFile).getPrimaryLocation();
+                if(seadDataLocation!=null&&seadDataLocation.getLocation()!=null){
+                    DataLocation dataLocation = new DataLocation();
+                    DataLocationPK dataLocationPK = new DataLocationPK();
+                    Repository repository = client.getRepositoryByName(seadDataLocation.getName());
+                    dataLocationPK.setLocationType(repository);
+                    dataLocation.setId(dataLocationPK);
+                    dataLocation.setIsMasterCopy(1);
+                    dataLocation.setLocationValue(seadDataLocation.getLocation());
+                    file.addDataLocation(dataLocation);
+                }
 
                 properties = new ArrayList<Property>();
                 for(DcsMetadata metadata:dcsFile.getMetadata()){
@@ -137,8 +197,20 @@ public class DcsDBMapper {
                 for(Property property1:properties)
                     file.addProperty(property1);
 
-                fileMap.put(file.getId(),file);
+                fileMap.put(file.getId(), file);
                 client.postFile(file);
+
+                List<Fixity> fixities = new ArrayList<Fixity>();
+                for(DcsFixity dcsFixity:dcsFile.getFixity()){
+                    Fixity fixity = new Fixity();
+                    FixityPK fixityPK = new FixityPK();
+                    fixityPK.setType(dcsFixity.getAlgorithm());
+                    fixityPK.setEntity(file);
+                    fixity.setId(fixityPK);
+                    fixity.setValuestr(dcsFixity.getValue());
+                    fixities.add(fixity);
+                }
+                client.postFixity(fixities);
             }
 
 
@@ -200,45 +272,63 @@ public class DcsDBMapper {
 
         return sip;
     }
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
-    private Map<String, List<Aggregation>> groupAggregations(List<Aggregation> aggregations){
-        Map<String, List<Aggregation>> aggregationMap = new HashMap<String, List<Aggregation>>();
-        for(Aggregation aggregation: aggregations){
-            List<Aggregation> children;
-            String parentId = aggregation.getId().getParent().getId();
-            if(aggregationMap.containsKey(parentId))
-                children = aggregationMap.get(parentId);
-            else
-                children = new ArrayList<Aggregation>();
-            children.add(aggregation);
-            aggregationMap.put(parentId, children);
-        }
-        return aggregationMap;
-
-    }
-
-    public SeadFile getFile(File file){
+    public SeadFile getFile(File file) throws IOException {
 
         SeadFile seadFile = new SeadFile();
         seadFile.setId(file.getId());
         seadFile.setName(file.getFileName());
+        seadFile.setSizeBytes(file.getSizeBytes());
+        seadFile.setDepositDate(simpleDateFormat.format(file.getEntityCreatedTime()));
+        seadFile.setMetadataUpdateDate(simpleDateFormat.format(file.getEntityLastUpdatedTime()));
+        if(file.getIsObsolete()==0)
+            seadFile.setExtant(true);
+
+        for(Format format:file.getFormats()){
+            DcsFormat dcsFormat = new DcsFormat();
+            dcsFormat.setFormat(format.getValuestr());
+            dcsFormat.setSchemeUri(format.getType());
+            seadFile.addFormat(dcsFormat);
+        }
+
+        Set<DataLocation> dataLocations = file.getDataLocations();
+        for(DataLocation location:dataLocations){
+            SeadDataLocation seadDataLocation = new SeadDataLocation();
+            seadDataLocation.setType(location.getId().getLocationType().getSoftwareType());
+            seadDataLocation.setName(location.getId().getLocationType().getRepositoryName());
+            seadDataLocation.setLocation(location.getLocationValue());
+            seadFile.setPrimaryLocation(seadDataLocation);
+        }
+
+
+        for(DataIdentifier dataIdentifier: file.getDataIdentifiers()){
+            DcsResourceIdentifier dcsResourceIdentifier = new DcsResourceIdentifier();
+            dcsResourceIdentifier.setTypeId(dataIdentifier.getId().getDataIdentifierType().getDataIdentifierTypeName());
+            dcsResourceIdentifier.setIdValue(dataIdentifier.getDataIdentifierValue());
+            seadFile.addAlternateId(dcsResourceIdentifier);
+        }
 
         for(Property property:file.getProperties()){
-            if(property.getMetadata().getMetadataElement().equals("size"))
-                seadFile.setSizeBytes(Long.valueOf(property.getValuestr()));
-            else {
-                XStream xStream = new XStream(new DomDriver());
-                xStream.alias("map",java.util.Map.class);
-                Map<String,String> map = new HashMap<String, String>();
-                String key = property.getMetadata().getMetadataSchema()+property.getMetadata().getMetadataElement();
-                map.put(key,property.getValuestr());
-                DcsMetadata metadata = new DcsMetadata();
-                metadata.setSchemaUri(key);
-                metadata.setMetadata(xStream.toXML(map));
-                seadFile.addMetadata(metadata);
-            }
-
+            XStream xStream = new XStream(new DomDriver());
+            xStream.alias("map",java.util.Map.class);
+            Map<String,String> map = new HashMap<String, String>();
+            String key = property.getMetadata().getMetadataSchema()+property.getMetadata().getMetadataElement();
+            map.put(key,property.getValuestr());
+            DcsMetadata metadata = new DcsMetadata();
+            metadata.setSchemaUri(key);
+            metadata.setMetadata(xStream.toXML(map));
+            seadFile.addMetadata(metadata);
         }
+
+        List<Fixity> fixityList = client.getFixity(file.getId());
+        for(Fixity fixity:fixityList){
+            DcsFixity dcsFixity = new DcsFixity();
+            dcsFixity.setAlgorithm(fixity.getId().getType());
+            dcsFixity.setValue(fixity.getValuestr());
+            seadFile.addFixity(dcsFixity);
+        }
+
         return seadFile;
     }
 
@@ -258,6 +348,23 @@ public class DcsDBMapper {
         SeadDeliverableUnit du = new SeadDeliverableUnit();
         du.setId(collection.getId());
         du.setTitle(collection.getName());
+
+
+        Set<DataLocation> dataLocations = collection.getDataLocations();
+        for(DataLocation location:dataLocations){
+            SeadDataLocation seadDataLocation = new SeadDataLocation();
+            seadDataLocation.setType(location.getId().getLocationType().getSoftwareType());
+            seadDataLocation.setName(location.getId().getLocationType().getRepositoryName());
+            seadDataLocation.setLocation(location.getLocationValue());
+            du.setPrimaryLocation(seadDataLocation);
+        }
+
+        for(DataIdentifier dataIdentifier: collection.getDataIdentifiers()){
+            DcsResourceIdentifier dcsResourceIdentifier = new DcsResourceIdentifier();
+            dcsResourceIdentifier.setTypeId(dataIdentifier.getId().getDataIdentifierType().getDataIdentifierTypeName());
+            dcsResourceIdentifier.setIdValue(dataIdentifier.getDataIdentifierValue());
+            du.addAlternateId(dcsResourceIdentifier);
+        }
 
         for(Property property:collection.getProperties()){
             if(property.getMetadata().getMetadataElement().equals(DcsDBField.CoreMetadataField.ABSTRACT.dbPropertyName()))

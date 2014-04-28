@@ -10,6 +10,8 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
+
+import com.google.gson.annotations.Expose;
 import org.seadva.registry.database.model.obj.vaRegistry.iface.IFixityPK;
 
 
@@ -27,6 +29,7 @@ public class FixityPK implements Cloneable, Serializable,  IFixityPK {
 	
 
 	/** Field mapping. */
+    @Expose
 	@ManyToOne( cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY )
 	@org.hibernate.annotations.Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
 	@Basic( optional = false )
@@ -34,6 +37,7 @@ public class FixityPK implements Cloneable, Serializable,  IFixityPK {
 	private File entity;
 
 	/** Field mapping. */
+    @Expose
 	@Column( nullable = false, length = 127  )
 	private String type;
 

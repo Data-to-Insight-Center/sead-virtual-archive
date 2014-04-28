@@ -17,6 +17,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import com.google.gson.annotations.Expose;
 import org.hibernate.proxy.HibernateProxy;
 import org.seadva.registry.database.model.obj.vaRegistry.iface.IFormat;
 
@@ -47,8 +49,10 @@ public class Format implements Cloneable, Serializable, IPojoGenEntity, IFormat 
 	/** Field mapping. */
 	private Long id = 0L; // init for hibernate bug workaround
 	/** Field mapping. */
+    @Expose
 	private String type;
 	/** Field mapping. */
+    @Expose
 	private String valuestr;
 	/**
 	 * Default constructor, mainly for hibernate use.

@@ -16,6 +16,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import com.google.gson.annotations.Expose;
 import org.hibernate.proxy.HibernateProxy;
 import org.seadva.registry.database.model.obj.vaRegistry.DataLocation;
 import org.seadva.registry.database.model.obj.vaRegistry.iface.IRepository;
@@ -43,15 +45,19 @@ public class Repository implements Cloneable, Serializable, IPojoGenEntity, IRep
 	
 
 	/** Field mapping. */
+    @Expose
 	private String affiliation;
 	/** Field mapping. */
 	private Set<DataLocation> dataLocations = new HashSet<DataLocation>();
 
 	/** Field mapping. */
+    @Expose
 	private String id;
 	/** Field mapping. */
+    @Expose
 	private String repositoryName;
 	/** Field mapping. */
+    @Expose
 	private String softwareType;
 	/**
 	 * Default constructor, mainly for hibernate use.

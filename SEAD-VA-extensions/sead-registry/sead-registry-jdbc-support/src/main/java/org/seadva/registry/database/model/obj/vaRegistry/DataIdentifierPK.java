@@ -9,6 +9,8 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
+
+import com.google.gson.annotations.Expose;
 import org.seadva.registry.database.model.obj.vaRegistry.iface.IDataIdentifierPK;
 
 
@@ -26,7 +28,8 @@ public class DataIdentifierPK implements Cloneable, Serializable,  IDataIdentifi
 	
 
 	/** Field mapping. */
-	@ManyToOne( cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY )
+    @Expose
+	@ManyToOne( cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER )
 	@org.hibernate.annotations.Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
 	@Basic( optional = false )
 	@JoinColumn(name = "data_identifier_type_id", nullable = false , insertable = false, updatable = false )
@@ -162,7 +165,7 @@ public class DataIdentifierPK implements Cloneable, Serializable,  IDataIdentifi
 	public int hashCode() {
 	int hash = 0;
 		hash = hash + getDataIdentifierType().hashCode();
-		hash = hash + getEntity().hashCode();
+//		hash = hash + getEntity().hashCode();
 	return hash;
 	}
 	

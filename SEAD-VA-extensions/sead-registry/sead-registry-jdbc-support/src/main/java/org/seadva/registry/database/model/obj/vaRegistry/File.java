@@ -42,6 +42,7 @@ public class File extends BaseEntity implements  IFile {
     @Expose
 	private String fileName;
 	/** Field mapping. */
+    @Expose
 	private Set<Format> formats = new HashSet<Format>();
 
 	/** Field mapping. */
@@ -102,7 +103,7 @@ public class File extends BaseEntity implements  IFile {
      * Return the value associated with the column: format.
 	 * @return A Set&lt;Format&gt; object (this.format)
 	 */
- 	@OneToMany( fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE }, mappedBy = "entity"  )
+ 	@OneToMany( fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE }, mappedBy = "entity"  )
  	@org.hibernate.annotations.Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
 	public Set<Format> getFormats() {
 		return this.formats;

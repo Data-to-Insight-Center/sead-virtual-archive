@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import com.google.gson.annotations.Expose;
 import org.seadva.registry.database.model.obj.vaRegistry.iface.IDataLocation;
 
 
@@ -26,14 +28,17 @@ public class DataLocation implements Cloneable, Serializable, IPojoGenEntity, ID
 	
 
 	/** Field mapping. */
+    @Expose
 	@Id 
 	private DataLocationPK id;
 
 	/** Field mapping. */
+    @Expose
 	@Column( name = "is_master_copy"  )
 	private Integer isMasterCopy;
 
 	/** Field mapping. */
+    @Expose
 	@Column( name = "location_value", nullable = false, length = 256  )
 	private String locationValue;
 

@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import com.google.gson.annotations.Expose;
 import org.seadva.registry.database.model.obj.vaRegistry.iface.IDataIdentifier;
 
 
@@ -26,10 +28,12 @@ public class DataIdentifier implements Cloneable, Serializable, IPojoGenEntity, 
 	
 
 	/** Field mapping. */
+    @Expose
 	@Column( name = "data_identifier_value", nullable = false, length = 256  )
 	private String dataIdentifierValue;
 
 	/** Field mapping. */
+    @Expose
 	@Id 
 	private DataIdentifierPK id;
 

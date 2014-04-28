@@ -16,6 +16,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import com.google.gson.annotations.Expose;
 import org.hibernate.proxy.HibernateProxy;
 import org.seadva.registry.database.model.obj.vaRegistry.Relation;
 import org.seadva.registry.database.model.obj.vaRegistry.iface.IRelationType;
@@ -43,13 +45,16 @@ public class RelationType implements Cloneable, Serializable, IPojoGenEntity, IR
 	
 
 	/** Field mapping. */
+    @Expose
 	private String id;
 	/** Field mapping. */
 	private Set<Relation> relations = new HashSet<Relation>();
 
 	/** Field mapping. */
+    @Expose
 	private String relationElement;
 	/** Field mapping. */
+    @Expose
 	private String relationSchema;
 	/**
 	 * Default constructor, mainly for hibernate use.

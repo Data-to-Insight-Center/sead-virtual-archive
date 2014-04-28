@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import com.google.gson.annotations.Expose;
 import org.seadva.registry.database.model.obj.vaRegistry.iface.IRelation;
 
 
@@ -25,6 +27,7 @@ public class Relation implements Cloneable, Serializable, IPojoGenEntity, IRelat
 	
 
 	/** Field mapping. */
+    @Expose
 	@Id 
 	private RelationPK id;
 

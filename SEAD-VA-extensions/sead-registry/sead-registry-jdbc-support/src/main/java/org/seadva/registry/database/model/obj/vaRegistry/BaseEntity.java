@@ -64,9 +64,11 @@ public class BaseEntity implements Cloneable, Serializable, IPojoGenEntity, IBas
 	//private Set<Aggregation> aggregations = new HashSet<Aggregation>();
 
 	/** Field mapping. */
+    @Expose
 	private Set<DataIdentifier> dataIdentifiers = new HashSet<DataIdentifier>();
 
 	/** Field mapping. */
+    @Expose
 	private Set<DataLocation> dataLocations = new HashSet<DataLocation>();
 
 	/** Field mapping. */

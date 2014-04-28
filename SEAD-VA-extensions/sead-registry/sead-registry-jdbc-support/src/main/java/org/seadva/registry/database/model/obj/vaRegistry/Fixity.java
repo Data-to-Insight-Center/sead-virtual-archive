@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import com.google.gson.annotations.Expose;
 import org.seadva.registry.database.model.obj.vaRegistry.iface.IFixity;
 
 
@@ -26,10 +28,12 @@ public class Fixity implements Cloneable, Serializable, IPojoGenEntity, IFixity 
 	
 
 	/** Field mapping. */
+    @Expose
 	@Id 
 	private FixityPK id;
 
 	/** Field mapping. */
+    @Expose
 	@Column( nullable = false, length = 127  )
 	private String valuestr;
 

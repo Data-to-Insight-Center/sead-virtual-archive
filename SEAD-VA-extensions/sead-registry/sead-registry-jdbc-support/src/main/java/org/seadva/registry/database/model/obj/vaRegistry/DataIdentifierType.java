@@ -16,6 +16,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import com.google.gson.annotations.Expose;
 import org.hibernate.proxy.HibernateProxy;
 import org.seadva.registry.database.model.obj.vaRegistry.DataIdentifier;
 import org.seadva.registry.database.model.obj.vaRegistry.iface.IDataIdentifierType;
@@ -46,10 +48,13 @@ public class DataIdentifierType implements Cloneable, Serializable, IPojoGenEnti
 	private Set<DataIdentifier> dataIdentifiers = new HashSet<DataIdentifier>();
 
 	/** Field mapping. */
+    @Expose
 	private String dataIdentifierTypeName;
 	/** Field mapping. */
+    @Expose
 	private String id;
 	/** Field mapping. */
+    @Expose
 	private String schemaUri;
 	/**
 	 * Default constructor, mainly for hibernate use.
@@ -125,7 +130,7 @@ public class DataIdentifierType implements Cloneable, Serializable, IPojoGenEnti
      * Return the value associated with the column: dataIdentifierTypeName.
 	 * @return A String object (this.dataIdentifierTypeName)
 	 */
-	@Basic( optional = false )
+	@Basic( optional = false , fetch = FetchType.EAGER)
 	@Column( name = "data_identifier_type_name", nullable = false, length = 127  )
 	public String getDataIdentifierTypeName() {
 		return this.dataIdentifierTypeName;
