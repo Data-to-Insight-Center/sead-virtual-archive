@@ -15,657 +15,720 @@
   ~ limitations under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <artifactId>dcs-integration</artifactId>
-    <groupId>org.dataconservancy.dcs</groupId>
-    <version>1.1.0-SNAPSHOT</version>
-  </parent>
-
-  <properties>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-  </properties>
-
-  <artifactId>sead-workflow-integration</artifactId>
-  <name>sead-workflow-integration</name>
-  <packaging>war</packaging>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>pre-integration-test
-          </phase>
-            <configuration>
-
-              <tasks unless="maven.test.skip">
-                <delete dir="${java.io.tmpdir}${file.separator}dcs" />
-              </tasks>
-
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.mortbay.jetty</groupId>
-        <artifactId>jetty-maven-plugin</artifactId>
-        <configuration>
-          <scanIntervalSeconds>10</scanIntervalSeconds>
-          <stopKey>halt</stopKey>
-          <stopPort>8081</stopPort>
-          <webAppConfig>
-            <contextPath>/dcs</contextPath>
-          </webAppConfig>                    
-        </configuration>
-        <executions>
-          <execution>
-            <id>start-jetty-it</id>
-            <phase>pre-integration-test</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <configuration>
-              <scanIntervalSeconds>0</scanIntervalSeconds>
-              <daemon>true</daemon>
-              <systemProperties>
-                <systemProperty>
-                  <name>dcs.home</name>
-                  <value>${project.build.directory}/dcs</value>
-                </systemProperty>
-                <systemProperty>
-                  <name>logback.configurationFile</name>
-                  <value>${project.basedir}/src/test/resources/logback-test.xml</value>
-                </systemProperty>
-              </systemProperties>
-            </configuration>
-          </execution>
-          <execution>
-            <id>stop-jetty-it</id>
-            <phase>post-integration-test</phase>
-            <goals>
-              <goal>stop</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <configuration>
-         <systemPropertyVariables>
-           <dcs.home>${project.build.directory}/dcs</dcs.home>
-           <dcs.bootstrap.metadataformatregistry.disabled>${dcs.bootstrap.disabled}</dcs.bootstrap.metadataformatregistry.disabled>
-         </systemPropertyVariables>
-        </configuration>
-        <executions>
-          <execution>
-            <id>integration-test</id>
-            <goals>
-              <goal>integration-test</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>verify</id>
-            <goals>
-              <goal>verify</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>net.sf.alchim</groupId>
-        <artifactId>winstone-maven-plugin</artifactId>
-        <configuration>
-          <cmdLineOptions>
-            <property>
-              <name>prefix</name>
-              <value>/dcs-integration-main</value>
-            </property>
-            <property>
-              <name>useJasper</name>
-              <value>true</value>
-            </property>
-          </cmdLineOptions>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>embed</goal>
-            </goals>
-            <phase>package</phase>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <version>1.5</version>
-        <executions>
-          <execution>
-            <id>attach-artifacts</id>
-            <goals>
-              <goal>attach-artifact</goal>
-            </goals>
-            <phase>package</phase>
-          </execution>
-        </executions>
-        <configuration>
-          <artifacts>
-            <artifact>
-	            <file>${project.build.directory}/${project.artifactId}-${version}-standalone.jar</file>
-              <type>jar</type>
-              <classifier>standalone</classifier>
-            </artifact>
-          </artifacts>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-war-plugin</artifactId>
-        <version>2.2</version>
-        <configuration>
-          <packagingExcludes>WEB-INF/classes/META-INF/**</packagingExcludes>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-remote-resources-plugin</artifactId>
-        <configuration>
-          <outputDirectory>${project.build.directory}/dcs-integration-main-1.1.0-SNAPSHOT/</outputDirectory>
-          <resourceBundles>
-              <resourceBundle>org.dataconservancy.mhf:dcs-mhf-resources:${project.parent.version}</resourceBundle>
-          </resourceBundles>
-          <executions>
-            <execution>
-              <goals><goal>process</goal></goals>
-              <phase>pre-package</phase>
-            </execution>
-          </executions>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-
-  <dependencies>
-
-    <dependency>
-      <groupId>org.dataconservancy.dcs</groupId>
-      <artifactId>dcs-ingest-file</artifactId>
-      <version>1.1.1-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.dataconservancy.dcs</groupId>
-      <artifactId>dcs-ingest-sip</artifactId>
-      <version>1.1.1-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.dataconservancy.dcs</groupId>
-      <artifactId>dcs-ingest-services</artifactId>
-      <version>1.1.1-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-
-      <dependency>
-          <groupId>org.dataconservancy.dcs</groupId>
-          <artifactId>sead-ingest-RO</artifactId>
-          <version>1.1.0-SNAPSHOT</version>
-          <scope>runtime</scope>
-      </dependency>
-      <dependency>
-          <groupId>org.dataconservancy.dcs</groupId>
-          <artifactId>sead-ingest-services</artifactId>
-          <version>1.1.0-SNAPSHOT</version>
-          <scope>runtime</scope>
-          <exclusions>
-              <exclusion>
-                  <groupId>com.google.gwt</groupId>
-                  <artifactId>gwt-dev</artifactId>
-              </exclusion>
-              <exclusion>
-                  <groupId>javax.servlet</groupId>
-                  <artifactId>javax.servlet-api</artifactId>
-              </exclusion>
-          </exclusions>
-      </dependency>
-      <dependency>
-          <groupId>org.seadva.ingest</groupId>
-          <artifactId>sead-ingest-core</artifactId>
-          <version>1.1.0-SNAPSHOT</version>
-          <scope>runtime</scope>
-      </dependency>
-
-    <dependency>
-        <groupId>org.seadva.archive</groupId>
-        <artifactId>sead-archive-impl-sda</artifactId>
+    <parent>
+        <artifactId>dcs-integration</artifactId>
+        <groupId>org.dataconservancy.dcs</groupId>
         <version>1.1.0-SNAPSHOT</version>
-        <exclusions>
-            <exclusion>
-                <groupId>javax.servlet</groupId>
-                <artifactId>servlet-api</artifactId>
-            </exclusion>
-        </exclusions>
-    </dependency>
+    </parent>
 
-      <dependency>
-          <groupId>org.seadva.archive</groupId>
-          <artifactId>sead-archive-impl-s3</artifactId>
-          <version>1.1.0-SNAPSHOT</version>
-      </dependency>
+    <properties>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <spring.version>3.2.0.RELEASE</spring.version>
+    </properties>
 
+    <artifactId>sead-workflow-integration</artifactId>
+    <name>sead-workflow-integration</name>
+    <packaging>war</packaging>
 
-      <dependency>
-          <groupId>org.seadva.archive</groupId>
-          <artifactId>sead-archive-impl-dspace</artifactId>
-          <version>1.1.0-SNAPSHOT</version>
-      </dependency>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>pre-integration-test
+                        </phase>
+                        <configuration>
 
+                            <tasks unless="maven.test.skip">
+                                <delete dir="${java.io.tmpdir}${file.separator}dcs" />
+                            </tasks>
 
-      <dependency>
-        <groupId>org.seadva.archive</groupId>
-        <artifactId>sead-archive-api</artifactId>
-        <version>1.1.0-SNAPSHOT</version>
-    </dependency>
-    
-      <dependency>
-          <groupId>org.seadva.query</groupId>
-          <artifactId>sead-query-solr</artifactId>
-          <version>1.1.0-SNAPSHOT</version>
-      </dependency>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
+            <plugin>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <configuration>
+                    <scanIntervalSeconds>10</scanIntervalSeconds>
+                    <stopKey>halt</stopKey>
+                    <stopPort>8081</stopPort>
+                    <webAppConfig>
+                        <contextPath>/dcs</contextPath>
+                    </webAppConfig>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>start-jetty-it</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <scanIntervalSeconds>0</scanIntervalSeconds>
+                            <daemon>true</daemon>
+                            <systemProperties>
+                                <systemProperty>
+                                    <name>dcs.home</name>
+                                    <value>${project.build.directory}/dcs</value>
+                                </systemProperty>
+                                <systemProperty>
+                                    <name>logback.configurationFile</name>
+                                    <value>${project.basedir}/src/test/resources/logback-test.xml</value>
+                                </systemProperty>
+                            </systemProperties>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>stop-jetty-it</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
-      <dependency>
-          <groupId>org.seadva</groupId>
-          <artifactId>sead-metadata-service-api</artifactId>
-          <version>1.1.0-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-          <groupId>org.seadva</groupId>
-          <artifactId>sead-metadata-service-impl</artifactId>
-          <version>1.1.0-SNAPSHOT</version>
-      </dependency>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <configuration>
+                    <systemPropertyVariables>
+                        <dcs.home>${project.build.directory}/dcs</dcs.home>
+                        <dcs.bootstrap.metadataformatregistry.disabled>${dcs.bootstrap.disabled}</dcs.bootstrap.metadataformatregistry.disabled>
+                    </systemPropertyVariables>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>integration-test</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>verify</id>
+                        <goals>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
-      <dependency>
-          <groupId>org.dataconservancy.index</groupId>
-          <artifactId>sead-index-extension</artifactId>
-          <version>1.1.0-SNAPSHOT</version>
-      </dependency>
+            <plugin>
+                <groupId>net.sf.alchim</groupId>
+                <artifactId>winstone-maven-plugin</artifactId>
+                <configuration>
+                    <cmdLineOptions>
+                        <property>
+                            <name>prefix</name>
+                            <value>/dcs-integration-main</value>
+                        </property>
+                        <property>
+                            <name>useJasper</name>
+                            <value>true</value>
+                        </property>
+                    </cmdLineOptions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>embed</goal>
+                        </goals>
+                        <phase>package</phase>
+                    </execution>
+                </executions>
+            </plugin>
 
-      <dependency>
-          <groupId>org.seadva.model</groupId>
-          <artifactId>sead-model</artifactId>
-          <version>1.1.0-SNAPSHOT</version>
-      </dependency>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <id>attach-artifacts</id>
+                        <goals>
+                            <goal>attach-artifact</goal>
+                        </goals>
+                        <phase>package</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <artifacts>
+                        <artifact>
+                            <file>${project.build.directory}/${project.artifactId}-${version}-standalone.jar</file>
+                            <type>jar</type>
+                            <classifier>standalone</classifier>
+                        </artifact>
+                    </artifacts>
+                </configuration>
+            </plugin>
 
-      <dependency>
-          <groupId>org.seadva.model</groupId>
-          <artifactId>sead-model-builder-xstream</artifactId>
-          <version>1.1.0-SNAPSHOT</version>
-      </dependency>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <packagingExcludes>WEB-INF/classes/META-INF/**</packagingExcludes>
+                </configuration>
+            </plugin>
 
-      <dependency>
-          <groupId>org.dataconservancy.access</groupId>
-          <artifactId>sead-access-http</artifactId>
-          <version>1.1.0-SNAPSHOT</version>
-      </dependency>
-     
-      <dependency>
-          <groupId>org.dataconservancy.query.endpoints</groupId>
-          <artifactId>dcs-query-endpoint-utils</artifactId>
-          <version>1.1.0-SNAPSHOT</version>
-          <scope>runtime</scope>
-      </dependency>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-remote-resources-plugin</artifactId>
+                <configuration>
+                    <outputDirectory>${project.build.directory}/dcs-integration-main-1.1.0-SNAPSHOT/</outputDirectory>
+                    <resourceBundles>
+                        <resourceBundle>org.dataconservancy.mhf:dcs-mhf-resources:${project.parent.version}</resourceBundle>
+                    </resourceBundles>
+                    <executions>
+                        <execution>
+                            <goals><goal>process</goal></goals>
+                            <phase>pre-package</phase>
+                        </execution>
+                    </executions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
-      <dependency>
-          <groupId>org.apache.xmlbeans</groupId>
-          <artifactId>xmlbeans</artifactId>
-          <version>2.4.0</version>
-      </dependency>
+    <dependencies>
 
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-      <version>1.4</version>
-      <scope>compile</scope>
-    </dependency>
+        <dependency>
+            <groupId>org.dataconservancy.dcs</groupId>
+            <artifactId>dcs-ingest-file</artifactId>
+            <version>1.1.1-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
 
-      <dependency>
-          <groupId>commons-codec</groupId>
-          <artifactId>commons-codec</artifactId>
-          <version>1.4</version>
-          <scope>runtime</scope>
-      </dependency>
+        <dependency>
+            <groupId>org.dataconservancy.dcs</groupId>
+            <artifactId>dcs-ingest-sip</artifactId>
+            <version>1.1.1-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
 
-    <dependency>
-      <groupId>org.dataconservancy.dcs</groupId>
-      <artifactId>dcs-id-impl-hibernate</artifactId>
-      <version>1.1.0-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
+        <dependency>
+            <groupId>org.dataconservancy.dcs</groupId>
+            <artifactId>dcs-ingest-services</artifactId>
+            <version>1.1.1-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
 
-    <dependency>
-      <groupId>org.dataconservancy.dcs</groupId>
-      <artifactId>dcs-id-impl</artifactId>
-      <version>1.1.0-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
+        <dependency>
+            <groupId>org.dataconservancy.dcs</groupId>
+            <artifactId>sead-ingest-RO</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.dataconservancy.dcs</groupId>
+            <artifactId>sead-ingest-services</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+            <scope>runtime</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.gwt</groupId>
+                    <artifactId>gwt-dev</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>javax.servlet-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.seadva.ingest</groupId>
+            <artifactId>sead-ingest-core</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
 
-    <dependency>
-      <groupId>commons-dbcp</groupId>
-      <artifactId>commons-dbcp</artifactId>
-      <version>1.4</version>
-      <scope>runtime</scope>
-    </dependency>
+        <dependency>
+            <groupId>org.seadva.archive</groupId>
+            <artifactId>sead-archive-impl-sda</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>servlet-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
-    <dependency>
-      <groupId>org.hsqldb</groupId>
-      <artifactId>hsqldb</artifactId>
-      <version>2.2.8</version>
-      <scope>runtime</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <version>8.4-701.jdbc4</version>
-      <scope>runtime</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.dataconservancy.deposit</groupId>
-      <artifactId>dc-deposit-sword-server</artifactId>
-      <version>1.1.0-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.dataconservancy.archive</groupId>
-      <artifactId>dcs-archive-impl-elm-fs</artifactId>
-      <version>1.1.0-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.dataconservancy.archive</groupId>
-      <artifactId>dcs-archive-impl-fcrepo</artifactId>
-      <version>1.1.0-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-beans</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-  <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-tx</artifactId>
-      <scope>runtime</scope>
-  </dependency>
-
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-core</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-orm</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.abdera</groupId>
-      <artifactId>abdera-spring</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-
-      <dependency>
-          <groupId>org.springframework.security</groupId>
-          <artifactId>spring-security-config</artifactId>
-          <version>3.2.0.RELEASE</version>
-      </dependency>
-
-      <dependency>
-          <groupId>org.springframework.security</groupId>
-          <artifactId>spring-security-web</artifactId>
-          <version>3.2.0.RELEASE</version>
-      </dependency>
-
-      <dependency>
-          <groupId>org.springframework.security</groupId>
-          <artifactId>spring-security-core</artifactId>
-          <version>3.2.0.RELEASE</version>
-      </dependency>
-
-      <dependency>
-      <groupId>org.apache.abdera</groupId>
-      <artifactId>abdera-parser</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.dataconservancy.lineage</groupId>
-      <artifactId>dcs-lineage-api</artifactId>
-      <version>1.1.0-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.dataconservancy.lineage</groupId>
-      <artifactId>dcs-lineage-impl</artifactId>
-      <version>1.1.0-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.dataconservancy.lineage</groupId>
-      <artifactId>dcs-lineage-http</artifactId>
-      <version>1.1.0-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.dataconservancy.dcs</groupId>
-      <artifactId>dcs-ingest-client</artifactId>
-      <version>1.1.0-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency>
-
-       <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.dataconservancy.query</groupId>
-      <artifactId>dcs-query-dcs-datamodel-solr</artifactId>
-      <version>1.1.0-SNAPSHOT</version>
-    </dependency>
-
-       <dependency>
-      <groupId>org.dataconservancy.index</groupId>
-      <artifactId>dcs-index-dcp-solr</artifactId>
-      <version>1.1.1-SNAPSHOT</version>
-           <exclusions>
-               <exclusion>
-                   <groupId>javax.servlet</groupId>
-                   <artifactId>servlet-api</artifactId>
-               </exclusion>
-           </exclusions>
-    </dependency>
+        <dependency>
+            <groupId>org.seadva.archive</groupId>
+            <artifactId>sead-archive-impl-s3</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+        </dependency>
 
 
-      <dependency>
-          <groupId>org.dataconservancy.model</groupId>
-          <artifactId>dcs-model</artifactId>
-          <version>1.1.0-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-          <groupId>org.dataconservancy.model</groupId>
-          <artifactId>dcs-model-builder-xstream</artifactId>
-          <version>1.1.0-SNAPSHOT</version>
-      </dependency>
-
-    <dependency>
-      <groupId>org.dataconservancy.index</groupId>
-      <artifactId>dcs-index-dcp-solr-resources</artifactId>
-      <version>1.1.0-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.dataconservancy.dcs</groupId>
-      <artifactId>dcs-transform-index</artifactId>
-      <version>1.1.0-SNAPSHOT</version>
-        <exclusions>
-            <exclusion>
-                <groupId>javax.servlet</groupId>
-                <artifactId>servlet-api</artifactId>
-            </exclusion>
-        </exclusions>
-    </dependency>
-
-    <dependency>
-      <groupId>org.dataconservancy.dcs</groupId>
-      <artifactId>dcs-transform-execution</artifactId>
-      <version>1.1.0-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.dataconservancy.dcs</groupId>
-      <artifactId>dcs-id-cache-impl</artifactId>
-      <version>1.1.0-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.dataconservancy.dcs</groupId>
-      <artifactId>dcs-integration-support</artifactId>
-      <version>${project.parent.version}</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.dataconservancy.access</groupId>
-      <artifactId>dcs-access-http</artifactId>
-      <version>1.1.1-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-	  <groupId>org.dataconservancy.dcs</groupId>
-	  <artifactId>dcs-integration-bootstrap</artifactId>
-	  <version>${project.parent.version}</version>
-	  <scope>runtime</scope>
-    </dependency>
-
-    <dependency>
-          <groupId>org.apache.axis2</groupId>
-          <artifactId>axis2-kernel</artifactId>
-          <version>1.6.2</version>
-          <exclusions>
-              <exclusion>
-                  <groupId>javax.servlet</groupId>
-                  <artifactId>servlet-api</artifactId>
-              </exclusion>
-          </exclusions>
-      </dependency>
-      <dependency>
-          <groupId>org.apache.axis2</groupId>
-          <artifactId>axis2-adb</artifactId>
-          <version>1.6.2</version>
-      </dependency>
-      <dependency>
-          <groupId>org.apache.axis2</groupId>
-          <artifactId>axis2-transport-local</artifactId>
-          <version>1.6.2</version>
-      </dependency>
-      <dependency>
-          <groupId>org.apache.axis2</groupId>
-          <artifactId>axis2-transport-http</artifactId>
-          <version>1.6.2</version>
-      </dependency>
-      <dependency>
-          <groupId>d2i</groupId>
-          <artifactId>d2i-fgdc-schema</artifactId>
-          <version>1.0.0</version>
-      </dependency>
-
-      <dependency>
-          <groupId>com.jcraft</groupId>
-          <artifactId>jsch</artifactId>
-          <version>0.1.49</version>
-      </dependency>
-     <dependency>
-          <groupId>org.apache.ws.commons.axiom</groupId>
-          <artifactId>axiom-api</artifactId>
-          <version>1.2.13</version>
-      </dependency>
+        <dependency>
+            <groupId>org.seadva.archive</groupId>
+            <artifactId>sead-archive-impl-dspace</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+        </dependency>
 
 
-      <dependency>
-          <groupId>org.apache.ws.commons.axiom</groupId>
-          <artifactId>axiom-dom</artifactId>
-          <version>1.2.13</version>
-      </dependency>
+        <dependency>
+            <groupId>org.seadva.archive</groupId>
+            <artifactId>sead-archive-api</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.seadva.query</groupId>
+            <artifactId>sead-query-solr</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+        </dependency>
 
 
-      <dependency>
-          <groupId>org.apache.ws.commons.axiom</groupId>
-          <artifactId>axiom-impl</artifactId>
-          <version>1.2.13</version>
-      </dependency>
+        <dependency>
+            <groupId>org.seadva</groupId>
+            <artifactId>sead-metadata-service-api</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.seadva</groupId>
+            <artifactId>sead-metadata-service-impl</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>servlet-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
-      <dependency>
-          <groupId>commons-codec</groupId>
-          <artifactId>commons-codec</artifactId>
-          <version>1.4</version>
-      </dependency>
-      <dependency>
-          <groupId>org.seadva.access</groupId>
-          <artifactId>sead-security</artifactId>
-          <version>1.1.0-SNAPSHOT</version>
-          <exclusions>
-              <exclusion>
-                  <groupId>org.apache.derby</groupId>
-                  <artifactId>derby</artifactId>
-              </exclusion>
-          </exclusions>
-      </dependency>
-      <dependency>
-          <groupId>org.apache.derby</groupId>
-          <artifactId>derby</artifactId>
-          <version>10.10.1.1</version>
-      </dependency>
-  </dependencies>
+        <dependency>
+            <groupId>org.dataconservancy.index</groupId>
+            <artifactId>sead-index-extension</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.seadva.model</groupId>
+            <artifactId>sead-model</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.seadva.model</groupId>
+            <artifactId>sead-model-builder-xstream</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.dataconservancy.access</groupId>
+            <artifactId>sead-access-http</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.dataconservancy.query.endpoints</groupId>
+            <artifactId>dcs-query-endpoint-utils</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.xmlbeans</groupId>
+            <artifactId>xmlbeans</artifactId>
+            <version>2.4.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>1.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.4</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.dataconservancy.dcs</groupId>
+            <artifactId>dcs-id-impl-hibernate</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.dataconservancy.dcs</groupId>
+            <artifactId>dcs-id-impl</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <version>1.4</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>2.2.8</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>8.4-701.jdbc4</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.dataconservancy.deposit</groupId>
+            <artifactId>dc-deposit-sword-server</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.dataconservancy.archive</groupId>
+            <artifactId>dcs-archive-impl-elm-fs</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.dataconservancy.archive</groupId>
+            <artifactId>dcs-archive-impl-fcrepo</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${spring.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+            <version>${spring.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring.version}</version>
+            <scope>runtime</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-asm</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>${spring.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.apache.abdera</groupId>
+            <artifactId>abdera-spring</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+            <version>${spring.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-asm</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+            <version>${spring.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-expression</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+            <version>${spring.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-expression</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-expression</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-spring</artifactId>
+            <version>5.4.0.Final</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.abdera</groupId>
+            <artifactId>abdera-parser</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.dataconservancy.lineage</groupId>
+            <artifactId>dcs-lineage-api</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.dataconservancy.lineage</groupId>
+            <artifactId>dcs-lineage-impl</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.dataconservancy.lineage</groupId>
+            <artifactId>dcs-lineage-http</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.dataconservancy.dcs</groupId>
+            <artifactId>dcs-ingest-client</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.dataconservancy.query</groupId>
+            <artifactId>dcs-query-dcs-datamodel-solr</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.dataconservancy.index</groupId>
+            <artifactId>dcs-index-dcp-solr</artifactId>
+            <version>1.1.1-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>servlet-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.dataconservancy.model</groupId>
+            <artifactId>dcs-model</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.dataconservancy.model</groupId>
+            <artifactId>dcs-model-builder-xstream</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.dataconservancy.index</groupId>
+            <artifactId>dcs-index-dcp-solr-resources</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.dataconservancy.dcs</groupId>
+            <artifactId>dcs-transform-index</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>servlet-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.dataconservancy.dcs</groupId>
+            <artifactId>dcs-transform-execution</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.dataconservancy.dcs</groupId>
+            <artifactId>dcs-id-cache-impl</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.dataconservancy.dcs</groupId>
+            <artifactId>dcs-integration-support</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.dataconservancy.access</groupId>
+            <artifactId>dcs-access-http</artifactId>
+            <version>1.1.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.dataconservancy.dcs</groupId>
+            <artifactId>dcs-integration-bootstrap</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.axis2</groupId>
+            <artifactId>axis2-kernel</artifactId>
+            <version>1.6.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>servlet-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.axis2</groupId>
+            <artifactId>axis2-adb</artifactId>
+            <version>1.6.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.axis2</groupId>
+            <artifactId>axis2-transport-local</artifactId>
+            <version>1.6.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.axis2</groupId>
+            <artifactId>axis2-transport-http</artifactId>
+            <version>1.6.2</version>
+        </dependency>
+        <dependency>
+            <groupId>d2i</groupId>
+            <artifactId>d2i-fgdc-schema</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
+            <version>0.1.49</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ws.commons.axiom</groupId>
+            <artifactId>axiom-api</artifactId>
+            <version>1.2.13</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.apache.ws.commons.axiom</groupId>
+            <artifactId>axiom-dom</artifactId>
+            <version>1.2.13</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.apache.ws.commons.axiom</groupId>
+            <artifactId>axiom-impl</artifactId>
+            <version>1.2.13</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.seadva.access</groupId>
+            <artifactId>sead-security</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.derby</groupId>
+                    <artifactId>derby</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+            <version>10.10.1.1</version>
+        </dependency>
+
+    </dependencies>
 
     <repositories>
         <repository>
