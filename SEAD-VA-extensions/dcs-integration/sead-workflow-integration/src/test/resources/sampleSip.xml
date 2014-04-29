@@ -23,19 +23,13 @@
             <contact>Sead dev</contact>
         </DeliverableUnit>
     </DeliverableUnits>
-    <Manifestations>
-        <Manifestation id="man">
-            <deliverableUnit ref="xyz"/>
-            <manifestationFile ref="fileid"/>
-        </Manifestation>
-    </Manifestations>
-    <Files>
-    <File id="fileid" src="http://ashbha.ads.iu.edu/leadinabox/cape.metadata.xml">
-        <fileName>metadata_sample.xml</fileName>
-        <extant>true</extant>
-        <format>
-            <id scheme="http://www.iana.org/assignments/media-types/">application/xml</id>
-        </format>
-    </File>
-    </Files>
+
+    <Repositories>
+        <Repository>
+            <irId>5</irId>
+            <url>https://www.sdarchive.iu.edu/</url>
+            <type>cloud</type>
+            <name>IU SDA</name>
+        </Repository>
+    </Repositories>
 </dcp>
