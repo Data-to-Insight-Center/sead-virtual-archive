@@ -33,6 +33,8 @@ public class SeadArchiver
     private SeadArchiveStore archive;
     private String type;
 
+    private String name;
+
     @Required
     public void setModelBuilder(DcsModelBuilder mb) {
         builder = mb;
@@ -44,23 +46,37 @@ public class SeadArchiver
     }
 
     @Required
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+    @Required
     public void setArchiveStore(SeadArchiveStore store) {
         archive = store;
     }
 
     public void execute(String sipRef) {
         if (isDisabled()) return;
-        boolean matchesType =true;
+
+        boolean matchesName = false;
 
 
-        ResearchObject dcp = (ResearchObject)ingest.getSipStager().getSIP(sipRef);
-
-        for(SeadRepository institionalRepository:dcp.getRepositories())
-            if(institionalRepository.getType().equalsIgnoreCase(type))
-                matchesType = true;
-        if(!matchesType)
+        ResearchObject dcp = (ResearchObject)this.ingest.getSipStager().getSIP(sipRef);
+        for (SeadRepository institionalRepository : dcp.getRepositories()) {
+            if (institionalRepository.getType().equalsIgnoreCase(this.type))
+            {
+                String[] arr = this.name.split(";");
+                for (int i = 0; i < arr.length; i++) {
+                    if (institionalRepository.getName().equalsIgnoreCase(arr[i])) {
+                        matchesName = true;
+                    }
+                }
+            }
+        }
+        if (!matchesName) {
             return;
-
+        }
 
         ByteArrayOutputStream sink = new ByteArrayOutputStream();
         SeadXstreamStaxModelBuilder builder = new SeadXstreamStaxModelBuilder();
