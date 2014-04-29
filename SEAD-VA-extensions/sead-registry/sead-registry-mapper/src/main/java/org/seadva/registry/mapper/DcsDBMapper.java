@@ -102,7 +102,7 @@ public class DcsDBMapper {
                 collection.addProperty(property1);
 
             SeadDataLocation seadDataLocation = ((SeadDeliverableUnit)du).getPrimaryLocation();
-            if(seadDataLocation!=null){
+            if(seadDataLocation!=null&seadDataLocation.getLocation()!=null){
                 DataLocation dataLocation = new DataLocation();
                 DataLocationPK dataLocationPK = new DataLocationPK();
                 Repository repository = client.getRepositoryByName(seadDataLocation.getName());
@@ -132,8 +132,14 @@ public class DcsDBMapper {
                 File file = new File();
                 file.setId(dcsFile.getId());
                 file.setEntityName(dcsFile.getName());
-                file.setEntityCreatedTime(simpleDateFormat.parse(((SeadFile)dcsFile).getDepositDate()));
-                file.setEntityLastUpdatedTime(simpleDateFormat.parse(((SeadFile)dcsFile).getMetadataUpdateDate()));
+                if(((SeadFile)dcsFile).getDepositDate()!=null)
+                    file.setEntityCreatedTime(simpleDateFormat.parse(((SeadFile)dcsFile).getDepositDate()));
+                else
+                    file.setEntityCreatedTime(new Date());
+                if(((SeadFile)dcsFile).getMetadataUpdateDate()!=null)
+                    file.setEntityLastUpdatedTime(simpleDateFormat.parse(((SeadFile)dcsFile).getMetadataUpdateDate()));
+                else
+                    file.setEntityLastUpdatedTime(new Date());
                 file.setVersionNum("1");
                 file.setSizeBytes(dcsFile.getSizeBytes());
                 file.setIsObsolete(0);
@@ -279,7 +285,10 @@ public class DcsDBMapper {
         SeadFile seadFile = new SeadFile();
         seadFile.setId(file.getId());
         seadFile.setName(file.getFileName());
-        seadFile.setSizeBytes(file.getSizeBytes());
+        if(file.getSizeBytes()<0)
+            seadFile.setSizeBytes(0);
+        else
+            seadFile.setSizeBytes(file.getSizeBytes());
         seadFile.setDepositDate(simpleDateFormat.format(file.getEntityCreatedTime()));
         seadFile.setMetadataUpdateDate(simpleDateFormat.format(file.getEntityLastUpdatedTime()));
         if(file.getIsObsolete()==0)
