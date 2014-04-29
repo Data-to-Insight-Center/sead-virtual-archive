@@ -16,19 +16,22 @@ public class InitDerby {
 				dbInstance = DatabaseSingleton.getInstance(args[0]);
 				ProvenanceBootstrap.init();
 				UserBootstrap.init();
-			} catch (InstantiationException | IllegalAccessException
-					| ClassNotFoundException e) {
-				System.out.println("Sorry, encountered an error:"+e.getMessage());
-				 System.exit(1);
-			} catch (SQLException e) {
+			}
+            catch (SQLException e) {
 				String msg = e.getMessage();
 				if(e.getSQLState().equalsIgnoreCase("XJ041"))
 					msg = "Directory "+args[0]+" already exists.";
 				System.out.println("Sorry encountered an error:"+msg);
 				System.exit(1);
-			}
-			
-		System.out.println("Created DB at "+args[0]);
+			} catch (ClassNotFoundException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (InstantiationException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+
+        System.out.println("Created DB at "+args[0]);
 				
 	}
 }
