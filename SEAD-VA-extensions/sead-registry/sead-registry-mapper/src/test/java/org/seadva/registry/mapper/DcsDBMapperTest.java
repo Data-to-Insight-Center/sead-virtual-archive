@@ -25,6 +25,7 @@ import org.seadva.model.pack.ResearchObject;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -38,15 +39,15 @@ public class DcsDBMapperTest  extends JerseyTest {
     }
 
     @Test
-    public void testMapperForSip() throws IOException, InvalidXmlException, ClassNotFoundException {
+    public void testMapperForSip() throws IOException, InvalidXmlException, ClassNotFoundException, ParseException {
         ResearchObject sip = new SeadXstreamStaxModelBuilder().buildSip(
                 DcsDBMapperTest.class.getResourceAsStream("./sample.xml")
         );
-        new DcsDBMapper().mapfromSip(sip);
-        ResearchObject returnedSip = new DcsDBMapper().getSip(
+        new DcsDBMapper("http://localhost:8080/registry/rest/").mapfromSip(sip);
+        ResearchObject returnedSip = new DcsDBMapper("http://localhost:8080/registry/rest/").getSip(
                 "http://sead-test/0489a707-d428-4db4-8ce0-1ace548bc653"
         );
-        new SeadXstreamStaxModelBuilder().buildSip(sip, new FileOutputStream("/tmp/output_sip.xml"));//Now you can go and check the output
+        new SeadXstreamStaxModelBuilder().buildSip(returnedSip, new FileOutputStream("/tmp/output_sip.xml"));//Now you can go and check the output
         assertEquals(sip.getDeliverableUnits().size(), returnedSip.getDeliverableUnits().size());
 
     }
