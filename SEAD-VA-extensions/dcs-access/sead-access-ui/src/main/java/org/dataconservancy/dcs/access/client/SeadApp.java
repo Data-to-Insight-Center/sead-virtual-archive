@@ -34,6 +34,7 @@ import org.dataconservancy.dcs.access.client.presenter.ProvenancePresenter;
 import org.dataconservancy.dcs.access.client.presenter.RegisterPresenter;
 import org.dataconservancy.dcs.access.client.presenter.RelationsPresenter;
 import org.dataconservancy.dcs.access.client.presenter.UploadPresenter;
+import org.dataconservancy.dcs.access.client.ui.LoginPopupPanel;
 import org.dataconservancy.dcs.access.client.upload.Util;
 import org.dataconservancy.dcs.access.client.view.AdminView;
 import org.dataconservancy.dcs.access.client.view.EntityView;
@@ -279,11 +280,7 @@ public class SeadApp implements EntryPoint {
         moreLinks.setWidget(0, 0, more);
         moreLinks.setWidget(0, 1, browseLabel);
         moreLinks.setWidget(0, 2, uploadLabel);
-        //moreLinks.setWidget(0, 3, downloadSead);
-        //moreLinks.add(more);
-        //moreLinks.add(browseData);
-        //moreLinks.add(uploadData);
-        //moreLinks.add(downloadSead);
+
         
         main.addNorth(header, 150);//,DockPanel.NORTH);
         main.addSouth(footer, Window.getClientHeight()/17);
@@ -311,7 +308,11 @@ public class SeadApp implements EntryPoint {
 			
 			@Override
 			public void onClick(ClickEvent event) {
+				/*LoginPopupPanel loginPopup = new LoginPopupPanel();
 				
+				loginPopup.setGlassEnabled(true);
+				loginPopup.show();
+				loginPopup.center();*/
 				History.newItem("login");
 			}
 		});
@@ -817,6 +818,7 @@ public class SeadApp implements EntryPoint {
             presenter = new RelationsPresenter(new RelationsView(args.get(0)));
             presenter.display(centerPanel, facetContent, header, loginPanel, notificationPanel);
         }else if (state == SeadState.LOGIN) {
+        	try{
         	if(facetOuterPanel.isAttached())
         		main.setWidgetSize(facetOuterPanel,0);
         	if(!centerPanel.isAttached())
@@ -824,13 +826,18 @@ public class SeadApp implements EntryPoint {
         	if(loginPanel1.isAttached()){
         		main.setWidgetSize(loginPanel1, 0);
         	}
-        	if(outerMoreLinks.isAttached()){
+        	/*if(outerMoreLinks.isAttached()){
         		main.setWidgetSize(outerMoreLinks, 0);
-        	}
+        	}*/
             
             //DataUpload.viewUpload(centerPanel);
-        	presenter = new LoginPresenter(new LoginView());
+        	//presenter = new LoginPresenter(new LoginView());
+        	presenter = new LoginPresenter(new LoginPopupPanel());
         	presenter.display(centerPanel, facetContent, header, loginPanel, notificationPanel);
+        	}
+        	catch (Exception e){
+        		e.printStackTrace();
+        	}
             
         }else if (state == SeadState.LOGOUT) {
         	if(!centerPanel.isAttached())

@@ -35,13 +35,14 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextBox;
 
-public class LoginView extends Composite implements org.dataconservancy.dcs.access.client.presenter.LoginPresenter.Display{
+//public class LoginView extends Composite implements org.dataconservancy.dcs.access.client.presenter.LoginPresenter.Display{
+public class LoginView extends Composite {
 	
 	TabPanel loginPanel;
 	Panel loginTab;
 	Button login;
 	Label userNameLbl;
-	Label regsiterLbl;
+Label regsiterLbl;
 	Label error;
 	Button googleLogin;
 	
@@ -96,7 +97,7 @@ public class LoginView extends Composite implements org.dataconservancy.dcs.acce
 	        userDetails.user_tb = new TextBox();
 	        userDetails.pass_tb = new PasswordTextBox();
 	
-	        userDetails.user_tb.setText(deposit_user);
+	        userDetails.user_tb.setText(deposit_user);		//**  why
 	        userDetails.pass_tb.setText(deposit_pass);
 	
 	        Util.addColumn(table, userDetails.user_tb, userDetails.pass_tb);
@@ -124,7 +125,7 @@ public class LoginView extends Composite implements org.dataconservancy.dcs.acce
 	}
 
 
-	@Override
+	/*@Override
 	public TabPanel getLoginPanel() {
 		return loginPanel;
 	}
@@ -164,5 +165,5 @@ public class LoginView extends Composite implements org.dataconservancy.dcs.acce
 	@Override
 	public Button getGoogleLogin() {
 		return googleLogin;
-	}
+	}*/
 }

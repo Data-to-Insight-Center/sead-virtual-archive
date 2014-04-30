@@ -135,11 +135,11 @@ public class FacetedSearchPresenter implements Presenter {
     			     			        	
     			     			        	final Search.UserField[] tempUserfields = new Search.UserField[0];
     			     			    	    final String[] tempUserqueries = new String[0];
-    			     			    		searchFacet(tempUserfields,
-    			     			    					tempUserqueries, 0,
-    			     			    	        		new String[0],new String[0]
+    			     			    	   if(((SearchEvent)event).getIsAdvanced())
+    			     			    		   searchFacet(tempUserfields,
+    			     			    				   	tempUserqueries, 0,
+    			     			    				   	new String[0],new String[0]
     			     			    	        		);
-    			     			            
     			     			          
     			     			            middlePanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
     			     			            

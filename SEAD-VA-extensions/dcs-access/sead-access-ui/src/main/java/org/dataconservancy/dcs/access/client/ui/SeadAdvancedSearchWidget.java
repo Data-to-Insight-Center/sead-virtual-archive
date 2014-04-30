@@ -41,12 +41,14 @@ public class SeadAdvancedSearchWidget extends Composite{
                                     String[] userqueries) {
 
         advancedPanel = new FlowPanel();
+        advancedPanel.setStyleName("advancedSearchPanel");
         initWidget(advancedPanel);
         Button search = new Button("Search");
 
         final FlexTable table = new FlexTable();
 
-        Button add = new Button("Add field");
+        final Button add = new Button("<image src='images/add.ico'>");
+        add.addStyleName("addRemoveButton");
 
         advancedPanel.add(table);
 
@@ -99,7 +101,7 @@ public class SeadAdvancedSearchWidget extends Composite{
                 int row = table.getRowCount();
 
                 TextBox tb = new TextBox();
-                tb.setStyleName("SimpleTextBox");
+                //tb.setStyleName("SimpleTextBox");
                 table.setWidget(row, 0, tb);
                 table.setWidget(row, 1, new Label("in"));
                 table.setWidget(row, 2 , createAdvancedSearchFieldSelector());
@@ -115,9 +117,13 @@ public class SeadAdvancedSearchWidget extends Composite{
                     }
                 });
 
-                final Button remove = new Button("Remove");
-
+                
+                //final Button remove = new Button("Remove");
+                final Button remove = new Button("<image src='images/remove.png'>");
+                remove.addStyleName("addRemoveButton");
+                
                 table.setWidget(row, 3, remove);
+                table.setWidget(row, 4 , add);
 
                 remove.addClickHandler(new ClickHandler() {
 
@@ -144,7 +150,6 @@ public class SeadAdvancedSearchWidget extends Composite{
                 addlistener.onClick(null);
 
                 ListBox lb = (ListBox) table.getWidget(row,2);
-                lb.setItemSelected(userfields[i].ordinal(), true);
                 TextBox tb = (TextBox) table.getWidget(row, 0);
                 tb.setText(userqueries[i]);
             }
@@ -153,18 +158,20 @@ public class SeadAdvancedSearchWidget extends Composite{
         }
 
         HorizontalPanel hp = new HorizontalPanel();
+        hp.setHorizontalAlignment(HorizontalPanel.ALIGN_RIGHT);
         hp.setSpacing(5);
-        hp.add(add);
+        //hp.add(add);
         hp.add(search);
 
         advancedPanel.add(hp);
+        hp.setWidth("80%");	// 80% to align hp to the right of AdvancedPanel
         search.addClickHandler(searchlistener);
 
     }
 
     ListBox createAdvancedSearchFieldSelector() {
         ListBox lb = new ListBox();
-        lb.setStyleName("SimpleTextBox");
+        //lb.setStyleName("SimpleTextBox");
 
         for (Search.UserField uf : Search.UserField.values()) {
             lb.addItem(uf.display);

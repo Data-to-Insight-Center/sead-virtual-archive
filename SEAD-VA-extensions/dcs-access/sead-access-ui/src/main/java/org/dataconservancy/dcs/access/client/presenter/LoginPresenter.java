@@ -24,7 +24,8 @@ import org.dataconservancy.dcs.access.client.api.GoogleHelperAsync;
 import org.dataconservancy.dcs.access.client.api.UserService;
 import org.dataconservancy.dcs.access.client.api.UserServiceAsync;
 import org.dataconservancy.dcs.access.client.upload.Util;
-import org.dataconservancy.dcs.access.client.view.LoginView.UserDetails;
+//import org.dataconservancy.dcs.access.client.view.LoginView.UserDetails;
+import org.dataconservancy.dcs.access.client.ui.LoginPopupPanel.UserDetails;
 import org.dataconservancy.dcs.access.shared.Authentication;
 import org.dataconservancy.dcs.access.shared.GoogleDetails;
 import org.dataconservancy.dcs.access.shared.OAuthType;
@@ -86,6 +87,7 @@ public class LoginPresenter implements Presenter {
 		Label getError();
 		Label getUserLabel();
 		Button getGoogleLogin();
+		void hide1();
 	   
 	  }
 	public LoginPresenter(Display view)
@@ -115,7 +117,8 @@ public class LoginPresenter implements Presenter {
                       public void onSuccess(Authentication result) {
                         if(result.authResult())
                         {
-                        	loginTab.clear();
+                        	//loginTab.clear();
+                        	display.hide1();
                         	logoutLbl = Util.label("Logout","LogoutButton");
                     		ClickHandler logout = new ClickHandler() {
                     			
