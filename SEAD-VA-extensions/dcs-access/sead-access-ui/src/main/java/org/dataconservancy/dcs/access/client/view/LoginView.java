@@ -42,7 +42,7 @@ public class LoginView extends Composite {
 	Panel loginTab;
 	Button login;
 	Label userNameLbl;
-Label regsiterLbl;
+	Label regsiterLbl;
 	Label error;
 	Button googleLogin;
 	

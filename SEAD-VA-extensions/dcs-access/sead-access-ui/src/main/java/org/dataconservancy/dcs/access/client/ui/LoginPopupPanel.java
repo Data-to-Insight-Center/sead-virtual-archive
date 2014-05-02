@@ -3,6 +3,7 @@ package org.dataconservancy.dcs.access.client.ui;
 import org.dataconservancy.dcs.access.client.Util;
 import org.dataconservancy.dcs.access.client.view.LoginView.UserDetails;
 
+import com.gargoylesoftware.htmlunit.javascript.host.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -41,7 +42,9 @@ public class LoginPopupPanel extends PopupPanel implements org.dataconservancy.d
 		super(true);
 		this.setGlassEnabled(true);
 		this.show();
-		this.center();
+		this.setStyleName("loginPopupContainer");
+		//setStyleName(getContainerElement(), "popupContent");
+		this.setPopupPosition(Window.WINDOW_WIDTH/3, Window.WINDOW_HEIGHT/4);
 		VerticalPanel outerPanel = new VerticalPanel();
 		//outerPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		outerPanel.setSpacing(10);
@@ -50,13 +53,23 @@ public class LoginPopupPanel extends PopupPanel implements org.dataconservancy.d
 		outerPanel.setHorizontalAlignment(HorizontalPanel.ALIGN_LEFT);
 
 		userDetails = new UserDetails();
+		Label loginLabel = new Label("Login");
+		loginLabel.setStyleName("loginLabelStyle");
+		
 		loginForm = new Grid(2,2);
+		loginForm.setCellPadding(8);
+		outerPanel.add(loginLabel);
 		outerPanel.add(loginForm);
 		
 		HorizontalPanel innerPanel = new HorizontalPanel();
 		innerPanel.setSpacing(10);
 		googleLogin = new Button(" Google Sign On");
+		googleLogin.setStyleName("loginButton");
+		googleLogin.setWidth("150px");
 		loginButton = new Button("Login");
+		loginButton.setStyleName("loginButton");
+		loginButton.setWidth("100px");
+		
 		innerPanel.add(googleLogin);
 		innerPanel.add(loginButton);
 		outerPanel.add(innerPanel);
@@ -65,6 +78,7 @@ public class LoginPopupPanel extends PopupPanel implements org.dataconservancy.d
 		outerPanel.add(registerLabel);*/
 		
 		Grid registerForm = new Grid(6, 2);
+		registerForm.setCellPadding(6);
 		createRegisterForm(registerForm);
 		DisclosurePanel registerClosure = new DisclosurePanel("SignUp");
 		registerClosure.setAnimationEnabled(true);
@@ -99,6 +113,8 @@ public class LoginPopupPanel extends PopupPanel implements org.dataconservancy.d
 		
 		userLabel = new Label("Username");
 		passwordLabel = new Label("Password");
+		/*userLabel.setStyleName("labelStyle");
+		passwordLabel.setStyleName("labelStyle");*/
 		userDetails.user_tb = new TextBox();
 		userDetails.pass_tb = new PasswordTextBox();
 		loginForm.setWidget(0, 0, userLabel);

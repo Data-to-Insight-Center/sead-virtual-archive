@@ -29,7 +29,7 @@ public enum SeadState {
     LOGIN("login"),LOGOUT("logout"),REGISTER("register"),AUTH("auth"),
     OAUTH("oauthcallback"),UPLOAD("upload"),FILE("file"), DELIVERABLE_UNIT("deliverableunit"),
     COLLECTION("collection"), SUBMIT("submit"),ADMIN("admin"),XMCFACETEDSEARCH("xmcfacetedsearch"),
-    MEDICI("medici"), MONITOR("monitor");
+    MEDICI("medici"), MONITOR("monitor"), BROWSE("browse");
 
     private final String prefix;
 

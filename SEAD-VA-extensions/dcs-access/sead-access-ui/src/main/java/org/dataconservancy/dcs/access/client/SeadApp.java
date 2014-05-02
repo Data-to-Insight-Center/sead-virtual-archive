@@ -245,6 +245,13 @@ public class SeadApp implements EntryPoint {
             }
         };
         
+        ClickHandler browseDataHandler = new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                History.newItem("browse");
+                
+            }
+        };
+        
         class MyMouseListener implements  MouseOutHandler,MouseOverHandler{
 
 			@Override
@@ -276,6 +283,7 @@ public class SeadApp implements EntryPoint {
         uploadAnimeLabel.addMouseOutHandler(new MyMouseListener());
         browseLabel.addMouseOverHandler(new MyMouseListener());
         browseAnimeLabel.addMouseOutHandler(new MyMouseListener());
+        browseAnimeLabel.addClickHandler(browseDataHandler);
         
         moreLinks.setWidget(0, 0, more);
         moreLinks.setWidget(0, 1, browseLabel);
@@ -694,6 +702,41 @@ public class SeadApp implements EntryPoint {
 
                 FacetedSearchPresenter.EVENT_BUS.fireEvent(new SearchEvent(input, true));
             }
+        }else if (state == SeadState.BROWSE){
+        	
+        	if(facetOuterPanel.isAttached()){
+        		main.setWidgetSize(facetOuterPanel,250);
+        	}
+        	else
+        		main.addWest(facetOuterPanel,250);
+        	if(!centerPanel.isAttached())
+        		main.add(centerPanel);
+        	if(loginPanel1.isAttached()){
+        		main.setWidgetSize(loginPanel1, 0);
+        	}
+        	
+        	System.out.println("SeadState.Browse");
+        	Search.UserField[] userfields = new Search.UserField[1];
+            String[] userqueries = new String[1];
+            String facetFields[] = new String[1];
+            String facetValues[] = new String[1];
+            
+            userfields[0] = Search.UserField.valueOf("ABSTRACT");;
+            userqueries[0] = "'' TO *";
+            facetFields[0] = "entityType";
+            facetValues[0] = "Collection";
+            
+        	SearchInput input = new SearchInput(userfields, userqueries, 0, facetFields, facetValues);
+        	//SearchInput input = new SearchInput(null, null, 0, new String[0],new String[0]);
+        	FacetedSearchPresenter.EVENT_BUS = GWT.create(SimpleEventBus.class);
+        	presenter = new FacetedSearchPresenter(new FacetedSearchView());
+        	presenter.display(centerPanel, facetContent, header, loginPanel, notificationPanel);
+        	selectedItems = new HashMap<String, List<String>>();
+        	
+        	FacetedSearchPresenter.EVENT_BUS.fireEvent(new SearchEvent(input, false));
+            return;
+            
+        	
         }else if (state == SeadState.SEARCH) {
         	if(facetOuterPanel.isAttached()){
         		main.setWidgetSize(facetOuterPanel,250);
@@ -719,8 +762,7 @@ public class SeadApp implements EntryPoint {
             	FacetedSearchPresenter.EVENT_BUS.fireEvent(new SearchEvent(input, false));
                 return;
             }
-            
-            
+
            
            /* if (args.size() < 2 || (args.size() & 1) == 0) {
                 handleHistoryTokenError(token);
@@ -728,8 +770,6 @@ public class SeadApp implements EntryPoint {
             }
             */
             int offset = 0;
- 
-            
 
             //get facets args.get(args.size()-2) & args.get(args.size()-3)
             

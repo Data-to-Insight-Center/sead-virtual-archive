@@ -140,11 +140,11 @@ public class FacetedSearchPresenter implements Presenter {
     			     			    				   	tempUserqueries, 0,
     			     			    				   	new String[0],new String[0]
     			     			    	        		);
+    			     			            
     			     			          
     			     			            middlePanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
     			     			            
     			     			            verticalPanel.add(middlePanel);
-    			     			            System.out.println("isHome1 :" + SeadApp.isHome);
     			     			            if(SeadApp.isHome&&!((SearchEvent)event).getIsAdvanced())
     			     			            	verticalPanel.add(SeadApp.outerMoreLinks);
     			     			            content.add(verticalPanel);

@@ -16,6 +16,8 @@
 
 package org.dataconservancy.dcs.access.client.ui;
 
+import org.dataconservancy.dcs.access.client.SeadApp;
+import org.dataconservancy.dcs.access.client.SeadState;
 import org.dataconservancy.dcs.access.client.Util;
 import org.dataconservancy.dcs.access.client.event.SearchEvent;
 import org.dataconservancy.dcs.access.client.model.SearchInput;
@@ -24,6 +26,7 @@ import org.dataconservancy.dcs.access.shared.Constants;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
@@ -46,10 +49,12 @@ public class ResultNavigationWidget extends Composite{
         if(currentRangeMax>totalResults){
         	currentRangeMax = (int)totalResults;
         }
-        
-        String showingString = "\""+searchInput.getUserqueries()[0]+ "\"\t Showing "+ currentRangeMin +" - "+currentRangeMax + " out of "+totalResults;
-        Label resultNavigator = Util.label(showingString, "ResultNavigator");
-        System.out.println("showing "+ (page+1) + "out of "+numpages);
+        Label resultNavigator = Util.label("  ", "ResultNavigator");
+        System.out.println("history token" + History.getToken());
+        if (SeadState.fromToken(History.getToken()) == SeadState.SEARCH){
+        	String showingString = "\""+searchInput.getUserqueries()[0]+ "\"\t Showing "+ currentRangeMin +" - "+currentRangeMax + " out of "+totalResults;
+        	resultNavigator = Util.label(showingString, "ResultNavigator");       
+        }
         navigationPanel.add(resultNavigator);
         if (numpages > 1) {
         	
