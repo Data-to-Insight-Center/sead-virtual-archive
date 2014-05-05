@@ -227,7 +227,7 @@ public class SeadApp implements EntryPoint {
         Image more = new Image(GWT.getModuleBaseURL()+ "../images/more.png");
         //final Image browseLabel = new Image(GWT.getModuleBaseURL()+ "../images/browse3.jpg");
         Button browseButton = new Button("Browse Data");
-        Button uploadButton = new Button("Upload Data");
+        Button uploadButton = new Button("Publish Data");
         //final Image browseAnimeLabel = new Image(GWT.getModuleBaseURL()+ "../images/browse4.jpg");
         //final Image uploadAnimeLabel = new Image(GWT.getModuleBaseURL()+ "../images/upload1.jpg");
         //final Image uploadLabel = new Image(GWT.getModuleBaseURL()+ "../images/upload_label.jpg");
@@ -284,7 +284,7 @@ public class SeadApp implements EntryPoint {
         browseAnimeLabel.addMouseOutHandler(new MyMouseListener());*/
         browseButton.addClickHandler(browseDataHandler);
         
-        moreLinks.setWidget(0, 0, more);
+        //moreLinks.setWidget(0, 0, more);
         moreLinks.setWidget(0, 1, browseButton);
         moreLinks.setWidget(0, 2, uploadButton);
 
@@ -631,8 +631,12 @@ public class SeadApp implements EntryPoint {
 
     Presenter presenter;
     private void historyChanged(String token) {
+
+    	SeadState state = SeadState.fromToken(token);
+        final List<String> args = SeadState.tokenArguments(token);
+
     	
-    	 if (token.isEmpty()) {
+    	 if (token.isEmpty() || state == SeadState.HOME) {
     		System.out.println("empty token: " + History.getToken());
         	dataSearch.setStyleName("OptionSelected");
         	uploadData.setStyleName("Option");
@@ -653,9 +657,7 @@ public class SeadApp implements EntryPoint {
             return;
         }
 
-        SeadState state = SeadState.fromToken(token);
-        final List<String> args = SeadState.tokenArguments(token);
-
+        
         if (state == null) {
             handleHistoryTokenError(token);
             return;
@@ -716,6 +718,7 @@ public class SeadApp implements EntryPoint {
         		main.setWidgetSize(loginPanel1, 0);
         	}
         	
+        	isHome = false;
         	System.out.println("SeadState.Browse");
         	Search.UserField[] userfields = new Search.UserField[1];
             String[] userqueries = new String[1];
@@ -752,6 +755,7 @@ public class SeadApp implements EntryPoint {
         	/*if(outerMoreLinks.isAttached()){
         		main.setWidgetSize(outerMoreLinks, 0);
         	}*/
+        	
         	
             if (args.size() == 0) {
             	SearchInput input = new SearchInput(null, null, 0, new String[0],new String[0]);

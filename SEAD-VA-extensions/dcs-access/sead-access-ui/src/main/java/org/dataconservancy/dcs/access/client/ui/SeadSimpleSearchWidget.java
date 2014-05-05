@@ -48,7 +48,7 @@ public class SeadSimpleSearchWidget extends Composite{
         final FlexTable table = new FlexTable();
         table.setWidth("100%");
         Label intro = new Label();
-        intro.setText("Virtual Archive (Sead-VA) is a discovery and preservation layer of the SEAD services suite. SEAD-VA federates over multiple institutional repositories and archives and provides a coherent view on published data in sustainability science.");
+        intro.setText("Virtual Archive (SEAD-VA) is a discovery and preservation layer of the SEAD services suite. SEAD-VA federates over multiple institutional repositories and archives and provides a coherent view on published data in sustainability science.");
         intro.setStylePrimaryName("IntroLabel");
 
         Label lbl = new Label();

@@ -388,6 +388,8 @@ white-space:normal;
 	font-family:Arial,Georgia,Serif;
 	padding: 2em;
 	margin-bottom: 10px;
+	background-image:url(images/gradient_results.jpg);
+	background-repeat:repeat-x;
 }
 .SearchRowAlt{
 	background-color: #FFFFFF ;
@@ -400,6 +402,8 @@ white-space:normal;
 	font-family:Arial,Georgia,Serif;
 	padding: 2em;
 	margin-bottom: 10px;
+	background-image:url(images/gradient_results.jpg);
+	background-repeat:repeat-x;
 }
 .SearchTable{
 	width:800px;
@@ -725,13 +729,13 @@ padding-right: 3px;
 	background-repeat:repeat-x;
 }
 .OptionButtons{
-  margin-left: 50px;
+  margin-left: 100px;
   margin-top: 10px;
   margin-bottom: 10px;
   margin-right: 10px;
   border-radius: 10px;
   border-width: 3px;
-  height: 80%;
+  height: 180%;
   cursor: pointer;
   background-image: url(images/gradient.png) !important;
   background-repeat: repeat-x;
@@ -789,10 +793,10 @@ padding-right: 3px;
 .CurvedPanel{
   border-style:solid;
   border-width:1px;
-  border-color:#FFFFFF;
+ border-color: #5BA7EC;
   border-radius: 17px;
   text-align:left;
-  margin-left:15%;
+  margin-left:5%;
   margin-top: 15%;
 }
 .SubSectionHeader {
@@ -830,7 +834,7 @@ padding-right: 3px;
 }
 .GridTableColumn2 {
   font-weight: bold;
-  background-color: #F0F0F0 ;
+  background-color: #FFFFFF ;
   color: #000000;
   border-style:solid;
   border-width:0px;
@@ -842,7 +846,7 @@ padding-right: 3px;
 
 
 .Entity {
-	width: 800px;
+	width: 75%;
   	border-width: 2px;
 	border-radius: 8px;
 	border-style: outset;
@@ -851,7 +855,8 @@ padding-right: 3px;
 	font-size: 10pt;
 	/* text-align: center; */
 	margin-left: 150px;
-	padding-left:50px;
+	margin-bottom: 4%;
+	padding-left:4%;
 }
 
 .LeftPad{
@@ -885,7 +890,7 @@ padding-right: 3px;
 
 .FacetedResults {
 
-  width:80%;
+  width:85%;
   horizontal-align:left;
 }
 

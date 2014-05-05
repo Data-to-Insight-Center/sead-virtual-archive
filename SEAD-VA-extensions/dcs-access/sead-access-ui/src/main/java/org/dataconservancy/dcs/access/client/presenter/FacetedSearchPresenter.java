@@ -325,7 +325,7 @@ public class FacetedSearchPresenter implements Presenter {
 	            	if(entity.getAbstract().length()<len)
 	            		len = entity.getAbstract().length();
 	            	if(entity.getAbstract().length()>0)
-	            		desc.add(new HTML("<span class='ResultSnippet'>About:</span>"+entity.getAbstract().substring(0,len)+".."));
+	            		desc.add(new HTML("<span class='ResultSnippet'>About: </span>"+entity.getAbstract().substring(0,len)+".."));
 	            		desc.add(new HTML("<br> "));
 	            }
 	            
@@ -334,7 +334,7 @@ public class FacetedSearchPresenter implements Presenter {
 	                String context = m.getContext().replaceAll(
 	                        "\\w+\\:|\\'\\[|\\]\\'", " ");
 	                context = context.substring(0,context.indexOf("FacetCategory"));
-	                desc.add(new HTML("<span class='ResultSnippet'> Appears in:"+ context + "</span>"
+	                desc.add(new HTML("<span class='ResultSnippet'> Appears in: </span>"+ context + ""
 	                        ));
 	                desc.add(new HTML("<br> "));
 	            }
@@ -392,7 +392,7 @@ public class FacetedSearchPresenter implements Presenter {
 	    		Map<String,List<String>> facets
 	           )
 	    {
-			//facetPanel.add(Util.label("Browse By", "GradientFacet"));
+			facetPanel.add(Util.label("Filter By", "GradientFacet"));
         	FlexTable table = Util.createTable();
 	 		Tree tree = new Tree();
 	 		facetPanel.add(table);
