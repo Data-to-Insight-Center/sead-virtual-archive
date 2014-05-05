@@ -53,7 +53,8 @@ public interface MediciServiceAsync {
 			AsyncCallback<String> callback);
 	void generateWfInstanceId(AsyncCallback<String> callback);
 	void parseJson(String json, AsyncCallback<Map<String, String>> callback);
-	void getAcrInstances(AsyncCallback<List<MediciInstance>> callback); 
+	void getAcrInstances(AsyncCallback<List<MediciInstance>> callback);
+    void getSipJson(AsyncCallback<String> asyncCallback);
 	
 	
 }

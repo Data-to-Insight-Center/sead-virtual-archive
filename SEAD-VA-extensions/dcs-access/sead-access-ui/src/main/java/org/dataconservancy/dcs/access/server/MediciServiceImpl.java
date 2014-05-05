@@ -16,19 +16,7 @@
 
 package org.dataconservancy.dcs.access.server;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.StringWriter;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -53,6 +41,10 @@ import javax.servlet.ServletException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
+import com.thoughtworks.xstream.io.json.JsonWriter;
 import org.apache.abdera.Abdera;
 import org.apache.abdera.protocol.client.AbderaClient;
 import org.apache.abdera.protocol.client.ClientResponse;
@@ -71,6 +63,8 @@ import org.dataconservancy.dcs.access.client.model.FileNode;
 import org.dataconservancy.dcs.access.client.upload.RPCException;
 import org.dataconservancy.dcs.access.server.model.ProvenanceDAO;
 import org.dataconservancy.dcs.access.server.model.ProvenanceDAOJdbcImpl;
+import org.dataconservancy.dcs.access.server.model.QueryMatch;
+import org.dataconservancy.dcs.access.server.model.QueryResult;
 import org.dataconservancy.dcs.access.server.util.ByteArray;
 import org.dataconservancy.dcs.access.server.util.ServerConstants;
 import org.dataconservancy.dcs.access.server.util.StatusReader.Status;
@@ -84,18 +78,14 @@ import org.dataconservancy.dcs.ingest.Events;
 import org.dataconservancy.model.builder.DcsModelBuilder;
 import org.dataconservancy.model.builder.InvalidXmlException;
 import org.dataconservancy.model.builder.xstream.DcsXstreamStaxModelBuilder;
-import org.dataconservancy.model.dcs.DcsDeliverableUnit;
-import org.dataconservancy.model.dcs.DcsFile;
-import org.dataconservancy.model.dcs.DcsFileRef;
-import org.dataconservancy.model.dcs.DcsFormat;
-import org.dataconservancy.model.dcs.DcsManifestation;
-import org.dataconservancy.model.dcs.DcsManifestationFile;
-import org.dataconservancy.model.dcs.DcsMetadataRef;
+import org.dataconservancy.model.dcs.*;
 import org.dspace.foresite.OREException;
 import org.sead.acr.common.utilities.json.JSONArray;
 import org.sead.acr.common.utilities.json.JSONException;
 import org.sead.acr.common.utilities.json.JSONObject;
 import org.seadva.model.SeadDeliverableUnit;
+import org.seadva.model.SeadEvent;
+import org.seadva.model.SeadFile;
 import org.seadva.model.SeadPerson;
 import org.seadva.model.builder.xstream.SeadXstreamStaxModelBuilder;
 import org.seadva.model.pack.ResearchObject;
@@ -1151,4 +1141,63 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
 	public List<MediciInstance> getAcrInstances() {
 		return ServerConstants.acrInstances;
 	}
+
+    @Override
+    public String getSipJson(){
+        StringWriter tempWriter = new StringWriter();
+        siptoJsonConverter().toXML(toQueryResult(masterSip),  tempWriter);
+        return tempWriter.toString();
+    }
+    public QueryResult<DcsEntity> toQueryResult(ResearchObject sip){
+        long total =0;
+
+        QueryResult<DcsEntity> result = new  QueryResult(0, total, "");
+        List<QueryMatch<DcsEntity>> matches = new ArrayList<QueryMatch<DcsEntity>>();
+        for(DcsDeliverableUnit du:sip.getDeliverableUnits()){
+            total++;
+            matches.add(new QueryMatch<DcsEntity>(du, ""));
+        }
+
+    	/*for(DcsManifestation manifestation:sip.getManifestations()){
+    		total++;
+    		matches.add(new QueryMatch<DcsEntity>(manifestation,""));
+    	}*/
+
+        for(DcsFile file:sip.getFiles()){
+            total++;
+            matches.add(new QueryMatch<DcsEntity>(file,""));
+        }
+        result.setMatches(matches);
+        result.setTotal(total);
+        return result;
+
+    }
+
+    public XStream siptoJsonConverter(){
+
+        XStream jsonbuilder = new XStream(new JsonHierarchicalStreamDriver() {
+            public HierarchicalStreamWriter createWriter(Writer writer) {
+                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
+            }
+        });
+
+        jsonbuilder.setMode(XStream.NO_REFERENCES);
+        jsonbuilder.alias("dcp", ResearchObject.class);
+        jsonbuilder.alias("deliverableUnit", SeadDeliverableUnit.class);
+        jsonbuilder.alias("deliverableUnitRef", DcsDeliverableUnitRef.class);
+        jsonbuilder.alias("collection", DcsCollection.class);
+        jsonbuilder.alias("file", SeadFile.class);
+        jsonbuilder.alias("manifestation", DcsManifestation.class);
+        jsonbuilder.alias("event", SeadEvent.class);
+        jsonbuilder.alias("metadata", DcsMetadata.class);
+        jsonbuilder.alias("collectionRef", DcsCollectionRef.class);
+        jsonbuilder.alias("relation", DcsRelation.class);
+        jsonbuilder.alias("fixity", DcsFixity.class);
+        jsonbuilder.alias("fileRef", DcsFileRef.class);
+        jsonbuilder.alias("entityRef", DcsEntityReference.class);
+        jsonbuilder.alias("metadataRef", DcsMetadataRef.class);
+        jsonbuilder.alias("format", DcsFormat.class);
+
+        return jsonbuilder;
+    }
 }

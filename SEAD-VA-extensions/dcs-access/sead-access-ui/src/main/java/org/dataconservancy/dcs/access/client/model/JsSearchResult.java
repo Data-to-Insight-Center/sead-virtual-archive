@@ -26,6 +26,11 @@ public final class JsSearchResult
     protected JsSearchResult() {
     }
 
+    public static JsSearchResult create(String jsonString) {
+        return (JsSearchResult) JsModel
+                .parseJSON(jsonString);
+    }
+
     @SuppressWarnings("unchecked")
     public JsArray<JsMatch> matches() {
         return (JsArray<JsMatch>) getArray("matches");

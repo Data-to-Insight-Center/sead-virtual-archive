@@ -113,7 +113,7 @@ public class MediciIngestView extends Composite implements org.dataconservancy.d
 	    content.setStyleName("HorizontalPanel2");
 	    
 	    content.add(coverLeftPanel);
-		content.add(coverRightPanel);
+//		content.add(coverRightPanel);
 		
 		
 		final Panel buttonPanel = new HorizontalPanel();
