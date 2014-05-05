@@ -21,7 +21,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class LoginPopupPanel extends PopupPanel implements org.dataconservancy.dcs.access.client.presenter.LoginPresenter.Display{
 
 	
-	private Label registerLabel;
+	private Button registerButton;
 	private Button loginButton;
 	private Button googleLogin;
 	//private TextBox userNameBox;
@@ -64,14 +64,18 @@ public class LoginPopupPanel extends PopupPanel implements org.dataconservancy.d
 		HorizontalPanel innerPanel = new HorizontalPanel();
 		innerPanel.setSpacing(10);
 		googleLogin = new Button(" Google Sign On");
-		googleLogin.setStyleName("loginButton");
+		googleLogin.setStyleName("popupLoginButton");
 		googleLogin.setWidth("150px");
+		googleLogin.setHeight("40px");
 		loginButton = new Button("Login");
-		loginButton.setStyleName("loginButton");
+		loginButton.setStyleName("popupLoginButton");
 		loginButton.setWidth("100px");
+		loginButton.setHeight("40px");
 		
-		innerPanel.add(googleLogin);
 		innerPanel.add(loginButton);
+		
+		//innerPanel.add(googleLogin);
+		
 		outerPanel.add(innerPanel);
 		
 		/*registerLabel = new Label("Signup1");
@@ -103,8 +107,11 @@ public class LoginPopupPanel extends PopupPanel implements org.dataconservancy.d
 		registerForm.setWidget(3, 1, new TextBox());
 		registerForm.setWidget(4, 0, new Label("Confirm Password"));
 		registerForm.setWidget(4, 1, new TextBox());
-		registerLabel = new Label("Register");
-		registerForm.setWidget(5, 1, registerLabel);
+		registerButton = new Button("Register");
+		registerButton.setWidth("100px");
+		registerButton.setHeight("40px");
+		registerButton.setStyleName("popupLoginButton");
+		registerForm.setWidget(5, 1, registerButton);
 		
 	}
 
@@ -125,11 +132,11 @@ public class LoginPopupPanel extends PopupPanel implements org.dataconservancy.d
 	}
 
 
-	public Label getRegisterLabel() {
-		return registerLabel;
+	public Button getRegisterButton() {
+		return registerButton;
 	}
-	public void setRegisterLabel(Label registerLabel) {
-		this.registerLabel = registerLabel;
+	public void setRegisterButton(Button registerButton) {
+		this.registerButton = registerButton;
 	}
 	public Button getLoginButton() {
 		return loginButton;

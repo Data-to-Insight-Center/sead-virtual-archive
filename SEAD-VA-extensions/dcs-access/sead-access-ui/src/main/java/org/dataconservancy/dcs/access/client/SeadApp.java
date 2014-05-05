@@ -214,29 +214,28 @@ public class SeadApp implements EntryPoint {
         //footer.getElement().getStyle().setFloat(Float.LEFT);
         
         outerMoreLinks = new HorizontalPanel();
-        outerMoreLinks.setStyleName("Pad");
+        outerMoreLinks.setStyleName("MoreLinkStyle");
        // outerMoreLinks.setHorizontalAlignment(HorizontalPanel.ALIGN_CENTER);
         //outerMoreLinks.setWidth(Window.getClientWidth()+"px");
         final Grid moreLinks = new Grid(1,4);
+        moreLinks.setCellPadding(7);
         //moreLinks.setWidth(Window.getClientWidth()/3+"px");
         //moreLinks.setWidth(Window.getClientWidth()/10 + "px");
         
         //moreLinks.setCellSpacing(Window.getClientWidth()/25);
         
-        //outerMoreLinks.set
-        //Label browseData = Util.label("Browse Data", "MoreOptionLabels");
-        //Label uploadData = Util.label("Upload Data", "MoreOptionLabels");
-        //Label downloadSead = Util.label("Download SEAD-VA", "MoreOptionLabels");
         Image more = new Image(GWT.getModuleBaseURL()+ "../images/more.png");
-        final Image browseLabel = new Image(GWT.getModuleBaseURL()+ "../images/browse3.jpg");
-        final Image browseAnimeLabel = new Image(GWT.getModuleBaseURL()+ "../images/browse4.jpg");
-        final Image uploadAnimeLabel = new Image(GWT.getModuleBaseURL()+ "../images/upload1.jpg");
-        final Image uploadLabel = new Image(GWT.getModuleBaseURL()+ "../images/upload_label.jpg");
+        //final Image browseLabel = new Image(GWT.getModuleBaseURL()+ "../images/browse3.jpg");
+        Button browseButton = new Button("Browse Data");
+        Button uploadButton = new Button("Upload Data");
+        //final Image browseAnimeLabel = new Image(GWT.getModuleBaseURL()+ "../images/browse4.jpg");
+        //final Image uploadAnimeLabel = new Image(GWT.getModuleBaseURL()+ "../images/upload1.jpg");
+        //final Image uploadLabel = new Image(GWT.getModuleBaseURL()+ "../images/upload_label.jpg");
         
-        browseLabel.setStyleName("OptionLabel");
-        uploadLabel.setStyleName("OptionLabel");
-        browseAnimeLabel.setStyleName("OptionLabel");
-        uploadAnimeLabel.setStyleName("OptionLabel");
+        browseButton.setStyleName("OptionButtons");
+        uploadButton.setStyleName("OptionButtons");
+        //browseAnimeLabel.setStyleName("OptionLabel");
+        //uploadAnimeLabel.setStyleName("OptionLabel");
         loginLabel = Util.label("LOG IN","LoginButton");
            
         ClickHandler goUploadData1 = new ClickHandler() {
@@ -252,7 +251,7 @@ public class SeadApp implements EntryPoint {
             }
         };
         
-        class MyMouseListener implements  MouseOutHandler,MouseOverHandler{
+        /*class MyMouseListener implements  MouseOutHandler,MouseOverHandler{
 
 			@Override
 			public void onMouseOut(final MouseOutEvent event) {
@@ -276,18 +275,18 @@ public class SeadApp implements EntryPoint {
 			}
         	
         }
-
+*/
 		
-        uploadAnimeLabel.addClickHandler(goUploadData1);
-        uploadLabel.addMouseOverHandler(new MyMouseListener());
+        uploadButton.addClickHandler(goUploadData1);
+      /*  uploadLabel.addMouseOverHandler(new MyMouseListener());
         uploadAnimeLabel.addMouseOutHandler(new MyMouseListener());
         browseLabel.addMouseOverHandler(new MyMouseListener());
-        browseAnimeLabel.addMouseOutHandler(new MyMouseListener());
-        browseAnimeLabel.addClickHandler(browseDataHandler);
+        browseAnimeLabel.addMouseOutHandler(new MyMouseListener());*/
+        browseButton.addClickHandler(browseDataHandler);
         
         moreLinks.setWidget(0, 0, more);
-        moreLinks.setWidget(0, 1, browseLabel);
-        moreLinks.setWidget(0, 2, uploadLabel);
+        moreLinks.setWidget(0, 1, browseButton);
+        moreLinks.setWidget(0, 2, uploadButton);
 
         
         main.addNorth(header, 150);//,DockPanel.NORTH);
@@ -309,10 +308,12 @@ public class SeadApp implements EntryPoint {
         
         loginPanel1 = new FlowPanel();
         loginLabel = Util.label("LOG IN","LoginButton");
+        Button loginButton = new Button("LOG IN");
+        loginButton.setStyleName("LoginButton");
         registerLabel = Util.label("Register or Login to curate or upload data","RegisterLabel");
-        loginPanel1.add(loginLabel);
-        loginPanel1.add(registerLabel);
-        loginLabel.addClickHandler(new ClickHandler() {
+        loginPanel1.add(loginButton);
+        //loginPanel1.add(registerLabel);
+        loginButton.addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {

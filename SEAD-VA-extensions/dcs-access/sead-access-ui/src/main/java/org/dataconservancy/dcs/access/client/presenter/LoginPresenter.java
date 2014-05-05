@@ -82,7 +82,7 @@ public class LoginPresenter implements Presenter {
 		TabPanel getLoginPanel();
 		Panel getLoginTab();
 		Button getLoginButton();
-		Label getRegisterLabel();
+		Button getRegisterButton();
 		UserDetails getUserDetails();
 		Label getError();
 		Label getUserLabel();
@@ -109,7 +109,7 @@ public class LoginPresenter implements Presenter {
 				History.newItem("register");
 			}
 		};
-		this.display.getRegisterLabel().addClickHandler(register);
+		this.display.getRegisterButton().addClickHandler(register);
 		
 		final AsyncCallback<Authentication> authenticateCB =
                   new AsyncCallback<Authentication>() {

@@ -230,21 +230,20 @@ white-space:normal;
   margin-right: auto;
   
 }
-.Pad{
-	padding-left:10px;
-	padding-top:5px;
-}
+
 
 .PadHyperlink {
   color: blue;
   font-weight:bold
   text-decoration: underline;
   cursor: pointer;
-  padding-left:10px;
+  font-size: large;
   margin-bottom:4%;
-  margin-left:350px;
+  margin-left:16%;
 }
-
+.PadHyperlink :hover{
+	color: 2567D0;
+}
 .LeftPad{
 	padding-left:50px;
 	padding-top:5px;
@@ -418,20 +417,27 @@ white-space:normal;
 }
 
 .SearchButton{
-	margin-top: 30%;
-	color: #FFFFFF;
-	width: 97px;
-  	height: 40px;
-	background-color: #4C8FFC;
-	border-width: 2px;
-	border-radius: 8px;
-	border-style: outset;
-	border-color:#3079ED;
-  	padding: 5px;
-	font-weight:bold;
-	font-size: 10pt;
-	text-align: center;
-	cursor:pointer;
+  margin-top: 6%;
+  color: #FFFFFF;
+  width: 97px;
+  height: 55%;
+  background-color: #4C8FFC;
+  border-width: 2px;
+  border-radius: 8px;
+  border-style: outset;
+  border-color: #3079ED;
+  padding-bottom: 2%;
+  font-weight: bold;
+  font-size: 10pt;
+  text-align: center;
+  cursor: pointer;
+  background-image:url(images/gradient.png) !important;
+	background-repeat:repeat-x;
+}
+.SearchButton:hover{
+   background-color: #2567D0;
+  color: #000000;
+  border-color: deepskyblue;
 }
 .SimpleButton{
 	color: #FFFFFF;
@@ -468,22 +474,22 @@ white-space:normal;
 	cursor:pointer;
 }
 .LoginButton{
-	color: #FFFFFF;
-	width: 97px;
-  	height: 30px;
-	background-image:url(images/login_gradient.jpg);
-	background-repeat:repeat-x;
-	border-width: 2px;
-	border-radius: 8px;
-	border-style: outset;
-	border-color:#3079ED;
-  	padding: 5px;
-	font-weight:bold;
-	font-size: 10pt;
-	text-align: center;
-	cursor:pointer;
-	margin-top:60px;
-	margin-right:100px;
+color: #FFFFFF;
+width: 50%;
+height: 10%;
+background-image: url(images/login_gradient.jpg);
+background-repeat: repeat-x;
+border-width: 2px;
+border-radius: 10px;
+border-style: outset;
+border-color: #3079ED;
+padding: 5px;
+font-weight: bold;
+font-size: 10pt;
+text-align: center;
+cursor: pointer;
+margin-top: 30%;
+margin-right: 20%;
 }
 .RegisterLabel{
 	
@@ -667,43 +673,79 @@ white-space:normal;
   color: #24478F;
   font-weight: bold;
   font-size:14pt;
-  margin-left: 150px;
-  margin-top: 20px;
+  margin-left: 9%;
+  margin-top: 5%;
 
 }
 .IntroLabel
 {
   color: #6F7074;
   /*font-weight: bold;*/
-  font-size:14px;
+  font-size:18px;
   margin-left: 50px;
   margin-top: 30px;
   margin-bottom: 30px;
-  width: 920px;
+  width: 90%;
+  line-height:28px;
 }
+.IntroLabel span{
+	color: #464646;
+}
+.MoreLinkStyle{
+color: #6F7074;
+font-size: 18px;
+margin-left: 7%;
+margin-top: 5%;
+margin-bottom: 5%;
+margin-right: 1%;
+border-radius: 7px;
+border-width: 3px;
+width: 80%;
+height: 50%;
+padding-left: 10px;
+padding-top: 5px;
+padding-right: 3px;
+}
+
 .Pad
 {
   color: #6F7074;
   font-size: 18px;
   margin-left: 15%;
-  margin-top: 10%;
-  margin-bottom: 30px;
-  margin-right: 20px;
+  margin-top: 5%;
+  margin-bottom: 2%;
+  margin-right: 0px;
   border-radius: 7px;
   border-width: 3px;
-  width: 75%;
-  height: 55%;
-
+  width: 82%;
+  height: 50%;
+  padding-left: 10px;
+  padding-top: 5px;
+  background-image:url(images/form_bg.jpg);
+	background-repeat:repeat-x;
 }
-.OptionLabel
-{
+.OptionButtons{
   margin-left: 50px;
   margin-top: 10px;
   margin-bottom: 10px;
   margin-right: 10px;
-  border-radius: 7px;
+  border-radius: 10px;
   border-width: 3px;
-  cursor:pointer;
+  height: 80%;
+  cursor: pointer;
+  background-image: url(images/gradient.png) !important;
+  background-repeat: repeat-x;
+  background-color: #68ACFC;
+  font-weight: bold;
+  font-size: 10pt;
+  color: white;
+}.OptionButtons:hover{
+  font-weight: bold;
+  font-size: 10pt;
+  text-align: center;
+  color: #000000;
+  border-color: deepskyblue;
+  
 }
 .MoreLabel
 {
@@ -971,7 +1013,7 @@ background-color: #F7F7F7;
 	margin: 2px 0px 12px;
    text-align: left ;
 }
-.loginButton{
+.popupLoginButton{
 	background-color:#4C8FFC;
 	padding-left: 1%;
 	padding-right: 2%;
