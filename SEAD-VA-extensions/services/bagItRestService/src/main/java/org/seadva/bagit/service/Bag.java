@@ -116,15 +116,26 @@ public class Bag {
             }
         }
 
+        String guid = null;
+        if(collectionId.contains("/"))
+            guid = collectionId.split("/")[collectionId.split("/").length-1];
+        else
+            guid = collectionId.split(":")[collectionId.split(":").length-1];
+
+        String  unzippedBagPath = Constants.unzipDir+guid+"/";
+
         if(!new File(Constants.bagDir).exists()) {
             new File(Constants.bagDir).mkdirs();
         }
-        if(!new File(Constants.unzipDir).exists()) {
-            new File(Constants.unzipDir).mkdirs();
+        if(!new File(unzippedBagPath).exists()) {
+            new File(unzippedBagPath).mkdirs();
         }
+
+
+
         //String packageName, String bagPath, String unzippedBagPath
         new ConfigBootstrap().load();
-        PackageDescriptor packageDescriptor = new PackageDescriptor("","",Constants.unzipDir);
+        PackageDescriptor packageDescriptor = new PackageDescriptor("","", unzippedBagPath);
         packageDescriptor.setPackageId(collectionId);
 
         MediciInstance instance = null;

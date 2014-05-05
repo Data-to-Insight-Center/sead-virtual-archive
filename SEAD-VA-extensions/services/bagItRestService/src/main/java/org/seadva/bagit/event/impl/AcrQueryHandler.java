@@ -60,7 +60,7 @@ public class AcrQueryHandler implements Handler{
 
         if(titles!=null&&titles.size()>0){
             packageDescriptor.setPackageName(titles.get(0));
-            packageDescriptor.setUnzippedBagPath(packageDescriptor.getUnzippedBagPath() + titles.get(0));
+            //packageDescriptor.setUnzippedBagPath(packageDescriptor.getUnzippedBagPath() + titles.get(0));
         }
 
         packageDescriptor.setAggregation(aggregation);
