@@ -31,6 +31,7 @@ import org.dataconservancy.dcs.access.client.presenter.LoginPresenter;
 import org.dataconservancy.dcs.access.client.presenter.MediciIngestPresenter;
 import org.dataconservancy.dcs.access.client.presenter.Presenter;
 import org.dataconservancy.dcs.access.client.presenter.ProvenancePresenter;
+import org.dataconservancy.dcs.access.client.presenter.PublishDataPresenter;
 import org.dataconservancy.dcs.access.client.presenter.RegisterPresenter;
 import org.dataconservancy.dcs.access.client.presenter.RelationsPresenter;
 import org.dataconservancy.dcs.access.client.presenter.UploadPresenter;
@@ -42,6 +43,7 @@ import org.dataconservancy.dcs.access.client.view.FacetedSearchView;
 import org.dataconservancy.dcs.access.client.view.LoginView;
 import org.dataconservancy.dcs.access.client.view.MediciIngestView;
 import org.dataconservancy.dcs.access.client.view.ProvenanceView;
+import org.dataconservancy.dcs.access.client.view.PublishDataView;
 import org.dataconservancy.dcs.access.client.view.RegisterView;
 import org.dataconservancy.dcs.access.client.view.RelationsView;
 import org.dataconservancy.dcs.access.client.view.UploadView;
@@ -135,6 +137,7 @@ public class SeadApp implements EntryPoint {
     TabPanel uploadPanel;
     Panel localUpload;
     Panel mediciUpload;
+    Panel publishData;
     Panel bagUpload;
     Panel facetOuterPanel ;
     Label loginLabel;
@@ -322,6 +325,7 @@ public class SeadApp implements EntryPoint {
 				loginPopup.setGlassEnabled(true);
 				loginPopup.show();
 				loginPopup.center();*/
+				System.out.println("Login Clicked");
 				History.newItem("login");
 			}
 		});
@@ -455,6 +459,7 @@ public class SeadApp implements EntryPoint {
         uploadPanel.selectTab(1);
         uploadPanel.setSize("100%", "100%");
  
+        publishData = new FlowPanel();
         
        /* Image logo = new Image(GWT.getModuleBaseURL()
                 + "../images/sead_logo_2.png");*/
@@ -864,13 +869,13 @@ public class SeadApp implements EntryPoint {
             presenter.display(centerPanel, facetContent, header, loginPanel, notificationPanel);
         }else if (state == SeadState.LOGIN) {
         	try{
-        	if(facetOuterPanel.isAttached())
+        	/*if(facetOuterPanel.isAttached())
         		main.setWidgetSize(facetOuterPanel,0);
         	if(!centerPanel.isAttached())
         		main.add(centerPanel);
         	if(loginPanel1.isAttached()){
         		main.setWidgetSize(loginPanel1, 0);
-        	}
+        	}*/
         	/*if(outerMoreLinks.isAttached()){
         		main.setWidgetSize(outerMoreLinks, 0);
         	}*/
@@ -1024,13 +1029,17 @@ public class SeadApp implements EntryPoint {
                     
             userService.checkSession(null,cb);
             centerPanel.clear();
-            centerPanel.add(uploadPanel);
+            //centerPanel.add(uploadPanel);
+            centerPanel.add(publishData);
             
-            presenter = new MediciIngestPresenter(new MediciIngestView());
+           /* presenter = new MediciIngestPresenter(new MediciIngestView());
         	presenter.display(mediciUpload, facetContent, header, loginPanel, notificationPanel);
         	
             presenter = new UploadPresenter(new UploadView());
-        	presenter.display(localUpload, facetContent, header, loginPanel, notificationPanel);
+        	presenter.display(localUpload, facetContent, header, loginPanel, notificationPanel);*/
+        	
+        	presenter = new PublishDataPresenter(new PublishDataView());
+        	presenter.display(publishData, facetContent, header, loginPanel, notificationPanel);
         	            
         }else if (state == SeadState.ADMIN) {
         	

@@ -1170,5 +1170,15 @@ color: darkgray;
 .gwt-Button:hover {
 border-color: #9cf #69e #69e #7af !important;
 }
+
+.CaptionPanelStyle{
+	border-radius:10px;
+	border:1px solid #d1c7ac;
+
+	width:600px;
+	margin:20px;
+}
+
+
 }
 
