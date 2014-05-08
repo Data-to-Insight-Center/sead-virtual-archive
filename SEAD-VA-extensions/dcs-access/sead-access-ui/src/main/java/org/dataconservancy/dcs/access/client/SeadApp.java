@@ -161,13 +161,7 @@ public class SeadApp implements EntryPoint {
     
     public static final UserServiceAsync userService =
             GWT.create(UserService.class);
- 
-    
-
- //   private final SparqlQueryServletAsync sparql =
-   //         GWT.create(SparqlQueryServlet.class);
- 
-  
+   
     static List<String> fileids = new ArrayList<String>();
     static List<String> colids=  new ArrayList<String>();
     static List<String> duids= new ArrayList<String>();
@@ -1029,17 +1023,17 @@ public class SeadApp implements EntryPoint {
                     
             userService.checkSession(null,cb);
             centerPanel.clear();
-            //centerPanel.add(uploadPanel);
-            centerPanel.add(publishData);
+            centerPanel.add(uploadPanel);
+//            centerPanel.add(publishData);
             
-           /* presenter = new MediciIngestPresenter(new MediciIngestView());
+            presenter = new MediciIngestPresenter(new MediciIngestView());
         	presenter.display(mediciUpload, facetContent, header, loginPanel, notificationPanel);
         	
             presenter = new UploadPresenter(new UploadView());
-        	presenter.display(localUpload, facetContent, header, loginPanel, notificationPanel);*/
+        	presenter.display(localUpload, facetContent, header, loginPanel, notificationPanel);
         	
-        	presenter = new PublishDataPresenter(new PublishDataView());
-        	presenter.display(publishData, facetContent, header, loginPanel, notificationPanel);
+        	/*presenter = new PublishDataPresenter(new PublishDataView());
+        	presenter.display(publishData, facetContent, header, loginPanel, notificationPanel);*/
         	            
         }else if (state == SeadState.ADMIN) {
         	

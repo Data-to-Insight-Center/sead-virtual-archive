@@ -40,10 +40,7 @@ import org.dataconservancy.dcs.access.client.api.MediciService;
 import org.dataconservancy.dcs.access.client.api.MediciServiceAsync;
 import org.dataconservancy.dcs.access.client.api.UserService;
 import org.dataconservancy.dcs.access.client.api.UserServiceAsync;
-import org.dataconservancy.dcs.access.client.event.CollectionClickEvent;
-import org.dataconservancy.dcs.access.client.event.CollectionPassiveSelectEvent;
-import org.dataconservancy.dcs.access.client.event.CollectionSelectEvent;
-import org.dataconservancy.dcs.access.client.event.WorkflowStatusEvent;
+import org.dataconservancy.dcs.access.client.event.*;
 import org.dataconservancy.dcs.access.client.model.*;
 import org.dataconservancy.dcs.access.client.model.CollectionNode.SubType;
 import org.dataconservancy.dcs.access.client.resources.TableResources;
@@ -122,8 +119,6 @@ public class MediciIngestPresenter  implements Presenter {
 	Date latestDate = new Date();
 	Tree rootTree;
 
-	
-	Map<String,FileTable> existingFileSets;
 	Map<String,List<FileNode>> previousSelectedFiles;
 	
 	public static final MediciServiceAsync mediciService = GWT.create(MediciService.class);
@@ -192,7 +187,10 @@ public class MediciIngestPresenter  implements Presenter {
 		mdCb = this.display.getMetadataCheckBox();
 		sortOrderList = this.display.getSortOrderList();
 		
-//		registerSubmitSipEvent();
+		registerGetBagEvent();
+		registerGetSipEvent();
+		registerSubmitSipEvent();
+		
 //		registerWorkflowEvent();
 		
 		SeadApp.userService.checkSession(null, new AsyncCallback<UserSession>() {
@@ -260,7 +258,355 @@ public class MediciIngestPresenter  implements Presenter {
 		});
 	}
 
+    private void registerGetSipEvent(){
+        GetSipEvent.register(EVENT_BUS, new GetSipEvent.Handler() {
+            public void onMessageReceived(final GetSipEvent getSipEvent) {
+                mediciService.getSipFromBag(
+                        getSipEvent.getBagPath(),
+                        SeadApp.tmpHome+getSipEvent.getGuid()+"_sip.xml",
+                        SeadApp.bagIturl,
+                        new AsyncCallback<String>() {
 
+                            @Override
+                            public void onSuccess(String result) {
+
+                                mediciService.getFileNos(new AsyncCallback<Integer>(){
+                                    @Override
+                                    public void onFailure(
+                                            Throwable caught) {
+                                        Window.alert("Failed:"+caught.getMessage());
+
+                                    }
+
+                                    @Override
+                                    public void onSuccess(Integer size) {
+                                        if(size>Constants.MAX){
+                                            Window.alert("This collection has more than "+Constants.MAX+" files.\n"+
+                                                    "Hence preview is not possible. But you can start the ingest");
+//                                            if(collectionWait.isShowing())
+//                                                collectionWait.hide();
+                                            getPub.setEnabled(false);
+                                            cloudCopy.setEnabled(true);
+                                            mdCb.setEnabled(true);
+                                            ingestButton.setEnabled(true);
+                                            ir.setEnabled(false);
+                                            ir.setStyleName("greyFont");
+                                            getPub.setStyleName("greyFont");
+                                            cloudCopy.setStyleName("greenFont");
+                                            mdCb.setStyleName("greenFont");
+                                            ingestButton.setStyleName("greenFont");
+
+
+                                            ingestButton.addClickHandler(new ClickHandler() {
+
+                                                @Override
+                                                public void onClick(ClickEvent event) {
+                                                    ingestButton.setEnabled(false);
+                                                    cloudCopy.setEnabled(false);
+                                                    ir.setEnabled(false);
+                                                    getPub.setEnabled(true);
+                                                    String rootMediciId= getSipEvent.getDatasetId();
+
+
+                                                    AsyncCallback<Void> vaModelCb = new AsyncCallback<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void result) {
+                                                            mediciService.addMetadata(metadataSrc,SeadApp.tmpHome+getSipEvent.getGuid()+"_sip", new AsyncCallback<Void>() {
+
+                                                                @Override
+                                                                public void onSuccess(Void result) {
+
+
+                                                                    mediciService.splitSip(
+                                                                            SeadApp.tmpHome+getSipEvent.getGuid()+"_sip",
+                                                                            new AsyncCallback<Integer>() {
+
+                                                                                @Override
+                                                                                public void onSuccess(Integer result) {
+                                                                                    n=result;
+                                                                                    l++;
+                                                                                    if(l<=n){
+                                                                                        mediciService.generateWfInstanceId(new AsyncCallback<String>() {
+
+                                                                                            @Override
+                                                                                            public void onSuccess(final String wfInstanceId) {
+                                                                                                UserServiceAsync user =
+                                                                                                        GWT.create(UserService.class);
+                                                                                                user.checkSession(null,new AsyncCallback<UserSession>() {
+
+                                                                                                    @Override
+                                                                                                    public void onFailure(
+                                                                                                            Throwable caught) {
+                                                                                                        // TODO Auto-generated method stub
+
+                                                                                                    }
+
+                                                                                                    @Override
+                                                                                                    public void onSuccess(
+                                                                                                            UserSession result) {
+
+                                                                                                        MediciIngestPresenter.EVENT_BUS.fireEvent(new SubmitSipEvent(
+                                                                                                                wfInstanceId,
+                                                                                                                getSipEvent.getDatasetId(),
+                                                                                                                getSipEvent.getGuid(),
+                                                                                                                getSipEvent.getSparqlEndpoint()
+                                                                                                        )
+                                                                                                        );
+                                                                                                    }
+
+                                                                                                });
+                                                                                            }
+
+                                                                                            @Override
+                                                                                            public void onFailure(
+                                                                                                    Throwable caught) {
+                                                                                                // TODO Auto-generated method stub
+
+                                                                                            }
+                                                                                        });
+
+                                                                                    }
+                                                                                    else{
+                                                                                        Window.alert("This dataset is already ingested. Please clear checkpointing if you want to rerun the workflow");
+                                                                                    }
+                                                                                }
+
+                                                                                @Override
+                                                                                public void onFailure(Throwable caught) {
+                                                                                    // TODO Auto-generated method stub
+
+                                                                                }
+                                                                            });
+                                                                }
+
+                                                                @Override
+                                                                public void onFailure(Throwable caught) {
+                                                                    // TODO Auto-generated method stub
+
+                                                                }
+                                                            });
+                                                        }
+
+                                                        @Override
+                                                        public void onFailure(Throwable caught) {
+                                                            // TODO Auto-generated method stub
+
+                                                        }
+                                                    };
+                                                    mediciService.toVAmodel(rootMediciId,rootMediciId,getSipEvent.getSparqlEndpoint(), SeadApp.tmpHome, vaModelCb );
+
+                                                }
+                                            });
+
+                                            coverRightPanel.setVisible(true);
+                                        }
+                                        else{
+                                            mediciService.getSipJson(new AsyncCallback<String>() {
+
+
+                                                @Override
+                                                public void onFailure(
+                                                        Throwable caught) {
+                                                    Window.alert("Failed:" + caught.getMessage());
+
+                                                }
+
+                                                @Override
+                                                public void onSuccess(
+                                                        final String json) {
+
+
+                                                    display.getDatasetLbl().setText("Browse Collection and sub-Collections");
+                                                    display.getFileLbl().setText("Browse Files");
+
+                                                    String jsonString = json;
+                                                    jsonString = jsonString.substring(jsonString.indexOf('{'), jsonString.lastIndexOf('}') + 1);
+
+
+                                                    JsDcp dcp = JsDcp.create();
+                                                    JsSearchResult result = JsSearchResult.create(jsonString);
+                                                    for (int i = 0; i < result.matches().length(); i++) {
+                                                        Util.add(dcp, result.matches().get(i));
+                                                    }
+
+                                                    TreeViewModel treemodel = new PreviewTree(dcp);
+
+                                                    CellTree tree = new CellTree(treemodel, null);
+
+                                                    tree.setStylePrimaryName("RelatedView");
+                                                    tree.setAnimationEnabled(true);
+                                                    tree.setKeyboardSelectionPolicy(HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.BOUND_TO_SELECTION);
+                                                    tree.setDefaultNodeSize(50);
+
+                                                    if (tree.getRootTreeNode().getChildCount() > 0) {
+                                                        tree.getRootTreeNode().setChildOpen(0, false);
+                                                    }
+
+                                                    leftPanel.clear();
+                                                    leftPanel.add(tree);
+
+//                                                    if (collectionWait.isShowing())
+//                                                        collectionWait.hide();
+                                                    getPub.setEnabled(false);
+                                                    cloudCopy.setEnabled(true);
+                                                    mdCb.setEnabled(true);
+                                                    ingestButton.setEnabled(true);
+                                                    ir.setEnabled(false);
+                                                    ir.setStyleName("greyFont");
+                                                    getPub.setStyleName("greyFont");
+                                                    cloudCopy.setStyleName("greenFont");
+                                                    mdCb.setStyleName("greenFont");
+                                                    ingestButton.setStyleName("greenFont");
+
+                                                    ingestButton.addClickHandler(new ClickHandler() {
+
+                                                        @Override
+                                                        public void onClick(ClickEvent event) {
+                                                            ingestButton.setEnabled(false);
+                                                            cloudCopy.setEnabled(false);
+                                                            ir.setEnabled(false);
+                                                            getPub.setEnabled(true);
+                                                            String rootMediciId = getSipEvent.getDatasetId();
+
+                                                            AsyncCallback<Void> vaModelCb = new AsyncCallback<Void>() {
+                                                                @Override
+                                                                public void onSuccess(Void result) {
+                                                                    mediciService.addMetadata(metadataSrc, SeadApp.tmpHome + getSipEvent.getGuid() + "_sip", new AsyncCallback<Void>() {
+
+                                                                        @Override
+                                                                        public void onSuccess(Void result) {
+                                                                            String tempguid = null;
+                                                                            if ((getSipEvent.getDatasetId()).contains("/"))
+                                                                                tempguid = (getSipEvent.getDatasetId()).split("/")
+                                                                                        [(getSipEvent.getDatasetId()).split("/").length - 1];
+                                                                            else
+                                                                                tempguid = (getSipEvent.getDatasetId()).split(":")
+                                                                                        [(getSipEvent.getDatasetId()).split(":").length - 1];
+                                                                            final String guid = tempguid;
+
+                                                                            mediciService.splitSip(
+                                                                                    SeadApp.tmpHome + guid + "_sip",
+                                                                                    new AsyncCallback<Integer>() {
+
+                                                                                        @Override
+                                                                                        public void onSuccess(Integer result) {
+                                                                                            n = result;
+                                                                                            l++;
+
+//																																					Window.alert("Starting ingest of dataset");//. We already have the cached SIP for this dataset.");
+                                                                                            mediciService.generateWfInstanceId(new AsyncCallback<String>() {
+
+                                                                                                @Override
+                                                                                                public void onSuccess(String wfInstanceId) {
+                                                                                                    MediciIngestPresenter.EVENT_BUS.fireEvent(new SubmitSipEvent(
+                                                                                                            wfInstanceId,
+                                                                                                            getSipEvent.getDatasetId(),
+                                                                                                            guid,
+                                                                                                            getSipEvent.getSparqlEndpoint()
+                                                                                                    )
+                                                                                                    );
+                                                                                                }
+
+                                                                                                @Override
+                                                                                                public void onFailure(Throwable caught) {
+
+                                                                                                }
+                                                                                            });
+
+                                                                                        }
+
+                                                                                        @Override
+                                                                                        public void onFailure(Throwable caught) {
+                                                                                            Window.alert("Failed. \n" + caught.getMessage());
+                                                                                        }
+                                                                                    });
+                                                                        }
+
+                                                                        @Override
+                                                                        public void onFailure(Throwable caught) {
+                                                                            Window.alert("Failed. \n" + caught.getMessage());
+                                                                        }
+                                                                    });
+                                                                }
+
+                                                                @Override
+                                                                public void onFailure(Throwable caught) {
+                                                                    Window.alert("Failed. \n" + caught.getMessage());
+                                                                }
+                                                            };
+                                                            mediciService.toVAmodel(rootMediciId, rootMediciId, getSipEvent.getSparqlEndpoint(), SeadApp.tmpHome, vaModelCb);
+
+                                                        }
+                                                    });
+                                                    coverRightPanel.setVisible(true);
+                                                }
+                                            });
+                                        }
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void onFailure(Throwable caught) {
+                                Window.alert("Failed:"+caught.getMessage());
+
+                            }
+                        });
+            }
+        });
+
+    }
+
+    private void registerGetBagEvent(){
+        GetBagEvent.register(EVENT_BUS, new GetBagEvent.Handler() {
+            public void onMessageReceived(final GetBagEvent getBagEvent) {
+                final StatusPopupPanel collectionWait = new StatusPopupPanel("Querying for BagIt Bag","bag",false);
+                collectionWait.setPopupPosition(Window.getClientWidth()*4/10, Window.getClientHeight()/3);
+                collectionWait.show();
+
+                mediciService.getBag(
+                        getBagEvent.getDatasetId(), getBagEvent.getSparqlEndpoint(),
+                        SeadApp.bagIturl, SeadApp.tmpHome,
+                        new AsyncCallback<String>() {
+                            @Override
+                            public void onSuccess(final String bagPath) {
+                                collectionWait.setValue("Converting to SEAD SIP", "wait");
+
+                                final Timer getSIPTimer = new Timer() {
+
+                                    @Override
+                                    public void run() {
+                                        String tempguid = null;
+                                        if((getBagEvent.getDatasetId()).contains("/"))
+                                            tempguid = (getBagEvent.getDatasetId()).split("/")
+                                                    [(getBagEvent.getDatasetId()).split("/").length-1];
+                                        else
+                                            tempguid = (getBagEvent.getDatasetId()).split(":")
+                                                    [(getBagEvent.getDatasetId()).split(":").length-1];
+                                        final String guid = tempguid;
+                                        MediciIngestPresenter.EVENT_BUS.fireEvent(new
+                                                GetSipEvent(
+//                                                getBagEvent.getWfInstanceId(),
+                                                getBagEvent.getDatasetId(),
+                                                guid,
+                                                bagPath,
+                                                getBagEvent.getSparqlEndpoint()
+                                        ));
+
+                                    }
+                                };
+                                getSIPTimer.schedule(5000);
+                            }
+
+                            @Override
+                            public void onFailure(Throwable caught) {
+                                Window.alert("Failed:"+caught.getMessage());
+
+                            }
+                        });
+            }
+        });
+    }
 	
 	void registerWorkflowEvent(){//This event simply changes what is displayed on the popup panel
 		WorkflowStatusEvent.register(EVENT_BUS, new WorkflowStatusEvent.Handler() {
@@ -286,6 +632,45 @@ public class MediciIngestPresenter  implements Presenter {
 			   }		
 			});
 	}
+
+    void registerSubmitSipEvent(){//This event simply changes what is displayed on the popup panel
+        SubmitSipEvent.register(EVENT_BUS, new SubmitSipEvent.Handler() {
+            public void onMessageReceived(final SubmitSipEvent event) {
+                WfEventRefresherPanel eventRefresher = new WfEventRefresherPanel(submitterId, event.getWfIsntanceId());
+                eventRefresher.show();
+                mediciService.submitMultipleSips(SeadApp.deposit_endpoint + "sip",
+                        event.getDatasetId(),
+                        event.getSparqlEndpoint(),
+                        SeadApp.tmpHome + event.getGuid() + "_sip",
+                        event.getWfIsntanceId(),
+                        null,
+                        l, n, "", "", false, GWT.getModuleBaseURL(), SeadApp.tmpHome,
+                        new AsyncCallback<String>() {
+
+                            @Override
+                            public void onSuccess(final String result) {
+                                l = -1;
+                                final Label notify = Util.label("!", "Notification");
+                                notify.addClickHandler(new ClickHandler() {
+
+                                    @Override
+                                    public void onClick(ClickEvent event) {
+                                        MessagePopupPanel popUpPanel = new MessagePopupPanel(result, "done", true);
+                                        popUpPanel.show();
+                                        nPanel.remove(notify);
+                                    }
+                                });
+//																																											nPanel.add(notify);
+                            }
+
+                            @Override
+                            public void onFailure(Throwable caught) {
+
+                            }
+                        });
+            }
+        });
+    }
 	
 	void getPublications(String passedInstance, TreeItem passedParent, ArrayList<Label> passedDatasetList){
 		
@@ -294,7 +679,6 @@ public class MediciIngestPresenter  implements Presenter {
 		//mediciWait.setStyleName("retrievePopoup");
 		mediciWait.setPopupPosition(Window.getClientWidth()*4/10, Window.getClientHeight()/3);
 		mediciWait.show();
-		existingFileSets = new HashMap<String, FileTable>();
 		previousSelectedFiles = new HashMap<String,List<FileNode>>();
 		final String instance = passedInstance;
 		final TreeItem parent = passedParent;
@@ -403,392 +787,13 @@ public class MediciIngestPresenter  implements Presenter {
 													@Override
 													public void onSuccess(
 															final CheckPointDetail result) {
-														if(!result.isCheckPointed()){
-															final StatusPopupPanel collectionWait = new StatusPopupPanel("Querying for BagIt Bag","bag",false);
-															collectionWait.setPopupPosition(Window.getClientWidth()*4/10, Window.getClientHeight()/3);
-															collectionWait.show();
-															
-													            	final MultiSelectionModel<CollectionNode> selectionModel = new MultiSelectionModel<CollectionNode>();
-																	
-																	mediciService.getBag( 
-																			(String) pair.getKey(), sparqlEndpoint,
-																			SeadApp.bagIturl, SeadApp.tmpHome,
-																			 new AsyncCallback<String>() {
-																				@Override
-																				public void onSuccess(final String bagPath) {
-																					collectionWait.setValue("Converting to SEAD SIP", "wait");
-																				
-																					final Timer getSIPTimer = new Timer() {
-																				
-																					@Override
-																					public void run() {
-																						String tempguid = null;
-																				        if(((String) pair.getKey()).contains("/"))
-																				        	tempguid = ((String) pair.getKey()).split("/")
-																				            [((String) pair.getKey()).split("/").length-1];
-																				        else
-																				        	tempguid = ((String) pair.getKey()).split(":")
-																				            [((String) pair.getKey()).split(":").length-1];
-																				        final String guid = tempguid;
-																						mediciService.getSipFromBag(
-																								bagPath,
-																							SeadApp.tmpHome+guid+"_sip.xml",
-																							SeadApp.bagIturl,
-																							new AsyncCallback<String>() {
-																						
-																						@Override
-																						public void onSuccess(String result) {
+														if(!result.isCheckPointed())   {
+                                                            MediciIngestPresenter.EVENT_BUS.fireEvent(new GetBagEvent(
+                                                                    (String) pair.getKey(),
+                                                                    sparqlEndpoint
 
-																							mediciService.getFileNos(new AsyncCallback<Integer>(){
-																								@Override
-																								public void onFailure(
-																										Throwable caught) {
-																									Window.alert("Failed:"+caught.getMessage());
-																									
-																								}
-
-																								@Override
-																								public void onSuccess(Integer size) {
-																									if(size>Constants.MAX){
-																										Window.alert("This collection has more than "+Constants.MAX+" files.\n"+
-																													 "Hence preview is not possible. But you can start the ingest");
-																										if(collectionWait.isShowing())
-																											collectionWait.hide();
-																										getPub.setEnabled(false);
-																										cloudCopy.setEnabled(true);
-																										mdCb.setEnabled(true);
-																										ingestButton.setEnabled(true);
-																										ir.setEnabled(false);
-																										ir.setStyleName("greyFont");
-																								        getPub.setStyleName("greyFont");
-																										cloudCopy.setStyleName("greenFont");
-																										mdCb.setStyleName("greenFont");
-																										ingestButton.setStyleName("greenFont");
-																										
-																								       
-																										ingestButton.addClickHandler(new ClickHandler() {
-																											
-																											@Override
-																											public void onClick(ClickEvent event) {
-																											    ingestButton.setEnabled(false);
-																										        cloudCopy.setEnabled(false);
-																										        ir.setEnabled(false);
-																										        getPub.setEnabled(true);
-																												String rootMediciId= (String) pair.getKey();
-																												
-																												
-																												AsyncCallback<Void> vaModelCb = new AsyncCallback<Void>() {
-																														@Override
-																														public void onSuccess(Void result) {
-																															mediciService.addMetadata(metadataSrc,SeadApp.tmpHome+guid+"_sip", new AsyncCallback<Void>() {
-																																
-																																@Override
-																																public void onSuccess(Void result) {
-																																	
-																																	
-																																	mediciService.splitSip(
-																																			SeadApp.tmpHome+guid+"_sip",
-																																			new AsyncCallback<Integer>() {
-																																		
-																																		@Override
-																																		public void onSuccess(Integer result) {
-																																			n=result;
-																																			l++;
-																																			if(l<=n){
-																																				mediciService.generateWfInstanceId(new AsyncCallback<String>() {
-																																					
-																																					@Override
-																																					public void onSuccess(final String wfInstanceId) {
-																																						UserServiceAsync user =
-																																					            GWT.create(UserService.class);
-																																						user.checkSession(null,new AsyncCallback<UserSession>() {
-
-																																							@Override
-																																							public void onFailure(
-																																									Throwable caught) {
-																																								// TODO Auto-generated method stub
-																																								
-																																							}
-
-																																							@Override
-																																							public void onSuccess(
-																																									UserSession result) {
-
-																																								mediciService.submitMultipleSips(SeadApp.deposit_endpoint + "sip",
-																																										(String) pair.getKey(),
-																																										sparqlEndpoint,
-																																										SeadApp.tmpHome+guid+"_sip", 
-																																										wfInstanceId,
-																																										null,
-																																										l, n, "", "", false, GWT.getModuleBaseURL(),SeadApp.tmpHome,
-																																										new AsyncCallback<String>() {
-																																											
-																																											@Override
-																																											public void onSuccess(final String result) {
-																																												l=-1;
-																																												final Label notify = Util.label("!", "Notification");
-																																												notify.addClickHandler(new ClickHandler() {
-																																													
-																																													@Override
-																																													public void onClick(ClickEvent event) {
-																																														StatusPopupPanel mediciWait = new StatusPopupPanel("Retrieving","done",false);
-																																														mediciWait.setPopupPosition(Window.getClientWidth()*4/10, Window.getClientHeight()/3);
-																																														MessagePopupPanel popUpPanel = new MessagePopupPanel(result, "done", true);
-																																														popUpPanel.setPopupPosition(Window.getClientWidth()*4/10, Window.getClientHeight()/3);
-																																														popUpPanel.show();
-																																														nPanel.remove(notify);
-																																													}
-																																												});
-																																												nPanel.add(notify);
-																																											}
-																																											
-																																											@Override
-																																											public void onFailure(Throwable caught) {
-																																												Window.alert("Workflow failed.");
-																																											}
-																																										});
-																																							
-																																							}
-																																							
-																																						});
-																																					}
-
-																																					@Override
-																																					public void onFailure(
-																																							Throwable caught) {
-																																						// TODO Auto-generated method stub
-																																						
-																																					}
-																																				});
-																																			
-																																			}
-																																			else{
-																																				Window.alert("This dataset is already ingested. Please clear checkpointing if you want to rerun the workflow");
-																																			}
-																																		}
-																																		
-																																		@Override
-																																		public void onFailure(Throwable caught) {
-																																			// TODO Auto-generated method stub
-																																			
-																																		}
-																																	});
-																																}
-																																
-																																@Override
-																																public void onFailure(Throwable caught) {
-																																	// TODO Auto-generated method stub
-																																	
-																																}
-																															});
-																														}
-																													
-																													@Override
-																													public void onFailure(Throwable caught) {
-																														// TODO Auto-generated method stub
-																														
-																													}
-																												};
-																												mediciService.toVAmodel(rootMediciId,rootMediciId,sparqlEndpoint, SeadApp.tmpHome, vaModelCb );
-
-																											}
-																										});
-																										
-																										coverRightPanel.setVisible(true);
-																									}
-																									else{
-                                                                                                        mediciService.getSipJson(new AsyncCallback<String>() {
-
-
-                                                                                                            @Override
-                                                                                                            public void onFailure(
-                                                                                                                    Throwable caught) {
-                                                                                                                Window.alert("Failed:" + caught.getMessage());
-
-                                                                                                            }
-
-                                                                                                            @Override
-                                                                                                            public void onSuccess(
-                                                                                                                    final String json) {
-
-
-                                                                                                                display.getDatasetLbl().setText("Browse Collection and sub-Collections");
-                                                                                                                display.getFileLbl().setText("Browse Files");
-
-                                                                                                                String jsonString = json;
-                                                                                                                jsonString = jsonString.substring(jsonString.indexOf('{'), jsonString.lastIndexOf('}') + 1);
-
-
-                                                                                                                JsDcp dcp = JsDcp.create();
-                                                                                                                JsSearchResult result = JsSearchResult.create(jsonString);
-                                                                                                                for (int i = 0; i < result.matches().length(); i++) {
-                                                                                                                    Util.add(dcp, result.matches().get(i));
-                                                                                                                }
-
-                                                                                                                TreeViewModel treemodel = new PreviewTree(dcp);
-
-                                                                                                                CellTree tree = new CellTree(treemodel, null);
-
-                                                                                                                tree.setStylePrimaryName("RelatedView");
-                                                                                                                tree.setAnimationEnabled(true);
-                                                                                                                tree.setKeyboardSelectionPolicy(HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.BOUND_TO_SELECTION);
-                                                                                                                tree.setDefaultNodeSize(50);
-
-                                                                                                                if (tree.getRootTreeNode().getChildCount() > 0) {
-                                                                                                                    tree.getRootTreeNode().setChildOpen(0, false);
-                                                                                                                }
-
-                                                                                                                leftPanel.clear();
-                                                                                                                leftPanel.add(tree);
-
-                                                                                                                if (collectionWait.isShowing())
-                                                                                                                    collectionWait.hide();
-                                                                                                                getPub.setEnabled(false);
-                                                                                                                cloudCopy.setEnabled(true);
-                                                                                                                mdCb.setEnabled(true);
-                                                                                                                ingestButton.setEnabled(true);
-                                                                                                                ir.setEnabled(false);
-                                                                                                                ir.setStyleName("greyFont");
-                                                                                                                getPub.setStyleName("greyFont");
-                                                                                                                cloudCopy.setStyleName("greenFont");
-                                                                                                                mdCb.setStyleName("greenFont");
-                                                                                                                ingestButton.setStyleName("greenFont");
-
-                                                                                                                ingestButton.addClickHandler(new ClickHandler() {
-
-                                                                                                                    @Override
-                                                                                                                    public void onClick(ClickEvent event) {
-                                                                                                                        ingestButton.setEnabled(false);
-                                                                                                                        cloudCopy.setEnabled(false);
-                                                                                                                        ir.setEnabled(false);
-                                                                                                                        getPub.setEnabled(true);
-                                                                                                                        String rootMediciId = (String) pair.getKey();
-
-                                                                                                                        AsyncCallback<Void> vaModelCb = new AsyncCallback<Void>() {
-                                                                                                                            @Override
-                                                                                                                            public void onSuccess(Void result) {
-                                                                                                                                mediciService.addMetadata(metadataSrc, SeadApp.tmpHome + guid + "_sip", new AsyncCallback<Void>() {
-
-                                                                                                                                    @Override
-                                                                                                                                    public void onSuccess(Void result) {
-                                                                                                                                        String tempguid = null;
-                                                                                                                                        if (((String) pair.getKey()).contains("/"))
-                                                                                                                                            tempguid = ((String) pair.getKey()).split("/")
-                                                                                                                                                    [((String) pair.getKey()).split("/").length - 1];
-                                                                                                                                        else
-                                                                                                                                            tempguid = ((String) pair.getKey()).split(":")
-                                                                                                                                                    [((String) pair.getKey()).split(":").length - 1];
-                                                                                                                                        final String guid = tempguid;
-
-                                                                                                                                        mediciService.splitSip(
-                                                                                                                                                SeadApp.tmpHome + guid + "_sip",
-                                                                                                                                                new AsyncCallback<Integer>() {
-
-                                                                                                                                                    @Override
-                                                                                                                                                    public void onSuccess(Integer result) {
-                                                                                                                                                        n = result;
-                                                                                                                                                        l++;
-
-//																																					Window.alert("Starting ingest of dataset");//. We already have the cached SIP for this dataset.");
-                                                                                                                                                        mediciService.generateWfInstanceId(new AsyncCallback<String>() {
-
-                                                                                                                                                            @Override
-                                                                                                                                                            public void onSuccess(String wfInstanceId) {
-                                                                                                                                                                //Open a status panel that self queries the database for changes
-                                                                                                                                                                WfEventRefresherPanel eventRefresher = new WfEventRefresherPanel(submitterId, wfInstanceId);
-                                                                                                                                                                eventRefresher.show();
-                                                                                                                                                                mediciService.submitMultipleSips(SeadApp.deposit_endpoint + "sip",
-                                                                                                                                                                        (String) pair.getKey(),
-                                                                                                                                                                        sparqlEndpoint,
-                                                                                                                                                                        SeadApp.tmpHome + guid + "_sip",
-                                                                                                                                                                        wfInstanceId,
-                                                                                                                                                                        null,
-                                                                                                                                                                        l, n, "", "", false, GWT.getModuleBaseURL(), SeadApp.tmpHome,
-                                                                                                                                                                        new AsyncCallback<String>() {
-
-                                                                                                                                                                            @Override
-                                                                                                                                                                            public void onSuccess(final String result) {
-                                                                                                                                                                                l = -1;
-                                                                                                                                                                                final Label notify = Util.label("!", "Notification");
-                                                                                                                                                                                notify.addClickHandler(new ClickHandler() {
-
-                                                                                                                                                                                    @Override
-                                                                                                                                                                                    public void onClick(ClickEvent event) {
-                                                                                                                                                                                        MessagePopupPanel popUpPanel = new MessagePopupPanel(result, "done", true);
-                                                                                                                                                                                        popUpPanel.show();
-                                                                                                                                                                                        nPanel.remove(notify);
-                                                                                                                                                                                    }
-                                                                                                                                                                                });
-//																																											nPanel.add(notify);
-                                                                                                                                                                            }
-
-                                                                                                                                                                            @Override
-                                                                                                                                                                            public void onFailure(Throwable caught) {
-
-                                                                                                                                                                            }
-                                                                                                                                                                        });
-
-                                                                                                                                                            }
-
-                                                                                                                                                            @Override
-                                                                                                                                                            public void onFailure(Throwable caught) {
-
-                                                                                                                                                            }
-                                                                                                                                                        });
-
-                                                                                                                                                    }
-
-                                                                                                                                                    @Override
-                                                                                                                                                    public void onFailure(Throwable caught) {
-                                                                                                                                                        Window.alert("Failed. \n" + caught.getMessage());
-                                                                                                                                                    }
-                                                                                                                                                });
-                                                                                                                                    }
-
-                                                                                                                                    @Override
-                                                                                                                                    public void onFailure(Throwable caught) {
-                                                                                                                                        Window.alert("Failed. \n" + caught.getMessage());
-                                                                                                                                    }
-                                                                                                                                });
-                                                                                                                            }
-
-                                                                                                                            @Override
-                                                                                                                            public void onFailure(Throwable caught) {
-                                                                                                                                Window.alert("Failed. \n" + caught.getMessage());
-                                                                                                                            }
-                                                                                                                        };
-                                                                                                                        mediciService.toVAmodel(rootMediciId, rootMediciId, sparqlEndpoint, SeadApp.tmpHome, vaModelCb);
-
-                                                                                                                    }
-                                                                                                                });
-                                                                                                                coverRightPanel.setVisible(true);
-                                                                                                            }
-                                                                                                        });
-																									}
-																								}
-																							});
-																						}
-																						
-																						@Override
-																						public void onFailure(Throwable caught) {
-																							Window.alert("Failed:"+caught.getMessage());
-																							
-																						}
-																					});						
-																			
-																				}
-																			};
-																			getSIPTimer.schedule(5000);
-																				}
-																				
-																				@Override
-																				public void onFailure(Throwable caught) {
-																					Window.alert("Failed:"+caught.getMessage());
-																					
-																				}
-																			});						 	
-													            		
-														}
+                                                            ));
+                                                        }
 														else{
 															//restart ingest
 															
@@ -952,107 +957,7 @@ public class MediciIngestPresenter  implements Presenter {
 			}
 		});
 	}
-	
-public Widget getFiles(Map<String, CollectionNode> dusMap,Map<String, FileNode> filesMap, final String selectedCollection, Boolean valForAll) {	
-		 
-	List<String> files = dusMap.get(selectedCollection).getSub().get(SubType.File);
-	final FileTable fileTable = new FileTable();
-	
-	CellTable.Resources resource = GWT.create(TableResources.class);
-	fileTable.cellTable = new CellTable<FileNode>(files.size(), resource);
-	
-	
-	fileTable.cellTable.setWidth("100%", true);
-	fileTable.selectionFileModel = new MultiSelectionModel<FileNode>(
-        );
-   
-    fileTable.cellTable.setSelectionModel(fileTable.selectionFileModel,
-        DefaultSelectionEventManager.<FileNode> createCheckboxManager());
-    fileTable.selectionFileModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
-		
-		@Override
-		public void onSelectionChange(SelectionChangeEvent event) {
-			// TODO Auto-generated method stub
-			List<FileNode> nowSelected = new ArrayList<FileNode>(fileTable.selectionFileModel.getSelectedSet());
-			List<FileNode> previousSelected;
-			List<FileNode> tempSelected;
-			
-			if(previousSelectedFiles.containsKey(selectedCollection))
-				previousSelected = previousSelectedFiles.get(selectedCollection);
-			else
-				previousSelected = new ArrayList<FileNode>();
 
-			
-			if(nowSelected.size()>previousSelected.size())
-			{
-				tempSelected = new ArrayList<FileNode>	(nowSelected);
-				tempSelected.removeAll(previousSelected);
-			}
-			else{
-				tempSelected = new ArrayList<FileNode>(previousSelected);
-				tempSelected.removeAll(nowSelected);
-			}
-			
-			previousSelectedFiles.put(selectedCollection, nowSelected); //update previous selected files
-		//	if(tempSelected.size()==1)//uncomment these 2 statements later
-			//	MediciIngestPresenter.EVENT_BUS.fireEvent(new FileSelectEvent(tempSelected.get(0),true));
-					//(FileNode)selectionFileModel.getSelectedSet().toArray()[0],true));
-		}
-	});
-    Column<FileNode, Boolean> checkColumn = new Column<FileNode, Boolean>(
-            new CheckboxCell(true, false)) {
-          @Override
-          public Boolean getValue(FileNode object) {
-            // Get the value from the selection model.
-            return fileTable.selectionFileModel.isSelected(object);
-          }
-  
-    };
-    
-    fileTable.cellTable.addColumn(checkColumn, SafeHtmlUtils.fromSafeConstant("<br/>"));
-    fileTable.cellTable.setColumnWidth(checkColumn, 40, Unit.PX);
-        
-        // First name.
-        final Resources resources = GWT.create(Resources.class);
-   	
-        Column<FileNode, ImageResource> imageColumn = new Column<FileNode, ImageResource>(
-        		new ImageResourceCell()) {
-              @Override
-              public ImageResource getValue(FileNode object) {
-                return resources.file();
-              }
-            
-            };
-            
-            fileTable.cellTable.addColumn(imageColumn, SafeHtmlUtils.fromSafeConstant("<br/>"));
-            fileTable.cellTable.setColumnWidth(imageColumn, 40, Unit.PX);
-            
-        Column<FileNode, String> firstNameColumn = new Column<FileNode, String>(
-            new EditTextCell()) {
-          @Override
-          public String getValue(FileNode object) {
-            return object.getTitle();
-          }
-        
-        };
-        
-        fileTable.cellTable.addColumn(firstNameColumn);
-       
-       List<FileNode> fileNodes = new ArrayList<FileNode>();
-       
-       for(String file:files){
-    	   FileNode node = filesMap.get(file);
-    	   fileNodes.add(node);
-    	   fileTable.selectionFileModel.setSelected(node, valForAll);
-       }
-        ListDataProvider<FileNode> dataProvider = new ListDataProvider<FileNode>(
-        		fileNodes);
-        
-        dataProvider.addDataDisplay(fileTable.cellTable);
-      
-        existingFileSets.put(selectedCollection, fileTable);
-		return fileTable.cellTable;
-	}
 
 
 	@Override
@@ -1069,19 +974,5 @@ public Widget getFiles(Map<String, CollectionNode> dusMap,Map<String, FileNode> 
 		mainContainer.add(mainContentPanel);
 		
 	}
-	
-	public interface Resources extends ClientBundle {
-		 @Source("org/dataconservancy/dcs/access/client/resources/file.png")
-		  ImageResource file();
-	}
-	
-	
 
-		
-	class FileTable{
-		CellTable.Resources resource; 
-		CellTable<FileNode> cellTable;		
-	    MultiSelectionModel<FileNode> selectionFileModel;
-	}
-	    	
 }

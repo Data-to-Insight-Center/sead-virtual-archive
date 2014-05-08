@@ -16,26 +16,27 @@
 
 package org.dataconservancy.dcs.access.client.event;
 
-import java.util.List;
-
 import com.google.web.bindery.event.shared.Event;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.HandlerRegistration;
-import org.dataconservancy.dcs.access.client.SeadApp;
 import org.dataconservancy.dcs.access.shared.MediciInstance;
 
-public class SubmitSipEvent extends Event<SubmitSipEvent.Handler> {
+public class GetSipEvent extends Event<GetSipEvent.Handler> {
 
-    public interface Handler {
-        void onMessageReceived(SubmitSipEvent event);
+    public String getBagPath() {
+        return bagPath;
     }
 
-    private static final Type<SubmitSipEvent.Handler> TYPE =
-        new Type<SubmitSipEvent.Handler>();
+    public interface Handler {
+        void onMessageReceived(GetSipEvent event);
+    }
 
-   
+    private static final Type<GetSipEvent.Handler> TYPE =
+        new Type<GetSipEvent.Handler>();
+
+
     public static HandlerRegistration register(EventBus eventBus,
-    		SubmitSipEvent.Handler handler) {
+    		GetSipEvent.Handler handler) {
       return eventBus.addHandler(TYPE, handler);
     }
 
@@ -43,9 +44,9 @@ public class SubmitSipEvent extends Event<SubmitSipEvent.Handler> {
         return sparqlEndpoint;
     }
 
-    public String getWfIsntanceId() {
-        return wfIsntanceId;
-    }
+//    public String getWfIsntanceId() {
+//        return wfIsntanceId;
+//    }
 
     public String getDatasetId() {
         return datasetId;
@@ -55,25 +56,28 @@ public class SubmitSipEvent extends Event<SubmitSipEvent.Handler> {
         return guid;
     }
 
-    private final String wfIsntanceId;
+//    private final String wfIsntanceId;
     private final String datasetId;
     private final String guid;
+    private final String bagPath;
     private final MediciInstance sparqlEndpoint;
 
 
-    public SubmitSipEvent(String wfIsntanceId,
-                        String datasetId,
-                        String guid,
-                        MediciInstance sparqlEndpoint){
+    public GetSipEvent(
+//            String wfIsntanceId,
+                       String datasetId,
+                       String guid,
+                       String bagPath, MediciInstance sparqlEndpoint){
         this.datasetId = datasetId;
-        this.wfIsntanceId = wfIsntanceId;
+//        this.wfIsntanceId = wfIsntanceId;
         this.guid = guid;
+        this.bagPath = bagPath;
         this.sparqlEndpoint = sparqlEndpoint;
     }
-    
+
 
     @Override
-    public Type<SubmitSipEvent.Handler> getAssociatedType() {
+    public Type<GetSipEvent.Handler> getAssociatedType() {
         return TYPE;
     }
 
