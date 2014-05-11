@@ -24,7 +24,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.seadva.query</groupId>
   <artifactId>sead-query-solr</artifactId>
-  <version>1.1.0-SNAPSHOT</version>
+  <version>1.0.0</version>
   <packaging>jar</packaging>
   <description>DCS Data Model Query Service, backed by Solr</description>
 
@@ -50,7 +50,7 @@
    <dependency>
       <artifactId>dcs-query-api</artifactId>
       <groupId>org.dataconservancy.query</groupId>
-      <version>${project.parent.version}</version>
+      <version>1.1.0-SNAPSHOT</version>
       <type>jar</type>
       <scope>compile</scope>
     </dependency>
@@ -65,7 +65,7 @@
    <dependency>
       <artifactId>dcs-index-solr-support</artifactId>
       <groupId>org.dataconservancy.index</groupId>
-      <version>${project.parent.version}</version>
+      <version>1.1.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
@@ -78,7 +78,7 @@
       <dependency>
           <artifactId>sead-index-extension</artifactId>
           <groupId>org.dataconservancy.index</groupId>
-          <version>${project.parent.version}</version>
+          <version>1.0.0</version>
           <type>jar</type>
           <scope>compile</scope>
       </dependency>
@@ -86,7 +86,7 @@
       <dependency>
           <artifactId>sead-model</artifactId>
           <groupId>org.seadva.model</groupId>
-          <version>${project.parent.version}</version>
+          <version>1.0.0</version>
           <type>jar</type>
           <scope>compile</scope>
       </dependency>
@@ -100,7 +100,7 @@
     <dependency>
       <groupId>org.dataconservancy.archive</groupId>
       <artifactId>dcs-archive-impl-elm-fs</artifactId>
-      <version>${project.parent.version}</version>
+      <version>1.1.0-SNAPSHOT</version>
       <scope>test</scope>
       <exclusions>
         <exclusion>
@@ -125,4 +125,8 @@
           <version>2.4.0</version>
       </dependency>
   </dependencies>
+
+  <scm>
+    <tag>sead-query-solr-1.0.0</tag>
+  </scm>
 </project>

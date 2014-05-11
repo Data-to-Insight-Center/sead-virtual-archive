@@ -3,6 +3,7 @@
 
   <groupId>org.seadva.ingest</groupId>
   <artifactId>sead-ingest-core</artifactId>
+  <version>1.0.0</version>
   <name>Extended core ingest api</name>
   <packaging>jar</packaging>
 
@@ -38,37 +39,37 @@
       <dependency>
           <groupId>org.dataconservancy.dcs</groupId>
           <artifactId>dcs-id-api</artifactId>
-          <version>${parent.version}</version>
+          <version>1.1.0-SNAPSHOT</version>
       </dependency>
 
       <dependency>
           <groupId>org.seadva.model</groupId>
           <artifactId>sead-model</artifactId>
-          <version>${parent.version}</version>
+          <version>1.0.0</version>
       </dependency>
 
       <dependency>
           <groupId>org.seadva.model</groupId>
           <artifactId>sead-model-builder-xstream</artifactId>
-          <version>${parent.version}</version>
+          <version>1.0.0</version>
       </dependency>
 
       <dependency>
           <groupId>org.dataconservancy.dcs</groupId>
           <artifactId>dcs-ingest-core</artifactId>
-          <version>${parent.version}</version>
+          <version>1.1.0-SNAPSHOT</version>
       </dependency>
 
       <dependency>
           <groupId>org.dataconservancy.dcs</groupId>
           <artifactId>dcs-ingest-file</artifactId>
-          <version>${parent.version}</version>
+          <version>1.1.1-SNAPSHOT</version>
       </dependency>
 
       <dependency>
           <groupId>org.dataconservancy.query</groupId>
           <artifactId>dcs-query-api</artifactId>
-          <version>${parent.version}</version>
+          <version>1.1.0-SNAPSHOT</version>
       </dependency>
 
       <dependency>
@@ -124,4 +125,8 @@
       </dependency>
 
   </dependencies>
+
+  <scm>
+    <tag>sead-ingest-core-1.0.0</tag>
+  </scm>
 </project>
