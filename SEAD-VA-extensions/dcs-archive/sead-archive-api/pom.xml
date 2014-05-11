@@ -21,7 +21,7 @@
 
     <groupId>org.seadva.archive</groupId>
     <artifactId>sead-archive-api</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1-SNAPSHOT</version>
     <name>SEAD's extension of dcs Archive API</name>
     <packaging>jar</packaging>
 
@@ -64,14 +64,14 @@
         <dependency>
             <groupId>org.seadva.model</groupId>
             <artifactId>sead-model</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1-SNAPSHOT</version>
             <type>jar</type>
         </dependency>
 
         <dependency>
             <groupId>org.seadva.model</groupId>
             <artifactId>sead-model-builder-xstream</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1-SNAPSHOT</version>
             <type>jar</type>
         </dependency>
 
@@ -83,9 +83,4 @@
         </dependency>
 
     </dependencies>
-
-
-  <scm>
-    <tag>sead-archive-api-1.0.0</tag>
-  </scm>
 </project>

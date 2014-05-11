@@ -19,7 +19,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.seadva.bagit</groupId>
     <artifactId>bagit</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
     <packaging>war</packaging>
     <name>BagIt REST Service</name>
 
@@ -185,14 +185,14 @@
         <dependency>
             <artifactId>sead-model</artifactId>
             <groupId>org.seadva.model</groupId>
-            <version>1.0.0</version>
+            <version>1.0.1-SNAPSHOT</version>
             <type>jar</type>
         </dependency>
 
         <dependency>
             <artifactId>sead-model-builder-xstream</artifactId>
             <groupId>org.seadva.model</groupId>
-            <version>1.0.0</version>
+            <version>1.0.1-SNAPSHOT</version>
             <type>jar</type>
         </dependency>
 
@@ -299,7 +299,7 @@
         <connection>scm:git:ssh://git@github.com:Data2Insight/sead-virtual-archive.git</connection>
         <developerConnection>scm:git:[fetch=]ssh://git@github.com:Data2Insight/sead-virtual-archive.git[push=]ssh://git@github.com:Data2Insight/sead-virtual-archive.git</developerConnection>
         <url>https://github.com:Data2Insight/sead-virtual-archive</url>
-        <tag>bagit-1.0.0</tag>
+        <tag>v1.0.0</tag>
     </scm>
 
 </project>

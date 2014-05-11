@@ -25,7 +25,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.dataconservancy.access</groupId>
   <artifactId>sead-access</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1-SNAPSHOT</version>
   <packaging>war</packaging>
   <name>Access UI</name>
 
@@ -63,19 +63,19 @@
       <dependency>
           <groupId>org.seadva.model</groupId>
           <artifactId>sead-model</artifactId>
-          <version>1.0.0</version>
+          <version>1.0.1-SNAPSHOT</version>
       </dependency>
 
       <dependency>
           <groupId>org.seadva.model</groupId>
           <artifactId>sead-model-builder-xstream</artifactId>
-          <version>1.0.0</version>
+          <version>1.0.1-SNAPSHOT</version>
       </dependency>
 
       <dependency>
           <groupId>org.seadva.ingest</groupId>
           <artifactId>sead-ingest-core</artifactId>
-          <version>1.0.0</version>
+          <version>1.0.1-SNAPSHOT</version>
       </dependency>
       <dependency>
           <groupId>org.dataconservancy.model</groupId>
@@ -297,8 +297,4 @@
       </plugin>
     </plugins>
   </reporting>
-
-  <scm>
-    <tag>sead-access-1.0.0</tag>
-  </scm>
 </project>

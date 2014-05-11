@@ -20,7 +20,7 @@
 
     <groupId>org.seadva.archive</groupId>
     <artifactId>sead-archive-impl-dspace</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1-SNAPSHOT</version>
     <name>DSpace archival implementation</name>
     <packaging>jar</packaging>
 
@@ -97,7 +97,7 @@
             <groupId>org.seadva.archive</groupId>
             <artifactId>sead-archive-api</artifactId>
             <scope>compile</scope>
-            <version>1.0.0</version>
+            <version>1.0.1-SNAPSHOT</version>
             <optional>false</optional>
         </dependency>
 
@@ -105,7 +105,7 @@
             <groupId>org.seadva.model</groupId>
             <artifactId>sead-model</artifactId>
             <scope>compile</scope>
-            <version>1.0.0</version>
+            <version>1.0.1-SNAPSHOT</version>
             <optional>false</optional>
         </dependency>
 
@@ -113,7 +113,7 @@
             <groupId>org.seadva.model</groupId>
             <artifactId>sead-model-builder-xstream</artifactId>
             <scope>compile</scope>
-            <version>1.0.0</version>
+            <version>1.0.1-SNAPSHOT</version>
             <optional>false</optional>
         </dependency>
 
@@ -250,8 +250,4 @@
         </dependency>
 
     </dependencies>
-
-  <scm>
-    <tag>sead-archive-impl-dspace-1.0.0</tag>
-  </scm>
 </project>

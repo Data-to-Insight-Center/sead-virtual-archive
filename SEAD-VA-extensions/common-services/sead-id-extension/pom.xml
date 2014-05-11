@@ -25,7 +25,7 @@
 		
   <groupId>org.dataconservancy.dcs</groupId>
   <artifactId>sead-id-extension</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>	
   <name>sead-id-extension</name>
   
@@ -94,9 +94,4 @@
 
 
   </dependencies>
-  
-
-  <scm>
-    <tag>sead-id-extension-1.0.0</tag>
-  </scm>
 </project>

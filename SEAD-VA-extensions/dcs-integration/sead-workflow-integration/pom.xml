@@ -28,7 +28,7 @@
   </properties>
 
   <artifactId>sead-workflow-integration</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1-SNAPSHOT</version>
   <name>sead-workflow-integration</name>
   <packaging>war</packaging>
 
@@ -226,13 +226,13 @@
       <dependency>
           <groupId>org.dataconservancy.dcs</groupId>
           <artifactId>sead-ingest-RO</artifactId>
-          <version>1.0.0</version>
+          <version>1.0.1-SNAPSHOT</version>
           <scope>runtime</scope>
       </dependency>
       <dependency>
           <groupId>org.dataconservancy.dcs</groupId>
           <artifactId>sead-ingest-services</artifactId>
-          <version>1.0.0</version>
+          <version>1.0.1-SNAPSHOT</version>
           <scope>runtime</scope>
           <exclusions>
               <exclusion>
@@ -248,14 +248,14 @@
       <dependency>
           <groupId>org.seadva.ingest</groupId>
           <artifactId>sead-ingest-core</artifactId>
-          <version>1.0.0</version>
+          <version>1.0.1-SNAPSHOT</version>
           <scope>runtime</scope>
       </dependency>
 
     <dependency>
         <groupId>org.seadva.archive</groupId>
         <artifactId>sead-archive-impl-sda</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1-SNAPSHOT</version>
         <exclusions>
             <exclusion>
                 <groupId>javax.servlet</groupId>
@@ -267,27 +267,27 @@
       <dependency>
           <groupId>org.seadva.archive</groupId>
           <artifactId>sead-archive-impl-s3</artifactId>
-          <version>1.0.0</version>
+          <version>1.0.1-SNAPSHOT</version>
       </dependency>
 
 
       <dependency>
           <groupId>org.seadva.archive</groupId>
           <artifactId>sead-archive-impl-dspace</artifactId>
-          <version>1.0.0</version>
+          <version>1.0.1-SNAPSHOT</version>
       </dependency>
 
 
       <dependency>
         <groupId>org.seadva.archive</groupId>
         <artifactId>sead-archive-api</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1-SNAPSHOT</version>
     </dependency>
     
       <dependency>
           <groupId>org.seadva.query</groupId>
           <artifactId>sead-query-solr</artifactId>
-          <version>1.0.0</version>
+          <version>1.0.1-SNAPSHOT</version>
       </dependency>
 
 
@@ -305,25 +305,25 @@
       <dependency>
           <groupId>org.dataconservancy.index</groupId>
           <artifactId>sead-index-extension</artifactId>
-          <version>1.0.0</version>
+          <version>1.0.1-SNAPSHOT</version>
       </dependency>
 
       <dependency>
           <groupId>org.seadva.model</groupId>
           <artifactId>sead-model</artifactId>
-          <version>1.0.0</version>
+          <version>1.0.1-SNAPSHOT</version>
       </dependency>
 
       <dependency>
           <groupId>org.seadva.model</groupId>
           <artifactId>sead-model-builder-xstream</artifactId>
-          <version>1.0.0</version>
+          <version>1.0.1-SNAPSHOT</version>
       </dependency>
 
       <dependency>
           <groupId>org.dataconservancy.access</groupId>
           <artifactId>sead-access-http</artifactId>
-          <version>1.0.0</version>
+          <version>1.0.1-SNAPSHOT</version>
       </dependency>
      
       <dependency>
@@ -632,8 +632,4 @@
       </dependency>
 
   </dependencies>
-
-  <scm>
-    <tag>sead-workflow-integration-1.0.0</tag>
-  </scm>
 </project>

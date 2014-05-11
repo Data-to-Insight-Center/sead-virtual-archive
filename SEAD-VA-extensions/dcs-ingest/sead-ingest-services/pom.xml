@@ -24,7 +24,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.dataconservancy.dcs</groupId>
   <artifactId>sead-ingest-services</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>Research Object Model</name>
   <description>The Java object model for SEAD Virtual Archive</description>
@@ -59,19 +59,19 @@
       <dependency>
           <groupId>org.dataconservancy.dcs</groupId>
           <artifactId>sead-id-extension</artifactId>
-          <version>1.0.0</version>
+          <version>1.0.1-SNAPSHOT</version>
       </dependency>
 
       <dependency>
           <groupId>org.seadva.model</groupId>
           <artifactId>sead-model</artifactId>
-          <version>1.0.0</version>
+          <version>1.0.1-SNAPSHOT</version>
       </dependency>
 
       <dependency>
           <groupId>org.seadva.model</groupId>
           <artifactId>sead-model-builder-xstream</artifactId>
-          <version>1.0.0</version>
+          <version>1.0.1-SNAPSHOT</version>
       </dependency>
 
       <dependency>
@@ -108,7 +108,7 @@
       <dependency>
           <groupId>org.seadva.archive</groupId>
           <artifactId>sead-archive-api</artifactId>
-          <version>1.0.0</version>
+          <version>1.0.1-SNAPSHOT</version>
       </dependency>
 
       <dependency>
@@ -154,8 +154,4 @@
           <version>1.1</version>
       </dependency>
   </dependencies>
-
-  <scm>
-    <tag>sead-ingest-services-1.0.0</tag>
-  </scm>
 </project>

@@ -8,7 +8,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.dataconservancy.index</groupId>
   <artifactId>sead-index-extension</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>sead-index-extension</name>
@@ -75,7 +75,7 @@
       <dependency>
           <artifactId>sead-model</artifactId>
           <groupId>org.seadva.model</groupId>
-          <version>1.0.0</version>
+          <version>1.0.1-SNAPSHOT</version>
       </dependency>
 
       <dependency>
@@ -110,8 +110,4 @@
 
 
   </dependencies>
-
-  <scm>
-    <tag>sead-index-extension-1.0.0</tag>
-  </scm>
 </project>

@@ -3,7 +3,7 @@
 
   <groupId>org.dataconservancy.dcs</groupId>
   <artifactId>sead-ingest-RO</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <parent>
@@ -61,13 +61,13 @@
       <dependency>
           <groupId>org.seadva.model</groupId>
           <artifactId>sead-model</artifactId>
-          <version>1.0.0</version>
+          <version>1.0.1-SNAPSHOT</version>
       </dependency>
 
       <dependency>
           <groupId>org.seadva.model</groupId>
           <artifactId>sead-model-builder-xstream</artifactId>
-          <version>1.0.0</version>
+          <version>1.0.1-SNAPSHOT</version>
       </dependency>
     <dependency>
       <groupId>org.dataconservancy.model</groupId>
@@ -148,9 +148,4 @@
     </dependency>
 
   </dependencies>
-
-
-  <scm>
-    <tag>sead-ingest-RO-1.0.0</tag>
-  </scm>
 </project>

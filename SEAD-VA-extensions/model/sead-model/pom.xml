@@ -24,7 +24,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.seadva.model</groupId>
   <artifactId>sead-model</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>Research Object Model</name>
   <description>The Java object model for SEAD Virtual Archive</description>
