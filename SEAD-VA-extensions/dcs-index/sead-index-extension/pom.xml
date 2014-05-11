@@ -8,7 +8,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.dataconservancy.index</groupId>
   <artifactId>sead-index-extension</artifactId>
-  <version>1.1.0-SNAPSHOT</version>
+  <version>1.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>sead-index-extension</name>
@@ -51,7 +51,7 @@
       <dependency>
           <artifactId>dcs-index-api</artifactId>
           <groupId>org.dataconservancy.index</groupId>
-          <version>${project.parent.version}</version>
+          <version>1.1.0-SNAPSHOT</version>
           <type>jar</type>
           <scope>compile</scope>
       </dependency>
@@ -59,7 +59,7 @@
       <dependency>
           <artifactId>dcs-index-dcp-solr</artifactId>
           <groupId>org.dataconservancy.index</groupId>
-          <version>${project.parent.version}</version>
+          <version>1.1.1-SNAPSHOT</version>
           <type>jar</type>
           <scope>compile</scope>
       </dependency>
@@ -67,7 +67,7 @@
       <dependency>
           <artifactId>dcs-ingest-core</artifactId>
           <groupId>org.dataconservancy.dcs</groupId>
-          <version>${project.parent.version}</version>
+          <version>1.1.0-SNAPSHOT</version>
           <type>jar</type>
           <scope>compile</scope>
       </dependency>
@@ -75,7 +75,7 @@
       <dependency>
           <artifactId>sead-model</artifactId>
           <groupId>org.seadva.model</groupId>
-          <version>${project.parent.version}</version>
+          <version>1.0.1-SNAPSHOT</version>
       </dependency>
 
       <dependency>

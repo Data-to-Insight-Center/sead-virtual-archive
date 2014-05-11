@@ -5,6 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.seadva.model</groupId>
   <artifactId>sead-model-builder-xstream</artifactId>
+  <version>1.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>Research Object Model Xstream builder</name>
   <description>The Java object model for SEAD Virtual Archive</description>
@@ -27,7 +28,7 @@
       <dependency>
           <groupId>org.dataconservancy.model</groupId>
           <artifactId>dcs-model</artifactId>
-          <version>${project.parent.version}</version>
+          <version>1.1.0-SNAPSHOT</version>
           <scope>compile</scope>
       </dependency>
 
@@ -35,20 +36,20 @@
           <groupId>org.dataconservancy.model</groupId>
           <artifactId>dcs-model-builder</artifactId>
           <scope>compile</scope>
-          <version>${project.parent.version}</version>
+          <version>1.1.0-SNAPSHOT</version>
       </dependency>
 
       <dependency>
           <groupId>org.dataconservancy.model</groupId>
           <artifactId>dcs-model-builder-xstream</artifactId>
           <scope>compile</scope>
-          <version>${project.parent.version}</version>
+          <version>1.1.0-SNAPSHOT</version>
       </dependency>
 
       <dependency>
           <groupId>org.seadva.model</groupId>
           <artifactId>sead-model</artifactId>
-          <version>${project.parent.version}</version>
+          <version>1.0.0-SNAPSHOT</version>
           <scope>compile</scope>
       </dependency>
 
@@ -74,5 +75,4 @@
     <!-- Test ===================================================== -->
     
   </dependencies>
-
 </project>

@@ -20,6 +20,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.dataconservancy.access</groupId>
   <artifactId>sead-access-http</artifactId>
+  <version>1.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>HTTP Access API (SEAD related sevlets defined)</name>
   
@@ -62,104 +63,98 @@
       <dependency>
           <groupId>org.seadva.archive</groupId>
           <artifactId>sead-archive-api</artifactId>
-          <version>${project.parent.version}</version>
+          <version>1.0.1-SNAPSHOT</version>
       </dependency>
 
       <dependency>
           <groupId>org.seadva.archive</groupId>
           <artifactId>sead-archive-impl-sda</artifactId>
-          <version>${project.parent.version}</version>
+          <version>1.0.1-SNAPSHOT</version>
       </dependency>
 
       <dependency>
           <groupId>org.seadva.model</groupId>
           <artifactId>sead-model</artifactId>
-          <version>${project.parent.version}</version>
+          <version>1.0.1-SNAPSHOT</version>
       </dependency>
 
       <dependency>
           <groupId>org.seadva.model</groupId>
           <artifactId>sead-model-builder-xstream</artifactId>
-          <version>${project.parent.version}</version>
+          <version>1.0.1-SNAPSHOT</version>
       </dependency>
 
       <dependency>
           <groupId>org.dataconservancy.access</groupId>
           <artifactId>dcs-access-http</artifactId>
-          <version>${project.parent.version}</version>
+          <version>1.1.1-SNAPSHOT</version>
       </dependency>
 
       <dependency>
           <groupId>org.dataconservancy.archive</groupId>
           <artifactId>dcs-archive-api</artifactId>
-          <version>${project.parent.version}</version>
+          <version>1.1.0-SNAPSHOT</version>
       </dependency>
 
       <dependency>
           <groupId>org.dataconservancy.model</groupId>
           <artifactId>dcs-model</artifactId>
-          <version>${project.parent.version}</version>
+          <version>1.1.0-SNAPSHOT</version>
       </dependency>
 
       <dependency>
           <groupId>org.dataconservancy.model</groupId>
           <artifactId>dcs-model-builder</artifactId>
-          <version>${project.parent.version}</version>
+          <version>1.1.0-SNAPSHOT</version>
       </dependency>
 
       <dependency>
           <groupId>org.dataconservancy.access</groupId>
           <artifactId>dcs-access-http</artifactId>
-          <version>${project.parent.version}</version>
+          <version>1.1.1-SNAPSHOT</version>
       </dependency>
 
       <dependency>
           <groupId>org.dataconservancy.query</groupId>
           <artifactId>dcs-query-dcs-datamodel-solr</artifactId>
-          <version>${project.parent.version}</version>
+          <version>1.1.0-SNAPSHOT</version>
       </dependency>
 
       <dependency>
           <groupId>org.dataconservancy.dcs</groupId>
           <artifactId>dcs-ingest-core</artifactId>
-          <version>${project.parent.version}</version>
+          <version>1.1.0-SNAPSHOT</version>
       </dependency>
 
       <dependency>
           <groupId>org.seadva.ingest</groupId>
           <artifactId>sead-ingest-core</artifactId>
-          <version>${project.parent.version}</version>
-      </dependency>
-
-      <dependency>
-          <groupId>org.dataconservancy.archive</groupId>
-          <artifactId>sead-archive-impl-s3</artifactId>
-          <version>${project.parent.version}</version>
+          <version>1.0.1-SNAPSHOT</version>
       </dependency>
 
       <dependency>
           <groupId>org.seadva.ingest</groupId>
           <artifactId>sead-ingest-core</artifactId>
-          <version>${project.parent.version}</version>
+          <version>1.0.1-SNAPSHOT</version>
       </dependency>
 
 
       <dependency>
           <groupId>org.seadva.archive</groupId>
           <artifactId>sead-archive-impl-s3</artifactId>
-          <version>${project.parent.version}</version>
+          <version>1.0.1-SNAPSHOT</version>
       </dependency>
 
       <dependency>
           <groupId>org.seadva.query</groupId>
           <artifactId>sead-query-solr</artifactId>
-          <version>1.1.0-SNAPSHOT</version>
+          <version>1.0.1-SNAPSHOT</version>
       </dependency>
 
       <dependency>
           <groupId>org.dataconservancy.index</groupId>
           <artifactId>sead-index-extension</artifactId>
-          <version>${project.parent.version}</version>
+          <version>1.0.1-SNAPSHOT</version>
       </dependency>
 
       <dependency>

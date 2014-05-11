@@ -37,7 +37,6 @@ public class SearchTest extends AbstractSearchTest {
     // sources.
     public void setUp() throws Exception {
         super.setUp();
-        archive = null;
     }
 
     public void testEventsAndAncestors() throws Exception {

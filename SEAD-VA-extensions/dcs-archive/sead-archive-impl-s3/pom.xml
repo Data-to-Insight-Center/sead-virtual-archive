@@ -19,8 +19,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.dataconservancy.archive</groupId>
+    <groupId>org.seadva.archive</groupId>
     <artifactId>sead-archive-impl-s3</artifactId>
+  <version>1.0.1-SNAPSHOT</version>
     <name>S3 cloud implementation</name>
     <packaging>jar</packaging>
 
@@ -61,46 +62,46 @@
         <dependency>
             <groupId>org.dataconservancy.archive</groupId>
             <artifactId>dcs-archive-api</artifactId>
-            <version>${project.parent.version}</version>
+            <version>1.1.0-SNAPSHOT</version>
             <type>jar</type>
             <optional>false</optional>
         </dependency>
         <dependency>
             <groupId>org.dataconservancy.dcs</groupId>
             <artifactId>dcs-ingest-core</artifactId>
-            <version>${project.parent.version}</version>
+            <version>1.1.0-SNAPSHOT</version>
             <type>jar</type>
             <optional>false</optional>
         </dependency>
         <dependency>
             <groupId>org.dataconservancy.model</groupId>
             <artifactId>dcs-model</artifactId>
-            <version>${project.parent.version}</version>
+            <version>1.1.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.dataconservancy.model</groupId>
             <artifactId>dcs-model-builder</artifactId>
-            <version>${project.parent.version}</version>
+            <version>1.1.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.dataconservancy.model</groupId>
             <artifactId>dcs-model-builder-xstream</artifactId>
-            <version>${project.parent.version}</version>
+            <version>1.1.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.seadva.archive</groupId>
             <artifactId>sead-archive-api</artifactId>
-            <version>${project.parent.version}</version>
+            <version>1.0.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.seadva.model</groupId>
             <artifactId>sead-model</artifactId>
             <scope>compile</scope>
-            <version>${project.parent.version}</version>
+            <version>1.0.1-SNAPSHOT</version>
             <optional>false</optional>
         </dependency>
 
@@ -108,7 +109,7 @@
             <groupId>org.seadva.model</groupId>
             <artifactId>sead-model-builder-xstream</artifactId>
             <scope>compile</scope>
-            <version>${project.parent.version}</version>
+            <version>1.0.1-SNAPSHOT</version>
             <optional>false</optional>
         </dependency>
 
