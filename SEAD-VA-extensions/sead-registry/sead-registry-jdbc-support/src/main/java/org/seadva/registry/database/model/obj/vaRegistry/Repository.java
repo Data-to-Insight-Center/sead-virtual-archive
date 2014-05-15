@@ -126,7 +126,7 @@ public class Repository implements Cloneable, Serializable, IPojoGenEntity, IRep
      * Return the value associated with the column: dataLocation.
 	 * @return A Set&lt;DataLocation&gt; object (this.dataLocation)
 	 */
- 	@OneToMany( fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE }, mappedBy = "id.locationType"  )
+ 	@OneToMany( fetch = FetchType.LAZY, cascade = { CascadeType.DETACH }, mappedBy = "id.locationType"  )
  	@org.hibernate.annotations.Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
 	@Basic( optional = false )
 	@Column( name = "repository_id", nullable = false  )

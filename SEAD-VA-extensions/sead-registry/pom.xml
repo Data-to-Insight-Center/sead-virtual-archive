@@ -32,7 +32,6 @@
     </modules>
 
     <build>
-        <finalName>registry</finalName>
         <plugins>
 
             <plugin>

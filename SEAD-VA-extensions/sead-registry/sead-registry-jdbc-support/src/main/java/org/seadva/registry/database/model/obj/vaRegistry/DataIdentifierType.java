@@ -99,7 +99,7 @@ public class DataIdentifierType implements Cloneable, Serializable, IPojoGenEnti
      * Return the value associated with the column: dataIdentifier.
 	 * @return A Set&lt;DataIdentifier&gt; object (this.dataIdentifier)
 	 */
- 	@OneToMany( fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE }, mappedBy = "id.dataIdentifierType"  )
+ 	@OneToMany( fetch = FetchType.LAZY, cascade = { CascadeType.DETACH }, mappedBy = "id.dataIdentifierType"  )
  	@org.hibernate.annotations.Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
 	@Basic( optional = false )
 	@Column( name = "data_identifier_type_id", nullable = false  )
