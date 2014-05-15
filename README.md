@@ -31,6 +31,10 @@ Please use the jar in utils/initDB folder to initialize the database. Command to
 
 <u><b>Build</b></u>
 <ol>
+<li>Download the jar file hbnpojogen-persistence-1.4.4.jar
+<br/>
+Copy the jar file to your local maven repository. The file needs to be copied to the directory as shown below:<br/>
+~/.m2/repository/com/felees/hbnpojogen-persistence/1.4.4/
 <li>Building SEAD Registry module
 <li>Building backend workflow
 
