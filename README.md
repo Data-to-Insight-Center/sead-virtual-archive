@@ -31,6 +31,7 @@ Please use the jar in utils/initDB folder to initialize the database. Command to
 
 <u><b>Build</b></u>
 <ol>
+<li>Building SEAD Registry module
 <li>Building backend workflow
 
 cd dcs-integration/sead-workflow-integration
