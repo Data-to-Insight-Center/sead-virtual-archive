@@ -420,7 +420,7 @@ public class SipGenerationHandler implements Handler{
                         if(sourcetriples.get(0).getObjectLiteral().startsWith("http"))
                             file.setSource(sourcetriples.get(0).getObjectLiteral());
                         else
-                            file.setSource(unzippedDir+sourcetriples.get(0).getObjectLiteral());
+                            file.setSource("file://"+unzippedDir+sourcetriples.get(0).getObjectLiteral());
                     }
 
                     selector = new TripleSelector();
