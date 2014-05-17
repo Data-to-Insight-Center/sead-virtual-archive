@@ -18,7 +18,8 @@ package org.dataconservancy.dcs.access.http;
 
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
-import org.dataconservancy.archive.impl.cloud.AmazonS3;
+import org.apache.commons.io.IOUtils;
+import org.dataconservancy.dcs.index.dcpsolr.SeadSolrService;
 import org.dataconservancy.dcs.query.api.QueryServiceException;
 import org.dataconservancy.dcs.query.dcpsolr.SeadConfig;
 import org.dataconservancy.dcs.query.dcpsolr.SeadDataModelQueryService;
@@ -28,21 +29,26 @@ import org.dataconservancy.model.dcs.DcsEntity;
 import org.dataconservancy.model.dcs.DcsFormat;
 import org.seadva.archive.ArchiveEnum;
 import org.seadva.archive.impl.cloud.Sftp;
+import org.seadva.model.SeadDataLocation;
 import org.seadva.model.SeadFile;
 import org.seadva.model.builder.xstream.SeadXstreamStaxModelBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.net.ssl.*;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
 
 public class SeadDatastreamServlet
         extends HttpServlet {
@@ -58,11 +64,13 @@ public class SeadDatastreamServlet
     private DcsModelBuilder dcpbuilder;
 
     Sftp sftp;
+
     public void init(ServletConfig cfg) throws ServletException {
         super.init(cfg);
        
         this.dcpbuilder = new SeadXstreamStaxModelBuilder();
-        this.config = SeadConfig.instance(getServletContext());
+        this.config = SeadConfig.instance(
+                getServletContext());
 
     }
     
@@ -79,9 +87,10 @@ public class SeadDatastreamServlet
     
     private void prepare(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
+
         String id = ServletUtil.getResource(req);
 
-        id = id.replace(":/","://");
+        id = id.replace(":/","://").replace(":///","://");
         if (id == null) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
                            "Malformed entity id " + req.getPathInfo());
@@ -91,7 +100,13 @@ public class SeadDatastreamServlet
         DcsEntity entity = null;
         
         try {
-            SeadDataModelQueryService queryService = (SeadDataModelQueryService) config.dcpQueryService();
+            String solrPath = "/tmp/index/solrapr172";
+            SeadSolrService solr =
+                    new SeadSolrService(new File(
+                            solrPath
+                    ));
+
+            SeadDataModelQueryService queryService = new SeadDataModelQueryService(solr);//(SeadDataModelQueryService) config.dcpQueryService();
             entity = queryService.lookupEntity(id);
         } catch (Exception e) {
             final String msg = "Error performing search for entity '" + id + "': " + e.getMessage();
@@ -141,12 +156,21 @@ public class SeadDatastreamServlet
 
 
         resp.setHeader("ETag", file.getId());
+        resp.setHeader("fileName", file.getName());
+        if(file.getFormats().size()>0){
+            resp.setHeader("Content-Type", file.getFormats().iterator().next().getFormat());
+        }
+        resp.setHeader("Content-Disposition",
+                "inline; filename=" + file.getName());
     }
 
     private void getFile(SeadFile file, OutputStream destination){
 
      String filePath = null;
-     if(file.getPrimaryLocation().getType()!=null&&file.getPrimaryLocation().getLocation()!=null&&file.getPrimaryLocation().getName()!=null){
+     if(file.getPrimaryLocation().getType()!=null&&file.getPrimaryLocation().getType().length()>0
+             &&file.getPrimaryLocation().getLocation()!=null&&file.getPrimaryLocation().getLocation().length()>0
+             &&file.getPrimaryLocation().getName()!=null&&file.getPrimaryLocation().getName().length()>0
+        ){
          if(
                  (file.getPrimaryLocation().getName().equalsIgnoreCase(ArchiveEnum.Archive.IU_SCHOLARWORKS.getArchive()))
                          ||
@@ -157,9 +181,33 @@ public class SeadDatastreamServlet
              try {
                  connection = new URL(file.getPrimaryLocation().getLocation()).openConnection();
                  connection.setDoOutput(true);
-                 destination = connection.getOutputStream();
+                 // Create a trust manager that does not validate certificate chains
+                 final TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+                     @Override
+                     public void checkClientTrusted( final X509Certificate[] chain, final String authType ) {
+                     }
+                     @Override
+                     public void checkServerTrusted( final X509Certificate[] chain, final String authType ) {
+                     }
+                     @Override
+                     public X509Certificate[] getAcceptedIssuers() {
+                         return null;
+                     }
+                 } };
+                 if(connection.getURL().getProtocol().equalsIgnoreCase("https")){
+                     final SSLContext sslContext = SSLContext.getInstance( "SSL" );
+                     sslContext.init( null, trustAllCerts, new java.security.SecureRandom() );
+                     // Create an ssl socket factory with our all-trusting manager
+                     final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+                     ((HttpsURLConnection) connection ).setSSLSocketFactory( sslSocketFactory );
+                 }
+                 IOUtils.copy(connection.getInputStream(),destination);
              } catch (IOException e) {
                  e.printStackTrace();
+             } catch (NoSuchAlgorithmException e) {
+                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+             } catch (KeyManagementException e) {
+                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
              }
              return;
          }
@@ -183,6 +231,32 @@ public class SeadDatastreamServlet
                     e.printStackTrace();
                 }
           }
+        }
+        else{
+         if(file.getSecondaryDataLocations()!=null&&file.getSecondaryDataLocations().size()>0){
+             for(SeadDataLocation dataLocation:file.getSecondaryDataLocations()){
+            if( dataLocation.getType().equalsIgnoreCase(ArchiveEnum.Archive.SDA.getType().getText())
+                         &&dataLocation.getName().equalsIgnoreCase(
+                         ArchiveEnum.Archive.SDA.getArchive())
+                         ) {
+                     filePath = dataLocation.getLocation();
+
+                     String[] pathArr = filePath.split("/");
+
+                     try {
+                         sftp = new Sftp(
+                                 config.getSdahost(),config.getSdauser(),config.getSdapwd(),config.getSdamount()
+                         );
+                         sftp.downloadFile(filePath.substring(0,filePath.lastIndexOf('/')), pathArr[pathArr.length-1], destination);
+                         sftp.disConnectSession();
+                     } catch (JSchException e) {
+                         e.printStackTrace();
+                     } catch (SftpException e) {
+                         e.printStackTrace();
+                     }
+                 }
+             }
+         }
         }
         return;
     }
