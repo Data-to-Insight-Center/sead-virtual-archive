@@ -9,11 +9,8 @@ import org.seadva.model.SeadEvent;
 import org.seadva.model.SeadFile;
 import org.seadva.model.pack.ResearchObject;
 import org.seadva.registry.client.RegistryClient;
-import org.seadva.registry.database.factories.vaRegistry.HibernateVaRegistryDaoFactory;
 import org.seadva.registry.database.model.obj.vaRegistry.*;
 import org.seadva.registry.database.model.obj.vaRegistry.Collection;
-import org.seadva.registry.database.services.data.DataLayerVaRegistry;
-import org.seadva.registry.database.services.data.DataLayerVaRegistryImpl;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -21,11 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- * Created with IntelliJ IDEA.
- * User: kavchand
- * Date: 4/8/14
- * Time: 4:38 AM
- * To change this template use File | Settings | File Templates.
+ * Maps SIP to client POST calls to registry and maps GET client calls to registry to reconstructed SIP
  */
 public class DcsDBMapper {
 

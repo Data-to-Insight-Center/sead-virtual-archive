@@ -15,8 +15,6 @@
  */
 package org.seadva.registry.mapper;
 
-//TODO this is formatted incorrectly because eclipse refuses to format...
-
 import java.util.HashMap;
 import java.util.Map;
 
