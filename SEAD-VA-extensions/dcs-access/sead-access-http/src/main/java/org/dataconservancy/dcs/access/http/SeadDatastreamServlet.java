@@ -19,7 +19,6 @@ package org.dataconservancy.dcs.access.http;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 import org.apache.commons.io.IOUtils;
-import org.dataconservancy.dcs.index.dcpsolr.SeadSolrService;
 import org.dataconservancy.dcs.query.api.QueryServiceException;
 import org.dataconservancy.dcs.query.dcpsolr.SeadConfig;
 import org.dataconservancy.dcs.query.dcpsolr.SeadDataModelQueryService;
@@ -41,7 +40,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
@@ -100,13 +98,8 @@ public class SeadDatastreamServlet
         DcsEntity entity = null;
         
         try {
-            String solrPath = "/tmp/index/solrapr172";
-            SeadSolrService solr =
-                    new SeadSolrService(new File(
-                            solrPath
-                    ));
 
-            SeadDataModelQueryService queryService = new SeadDataModelQueryService(solr);//(SeadDataModelQueryService) config.dcpQueryService();
+            SeadDataModelQueryService queryService = (SeadDataModelQueryService) config.dcpQueryService();
             entity = queryService.lookupEntity(id);
         } catch (Exception e) {
             final String msg = "Error performing search for entity '" + id + "': " + e.getMessage();
@@ -155,13 +148,13 @@ public class SeadDatastreamServlet
         getFile(file, resp.getOutputStream());
 
 
-        resp.setHeader("ETag", file.getId());
+        resp.setHeader("ETag", file.getName());
         resp.setHeader("fileName", file.getName());
         if(file.getFormats().size()>0){
             resp.setHeader("Content-Type", file.getFormats().iterator().next().getFormat());
         }
         resp.setHeader("Content-Disposition",
-                "inline; filename=" + file.getName());
+                "attachment; filename*=UTF-8''" + file.getName());
     }
 
     private void getFile(SeadFile file, OutputStream destination){
