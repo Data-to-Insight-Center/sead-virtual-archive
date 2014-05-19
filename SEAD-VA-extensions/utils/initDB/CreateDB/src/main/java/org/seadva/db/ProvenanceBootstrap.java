@@ -55,6 +55,7 @@ public class ProvenanceBootstrap {
 	                   " percentage INTEGER," +
 	                   " date timestamp, " +
 	                   " status VARCHAR(255)," +
+                       " detail VARCHAR(1023)," +
 	                   " PRIMARY KEY ( eventId ))";
 	        result = pst.executeUpdate(createTable);
 	        
