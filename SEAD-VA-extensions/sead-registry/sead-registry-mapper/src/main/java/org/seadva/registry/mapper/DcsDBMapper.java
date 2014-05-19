@@ -38,7 +38,7 @@ public class DcsDBMapper {
     /**
      * Converts SIP into smaller entities and makes POST calls through REST client to insert into Registry
      * @param sip
-     * @throws IOException
+     * @throws java.io.IOException
      * @throws ClassNotFoundException
      */
 
@@ -55,7 +55,7 @@ public class DcsDBMapper {
             collection.setEntityName(du.getTitle());
             collection.setEntityCreatedTime(new Date());
             collection.setEntityLastUpdatedTime(new Date());
-            collection.setState((State) client.getEntity("state:1", State.class.getName()));
+
 
             //Abstract
             Property property;
@@ -73,12 +73,13 @@ public class DcsDBMapper {
                     collection.addProperty(property);
                 }
             }
-
+            if(du.getType()!=null)
+                collection.setState((State) client.getEntity(DcsDBField.nameStateMap.get(du.getType()), State.class.getName()));
 
             List<Property> properties = new ArrayList<Property>();
             for(DcsMetadata metadata:du.getMetadata()){
                 XStream xStream = new XStream(new DomDriver());
-                xStream.alias("map",java.util.Map.class);
+                xStream.alias("map",Map.class);
                 Map<String,String> map = (Map<String, String>) xStream.fromXML(metadata.getMetadata());
                 Iterator iterator = map.entrySet().iterator();
 
@@ -180,7 +181,7 @@ public class DcsDBMapper {
                 properties = new ArrayList<Property>();
                 for(DcsMetadata metadata:dcsFile.getMetadata()){
                     XStream xStream = new XStream(new DomDriver());
-                    xStream.alias("map",java.util.Map.class);
+                    xStream.alias("map",Map.class);
                     Map<String,String> map = (Map<String, String>) xStream.fromXML(metadata.getMetadata());
                     Iterator iterator = map.entrySet().iterator();
 
@@ -233,7 +234,6 @@ public class DcsDBMapper {
                 }
                 client.postAggregation(aggregationWrappers, collection.getId());
             }
-            System.out.print("done");
         }
     }
 
@@ -285,10 +285,13 @@ public class DcsDBMapper {
         SeadFile seadFile = new SeadFile();
         seadFile.setId(file.getId());
         seadFile.setName(file.getFileName());
-        if(file.getSizeBytes()<0)
-            seadFile.setSizeBytes(0);
-        else
-            seadFile.setSizeBytes(file.getSizeBytes());
+        if(file.getSizeBytes()!=null){
+            if(file.getSizeBytes()<0)
+                seadFile.setSizeBytes(0);
+            else
+                seadFile.setSizeBytes(file.getSizeBytes());
+        }
+
         seadFile.setDepositDate(simpleDateFormat.format(file.getEntityCreatedTime()));
         seadFile.setMetadataUpdateDate(simpleDateFormat.format(file.getEntityLastUpdatedTime()));
         if(file.getIsObsolete()==0)
@@ -320,7 +323,7 @@ public class DcsDBMapper {
 
         for(Property property:file.getProperties()){
             XStream xStream = new XStream(new DomDriver());
-            xStream.alias("map",java.util.Map.class);
+            xStream.alias("map",Map.class);
             Map<String,String> map = new HashMap<String, String>();
             String key = property.getMetadata().getMetadataSchema()+property.getMetadata().getMetadataElement();
             map.put(key,property.getValuestr());
@@ -375,12 +378,14 @@ public class DcsDBMapper {
             du.addAlternateId(dcsResourceIdentifier);
         }
 
+        du.setType(DcsDBField.stateNameMap.get(collection.getState().getId()));
+
         for(Property property:collection.getProperties()){
             if(property.getMetadata().getMetadataElement().equals(DcsDBField.CoreMetadataField.ABSTRACT.dbPropertyName()))
                 du.setAbstrct(property.getValuestr());
             else{
                 XStream xStream = new XStream(new DomDriver());
-                xStream.alias("map",java.util.Map.class);
+                xStream.alias("map",Map.class);
                 Map<String,String> map = new HashMap<String, String>();
                 String key = property.getMetadata().getMetadataSchema()+property.getMetadata().getMetadataElement();
                 map.put(key,property.getValuestr());

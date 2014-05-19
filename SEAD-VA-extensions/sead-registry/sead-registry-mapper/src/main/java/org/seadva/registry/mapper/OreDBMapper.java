@@ -23,7 +23,7 @@ public class OreDBMapper {
     private static Predicate DC_TERMS_SOURCE = null;
     private static Predicate METS_LOCATION = null;
     private static Predicate DC_TERMS_TITLE = null;
-    private static Predicate DC_TERMS_FORMAT = null;
+        private static Predicate DC_TERMS_FORMAT = null;
     private static Predicate DC_TERMS_ABSTRACT = null;
     private static Predicate DC_REFERENCES = null;
     private static Predicate DC_TERMS_RIGHTS = null;
@@ -149,7 +149,16 @@ public class OreDBMapper {
 
         collection.setEntityCreatedTime(new Date());
         collection.setEntityLastUpdatedTime(new Date());
-        collection.setState((State) client.getEntity("state:1", State.class.getName()));
+
+
+        TripleSelector typeSelector = new TripleSelector();
+        typeSelector.setSubjectURI(resourceMap.getAggregation().getURI());
+        typeSelector.setPredicate(DC_TERMS_TYPE);
+        List<Triple> typeTriples = resourceMap.getAggregation().listAllTriples(typeSelector);
+
+        if(typeTriples.size()>0)
+            collection.setState((State) client.getEntity(DcsDBField.nameStateMap.get(typeTriples.get(0)), State.class.getName()));
+
 
         //Insert properties
         Property property;
@@ -316,6 +325,13 @@ public class OreDBMapper {
         resourceMapId.initialise(aggregation);
         resourceMapId.relate(DC_TERMS_IDENTIFIER,
                 collection.getId());
+
+        aggregation.addTriple(resourceMapId);
+
+        Triple stateType= new TripleJena();
+        stateType.initialise(aggregation);
+        stateType.relate(DC_TERMS_TYPE,
+                DcsDBField.stateNameMap.get(collection.getState().getId()));
 
         aggregation.addTriple(resourceMapId);
 

@@ -37,6 +37,11 @@ insert into metadata_type values('md:12',
 insert into metadata_type values('md:13',
 'http://www.w3.org/ns/prov#','wasRevisionOf'
 );
+
+insert into metadata_type values('md:14',
+'http://purl.org/dc/terms/','type'
+);
+
 insert into relation_type values('rl:1',
 'http://www.openarchives.org/ore/terms/','describes'
 );
@@ -45,6 +50,20 @@ insert into base_entity values('state:1', 'PO',
 
 insert into state values('state:1',
 'PO','PublishedObject'
+);
+
+insert into base_entity values('state:2', 'CuO',
+'2014-05-18 00:21:11', '2014-05-18 00:21:11');
+
+insert into state values('state:2',
+'CuO','CurationObject'
+);
+
+insert into base_entity values('state:3', 'CO',
+'2014-05-18 00:21:11', '2014-05-18 00:21:11');
+
+insert into state values('state:3',
+'CO','CapturedObject'
 );
 
 insert into repository values(
