@@ -26,7 +26,11 @@ import com.sun.jersey.test.framework.JerseyTest;
 import com.sun.jersey.test.framework.WebAppDescriptor;
 import com.thoughtworks.xstream.XStream;
 import org.apache.commons.io.IOUtils;
+import org.dspace.foresite.*;
 import org.junit.Test;
+import org.sead.acr.common.utilities.json.JSONException;
+import org.seadva.bagit.Exception.SEADInvalidOREException;
+import org.seadva.bagit.event.impl.OreValidationHandler;
 import org.seadva.bagit.model.ActiveWorkspace;
 import org.seadva.bagit.model.ActiveWorkspaces;
 import org.seadva.bagit.service.Bag;
@@ -39,6 +43,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import java.io.*;
+import java.net.URISyntaxException;
 import java.net.URLEncoder;
 
 import static org.junit.Assert.assertEquals;
@@ -175,4 +180,15 @@ public class BagItTest extends JerseyTest {
 
     }
 
+    @Test
+    public void testValidateForMinimalOAIORE() throws IOException, OREParserException, ORESerialiserException, OREException, JSONException, URISyntaxException, SEADInvalidOREException {
+
+        WebResource webResource = resource();
+
+        InputStream input = getClass().getResourceAsStream("Vortex2_Visualization_oaiore.xml");
+        OREParser parser = OREParserFactory.getInstance("RDF/XML");
+        ResourceMap rem = parser.parse(input);
+        OreValidationHandler oreValidationHandler = new OreValidationHandler();
+        assertEquals(true, oreValidationHandler.validateForMinimalOAIORE(rem));
+    }
   }
