@@ -31,5 +31,7 @@ public enum Event {
     ZIP_BAG,
     GENERATE_SIP,
     GENERATE_DATA_DIR,
+    TAR_BAG,
+    UNTAR_BAG,
     ERROR
 }
