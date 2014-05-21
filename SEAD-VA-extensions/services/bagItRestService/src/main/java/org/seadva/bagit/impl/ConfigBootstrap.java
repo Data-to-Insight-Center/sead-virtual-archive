@@ -39,5 +39,7 @@ public class ConfigBootstrap implements Bootstrap {
         packageListener.map(Event.GENERATE_FETCH, FetchGenerationHandler.class.getName());
         packageListener.map(Event.GENERATE_DATA_DIR, DataDirCreationHandler.class.getName());
         packageListener.map(Event.PARSE_SIP, SipParseHandler.class.getName());
+        packageListener.map(Event.TAR_BAG,TarBagHandler.class.getName());
+        packageListener.map(Event.UNTAR_BAG, UntarBagHandler.class.getName());
     }
 }
