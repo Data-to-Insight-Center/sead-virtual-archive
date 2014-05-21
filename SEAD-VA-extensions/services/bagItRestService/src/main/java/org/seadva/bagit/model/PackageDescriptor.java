@@ -18,6 +18,7 @@ public class PackageDescriptor {
     private String oreFilePath;
     private String manifestFilePath;
     private String sipPath;
+    private String unTarredBagPath;
 
     /**
      * Contains aggregations with structure:
@@ -70,6 +71,13 @@ public class PackageDescriptor {
         this.unzippedBagPath = unzippedBagPath;
     }
 
+    public String getUntarredBagPath() {
+        return unTarredBagPath;
+    }
+
+    public void setUntarredBagPath(String unTarredBagPath) {
+        this.unTarredBagPath = unTarredBagPath;
+    }
     public String getSipPath() {
         return sipPath;
     }
