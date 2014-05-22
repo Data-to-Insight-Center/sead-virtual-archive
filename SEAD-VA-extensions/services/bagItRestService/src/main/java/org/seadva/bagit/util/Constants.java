@@ -36,6 +36,7 @@ public class Constants {
     public static String homeDir = null;
     public static String bagDir = null;
     public static String unzipDir = null;
+    public static String untarDir = null;
     public static String sipDir = null;
     public static String FORMAT_IANA_SCHEME = "http://www.iana.org/assignments/media-types/";
     public static String titleTerm = "http://purl.org/dc/terms/title";
