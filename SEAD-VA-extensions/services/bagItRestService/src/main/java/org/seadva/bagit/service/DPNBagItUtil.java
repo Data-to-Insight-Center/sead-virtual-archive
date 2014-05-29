@@ -27,6 +27,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.io.*;
 import java.net.URISyntaxException;
+import java.util.UUID;
 
 
 @Path("/dpnBagUtil")
@@ -97,7 +98,9 @@ public class DPNBagItUtil {
     public String getSip(String dirPath) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
 
         new ConfigBootstrap().load();
-        PackageDescriptor packageDescriptor = new PackageDescriptor("dpntest","",dirPath);
+        UUID packageID = UUID.randomUUID();
+        String packageName = "IU-"+packageID.toString();
+        PackageDescriptor packageDescriptor = new PackageDescriptor(packageName,"",dirPath);
         packageDescriptor.setUntarredBagPath(dirPath);
 
         //packageDescriptor = ConfigBootstrap.packageListener.execute(Event.UNTAR_BAG, packageDescriptor);
