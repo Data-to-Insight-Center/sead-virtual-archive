@@ -104,3 +104,9 @@ insert into data_identifier_type values(
     'medici',
      'http://nced.ncsa.illinois.edu'
 );
+
+insert into data_identifier_type values(
+    'id:4',
+    'dpnobjectid',
+     'DPN Object ID'
+);
