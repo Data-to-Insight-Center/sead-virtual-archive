@@ -45,6 +45,11 @@
     
     <!-- Compile ================================================== -->
       <dependency>
+          <groupId>org.apache.commons</groupId>
+          <artifactId>commons-compress</artifactId>
+          <version>1.8.1</version>
+      </dependency>
+      <dependency>
           <groupId>org.dataconservancy.dcs</groupId>
           <artifactId>dcs-ingest-core</artifactId>
           <version>1.1.0-SNAPSHOT</version>
