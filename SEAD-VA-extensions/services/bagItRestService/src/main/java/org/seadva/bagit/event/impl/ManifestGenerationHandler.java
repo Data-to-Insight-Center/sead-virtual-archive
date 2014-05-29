@@ -47,7 +47,7 @@ public class ManifestGenerationHandler implements Handler{
 
         FileWriter manifestStream = null;
         try {
-            String manifestFilePath = packageDescriptor.getUnzippedBagPath() + "/manifest.txt";
+            String manifestFilePath = packageDescriptor.getUnzippedBagPath() + "/manifest-sha256.txt";
             manifestStream = new FileWriter(manifestFilePath);
             manifest = new BufferedWriter(manifestStream);
             generateManifestFile(packageDescriptor.getPackageId(), "data/");
