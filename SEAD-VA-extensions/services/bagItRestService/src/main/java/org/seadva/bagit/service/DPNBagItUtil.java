@@ -37,11 +37,11 @@ public class DPNBagItUtil {
     ServletContext context;
 
     @GET
-    @Path("/DPNOreDataBag")
-    public Response getDPNOREBagFromDir(
+    @Path("/DPNBag")
+    public Response getDPNBagFromDir(
             @Context HttpServletRequest request,
             @Context UriInfo uri,
-            @QueryParam("dirpath") String dirpath
+            @QueryParam("dirPath") String dirPath
     ) throws IOException, OREException, URISyntaxException, ClassNotFoundException, InstantiationException, IllegalAccessException
 
     {
@@ -78,24 +78,7 @@ public class DPNBagItUtil {
         Constants.bagDir = Constants.homeDir + "bag/";
         Constants.untarDir = Constants.bagDir + "untar/";
 
-        if(!new File(Constants.bagDir).exists()) {
-            new File(Constants.bagDir).mkdirs();
-        }
-        if(!new File(Constants.untarDir).exists()) {
-            new File(Constants.untarDir).mkdirs();
-        }
-
-        new ConfigBootstrap().load();
-        PackageDescriptor packageDescriptor = new PackageDescriptor("dpntest","",dirpath);
-        packageDescriptor.setUntarredBagPath(dirpath);
-
-        //packageDescriptor = ConfigBootstrap.packageListener.execute(Event.UNTAR_BAG, packageDescriptor);
-        packageDescriptor = ConfigBootstrap.packageListener.execute(Event.PARSE_DIRECTORY, packageDescriptor);
-        packageDescriptor = ConfigBootstrap.packageListener.execute(Event.GENERATE_ORE, packageDescriptor);
-        packageDescriptor = ConfigBootstrap.packageListener.execute(Event.GENERATE_MANIFEST, packageDescriptor);
-        packageDescriptor = ConfigBootstrap.packageListener.execute(Event.TAR_BAG, packageDescriptor);
-
-        String finalTarredBag = packageDescriptor.getBagPath();
+        String finalTarredBag = getSip(dirPath);
 
         if(finalTarredBag==null)
             throw new NotFoundException("Failed to create a zipped BagIt Bag. Please ensure the basic bag you uploaded is valid.");
@@ -109,5 +92,26 @@ public class DPNBagItUtil {
         responseBuilder.header("Content-Disposition",
                 "inline; filename=" + filename[filename.length-1]);
         return responseBuilder.build();
+    }
+
+    public String getSip(String dirPath) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
+
+        new ConfigBootstrap().load();
+        PackageDescriptor packageDescriptor = new PackageDescriptor("dpntest","",dirPath);
+        packageDescriptor.setUntarredBagPath(dirPath);
+
+        //packageDescriptor = ConfigBootstrap.packageListener.execute(Event.UNTAR_BAG, packageDescriptor);
+        packageDescriptor = ConfigBootstrap.packageListener.execute(Event.PARSE_DIRECTORY, packageDescriptor);
+        packageDescriptor = ConfigBootstrap.packageListener.execute(Event.GENERATE_DPNORE, packageDescriptor);
+        packageDescriptor = ConfigBootstrap.packageListener.execute(Event.GENERATE_MANIFEST, packageDescriptor);
+        packageDescriptor = ConfigBootstrap.packageListener.execute(Event.GENERATE_BAGITTXT, packageDescriptor);
+        packageDescriptor = ConfigBootstrap.packageListener.execute(Event.GENERATE_BAGINFO, packageDescriptor);
+        packageDescriptor = ConfigBootstrap.packageListener.execute(Event.GENERATE_TAGMANIFEST, packageDescriptor);
+        packageDescriptor = ConfigBootstrap.packageListener.execute(Event.GENERATE_DPNTAGFILE,packageDescriptor);
+        packageDescriptor = ConfigBootstrap.packageListener.execute(Event.GENERATE_DPNSIP, packageDescriptor);
+        //packageDescriptor = ConfigBootstrap.packageListener.execute(Event.TAR_BAG, packageDescriptor);
+
+        String sipPath = packageDescriptor.getUntarredBagPath()+"IU-tags/";
+        return sipPath;
     }
 }
