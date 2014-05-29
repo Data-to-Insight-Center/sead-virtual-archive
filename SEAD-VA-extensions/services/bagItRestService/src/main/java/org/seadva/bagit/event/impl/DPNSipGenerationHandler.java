@@ -174,7 +174,7 @@ public class DPNSipGenerationHandler implements Handler{
     @Override
     public PackageDescriptor execute(PackageDescriptor packageDescriptor) {
         try {
-            generateSIP( packageDescriptor.getPackageId(), null, packageDescriptor.getUntarredBagPath());
+            generateSIP( packageDescriptor.getPackageId(), null, packageDescriptor.getUntarredBagPath(), packageDescriptor.getPackageName());
             String sipPath =
                     packageDescriptor.getUntarredBagPath() +"IU-tags/IU-sip.xml";
 
@@ -195,7 +195,7 @@ public class DPNSipGenerationHandler implements Handler{
 
 
     ResearchObject sip = new ResearchObject();
-    public void generateSIP(String collectionId, String parentId, String untarredDir) throws FileNotFoundException {//top collection id
+    public void generateSIP(String collectionId, String parentId, String untarredDir,String packageName) throws FileNotFoundException {//top collection id
 
 
         try{
@@ -223,6 +223,11 @@ public class DPNSipGenerationHandler implements Handler{
                     du.setTitle(titleTriples.get(0).getObjectLiteral());
                 }
             }
+
+            DcsResourceIdentifier dpnAltId = new DcsResourceIdentifier();
+            dpnAltId.setIdValue(packageName);
+            dpnAltId.setTypeId("dpnobjectid");
+            du.addAlternateId(dpnAltId);
 
             TripleSelector idSelector = new TripleSelector();
             idSelector.setSubjectURI(rem.getURI());
@@ -512,7 +517,7 @@ public class DPNSipGenerationHandler implements Handler{
                     if(encodedId.contains("uri="))
                         encodedId = encodedId.split("uri=")[1];
                     String newId = URLDecoder.decode(encodedId);
-                    generateSIP(newId,duId,untarredDir);
+                    generateSIP(newId,duId,untarredDir,"");
                 }
             }
             if(filesExist)

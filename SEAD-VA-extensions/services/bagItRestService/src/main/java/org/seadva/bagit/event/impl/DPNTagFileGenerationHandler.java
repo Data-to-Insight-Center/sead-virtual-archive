@@ -45,7 +45,7 @@ public class DPNTagFileGenerationHandler implements Handler{
             String dpntagTxtFilePath = dpntagTxtFileDir + "/dpn-info.txt";
             dpntagStream = new FileWriter(dpntagTxtFilePath);
             dpntag = new BufferedWriter(dpntagStream);
-            generatedpntagTxtFile();
+            generateDPNTagTxtFile(packageDescriptor);
             dpntag.close();
             packageDescriptor.setDpntagTxtFilePath(dpntagTxtFilePath);
         } catch (IOException e) {
@@ -54,8 +54,8 @@ public class DPNTagFileGenerationHandler implements Handler{
 
         return packageDescriptor;
     }
-    void generatedpntagTxtFile() throws IOException {
-        dpntag.write("DPN-Object-ID: TestID\n");
+    void generateDPNTagTxtFile(PackageDescriptor packageDescriptor) throws IOException {
+        dpntag.write("DPN-Object-ID: "+packageDescriptor.getPackageName()+"\n");
         dpntag.write("Local-ID: POD-ID\n");
         dpntag.write("First-Node-Name: Indiana University\n");
         dpntag.write("First-Node-Address: Indiana University, Bloomington\n");
