@@ -410,6 +410,7 @@
 
                 <!--ref bean="org.dataconservancy.dcs.ingest.services.Archiver.DSPACE" />
                 <ref bean="org.dataconservancy.dcs.ingest.services.Archiver.CLOUD" /-->
+                <ref bean="org.dataconservancy.dcs.ingest.services.TarUtilService"/>
                 <ref bean="org.dataconservancy.dcs.ingest.services.Archiver.SDA" />
                 <ref
           bean="org.dataconservancy.dcs.ingest.services.DoiUpdationService" />
@@ -452,6 +453,10 @@
           class="org.dataconservancy.dcs.id.impl.DataciteIdService">
     </bean>
 
+    <bean id="org.dataconservancy.dcs.ingest.services.TarUtilService"
+          class="org.dataconservancy.dcs.ingest.services.TarUtilService">
+        <property name="ingestFramework" ref="ingestFramework" />
+    </bean>
 
     <bean id="org.dataconservancy.dcs.ingest.services.Archiver.SDA"
           class="org.dataconservancy.dcs.ingest.services.SeadArchiver">
@@ -459,7 +464,7 @@
         <property name="ingestFramework" ref="ingestFramework" />
         <property name="modelBuilder" ref="seadModelBuilder" />
         <property name="type" value="cloud" />
-	<property name="name" value="IU SDA" />
+	    <property name="name" value="IU SDA" />
         <property name="disabled" value="false" />
     </bean>
     <!-- Feature Extraction -->
@@ -549,6 +554,7 @@
         <property name="hostname" value="${sda.host}" />
         <property name="mountPath" value="${sda.mount}" />
         <property name="solrService" ref="solrService" />
+        <property name="isTar" value="true" />
     </bean>
         <!-- Limited number of executing threads, but unbounded queue. Invoking
 thread drops off a task into this queue, which is then executed asynchronously
