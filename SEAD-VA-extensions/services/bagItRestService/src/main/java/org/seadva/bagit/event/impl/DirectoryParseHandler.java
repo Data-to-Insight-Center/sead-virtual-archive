@@ -51,8 +51,8 @@ public class DirectoryParseHandler implements Handler{
 
         typeProperty.put(guid,AggregationType.COLLECTION);
 
-        getDirectoryStructure(new File(packageDescriptor.getUnzippedBagPath() + "/data"), guid);
-
+        // getDirectoryStructure(new File(packageDescriptor.getUnzippedBagPath() + "/data"), guid);
+        getDirectoryStructure(new File(packageDescriptor.getUnzippedBagPath()), guid);
         packageDescriptor.setAggregation(aggregation);
         packageDescriptor.setProperties(properties);
         packageDescriptor.setType(typeProperty);
