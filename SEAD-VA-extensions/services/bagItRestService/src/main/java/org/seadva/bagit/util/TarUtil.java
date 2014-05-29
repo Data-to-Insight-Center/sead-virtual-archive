@@ -62,11 +62,12 @@ public class TarUtil {
 
     }
     static List<String> filesListInDir;
-    public static void tarDirectory(File dir, String tarDirName){
+    public static void tarDirectory(File dir, String tarFileName){
+        System.out.println("Tar File Dir:"+dir.toString());
         try{
             filesListInDir = new ArrayList<String>();
             getFilesList(dir);
-            FileOutputStream fos = new FileOutputStream(tarDirName);
+            FileOutputStream fos = new FileOutputStream(tarFileName);
             ArchiveOutputStream myTar = new ArchiveStreamFactory().createArchiveOutputStream(ArchiveStreamFactory.TAR, fos);
             for(String filePath : filesListInDir){
                 File inputFile = new File(filePath);
