@@ -59,6 +59,8 @@ public class SdaArchiveStore implements SeadArchiveStore {
 
     private DcsModelBuilder fmodelBuilder;
 
+    private boolean isTar;
+
     @Required
     public void setModelBuilder(DcsModelBuilder mb) {
         fmodelBuilder = mb;
@@ -90,6 +92,11 @@ public class SdaArchiveStore implements SeadArchiveStore {
     @Required
     public void setMountPath(String mPath) {
         mountPath = mPath;
+    }
+
+    @Required
+    public void setIsTar(Boolean bValue){
+        isTar = bValue;
     }
 
 
@@ -173,11 +180,11 @@ public class SdaArchiveStore implements SeadArchiveStore {
     boolean useMount;
     public ResearchObject putResearchPackage(InputStream dcpStream) throws AIPFormatException {
         Sftp sftp = null;
-            try {
-                sftp = new Sftp(this.hostname, this.username, this.password, this.mountPath);
-            } catch (JSchException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            }
+        try {
+            sftp = new Sftp(this.hostname, this.username, this.password, this.mountPath);
+        } catch (JSchException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
 
         DcsModelBuilder modelBuilder = new SeadXstreamStaxModelBuilder();
         useMount = false;
@@ -188,11 +195,32 @@ public class SdaArchiveStore implements SeadArchiveStore {
             throw new AIPFormatException(e.getMessage());
         }
 
+        if(isTar){
+            Collection<DcsDeliverableUnit> dus = pkg.getDeliverableUnits();
+            for (DcsDeliverableUnit d : dus) {
+
+                if (d.getParents() == null || d.getParents().isEmpty()) {
+                    SeadDataLocation dataLocation = ((SeadDeliverableUnit) d).getPrimaryLocation();
+                    String dirPath = dataLocation.getLocation();
+                    System.out.println("dirPath in SDAArchive: "+dirPath);
+                    String fileName = dirPath.substring(dirPath.lastIndexOf('/')+1,dirPath.length());
+                    System.out.println("fileName in SDAArchive: "+fileName);
+                    sftp.uploadFile(dirPath, fileName, false);
+                    SeadDataLocation newdataLocation = new SeadDataLocation();
+                    newdataLocation.setType(ArchiveEnum.Archive.SDA.getType().getText());
+                    newdataLocation.setLocation(fileName);
+                    newdataLocation.setName(ArchiveEnum.Archive.SDA.getArchive());
+                    ((SeadDeliverableUnit) d).setPrimaryLocation(newdataLocation);
+                    break;
+                }
+            }
+            pkg.setDeliverableUnits(dus);
+            return pkg;
+        }
+
         populateRelations(pkg);
         Collection<DcsDeliverableUnit> dus = pkg.getDeliverableUnits();
         Collection<DcsFile> files = pkg.getFiles();
-
-
 
         String sipDirectory =null;
         for(DcsDeliverableUnit rootDu:rootDUs){
@@ -220,7 +248,6 @@ public class SdaArchiveStore implements SeadArchiveStore {
 
             }
 
-
             String id = rootDu.getId();
             if(leftOverParents.contains(id))
                 leftOverParents.remove(id);
@@ -235,11 +262,8 @@ public class SdaArchiveStore implements SeadArchiveStore {
                     break;
                 }
             }
-
             uploadtToSDA(sftp, rootDu.getId(), rootDu.getTitle(), dus, pkg.getManifestations(), files);
         }
-
-
 
         //Get missing parents from Solr
         for(String otherParent: leftOverParents){
