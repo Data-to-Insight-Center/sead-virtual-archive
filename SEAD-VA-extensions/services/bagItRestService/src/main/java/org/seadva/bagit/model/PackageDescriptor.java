@@ -19,6 +19,10 @@ public class PackageDescriptor {
     private String manifestFilePath;
     private String sipPath;
     private String unTarredBagPath;
+    private String bagittxtFilePath;
+    private String bagInfoTxtFilePath;
+    private String tagManifestFilePath;
+    private String dpntagTxtFilePath;
 
     /**
      * Contains aggregations with structure:
@@ -78,6 +82,39 @@ public class PackageDescriptor {
     public void setUntarredBagPath(String unTarredBagPath) {
         this.unTarredBagPath = unTarredBagPath;
     }
+
+    public String getBagittxtFilePath() {
+        return bagittxtFilePath;
+    }
+
+    public void setBagittxtFilePath(String manifestFilePath) {
+        this.bagittxtFilePath = bagittxtFilePath;
+    }
+
+    public void setBagInfoTxtFilePath(String manifestFilePath) {
+        this.bagInfoTxtFilePath = bagInfoTxtFilePath;
+    }
+
+    public String getBagInfoTxtFilePath() {
+        return bagInfoTxtFilePath;
+    }
+
+    public void setDpntagTxtFilePath(String dpntagTxtFilePath) {
+        this.dpntagTxtFilePath = dpntagTxtFilePath;
+    }
+
+    public String getDpntagTxtFilePath() {
+        return dpntagTxtFilePath;
+    }
+
+    public void setTagManifestFilePath(String manifestFilePath) {
+        this.tagManifestFilePath = tagManifestFilePath;
+    }
+
+    public String getTagManifestFilePath() {
+        return tagManifestFilePath;
+    }
+
     public String getSipPath() {
         return sipPath;
     }
