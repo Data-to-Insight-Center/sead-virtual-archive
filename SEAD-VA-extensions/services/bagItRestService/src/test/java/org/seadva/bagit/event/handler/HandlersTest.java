@@ -43,6 +43,15 @@ public class HandlersTest extends JerseyTest {
 
     public HandlersTest() throws Exception {
         super("org.seadva.bagit.event.impl");
+        Constants.homeDir = "./";
+        Constants.bagDir = Constants.homeDir+"bag/";
+        Constants.unzipDir = Constants.homeDir+"bag/"+"untar/";
+        if(!new File(Constants.bagDir).exists()) {
+            new File(Constants.bagDir).mkdirs();
+        }
+        if(!new File(Constants.unzipDir).exists()) {
+            new File(Constants.unzipDir).mkdirs();
+        }
 
     }
     @Before
@@ -62,6 +71,23 @@ public class HandlersTest extends JerseyTest {
     public void testZipHandler() throws IllegalAccessException, InstantiationException, ClassNotFoundException {
         PackageDescriptor packageDescriptor = new PackageDescriptor("sample_bag.zip", null, getClass().getResource("../../sample_bag").getPath());
         packageDescriptor = ConfigBootstrap.packageListener.execute(Event.ZIP_BAG, packageDescriptor);
+        assertNotNull(packageDescriptor.getBagPath());
+    }
+
+    @Test
+    /* Output goes into target/test-classes/org/seadva/bagit/ */
+    public void testUntarHandler() throws IllegalAccessException, InstantiationException, ClassNotFoundException {
+        PackageDescriptor packageDescriptor = new PackageDescriptor("sample_bag1.tar",getClass().getResource("../../sample_bag1.tar").getPath(),null);
+        packageDescriptor = ConfigBootstrap.packageListener.execute(Event.UNTAR_BAG, packageDescriptor);
+        assertNotNull(packageDescriptor.getUntarredBagPath());
+    }
+
+    @Test
+    /* Input directory file should be placed under test/resources and output will go to bag at the top level */
+    public void testTarHandler() throws IllegalAccessException, InstantiationException, ClassNotFoundException {
+        PackageDescriptor packageDescriptor = new PackageDescriptor("sample_bag.tar", null, getClass().getResource("../../sample_bag").getPath());
+        packageDescriptor.setUntarredBagPath(getClass().getResource("../../sample_bag").getPath());
+        packageDescriptor = ConfigBootstrap.packageListener.execute(Event.TAR_BAG, packageDescriptor);
         assertNotNull(packageDescriptor.getBagPath());
     }
 
