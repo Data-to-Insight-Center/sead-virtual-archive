@@ -98,6 +98,7 @@ public class DPNBagItUtil {
     public String getSip(String dirPath) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
 
         new ConfigBootstrap().load();
+        // Generate a DPN Object ID for the bag
         UUID packageID = UUID.randomUUID();
         String packageName = "IU-"+packageID.toString();
         PackageDescriptor packageDescriptor = new PackageDescriptor(packageName,"",dirPath);
