@@ -40,4 +40,5 @@ public interface Events {
     public static final String COLD_COPY = "coldcopy";
     public static final String MATCH_MAKING = "matchmaking";
     public static final String REGISTRY_INGEST = "registry.entry";
+    public static final String TARBAG = "tarbag";
 }
