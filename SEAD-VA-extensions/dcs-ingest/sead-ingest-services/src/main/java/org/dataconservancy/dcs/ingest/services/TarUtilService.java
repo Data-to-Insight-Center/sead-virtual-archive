@@ -4,22 +4,22 @@ package org.dataconservancy.dcs.ingest.services;
 //import org.dataconservancy.dcs.ingest.services.IngestServiceBase;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.compress.archivers.ArchiveOutputStream;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.dataconservancy.dcs.id.api.IdMetadata;
+import org.dataconservancy.dcs.id.api.IdentifierNotFoundException;
 import org.dataconservancy.dcs.ingest.Events;
 import org.dataconservancy.model.builder.InvalidXmlException;
 import org.dataconservancy.model.dcs.DcsDeliverableUnit;
 //import org.dataconservancy.model.dcs.DcsResourceIdentifier;
 import org.dataconservancy.model.dcs.DcsEntityReference;
 import org.dataconservancy.model.dcs.DcsEvent;
+import org.dataconservancy.model.dcs.DcsResourceIdentifier;
 import org.seadva.model.SeadDataLocation;
 import org.seadva.model.SeadDeliverableUnit;
 import org.seadva.model.builder.xstream.SeadXstreamStaxModelBuilder;
@@ -27,22 +27,43 @@ import org.seadva.model.pack.ResearchObject;
 
 public class TarUtilService extends IngestServiceBase implements IngestService {
     String dirPath;
-    String tarFileName = "dpntest.tar";
+    //String tarFileName = "dpntest.tar";
     String tarFilePath;
     public void execute(String sipRef) {
 
         System.out.println("SIP Ref in TarUtilService: "+sipRef);
+        String tarFileName = new String();
+        long bagSize;
         ResearchObject sip = (ResearchObject)ingest.getSipStager().getSIP(sipRef);
 
 
         Collection<DcsDeliverableUnit> dus = sip.getDeliverableUnits();
 
         for (DcsDeliverableUnit d : dus) {
-
+            Collection<DcsResourceIdentifier> alternateIds = null;
             if(d.getParents() ==null ||d.getParents().isEmpty())  {
+                alternateIds = d.getAlternateIds();
+                if(alternateIds!=null){
+                    DcsResourceIdentifier id = null;
+                    Iterator<DcsResourceIdentifier> idIt = alternateIds.iterator();
+                    while(idIt.hasNext()){
+                        id = idIt.next();
+                        if(id.getTypeId().equalsIgnoreCase("dpnobjectid")) {
+                            tarFileName = id.getIdValue()+".tar";
+                            System.out.println("Alternate Object ID for dpnobjectid: "+tarFileName);
+                            break;
+                        }
+                    }
+
+                }
                 SeadDataLocation dataLocation = ((SeadDeliverableUnit) d).getPrimaryLocation();
+                bagSize = ((SeadDeliverableUnit)d).getSizeBytes();
+                System.out.println("bagSize is "+bagSize);
                 dirPath = dataLocation.getLocation();
                 File tarDirectory = new File(dirPath);
+                if(tarFileName.isEmpty()){
+                      tarFileName = "dpntest.tar";
+                }
                 tarFilePath = dirPath.toString()+tarFileName;
                 this.tarDirectory(tarDirectory,tarFilePath);
 
