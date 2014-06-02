@@ -135,6 +135,12 @@
       </dependency>
 
       <dependency>
+          <groupId>org.seadva.bagit</groupId>
+          <artifactId>bagit</artifactId>
+          <version>1.0.1-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
           <groupId>org.springframework</groupId>
           <artifactId>spring-beans</artifactId>
           <version>2.0</version>
