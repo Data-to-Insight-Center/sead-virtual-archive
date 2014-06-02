@@ -56,6 +56,6 @@ public class BagInfoGenerationHandler implements Handler{
         baginfo.write("Contact Email: abcdefg@indiana.edu\n");
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         Date dateObj = new Date();
-        baginfo.write("Bagging Date: "+dateFormat.format(dateObj));
+        baginfo.write("Bagging Date: "+dateFormat.format(dateObj)+"\n");
     }
 }
