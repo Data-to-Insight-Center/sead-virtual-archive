@@ -1,21 +1,11 @@
 package org.seadva.registry.database.model.obj.vaRegistry;
 
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
 import com.google.gson.annotations.Expose;
 import org.hibernate.proxy.HibernateProxy;
 import org.seadva.registry.database.enums.subtype.vaRegistry.BaseEntitySubclassType;
-import org.seadva.registry.database.model.obj.vaRegistry.BaseEntity;
 import org.seadva.registry.database.model.obj.vaRegistry.iface.ICollection;
+
+import javax.persistence.*;
 
 
 /** 
@@ -26,7 +16,7 @@ import org.seadva.registry.database.model.obj.vaRegistry.iface.ICollection;
 @Entity
 @PrimaryKeyJoinColumn(name = "entity_id")
 @Table(name = "collection", catalog = "va_registry")
-public class Collection extends BaseEntity implements  ICollection {
+public class Collection extends BaseEntity implements ICollection {
 
 	/** Serial Version UID. */
 	private static final long serialVersionUID = -559002649L;
@@ -115,7 +105,7 @@ public class Collection extends BaseEntity implements  ICollection {
      * Return the value associated with the column: state.
 	 * @return A State object (this.state)
 	 */
-	@ManyToOne( cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY )
+	@ManyToOne( cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER )
 	@org.hibernate.annotations.Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
 	@Basic( optional = false )
 	@JoinColumn(name = "state_id", nullable = false )
@@ -219,7 +209,7 @@ public class Collection extends BaseEntity implements  ICollection {
 			 return false;
 		}
 		
-		final Collection that; 
+		final Collection that;
 		try {
 			that = (Collection) proxyThat;
 			if ( !(that.getClassType().equals(this.getClassType()))){

@@ -110,3 +110,36 @@ insert into data_identifier_type values(
     'dpnobjectid',
      'DPN Object ID'
 );
+
+insert into data_identifier_type values(
+    'id:5',
+    'dataone',
+     'http://seadva.d2i.indiana.edu'
+);
+
+insert into role_type values(
+    'role:1',
+    'Curator',
+    'Curator at an IR'
+);
+
+insert into role_type values(
+    'role:2',
+    'Researcher',
+    'Scientist/Researcher'
+);
+
+
+insert into role_type values(
+    'role:3',
+    'Administrator',
+    'Tech Administrator'
+);
+
+
+insert into role_type values(
+    'role:4',
+    'Repository Representative',
+    'Represents IR, but not necessarily a Curator'
+);
+

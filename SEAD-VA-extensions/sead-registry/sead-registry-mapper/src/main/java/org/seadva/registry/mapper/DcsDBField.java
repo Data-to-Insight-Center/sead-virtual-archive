@@ -245,13 +245,13 @@ public class DcsDBField {
 
     public static Map<String,String> nameStateMap = new HashMap<String, String>();
     public static Map<String,String> stateNameMap = new HashMap<String, String>();
-    static {
+    public static void load() {
         nameStateMap.put("PublishedObject", "state:1");
-        nameStateMap.put("CuratedObject", "state:2");
+        nameStateMap.put("CurationObject", "state:2");
         nameStateMap.put("CapturedObject", "state:3");
 
         stateNameMap.put("state:1", "PublishedObject");
-        stateNameMap.put("state:2", "CuratedObject");
+        stateNameMap.put("state:2", "CurationObject");
         stateNameMap.put("state:3", "CapturedObject");
     }
 

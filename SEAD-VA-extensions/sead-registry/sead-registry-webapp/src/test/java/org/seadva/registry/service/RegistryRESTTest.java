@@ -237,4 +237,22 @@ public class RegistryRESTTest extends JerseyTest {
     }
 
 
+
+    @Test
+    public void testGetAllCollections() throws IOException {
+        WebResource webResource = Client.create().resource("http://localhost:8080/registry/rest");
+
+        ClientResponse response = webResource.path("resource")
+                .path("listCollections")
+                .path("CurationObject")
+                .get(ClientResponse.class);
+
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(response.getEntityInputStream(), writer);
+        System.out.print(writer.toString());
+        assertEquals(200, response.getStatus());
+    }
+
+
+
 }

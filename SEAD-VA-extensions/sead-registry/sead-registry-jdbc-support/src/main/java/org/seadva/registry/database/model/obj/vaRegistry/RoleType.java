@@ -1,24 +1,13 @@
 package org.seadva.registry.database.model.obj.vaRegistry;
 
 import com.felees.hbnpojogen.persistence.IPojoGenEntity;
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.WeakHashMap;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import com.google.gson.annotations.Expose;
 import org.hibernate.proxy.HibernateProxy;
-import org.seadva.registry.database.model.obj.vaRegistry.AgentRole;
 import org.seadva.registry.database.model.obj.vaRegistry.iface.IRoleType;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.*;
 
 
 /** 
@@ -46,10 +35,13 @@ public class RoleType implements Cloneable, Serializable, IPojoGenEntity, IRoleT
 	private Set<AgentRole> agentRoles = new HashSet<AgentRole>();
 
 	/** Field mapping. */
+    @Expose
 	private String id;
 	/** Field mapping. */
+    @Expose
 	private String roleDescription;
 	/** Field mapping. */
+    @Expose
 	private String roleTypeName;
 	/**
 	 * Default constructor, mainly for hibernate use.
@@ -256,7 +248,7 @@ public class RoleType implements Cloneable, Serializable, IPojoGenEntity, IRoleT
 			 return false;
 		}
 		
-		final RoleType that; 
+		final RoleType that;
 		try {
 			that = (RoleType) proxyThat;
 			if ( !(that.getClassType().equals(this.getClassType()))){

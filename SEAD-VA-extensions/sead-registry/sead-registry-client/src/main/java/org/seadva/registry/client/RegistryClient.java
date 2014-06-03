@@ -18,14 +18,12 @@ package org.seadva.registry.client;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 import org.apache.commons.io.IOUtils;
-import org.junit.Test;
 import org.seadva.registry.database.model.obj.vaRegistry.*;
 
 import javax.ws.rs.core.MultivaluedMap;
@@ -37,25 +35,21 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-
-public class RegistryClient{
+public class RegistryClient {
 
     static WebResource resource;
     static String serviceUrl;
-    Gson gson;
+    static Gson gson;
     private static WebResource resource(){
-       if(resource==null){
-           Client client = Client.create();
-           return client.resource(serviceUrl);
-           //"http://localhost:8080/registry/rest/"
-       }
        return resource;
     }
 
     public RegistryClient(String url){
         this.serviceUrl = url;
-        gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        resource = Client.create().resource(serviceUrl);
+        gson = new GsonBuilder()
+                .excludeFieldsWithoutExposeAnnotation()
+                .create();
     }
 
     /**
@@ -154,6 +148,26 @@ public class RegistryClient{
         }.getType();
         return gson.fromJson(writer.toString(), listType);
     }
+
+    public List<Collection> getCollections(String type) throws IOException {
+        WebResource webResource = resource();
+
+        ClientResponse response = webResource.path("resource")
+                .path("listCollections")
+                .path(type)
+                .get(ClientResponse.class);
+
+        if(response.getStatus()!=200)
+            throw new HTTPException(response.getStatus());
+
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(response.getEntityInputStream(), writer);
+        Type listType = new TypeToken<ArrayList<Collection>>() {
+        }.getType();
+        return gson.fromJson(writer.toString(), listType);
+    }
+
+
 
     public List<AggregationWrapper> getAggregation(String parentId) throws IOException {
         WebResource webResource = resource();
@@ -399,6 +413,7 @@ public class RegistryClient{
             throw new HTTPException(response.getStatus());
     }
 
+
     /**
      * Base entity post
      */
@@ -428,12 +443,64 @@ public class RegistryClient{
             throw new HTTPException(response.getStatus());
     }
 
+    private static RoleType getRoleByName(String role) throws IOException {
+        WebResource webResource = resource();
+
+        MultivaluedMap<String, String> params = new MultivaluedMapImpl();
+
+        ClientResponse response = webResource.path("resource")
+                .path("roleType")
+                .path(
+                        role
+                )
+                .queryParams(params)
+                .get(ClientResponse.class);
+
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(response.getEntityInputStream(), writer);
+        return gson.fromJson(writer.toString(), RoleType.class);
+    }
+
+    public void postAgent(Agent agent, String roleName) throws IOException {
+        WebResource webResource = resource();
+
+        AgentRole role = new AgentRole();
+        AgentRolePK agentRolePK = new AgentRolePK();
+        agentRolePK.setAgent(agent);
+        agentRolePK.setRoleType(getRoleByName(roleName));
+        role.setId(agentRolePK);
+        agent.addAgentRole(role);
+
+        String json = gson.toJson(agent);
+        MultivaluedMap<String, String> params = new MultivaluedMapImpl();
+        List<String> values = new ArrayList<String>();
+        values.add(json);
+        params.put("entity",values);
+
+        List<String> types = new ArrayList<String>();
+        types.add("org.seadva.registry.database.model.obj.vaRegistry.Agent");
+
+        params.put("type", types);
+        ClientResponse response = webResource.path("resource")
+                .path("agent")
+                .path(
+                        URLEncoder.encode(
+                                agent.getId()
+                        )
+                )
+                .queryParams(params)
+                .post(ClientResponse.class);
+
+        if(response.getStatus()!=200)
+            throw new HTTPException(response.getStatus());
+    }
+
     /**
      *
      * @param aggregationWrappers
      * @param parentId
      * @return
-     * @throws IOException
+     * @throws java.io.IOException
      */
     public void postAggregation(List<AggregationWrapper> aggregationWrappers, String parentId) throws IOException {
             WebResource webResource = resource();

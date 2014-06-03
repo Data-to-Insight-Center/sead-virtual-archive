@@ -21,7 +21,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.seadva.registry.database.factories.vaRegistry.VaRegistryDataPoolFactory;
 import org.seadva.registry.database.model.obj.vaRegistry.*;
 import org.seadva.registry.database.services.data.ApplicationContextHolder;
 import org.seadva.registry.database.services.data.DataLayerVaRegistry;
@@ -70,7 +69,6 @@ public class ResourceService {
      public Response getEntity( @PathParam("entityId") String entityId) throws Exception {
 
          BaseEntity baseEntity = dataLayerVaRegistry.getBaseEntity(entityId);
-
          return Response.ok(gson.toJson(baseEntity)).build();
      }
 
@@ -118,6 +116,17 @@ public class ResourceService {
     }
 
     @GET
+    @Path("/roleType/{element}")
+    @Produces("application/json")
+    public Response getRoleByType( @PathParam("element") String element) throws Exception {
+        Query query =  querySession.createQuery("SELECT R from RoleType R where R.roleTypeName='"+element+"'");
+        if(query.list().size()==0)
+            throw new NotFoundException("Role type not found in role type registry");
+        RoleType roleType = (RoleType) query.list().get(0);
+        return Response.ok(gson.toJson(roleType)).build();
+    }
+
+    @GET
     @Path("/repository/{name}")
     @Produces("application/json")
     public Response getRepositoryByName( @PathParam("name") String repoName) throws Exception {
@@ -149,6 +158,18 @@ public class ResourceService {
             aggregationList.add(aggregationWrapper);
         }
       return Response.ok(gson.toJson(aggregationList)).build();
+    }
+
+
+    @GET
+    @Path("/listCollections/{type}")
+    @Produces("application/json")
+    public Response getAllCollections(@PathParam("type") String type) throws Exception {
+        querySession.beginTransaction();
+        querySession.getTransaction().commit();
+        Query query =  querySession.createQuery("SELECT C from Collection C where C.state.stateType='"+type+"'");
+        List<Collection> collectionsList = query.list();
+        return Response.ok(gson.toJson(collectionsList)).build();
     }
 
 
@@ -268,8 +289,8 @@ public class ResourceService {
         }
 
 
-        if(baseEntity instanceof Collection)
-            ((Collection)baseEntity).setState(dataLayerVaRegistry.getState("state:1"));
+//        if(baseEntity instanceof Collection)
+//            ((Collection)baseEntity).setState(dataLayerVaRegistry.getState("state:1"));
         dataLayerVaRegistry.merge(baseEntity);      //solve this issue of trying to write again
 
         dataLayerVaRegistry.flushSession();
@@ -277,6 +298,34 @@ public class ResourceService {
         return Response.ok().build();
     }
 
+
+    @POST
+    @Path("/agent/{agentId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response putAgent(
+            @QueryParam("entity") String entityJson
+    ) throws IOException, ClassNotFoundException
+
+    {
+        Agent agent = gson.fromJson(entityJson, Agent.class);
+
+        Set<AgentRole> roles =  new HashSet<AgentRole>(agent.getAgentRoles());
+        agent.setAgentRoles(new HashSet<AgentRole>());
+        Set<AgentRole> newRoles =  new HashSet<AgentRole>();
+        for(AgentRole role: roles){
+            AgentRolePK agentRolePK = role.getId();
+            agentRolePK.setAgent(agent);
+            role.setId(agentRolePK);
+            newRoles.add(role);
+        }
+        agent.setAgentRoles(newRoles);
+
+
+        dataLayerVaRegistry.merge(agent);
+        dataLayerVaRegistry.flushSession();
+
+        return Response.ok().build();
+    }
 
     @POST
     @Path("/aggregation/{entityId}")

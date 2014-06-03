@@ -1,12 +1,10 @@
 package org.seadva.registry.database.factories.vaRegistry;
 
-import com.felees.hbnpojogen.randomlib.data.dataGeneration.*;
-import org.seadva.registry.database.factories.vaRegistry.VaRegistryDataPoolFactory;
-import org.seadva.registry.database.model.obj.vaRegistry.*;
-import org.springframework.stereotype.Component;
-
+import com.felees.hbnpojogen.randomlib.data.dataGeneration.BasicDataGenerator;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import org.seadva.registry.database.model.obj.vaRegistry.*;
+import org.springframework.stereotype.Component;
 
 /** 
  * DAO factory implementation.
@@ -56,7 +54,7 @@ public class VaRegistryDataPoolFactory {
      */
     public static Agent getAgent() {
 
-        Agent agent = new Agent();    
+        Agent agent = new Agent();
         
         agent.setEntityCreatedTime(BasicDataGenerator.generateDate());
         agent.setEntityLastUpdatedTime(BasicDataGenerator.generateDate());
@@ -74,7 +72,7 @@ public class VaRegistryDataPoolFactory {
      */
     public static AgentProfile getAgentProfile() {
 
-        AgentProfile agentProfile = new AgentProfile();    
+        AgentProfile agentProfile = new AgentProfile();
         
         agentProfile.setId(getAgentProfilePK());
         agentProfile.setProfileValue(BasicDataGenerator.generateRandomString(256));
@@ -102,7 +100,7 @@ public class VaRegistryDataPoolFactory {
      * @return AgentProfilePK A AgentProfilePK object
      */
     public static AgentProfilePK getAgentProfilePK(Agent agent, ProfileType profileType) {
-        AgentProfilePK agentProfilePK = new AgentProfilePK();     
+        AgentProfilePK agentProfilePK = new AgentProfilePK();
         agentProfilePK.setAgent(agent);
         agentProfilePK.setProfileType(profileType);
 
@@ -115,7 +113,7 @@ public class VaRegistryDataPoolFactory {
      */
     public static AgentRole getAgentRole() {
 
-        AgentRole agentRole = new AgentRole();    
+        AgentRole agentRole = new AgentRole();
         
         agentRole.setId(getAgentRolePK());
 
@@ -142,8 +140,8 @@ public class VaRegistryDataPoolFactory {
      * @return AgentRolePK A AgentRolePK object
      */
     public static AgentRolePK getAgentRolePK(Agent agent, RoleType roleType) {
-        AgentRolePK agentRolePK = new AgentRolePK();     
-        agentRolePK.setAgent(agent);
+        AgentRolePK agentRolePK = new AgentRolePK();
+   //     agentRolePK.setAgent(agent);
         agentRolePK.setRoleType(roleType);
 
         return agentRolePK;
@@ -155,7 +153,7 @@ public class VaRegistryDataPoolFactory {
      */
     public static Aggregation getAggregation() {
 
-        Aggregation aggregation = new Aggregation();    
+        Aggregation aggregation = new Aggregation();
         
         aggregation.setId(getAggregationPK());
 
@@ -182,7 +180,7 @@ public class VaRegistryDataPoolFactory {
      * @return AggregationPK A AggregationPK object
      */
     public static AggregationPK getAggregationPK(BaseEntity child, BaseEntity parent) {
-        AggregationPK aggregationPK = new AggregationPK();     
+        AggregationPK aggregationPK = new AggregationPK();
         aggregationPK.setChild(child);
         aggregationPK.setParent(parent);
 
@@ -195,7 +193,7 @@ public class VaRegistryDataPoolFactory {
      */
     public static BaseEntity getBaseEntity() {
 
-        BaseEntity baseEntity = new BaseEntity();    
+        BaseEntity baseEntity = new BaseEntity();
         
         baseEntity.setEntityCreatedTime(BasicDataGenerator.generateDate());
         baseEntity.setEntityLastUpdatedTime(BasicDataGenerator.generateDate());
@@ -224,7 +222,7 @@ public class VaRegistryDataPoolFactory {
      * @return Collection A Collection object
      */
     public static Collection getCollection(State state) {
-        Collection collection = new Collection();     
+        Collection collection = new Collection();
         collection.setEntityCreatedTime(BasicDataGenerator.generateDate());
         collection.setEntityLastUpdatedTime(BasicDataGenerator.generateDate());
         collection.setEntityName(BasicDataGenerator.generateRandomString(256));
@@ -245,7 +243,7 @@ public class VaRegistryDataPoolFactory {
      */
     public static DataIdentifier getDataIdentifier() {
 
-        DataIdentifier dataIdentifier = new DataIdentifier();    
+        DataIdentifier dataIdentifier = new DataIdentifier();
         
         dataIdentifier.setDataIdentifierValue(BasicDataGenerator.generateRandomString(256));
         dataIdentifier.setId(getDataIdentifierPK());
@@ -273,7 +271,7 @@ public class VaRegistryDataPoolFactory {
      * @return DataIdentifierPK A DataIdentifierPK object
      */
     public static DataIdentifierPK getDataIdentifierPK(DataIdentifierType dataIdentifierType, BaseEntity entity) {
-        DataIdentifierPK dataIdentifierPK = new DataIdentifierPK();     
+        DataIdentifierPK dataIdentifierPK = new DataIdentifierPK();
         dataIdentifierPK.setDataIdentifierType(dataIdentifierType);
         dataIdentifierPK.setEntity(entity);
 
@@ -286,7 +284,7 @@ public class VaRegistryDataPoolFactory {
      */
     public static DataIdentifierType getDataIdentifierType() {
 
-        DataIdentifierType dataIdentifierType = new DataIdentifierType();    
+        DataIdentifierType dataIdentifierType = new DataIdentifierType();
         
         dataIdentifierType.setDataIdentifierTypeName(BasicDataGenerator.generateRandomString(127));
         dataIdentifierType.setId(BasicDataGenerator.generateRandomString(127));
@@ -301,7 +299,7 @@ public class VaRegistryDataPoolFactory {
      */
     public static DataLocation getDataLocation() {
 
-        DataLocation dataLocation = new DataLocation();    
+        DataLocation dataLocation = new DataLocation();
         
         dataLocation.setId(getDataLocationPK());
         dataLocation.setIsMasterCopy(BasicDataGenerator.generateRandomInt());
@@ -330,7 +328,7 @@ public class VaRegistryDataPoolFactory {
      * @return DataLocationPK A DataLocationPK object
      */
     public static DataLocationPK getDataLocationPK(BaseEntity entity, Repository locationType) {
-        DataLocationPK dataLocationPK = new DataLocationPK();     
+        DataLocationPK dataLocationPK = new DataLocationPK();
         dataLocationPK.setEntity(entity);
         dataLocationPK.setLocationType(locationType);
 
@@ -356,7 +354,7 @@ public class VaRegistryDataPoolFactory {
      * @return EntityContent A EntityContent object
      */
     public static EntityContent getEntityContent(BaseEntity entity) {
-        EntityContent entityContent = new EntityContent();     
+        EntityContent entityContent = new EntityContent();
 		if (entity != null) {
 			entity.addEntityContent (entityContent);
 		}
@@ -371,7 +369,7 @@ public class VaRegistryDataPoolFactory {
      */
     public static EntityType getEntityType() {
 
-        EntityType entityType = new EntityType();    
+        EntityType entityType = new EntityType();
         
         entityType.setEntityTypeName(BasicDataGenerator.generateRandomString(256));
         entityType.setId(getEntityTypePK());
@@ -398,7 +396,7 @@ public class VaRegistryDataPoolFactory {
      * @return EntityTypePK A EntityTypePK object
      */
     public static EntityTypePK getEntityTypePK(BaseEntity entity) {
-        EntityTypePK entityTypePK = new EntityTypePK();     
+        EntityTypePK entityTypePK = new EntityTypePK();
         entityTypePK.setEntity(entity);
         entityTypePK.setEntityTypeId(BasicDataGenerator.generateRandomString(127));
 
@@ -424,7 +422,7 @@ public class VaRegistryDataPoolFactory {
      * @return Event A Event object
      */
     public static Event getEvent(EventType eventType) {
-        Event event = new Event();     
+        Event event = new Event();
         event.setEntityCreatedTime(BasicDataGenerator.generateDate());
         event.setEntityLastUpdatedTime(BasicDataGenerator.generateDate());
         event.setEntityName(BasicDataGenerator.generateRandomString(256));
@@ -443,7 +441,7 @@ public class VaRegistryDataPoolFactory {
      */
     public static EventType getEventType() {
 
-        EventType eventType = new EventType();    
+        EventType eventType = new EventType();
         
         eventType.setEventDescription(BasicDataGenerator.generateRandomString(256));
         eventType.setEventName(BasicDataGenerator.generateRandomString(127));
@@ -458,7 +456,7 @@ public class VaRegistryDataPoolFactory {
      */
     public static File getFile() {
 
-        File file = new File();    
+        File file = new File();
         
         file.setEntityCreatedTime(BasicDataGenerator.generateDate());
         file.setEntityLastUpdatedTime(BasicDataGenerator.generateDate());
@@ -478,7 +476,7 @@ public class VaRegistryDataPoolFactory {
      */
     public static Fixity getFixity() {
 
-        Fixity fixity = new Fixity();    
+        Fixity fixity = new Fixity();
         
         fixity.setId(getFixityPK());
         fixity.setValuestr(BasicDataGenerator.generateRandomString(127));
@@ -505,7 +503,7 @@ public class VaRegistryDataPoolFactory {
      * @return FixityPK A FixityPK object
      */
     public static FixityPK getFixityPK(File entity) {
-        FixityPK fixityPK = new FixityPK();     
+        FixityPK fixityPK = new FixityPK();
         fixityPK.setEntity(entity);
         fixityPK.setType(BasicDataGenerator.generateRandomString(127));
 
@@ -531,7 +529,7 @@ public class VaRegistryDataPoolFactory {
      * @return Format A Format object
      */
     public static Format getFormat(File entity) {
-        Format format = new Format();     
+        Format format = new Format();
 		if (entity != null) {
 			entity.addFormat (format);
 		}
@@ -562,7 +560,7 @@ public class VaRegistryDataPoolFactory {
      * @return MetadataReference A MetadataReference object
      */
     public static MetadataReference getMetadataReference(MetadataType metadata, BaseEntity objectEntity, BaseEntity subjectEntity) {
-        MetadataReference metadataReference = new MetadataReference();     
+        MetadataReference metadataReference = new MetadataReference();
 		if (metadata != null) {
 			metadata.addMetadataReference (metadataReference);
 		}
@@ -580,7 +578,7 @@ public class VaRegistryDataPoolFactory {
      */
     public static MetadataType getMetadataType() {
 
-        MetadataType metadataType = new MetadataType();    
+        MetadataType metadataType = new MetadataType();
         
         metadataType.setId(BasicDataGenerator.generateRandomString(127));
         metadataType.setMetadataElement(BasicDataGenerator.generateRandomString(256));
@@ -595,7 +593,7 @@ public class VaRegistryDataPoolFactory {
      */
     public static ProfileType getProfileType() {
 
-        ProfileType profileType = new ProfileType();    
+        ProfileType profileType = new ProfileType();
         
         profileType.setId(BasicDataGenerator.generateRandomString(127));
         profileType.setProfileTypeName(BasicDataGenerator.generateRandomString(127));
@@ -624,7 +622,7 @@ public class VaRegistryDataPoolFactory {
      * @return Property A Property object
      */
     public static Property getProperty(BaseEntity entity, MetadataType metadata) {
-        Property property = new Property();     
+        Property property = new Property();
 		if (entity != null) {
 			entity.addProperty (property);
 		}
@@ -642,7 +640,7 @@ public class VaRegistryDataPoolFactory {
      */
     public static Relation getRelation() {
 
-        Relation relation = new Relation();    
+        Relation relation = new Relation();
         
         relation.setId(getRelationPK());
 
@@ -670,7 +668,7 @@ public class VaRegistryDataPoolFactory {
      * @return RelationPK A RelationPK object
      */
     public static RelationPK getRelationPK(BaseEntity cause, BaseEntity effect, RelationType relationType) {
-        RelationPK relationPK = new RelationPK();     
+        RelationPK relationPK = new RelationPK();
         relationPK.setCause(cause);
         relationPK.setEffect(effect);
         relationPK.setRelationType(relationType);
@@ -684,7 +682,7 @@ public class VaRegistryDataPoolFactory {
      */
     public static RelationType getRelationType() {
 
-        RelationType relationType = new RelationType();    
+        RelationType relationType = new RelationType();
         
         relationType.setId(BasicDataGenerator.generateRandomString(127));
         relationType.setRelationElement(BasicDataGenerator.generateRandomString(256));
@@ -699,7 +697,7 @@ public class VaRegistryDataPoolFactory {
      */
     public static Repository getRepository() {
 
-        Repository repository = new Repository();    
+        Repository repository = new Repository();
         
         repository.setAffiliation(BasicDataGenerator.generateRandomString(256));
         repository.setId(BasicDataGenerator.generateRandomString(127));
@@ -715,7 +713,7 @@ public class VaRegistryDataPoolFactory {
      */
     public static RoleType getRoleType() {
 
-        RoleType roleType = new RoleType();    
+        RoleType roleType = new RoleType();
         
         roleType.setId(BasicDataGenerator.generateRandomString(127));
         roleType.setRoleDescription(BasicDataGenerator.generateRandomString(256));
@@ -730,7 +728,7 @@ public class VaRegistryDataPoolFactory {
      */
     public static State getState() {
 
-        State state = new State();    
+        State state = new State();
         
         state.setEntityCreatedTime(BasicDataGenerator.generateDate());
         state.setEntityLastUpdatedTime(BasicDataGenerator.generateDate());
@@ -748,7 +746,7 @@ public class VaRegistryDataPoolFactory {
      */
     public static Transition getTransition() {
 
-        Transition transition = new Transition();    
+        Transition transition = new Transition();
         
         transition.setId(getTransitionPK());
 
@@ -776,7 +774,7 @@ public class VaRegistryDataPoolFactory {
      * @return TransitionPK A TransitionPK object
      */
     public static TransitionPK getTransitionPK(EventType eventType, State nextState, State startState) {
-        TransitionPK transitionPK = new TransitionPK();     
+        TransitionPK transitionPK = new TransitionPK();
         transitionPK.setEventType(eventType);
         transitionPK.setNextState(nextState);
         transitionPK.setStartState(startState);

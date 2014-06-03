@@ -1,13 +1,14 @@
 package org.seadva.registry.database.model.obj.vaRegistry;
 
 import com.felees.hbnpojogen.persistence.IPojoGenEntity;
-import java.io.Serializable;
-import javax.persistence.Basic;
+import com.google.gson.annotations.Expose;
+import org.seadva.registry.database.model.obj.vaRegistry.iface.IAgentRole;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import org.seadva.registry.database.model.obj.vaRegistry.iface.IAgentRole;
+import java.io.Serializable;
 
 
 /** 
@@ -24,6 +25,7 @@ public class AgentRole implements Cloneable, Serializable, IPojoGenEntity, IAgen
 
 	
 
+    @Expose
 	/** Field mapping. */
 	@Id 
 	private AgentRolePK id;

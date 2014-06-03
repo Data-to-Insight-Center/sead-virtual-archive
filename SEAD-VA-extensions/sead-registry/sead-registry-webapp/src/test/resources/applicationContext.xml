@@ -54,7 +54,8 @@
         <property name="user" value="username"/>
         <property name="password" value="pwd"/>
         <property name="idleConnectionTestPeriod" value="60"/>
-        <property name="maxIdleTime" value="240"/>         
+        <property name="maxIdleTime" value="0"/>
+        <property name="maxIdleTimeExcessConnections" value="4"/>
         <property name="maxPoolSize" value="30"/>
         <property name="minPoolSize" value="10"/>
         <property name="initialPoolSize" value="10"/>          
