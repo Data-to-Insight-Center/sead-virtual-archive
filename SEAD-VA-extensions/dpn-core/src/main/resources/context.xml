@@ -1,0 +1,31 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+       xsi:schemaLocation="http://www.springframework.org/schema/rabbit
+           http://www.springframework.org/schema/rabbit/spring-rabbit.xsd
+           http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <rabbit:connection-factory id="connectionFactory" host="dpntest.d2i.indiana.edu" username="dpnuser" password="$$logmein$$"/>
+    <!--<rabbit:connection-factory id="connectionFactory" host="mq-aws.lib.utexas.edu" port="5672" virtual-host="/" username="test" password="test"/>-->
+
+    <!--<rabbit:template id="amqpTemplate" connection-factory="connectionFactory"-->
+                     <!--exchange="dpn-control-exchange" routing-key="tdr"/>-->
+    <rabbit:template id="amqpTemplate" connection-factory="connectionFactory"
+                     exchange="myExchange" routing-key="dpn.iu"/>
+
+    <rabbit:admin connection-factory="connectionFactory"/>
+
+    <rabbit:queue name="myQueue"/>
+
+    <rabbit:topic-exchange name="myExchange">
+        <rabbit:bindings>
+            <rabbit:binding queue="myQueue" pattern="dpn.*"/>
+        </rabbit:bindings>
+    </rabbit:topic-exchange>
+
+    <rabbit:listener-container connection-factory="connectionFactory">
+        <rabbit:listener ref="testListener" method="onMessage" queue-names="myQueue"/>
+    </rabbit:listener-container>
+    <bean id="testListener" class="edu.iu.dpn.messaging.DPNMsgListener"/>
+</beans>
