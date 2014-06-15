@@ -168,6 +168,7 @@ public class OreDBMapper {
 
         if(locTriples.size()>0){
             for(Triple locTriple:locTriples){
+
                 String[] locArr = locTriple.getObjectLiteral().split(";");
                 DataLocation dataLocation = new DataLocation();
                 DataLocationPK dataLocationPK = new DataLocationPK();
@@ -373,12 +374,19 @@ public class OreDBMapper {
 
         aggregation.addTriple(resourceMapId);
 
+        Triple title= new TripleJena();
+        title.initialise(aggregation);
+        title.relate(DC_TERMS_TITLE,
+                collection.getEntityName());
+
+        aggregation.addTriple(title);
+
         Triple stateType= new TripleJena();
         stateType.initialise(aggregation);
         stateType.relate(DC_TERMS_TYPE,
                collection.getState().getStateType());
 
-        aggregation.addTriple(resourceMapId);
+        aggregation.addTriple(stateType);
 
         for(Property property:collection.getProperties()){
             Triple triple = new TripleJena();
