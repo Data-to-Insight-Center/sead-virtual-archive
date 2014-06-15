@@ -28,6 +28,6 @@ import java.util.List;
 public interface PackageCreator {
 
 
-    public List<String> getPackageLinks(ResearchObject dcp);
+    public List<String> getPackageLinks(ResearchObject dcp, String prefix);
     public void getPackage(String sipPath, OutputStream stream) throws FileNotFoundException;
 }

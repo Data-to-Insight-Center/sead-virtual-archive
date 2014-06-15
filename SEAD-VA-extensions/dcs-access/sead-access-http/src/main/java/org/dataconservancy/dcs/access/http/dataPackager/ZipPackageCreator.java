@@ -16,25 +16,35 @@
 
 package org.dataconservancy.dcs.access.http.dataPackager;
 
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.SftpException;
+import org.apache.commons.io.IOUtils;
 import org.dataconservancy.archive.api.EntityNotFoundException;
 import org.dataconservancy.archive.api.EntityTypeException;
+import org.dataconservancy.dcs.query.dcpsolr.SeadConfig;
 import org.dataconservancy.model.builder.DcsModelBuilder;
 import org.dataconservancy.model.builder.InvalidXmlException;
 import org.dataconservancy.model.dcs.*;
 import org.seadva.archive.ArchiveEnum;
-import org.seadva.archive.SeadArchiveStore;
+import org.seadva.archive.impl.cloud.Sftp;
+import org.seadva.bagit.event.api.Event;
+import org.seadva.bagit.impl.ConfigBootstrap;
+import org.seadva.bagit.model.PackageDescriptor;
+import org.seadva.model.SeadDataLocation;
 import org.seadva.model.SeadFile;
-import org.seadva.model.builder.api.SeadModelBuilder;
 import org.seadva.model.builder.xstream.SeadXstreamStaxModelBuilder;
 import org.seadva.model.pack.ResearchObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.net.ssl.*;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.net.URL;
+import java.net.URLConnection;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
+import java.util.*;
 import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -47,18 +57,56 @@ public class ZipPackageCreator extends PackageCreatorBase
 
     DcsModelBuilder builder = new SeadXstreamStaxModelBuilder();
 
+    public SeadConfig getConfig() {
+        return config;
+    }
+
+    public void setConfig(SeadConfig config) {
+        this.config = config;
+    }
+
+    private SeadConfig config;
+
     @Override
-    public List<String> getPackageLinks(ResearchObject dcp) {//get ancestory
+    public List<String> getPackageLinks(ResearchObject dcp, String prefix) {//get ancestory
         List<String> splitSips = splitSip(dcp);
 
         List<String> packageLinks = new ArrayList<String>();
 
         for(String splitSip:splitSips){
             packageLinks.add(
-                    "package/"+ splitSip.substring(splitSip.lastIndexOf("/")+1)+".zip");
+                    prefix+"package/"+ splitSip.substring(splitSip.lastIndexOf("/")+1)+".zip");
             //to split package into multiple ones
         }
         return packageLinks;
+    }
+
+
+    public String oreConversion(String sipFilePath, String rootId) {
+
+        File targetDir = new File(System.getProperty("java.io.tmpdir"));
+
+        PackageDescriptor packageDescriptor = new PackageDescriptor(rootId, null, targetDir.getAbsolutePath());
+        packageDescriptor.setSipPath(sipFilePath);
+        try
+        {
+            new ConfigBootstrap().load();
+            packageDescriptor = ConfigBootstrap.packageListener.execute(Event.PARSE_SIP, packageDescriptor);
+            packageDescriptor = ConfigBootstrap.packageListener.execute(Event.GENERATE_ORE, packageDescriptor);
+        }
+        catch (ClassNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+        catch (IllegalAccessException e)
+        {
+            e.printStackTrace();
+        }
+        catch (InstantiationException e)
+        {
+            e.printStackTrace();
+        }
+        return packageDescriptor.getOreFilePath();
     }
 
     /**
@@ -83,6 +131,8 @@ public class ZipPackageCreator extends PackageCreatorBase
         } catch (InvalidXmlException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
+
+
 
         allEntities = new HashMap<String, DcsEntity>();
 
@@ -125,6 +175,23 @@ public class ZipPackageCreator extends PackageCreatorBase
 
         createZip("", rootId);
         try {
+
+
+            //Add ORE file inside the folder
+            String id =  rootId.split("/")[rootId.split("/").length-1];
+            String oreFilePath = oreConversion(sipPath,id);
+            String[] fileName = sipPath.split("/");
+            zipOutputStream.putNextEntry(new ZipEntry(fileName[fileName.length-1]+"_oaiore.xml"));
+            IOUtils.copy(new FileInputStream(oreFilePath), zipOutputStream);
+            zipOutputStream.closeEntry();
+
+            zipOutputStream.putNextEntry(new ZipEntry("bagit.txt"));
+            zipOutputStream.closeEntry();
+
+            zipOutputStream.putNextEntry(new ZipEntry("manifest.txt"));
+            zipOutputStream.closeEntry();
+
+            //Close the whole Zip stream
             zipOutputStream.close();
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
@@ -146,7 +213,7 @@ public class ZipPackageCreator extends PackageCreatorBase
             if(path.length()>0)
                 path += "/" + ((DcsDeliverableUnit) entity).getTitle();
             else
-                path += ((DcsDeliverableUnit) entity).getTitle();
+                path += "data";//((DcsDeliverableUnit) entity).getTitle();
 
             if(parentChildMap.containsKey(rootId)){
                 for(String child:parentChildMap.get(rootId))
@@ -163,26 +230,25 @@ public class ZipPackageCreator extends PackageCreatorBase
                     throw new IllegalArgumentException("File not found" + e.getMessage());
                 }
             else
-                try {
-                    fis = downloadFileStream((SeadFile) entity);
-                } catch (EntityNotFoundException e) {
-                    throw new IllegalArgumentException("Entity not found" + e.getMessage());
-                } catch (EntityTypeException e) {
-                    throw new IllegalArgumentException("Entity type not found" + e.getMessage());
-                }
-
             try
             {
                 zipOutputStream.putNextEntry(new ZipEntry(path+"/" +((DcsFile) entity).getName()));
-                int len;
+               /* int len;
                 while ((len = fis.read(buf)) > 0)
-                    zipOutputStream.write(buf, 0, len);
+                    zipOutputStream.write(buf, 0, len);*/
+                        //fis =
+                    downloadFileStream((SeadFile) entity, zipOutputStream);
+
                 zipOutputStream.closeEntry();
             }
             catch (FileNotFoundException e){
                 log.error(e.getMessage());
             } catch (IOException e) {
                 log.error(e.getMessage());
+            } catch (EntityTypeException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (EntityNotFoundException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
         }
     }
@@ -198,12 +264,101 @@ public class ZipPackageCreator extends PackageCreatorBase
     }
     private static final Logger log =
             LoggerFactory.getLogger(ZipPackageCreator.class);
-    InputStream downloadFileStream(SeadFile file) throws EntityNotFoundException, EntityTypeException {
-        ArchiveEnum.Archive archiveEnum = ArchiveEnum.Archive.fromString(file.getPrimaryLocation().getName());
-        log.debug("archive="+archiveEnum.toString());
-        SeadArchiveStore store = archiveStores.get(archiveEnum);
-        return store.getContent(file.getId());
-    }
+    void downloadFileStream(SeadFile file, OutputStream destination) throws EntityNotFoundException, EntityTypeException {
+                String filePath = null;
+            if(file.getPrimaryLocation().getType()!=null&&file.getPrimaryLocation().getType().length()>0
+                    &&file.getPrimaryLocation().getLocation()!=null&&file.getPrimaryLocation().getLocation().length()>0
+                    &&file.getPrimaryLocation().getName()!=null&&file.getPrimaryLocation().getName().length()>0
+                    ){
+                if(
+                        (file.getPrimaryLocation().getName().equalsIgnoreCase(ArchiveEnum.Archive.IU_SCHOLARWORKS.getArchive()))
+                                ||
+                                (file.getPrimaryLocation().getName().equalsIgnoreCase(ArchiveEnum.Archive.UIUC_IDEALS.getArchive())
+                                )
+                        ){
+                    URLConnection connection = null;
+                    try {
+                        String location = file.getPrimaryLocation().getLocation();
+                        location = location.replace("http://maple.dlib.indiana.edu:8245/", "https://scholarworks.iu.edu/");
+                        connection = new URL(location).openConnection();
+                        connection.setDoOutput(true);
+                        final TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+                            @Override
+                            public void checkClientTrusted( final X509Certificate[] chain, final String authType ) {
+                            }
+                            @Override
+                            public void checkServerTrusted( final X509Certificate[] chain, final String authType ) {
+                            }
+                            @Override
+                            public X509Certificate[] getAcceptedIssuers() {
+                                return null;
+                            }
+                        } };
+                        if(connection.getURL().getProtocol().equalsIgnoreCase("https")){
+                            final SSLContext sslContext = SSLContext.getInstance( "SSL" );
+                            sslContext.init( null, trustAllCerts, new java.security.SecureRandom() );
+                            final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+                            ((HttpsURLConnection) connection ).setSSLSocketFactory( sslSocketFactory );
+                        }
+                        IOUtils.copy(connection.getInputStream(), destination);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (NoSuchAlgorithmException e) {
+                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    } catch (KeyManagementException e) {
+                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    }
+                    return;
+                }
+                else if( file.getPrimaryLocation().getType().equalsIgnoreCase(ArchiveEnum.Archive.SDA.getType().getText())
+                        &&file.getPrimaryLocation().getName().equalsIgnoreCase(
+                        ArchiveEnum.Archive.SDA.getArchive())
+                        ) {
+                    filePath = file.getPrimaryLocation().getLocation();
+
+                    String[] pathArr = filePath.split("/");
+
+                    try {
+                        Sftp sftp = new Sftp(
+                                config.getSdahost(),config.getSdauser(),config.getSdapwd(),config.getSdamount()
+                        );
+                        sftp.downloadFile(filePath.substring(0,filePath.lastIndexOf('/')), pathArr[pathArr.length-1], destination);
+                        sftp.disConnectSession();
+                    } catch (JSchException e) {
+                        e.printStackTrace();
+                    } catch (SftpException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            else{
+                if(file.getSecondaryDataLocations()!=null&&file.getSecondaryDataLocations().size()>0){
+                    for(SeadDataLocation dataLocation:file.getSecondaryDataLocations()){
+                        if( dataLocation.getType().equalsIgnoreCase(ArchiveEnum.Archive.SDA.getType().getText())
+                                &&dataLocation.getName().equalsIgnoreCase(
+                                ArchiveEnum.Archive.SDA.getArchive())
+                                ) {
+                            filePath = dataLocation.getLocation();
+
+                            String[] pathArr = filePath.split("/");
+
+                            try {
+                                Sftp sftp = new Sftp(
+                                        config.getSdahost(),config.getSdauser(),config.getSdapwd(),config.getSdamount()
+                                );
+                                sftp.downloadFile(filePath.substring(0,filePath.lastIndexOf('/')), pathArr[pathArr.length-1], destination);
+                                sftp.disConnectSession();
+                            } catch (JSchException e) {
+                                e.printStackTrace();
+                            } catch (SftpException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
+            }
+            return;
+        }
 
     long twoGB = 2*1024*1024*1024L;
     List<String> duIds = new ArrayList<String>();
@@ -226,7 +381,17 @@ public class ZipPackageCreator extends PackageCreatorBase
             if(du.getParents().isEmpty())
                 rootId = du.getId();
         }
-        String fileName = rootId.substring(rootId.lastIndexOf("/")+1);
+        final String fileName = rootId.substring(rootId.lastIndexOf("/")+1);
+        File directory = new File(cachePath);
+        FilenameFilter filter = new FilenameFilter() {
+            public boolean accept(File directory, String givenFileName) {
+                return givenFileName.startsWith(fileName);
+            }
+        };
+
+        String[] cachedFiles = directory.list(filter);
+        if(cachedFiles.length>0)
+            return Arrays.asList(cachedFiles);
 
         int i = 0;
         long totalSize = 0;
@@ -336,5 +501,4 @@ public class ZipPackageCreator extends PackageCreatorBase
         newSip = addDUs(newSip, duHashMap, du.getParents().iterator().next().getRef());
         return newSip;
     }
-
 }

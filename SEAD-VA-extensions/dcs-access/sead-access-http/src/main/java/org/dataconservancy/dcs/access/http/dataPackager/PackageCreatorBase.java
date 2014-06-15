@@ -37,6 +37,6 @@ public class PackageCreatorBase {
 
     @Required
     public void setCachePath(String cachePath) {
-        this.archiveStores = archiveStores;
+        this.cachePath = cachePath;
     }
 }

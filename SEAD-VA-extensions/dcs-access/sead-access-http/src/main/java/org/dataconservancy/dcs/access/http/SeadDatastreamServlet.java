@@ -172,9 +172,10 @@ public class SeadDatastreamServlet
                  ){
              URLConnection connection = null;
              try {
-                 connection = new URL(file.getPrimaryLocation().getLocation()).openConnection();
+                 String location = file.getPrimaryLocation().getLocation();
+                 location = location.replace("http://maple.dlib.indiana.edu:8245/", "https://scholarworks.iu.edu/");
+                 connection = new URL(location).openConnection();
                  connection.setDoOutput(true);
-                 // Create a trust manager that does not validate certificate chains
                  final TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
                      @Override
                      public void checkClientTrusted( final X509Certificate[] chain, final String authType ) {
@@ -190,7 +191,6 @@ public class SeadDatastreamServlet
                  if(connection.getURL().getProtocol().equalsIgnoreCase("https")){
                      final SSLContext sslContext = SSLContext.getInstance( "SSL" );
                      sslContext.init( null, trustAllCerts, new java.security.SecureRandom() );
-                     // Create an ssl socket factory with our all-trusting manager
                      final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
                      ((HttpsURLConnection) connection ).setSSLSocketFactory( sslSocketFactory );
                  }
