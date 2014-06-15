@@ -96,6 +96,18 @@
           <artifactId>sead-metadata-service-api</artifactId>
           <version>1.1.0-SNAPSHOT</version>
       </dependency>
+
+      <dependency>
+          <groupId>org.seadva.archive</groupId>
+          <artifactId>sead-archive-impl-sda</artifactId>
+          <version>1.1.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+          <artifactId>ro-subsystem-support</artifactId>
+          <groupId>org.seadva.data.lifecycle</groupId>
+          <version>1.0.0-SNAPSHOT</version>
+      </dependency>
+
       <dependency>
           <groupId>org.dataconservancy.index</groupId>
           <artifactId>dcs-index-solr-support</artifactId>
@@ -145,6 +157,12 @@
           <artifactId>spring-beans</artifactId>
           <version>2.0</version>
           <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+          <groupId>org.ddialliance.ddi_3_0.xml</groupId>
+          <artifactId>validation</artifactId>
+          <version>1.0</version>
       </dependency>
 
       <dependency>

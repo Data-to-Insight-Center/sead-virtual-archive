@@ -3,21 +3,120 @@ package org.seadva.matchmaker.drools.impl
 import org.slf4j.LoggerFactory;
 import function org.drools.core.util.StringUtils.isEmpty;
 import org.seadva.model.SeadDeliverableUnit;
+import org.seadva.model.pack.ResearchObject;
 import org.seadva.model.SeadPerson;
+import org.dataconservancy.model.dcs.DcsMetadataRef;
+import org.dataconservancy.dcs.ingest.services.util.Output;
+import org.dataconservancy.dcs.ingest.services.runners.model.ServiceQueueModifier;
 import function org.dataconservancy.dcs.ingest.services.util.VivoUtil.getEmail;
-import function org.dataconservancy.dcs.ingest.services.runners.RulesExecutorBootstrap.addIngestServicesName;
+import function org.dataconservancy.dcs.ingest.services.util.VivoUtil.print;
+import function org.dataconservancy.dcs.ingest.services.util.Output.getDecision;
+import function org.dataconservancy.dcs.ingest.services.util.Output.put;
+import function org.dataconservancy.dcs.ingest.services.util.SchemaValidator.validateDDI;
 
 
-rule "Affiliation rule"
+rule "ICPSR Affiliation rule"
 	dialect "mvel"
+//	activation-group "Institutional Repository"
+    salience 20
 when
+     SeadDeliverableUnit( "CurationObject" in (type) )
      SeadDeliverableUnit($contributors:dataContributors )
      $seadPerson: SeadPerson( idType == "vivo"&& getEmail(id)=="University of Illinois") from $contributors;
      $seadDu : SeadDeliverableUnit(sizeBytes < 10000000000 )
      SeadDeliverableUnit(fileNo < 1000 )
-     SeadDeliverableUnit( "CC" in (rights) )
+    // SeadDeliverableUnit( "CC" in (rights) )
+
+     $researchObject: ResearchObject();
+     SeadDeliverableUnit(validateDDI(metadataRef , $researchObject)); //Satisfies ICPSR's DDI requirement in Metadata
+
 
 then
-    addIngestServicesName("test");
+      put("icpsr", 4);
+end
+
+rule "UIUC Affiliation rule"
+	dialect "mvel"
+//	activation-group "Institutional Repository" //Takes care of depositing only in one repository
+	salience 20
+when
+     SeadDeliverableUnit( "CurationObject" in (type) )
+     SeadDeliverableUnit($contributors:dataContributors )
+     $seadPerson: SeadPerson( idType == "vivo"&& getEmail(id)=="University of Illinois") from $contributors;
+     $seadDu : SeadDeliverableUnit(sizeBytes < 10000000000 )
+     SeadDeliverableUnit(fileNo < 1000 )
+    // SeadDeliverableUnit( "CC" in (rights) )
+
+then
+    put("uiuc", 3);
+end
+
+rule "IU SDA Affiliation rule"
+	dialect "mvel"
+//	activation-group "Institutional Repository"
+	salience 20
+when
+      SeadDeliverableUnit( "CurationObject" in (type) )
+then
+     put("sda", 1);
+end
+
+
+rule "IU Scholaworks Affiliation rule"
+	dialect "mvel"
+//	activation-group "Institutional Repository"
+	salience 20
+when
+     SeadDeliverableUnit( "CurationObject" in (type) )
+     SeadDeliverableUnit($contributors:dataContributors )
+     //SeadDeliverableUnit( title != null ) //Per IU SLA title of collection should not be null
+     //eval( $contributors.size>0 ) //Creators should not be empty per IU SLA
+     $seadPerson: SeadPerson( idType == "vivo"&& getEmail(id)=="Indiana University") from $contributors;
+     $seadDu : SeadDeliverableUnit(sizeBytes < 10000000000 )
+     SeadDeliverableUnit(fileNo < 1000 )
+    // SeadDeliverableUnit( "CC" in (rights) )
+
+then
+	 put("iu", 2);
+end
+
+
+rule "Choose curation workflow rule"
+	dialect "mvel"
+	activation-group "Workflow"
+	salience 5
+when
+    $queueModifier: ServiceQueueModifier()
+    $seadDu: SeadDeliverableUnit( "CurationObject" in (type) )
+then
+        $queueModifier.addIngestServicesName("labeller");
+        $queueModifier.addIngestServicesName("content-stager");
+        $queueModifier.addIngestServicesName("content-resolver");
+        $queueModifier.addIngestServicesName("before-index");
+        $queueModifier.addIngestServicesName("sda");
+        $queueModifier.addIngestServicesName("after-index");
+        $queueModifier.addIngestServicesName("ro-ingest");
+        $queueModifier.addIngestServicesName("finisher")
 
 end
+
+rule "Choose publish workflow rule"
+	dialect "mvel"
+	activation-group "Workflow"
+	salience 5
+when
+    $queueModifier: ServiceQueueModifier()
+    $seadDu: SeadDeliverableUnit( "PublishedObject" in (type) )
+then
+        $queueModifier.addIngestServicesName("labeller");
+        $queueModifier.addIngestServicesName("doi-creation");
+        $queueModifier.addIngestServicesName("content-stager");
+        $queueModifier.addIngestServicesName("content-resolver");
+        $queueModifier.addIngestServicesName("before-index");
+        $queueModifier.addIngestServicesName(getDecision());
+        $queueModifier.addIngestServicesName("doi-updation");
+        $queueModifier.addIngestServicesName("after-index");
+        $queueModifier.addIngestServicesName("ro-ingest");
+        $queueModifier.addIngestServicesName("finisher")
+end
+

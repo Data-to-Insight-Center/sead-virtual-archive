@@ -29,8 +29,6 @@ import org.apache.axis2.AxisFault;
 import org.dataconservancy.dcs.ingest.Events;
 import org.dataconservancy.dcs.ingest.services.util.VivoUtil;
 import org.dataconservancy.model.builder.DcsModelBuilder;
-import org.dataconservancy.model.builder.InvalidXmlException;
-import org.dataconservancy.model.builder.xstream.DcsXstreamStaxModelBuilder;
 import org.dataconservancy.model.dcp.Dcp;
 import org.dataconservancy.model.dcs.DcsCollectionRef;
 import org.dataconservancy.model.dcs.DcsDeliverableUnit;
@@ -43,29 +41,24 @@ import org.seadva.matchmaker.webservice.MatchMakerServiceStub;
 import org.seadva.model.SeadDeliverableUnit;
 import org.seadva.model.SeadPerson;
 import org.seadva.model.SeadRepository;
-import org.seadva.model.builder.api.SeadModelBuilder;
-import org.seadva.model.builder.xstream.SeadXstreamStaxModelBuilder;
 import org.seadva.model.pack.ResearchObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.rmi.RemoteException;
 
 /**
- *  MatchmakerClient retrieves data set characteristics and queries Matchmaker service to find a matching Institutional Repository
+ *  MatchmakerClient_deprecated retrieves data set characteristics and queries Matchmaker service to find a matching Institutional Repository
  *
  *  @author Kavitha Chandrasekar
  */
-public class MatchmakerClient
+public class MatchmakerClient_deprecated
         extends IngestServiceBase
         implements IngestService {
 
     private static final Logger log =
-            LoggerFactory.getLogger(MatchmakerClient.class);
+            LoggerFactory.getLogger(MatchmakerClient_deprecated.class);
 
     private DcsModelBuilder builder;
     @Required

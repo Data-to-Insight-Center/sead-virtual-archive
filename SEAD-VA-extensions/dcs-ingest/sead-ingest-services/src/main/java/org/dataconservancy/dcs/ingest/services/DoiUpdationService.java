@@ -79,7 +79,7 @@ public class DoiUpdationService extends IngestServiceBase
     public void execute(String sipRef) {
         if (isDisabled()) return;
         ResearchObject sip = (ResearchObject)ingest.getSipStager().getSIP(sipRef);
-
+        idService.setCredentials(doiUserName, doiPassword);
 
 
         //create DOI only for parent Deliverable Unit
@@ -105,13 +105,11 @@ public class DoiUpdationService extends IngestServiceBase
                             String[] tempShouler = doiShoulder.split(":");
                             int beginIndex = id.getIdValue().indexOf(tempShouler[tempShouler.length-1]);
                             String identifier = id.getIdValue().substring(beginIndex);
-                            idService.setService("https://n2t.net/ezid/id/" +
+                            idService.setService("https://ezid.cdlib.org/id/" +
                                     //"doi:10.5967/M0"
                                     //"doi:10.5072/FK2"
-                                    "doi:"+identifier
-
+                                    "doi:"+identifier.trim()
                             );
-
                             try {
                                 idService.createwithMd(metadata, true).getUid();
                             } catch (IdentifierNotFoundException e) {

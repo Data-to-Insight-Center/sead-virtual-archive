@@ -18,6 +18,7 @@
 package org.dataconservancy.dcs.ingest.services.rules.impl;
 
 import org.dataconservancy.dcs.ingest.SipStager;
+import org.dataconservancy.dcs.ingest.services.runners.model.ServiceQueueModifier;
 import org.dataconservancy.model.builder.InvalidXmlException;
 import org.dataconservancy.model.dcs.DcsDeliverableUnit;
 import org.drools.runtime.StatelessKnowledgeSession;
@@ -27,6 +28,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.FileNotFoundException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 import static com.google.common.collect.Lists.newArrayList;
 
@@ -34,7 +40,11 @@ import static com.google.common.collect.Lists.newArrayList;
  * Loader and executor of rules
  */
 public class Executor {
-    public void executeRules(SipStager sipStager, String sipId) throws FileNotFoundException, InvalidXmlException {
+
+    public static Map<String, Integer> mapPriorities = new HashMap<String, Integer>();
+    public static BlockingQueue<String> outputMessages = new ArrayBlockingQueue<String>(50);
+
+    public Queue<String> executeRules(SipStager sipStager, String sipId, ServiceQueueModifier queueModifier) throws FileNotFoundException, InvalidXmlException {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
         ResearchObject researchObject = (ResearchObject)sipStager.getSIP(sipId);
 
@@ -44,5 +54,7 @@ public class Executor {
         StatelessKnowledgeSession statelessKnowledgeSessionForIdeals =
                 (StatelessKnowledgeSession)applicationContext.getBean(sessionKey);
         statelessKnowledgeSessionForIdeals.execute(newArrayList(((SeadDeliverableUnit)du)));
+        statelessKnowledgeSessionForIdeals.execute(newArrayList(queueModifier, ((SeadDeliverableUnit)du), researchObject));
+        return outputMessages;
     }
 }

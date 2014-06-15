@@ -26,6 +26,7 @@
 
 package org.dataconservancy.dcs.ingest.services;
 
+import com.google.gson.GsonBuilder;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -60,13 +61,13 @@ public class SeadROIngester
         extends IngestServiceBase
         implements IngestService {
 
-    String roUrl;
+    private String roSubsystemUrl;
 
     @Required
-    public void setRegistryUrl(String roUrl)
-    {
-        this.roUrl = roUrl;
+    public void setRoSubsystemUrl(String roSubsystemUrl) {
+        this.roSubsystemUrl = roSubsystemUrl;
     }
+
 
 
     public void execute(String sipRef) throws IngestServiceException {
@@ -105,16 +106,16 @@ public class SeadROIngester
 
 
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            throw new IngestServiceException("Unable to generate ORE from SIP.");
         } catch (IllegalAccessException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            throw new IngestServiceException("Unable to generate ORE from SIP.");
         } catch (InstantiationException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            throw new IngestServiceException("Unable to generate ORE from SIP.");
         } catch (FileNotFoundException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            throw new IngestServiceException("Unable to generate ORE from SIP.");
         }
 
-        WebResource webResource = Client.create().resource(this.roUrl);
+        WebResource webResource = Client.create().resource(this.roSubsystemUrl);
 
         File file = new File(
                 packageDescriptor.getOreFilePath()
@@ -134,27 +135,44 @@ public class SeadROIngester
         if(response.getStatus()!=200&&response.getStatus()!=202)
             throw new IngestServiceException("Unable to register in RO subsystem");
 
-        addRegisterEvent(sipRef);
+        addRegisterEvent(sipRef, dcp);
     }
 
-    private void addRegisterEvent(String sipRef) {
+    private void addRegisterEvent(String sipRef, ResearchObject dcp) {
         DcsEvent archiveEvent =
                 ingest.getEventManager().newEvent(Events.RO_INGEST);
 
-        ResearchObject dcp = (ResearchObject)ingest.getSipStager().getSIP(sipRef);
         Set<DcsEntityReference> entities = getEntities(dcp);
-
         archiveEvent.setOutcome(Integer.toString(entities.size()));
-        archiveEvent.setDetail("Stored in registry: " + entities.size());
+        archiveEvent.setDetail("Stored in RO subsystem: " + entities.size());
         archiveEvent.setTargets(entities);
 
         ingest.getEventManager().addEvent(sipRef, archiveEvent);
         String agendId = null;
+        String targetId = null;
+        String eventType = null;
         for(DcsDeliverableUnit du:dcp.getDeliverableUnits()){
             if(du.getParents()==null||du.getParents().size()==0)
+            {
                 agendId = ((SeadDeliverableUnit)du).getSubmitter().getId();
+                targetId = du.getId();
+                if(du.getType()!=null){
+                    if(du.getType().contains("Curation"))
+                        eventType = "Curation-Workflow";
+                    else
+                        eventType = "Publish-Workflow";
+                }
+                else
+                    eventType = "Publish-Workflow";
+            }
         }
-
+        try {
+            trackEventinRO(archiveEvent, sipRef, agendId, targetId, eventType);
+        } catch (ParseException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (IngestServiceException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
 
@@ -174,6 +192,29 @@ public class SeadROIngester
         for (DcsEntity e : entities) {
             refs.add(new DcsEntityReference(e.getId()));
         }
+    }
+
+    public void trackEventinRO(DcsEvent dcsEvent, String sipRef, String agentId, String targetId, String eventType) throws ParseException, IngestServiceException {
+        org.seadva.data.lifecycle.support.model.Event event = new org.seadva.data.lifecycle.support.model.Event();
+        event.setEventIdentifier(dcsEvent.getId());
+        event.setLinkingAgentIdentifier(agentId);
+        event.setTargetId(targetId);
+        event.setWorkflowId(sipRef);
+        event.setEventType(eventType);
+
+        String eventJson = new GsonBuilder().create().toJson(event);
+
+        WebResource webResource = Client.create().resource(
+                this.roSubsystemUrl
+        );
+
+        ClientResponse response = webResource.path("resource")
+                .path("putEvent")
+                .queryParam("event", eventJson)
+                .post(ClientResponse.class);
+
+        if(response.getStatus()!=200&&response.getStatus()!=202)
+            throw new IngestServiceException("Unable to track event in RO subsystem");
     }
 
 }
