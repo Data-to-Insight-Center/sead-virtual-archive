@@ -16,6 +16,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import com.google.gson.annotations.Expose;
 import org.hibernate.proxy.HibernateProxy;
 import org.seadva.registry.database.model.obj.vaRegistry.AgentProfile;
 import org.seadva.registry.database.model.obj.vaRegistry.iface.IProfileType;
@@ -43,12 +45,17 @@ public class ProfileType implements Cloneable, Serializable, IPojoGenEntity, IPr
 	
 
 	/** Field mapping. */
-	private Set<AgentProfile> agentProfiles = new HashSet<AgentProfile>();
+	//private Set<AgentProfile> agentProfiles = new HashSet<AgentProfile>();
 
+    @Expose
 	/** Field mapping. */
 	private String id;
+
+    @Expose
 	/** Field mapping. */
 	private String profileTypeName;
+
+    @Expose
 	/** Field mapping. */
 	private String profileTypeSchema;
 	/**
@@ -94,7 +101,7 @@ public class ProfileType implements Cloneable, Serializable, IPojoGenEntity, IPr
      * Return the value associated with the column: agentProfile.
 	 * @return A Set&lt;AgentProfile&gt; object (this.agentProfile)
 	 */
- 	@OneToMany( fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE }, mappedBy = "id.profileType"  )
+ 	/*@OneToMany( fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE }, mappedBy = "id.profileType"  )
  	@org.hibernate.annotations.Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
 	@Basic( optional = false )
 	@Column( name = "profile_type_id", nullable = false  )
@@ -103,24 +110,24 @@ public class ProfileType implements Cloneable, Serializable, IPojoGenEntity, IPr
 		
 	}
 	
-	/**
+	*//**
 	 * Adds a bi-directional link of type AgentProfile to the agentProfiles set.
 	 * @param agentProfile item to add
-	 */
+	 *//*
 	public void addAgentProfile(AgentProfile agentProfile) {
 		agentProfile.getId().setProfileType(this);
 		this.agentProfiles.add(agentProfile);
 	}
 
   
-    /**  
+    *//**
      * Set the value related to the column: agentProfile.
 	 * @param agentProfile the agentProfile value you wish to set
-	 */
+	 *//*
 	public void setAgentProfiles(final Set<AgentProfile> agentProfile) {
 		this.agentProfiles = agentProfile;
 	}
-
+*/
     /**
      * Return the value associated with the column: id.
 	 * @return A String object (this.id)
@@ -204,9 +211,9 @@ public class ProfileType implements Cloneable, Serializable, IPojoGenEntity, IPr
 		
         final ProfileType copy = (ProfileType)super.clone();
 
-		if (this.getAgentProfiles() != null) {
+		/*if (this.getAgentProfiles() != null) {
 			copy.getAgentProfiles().addAll(this.getAgentProfiles());
-		}
+		}*/
 		copy.setId(this.getId());
 		copy.setProfileTypeName(this.getProfileTypeName());
 		copy.setProfileTypeSchema(this.getProfileTypeSchema());

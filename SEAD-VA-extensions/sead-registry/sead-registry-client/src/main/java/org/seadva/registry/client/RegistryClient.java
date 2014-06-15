@@ -149,13 +149,20 @@ public class RegistryClient {
         return gson.fromJson(writer.toString(), listType);
     }
 
-    public List<Collection> getCollections(String type) throws IOException {
+    public List<Collection> getCollectionList(String type, String repository, String submitterId) throws IOException {
         WebResource webResource = resource();
+        webResource = webResource.path("resource")
+                    .path("listCollections")
+                    .path(type);
 
-        ClientResponse response = webResource.path("resource")
-                .path("listCollections")
-                .path(type)
-                .get(ClientResponse.class);
+        if(repository!=null)
+            webResource = webResource.queryParam("repository", repository);
+
+        if(submitterId!=null)
+            webResource = webResource.queryParam("submitterId", submitterId);
+
+        ClientResponse response = webResource
+                                .get(ClientResponse.class);
 
         if(response.getStatus()!=200)
             throw new HTTPException(response.getStatus());
@@ -166,7 +173,6 @@ public class RegistryClient {
         }.getType();
         return gson.fromJson(writer.toString(), listType);
     }
-
 
 
     public List<AggregationWrapper> getAggregation(String parentId) throws IOException {
@@ -325,7 +331,8 @@ public class RegistryClient {
                 .get(ClientResponse.class);
 
         if(response.getStatus()!=200)
-        {    if(response.getStatus()==404)
+        {
+            if(response.getStatus()==404)
             return null;
         else
             throw new HTTPException(response.getStatus());
@@ -461,6 +468,25 @@ public class RegistryClient {
         return gson.fromJson(writer.toString(), RoleType.class);
     }
 
+
+    public State getStateByName(String stateName) throws IOException {
+        WebResource webResource = resource();
+
+        MultivaluedMap<String, String> params = new MultivaluedMapImpl();
+
+        ClientResponse response = webResource.path("resource")
+                .path("state")
+                .path(
+                    stateName
+                )
+                .queryParams(params)
+                .get(ClientResponse.class);
+
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(response.getEntityInputStream(), writer);
+        return gson.fromJson(writer.toString(), State.class);
+    }
+
     public void postAgent(Agent agent, String roleName) throws IOException {
         WebResource webResource = resource();
 
@@ -537,6 +563,23 @@ public class RegistryClient {
                 .path("relation")
                 .queryParams(params)
                 .post(ClientResponse.class);
+        if(response.getStatus()!=200)
+            throw new HTTPException(response.getStatus());
+    }
+
+    public void makeObsolete(String entityId) throws IOException {
+        WebResource webResource = resource();
+
+
+        ClientResponse response = webResource.path("resource")
+                .path("obsolete")
+                .path(
+                        URLEncoder.encode(
+                                entityId
+                        )
+                )
+                .post(ClientResponse.class);
+
         if(response.getStatus()!=200)
             throw new HTTPException(response.getStatus());
     }

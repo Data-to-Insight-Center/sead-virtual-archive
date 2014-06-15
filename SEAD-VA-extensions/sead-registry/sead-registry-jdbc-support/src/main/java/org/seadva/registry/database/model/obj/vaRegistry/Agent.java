@@ -25,6 +25,7 @@ public class Agent extends BaseEntity implements IAgent {
 
 	
 
+    @Expose
 	/** Field mapping. */
 	private Set<AgentProfile> agentProfiles = new HashSet<AgentProfile>();
 
@@ -67,7 +68,7 @@ public class Agent extends BaseEntity implements IAgent {
      * Return the value associated with the column: agentProfile.
 	 * @return A Set&lt;AgentProfile&gt; object (this.agentProfile)
 	 */
- 	@OneToMany( fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE }, mappedBy = "id.agent"  )
+ 	@OneToMany( fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE }, mappedBy = "id.agent"  )
  	@org.hibernate.annotations.Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
 	public Set<AgentProfile> getAgentProfiles() {
 		return this.agentProfiles;

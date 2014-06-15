@@ -127,6 +127,17 @@ public class ResourceService {
     }
 
     @GET
+    @Path("/profileType/{element}")
+    @Produces("application/json")
+    public Response getProfileByType( @PathParam("element") String element) throws Exception {
+        Query query =  querySession.createQuery("SELECT P from ProfileType P where P.profileTypeName='"+element+"'");
+        if(query.list().size()==0)
+            throw new NotFoundException("Profile type not found in role type registry");
+        ProfileType profileType = (ProfileType) query.list().get(0);
+        return Response.ok(gson.toJson(profileType)).build();
+    }
+
+    @GET
     @Path("/repository/{name}")
     @Produces("application/json")
     public Response getRepositoryByName( @PathParam("name") String repoName) throws Exception {
@@ -135,6 +146,17 @@ public class ResourceService {
             throw new NotFoundException("No repository found matching the given name "+repoName+" in registry");
         Repository repository = (Repository) query.list().get(0);
         return Response.ok(gson.toJson(repository)).build();
+    }
+
+    @GET
+    @Path("/state/{name}")
+    @Produces("application/json")
+    public Response getStateByName( @PathParam("name") String stateName) throws Exception {
+        Query query =  querySession.createQuery("SELECT S from State S where S.stateType ='"+stateName+"'");
+        if(query.list().size()==0)
+            throw new NotFoundException("No state found matching the given name "+stateName+" in registry");
+        State state = (State) query.list().get(0);
+        return Response.ok(gson.toJson(state)).build();
     }
 
     @GET
@@ -164,10 +186,43 @@ public class ResourceService {
     @GET
     @Path("/listCollections/{type}")
     @Produces("application/json")
-    public Response getAllCollections(@PathParam("type") String type) throws Exception {
+    public Response getAllCollections(@PathParam("type") String type,
+                                      @QueryParam("submitterId") String submitterId, //Researcher who submitted Curation Object or Curator who submitted Published Object would be the submitters
+                                      @QueryParam("repository") String repository, //Repository Name to which CurationObject is to be submitted or to which Published Object was already Published
+                                      @QueryParam("fromDate") String fromDate,
+                                      @QueryParam("toDate") String toDate) throws Exception {
+
+        querySession.clear();
         querySession.beginTransaction();
         querySession.getTransaction().commit();
-        Query query =  querySession.createQuery("SELECT C from Collection C where C.state.stateType='"+type+"'");
+
+        String queryStr = "SELECT C from Collection C";
+        if(submitterId!=null)
+            queryStr+=", Relation R";
+        if(repository!=null)
+            queryStr+=", DataLocation D";
+
+        queryStr+=" where ";
+
+
+       if(type!=null)
+            queryStr += " C.state.stateType='"+type+"' ";
+
+
+        if(submitterId!=null){
+            if(type!=null)
+                queryStr+=" AND ";
+              queryStr += " R.id.cause.id=C.id AND R.id.relationType.id='rl:3' AND R.id.effect.id='"+submitterId+"'"; //querying for submitter/publisher.
+        }
+              // Todo query from RelationType table instead of providing rl:2 as identifier
+
+        if(repository!=null) {
+            if(type!=null || submitterId!=null)
+                queryStr+=" AND ";
+            queryStr += "  C.id = D.id.entity.id AND D.id.locationType.repositoryName ='"+repository+"'";
+        }
+
+        Query query =  querySession.createQuery(queryStr);
         List<Collection> collectionsList = query.list();
         return Response.ok(gson.toJson(collectionsList)).build();
     }
@@ -187,6 +242,7 @@ public class ResourceService {
     @Path("/relation/{entityId}")
     @Produces("application/json")
     public Response getRelations( @PathParam("entityId") String entityId) throws Exception {
+        querySession.beginTransaction();
         querySession.getTransaction().commit();
         Query query =  querySession.createQuery("SELECT R from Relation R where R.id.cause.id='"+entityId+"'");
         List<Relation> relationList = (List<Relation>)query.list();
@@ -248,7 +304,12 @@ public class ResourceService {
             property.setEntity(baseEntity);
             newProperties.add(property);
         }
-        baseEntity.setProperties(newProperties);
+
+        BaseEntity existingEntity = dataLayerVaRegistry.getBaseEntity(baseEntity.getId());
+        if(existingEntity!=null)
+            baseEntity.setProperties(existingEntity.getProperties(), newProperties);
+        else
+            baseEntity.setProperties(newProperties);
 
         Set<DataLocation> tempDataLocations =  new HashSet<DataLocation>(baseEntity.getDataLocations());
         baseEntity.setDataLocations(new HashSet<DataLocation>());
@@ -318,8 +379,19 @@ public class ResourceService {
             role.setId(agentRolePK);
             newRoles.add(role);
         }
-        agent.setAgentRoles(newRoles);
 
+        Set<AgentProfile> profiles =  new HashSet<AgentProfile>(agent.getAgentProfiles());
+        agent.setAgentProfiles(new HashSet<AgentProfile>());
+        Set<AgentProfile> newProfiles =  new HashSet<AgentProfile>();
+        for(AgentProfile profile: profiles){
+            AgentProfilePK agentProfilePK = profile.getId();
+            agentProfilePK.setAgent(agent);
+            profile.setId(agentProfilePK);
+            newProfiles.add(profile);
+        }
+
+        agent.setAgentRoles(newRoles);
+        agent.setAgentProfiles(newProfiles);
 
         dataLayerVaRegistry.merge(agent);
         dataLayerVaRegistry.flushSession();
@@ -384,6 +456,22 @@ public class ResourceService {
             dataLayerVaRegistry.merge(relation);
         }
         dataLayerVaRegistry.flushSession();
+        return Response.ok().build();
+    }
+
+    @POST
+    @Path("/obsolete/{entityId}")
+    public Response makeObsolete( @PathParam("entityId") String obsoleteId
+    ) throws IOException, ClassNotFoundException
+
+    {
+        BaseEntity baseEntity = dataLayerVaRegistry.getBaseEntity(obsoleteId);
+        if(baseEntity instanceof Collection)
+        {
+            ((Collection)baseEntity).setIsObsolete(1);
+            dataLayerVaRegistry.merge(baseEntity);
+            dataLayerVaRegistry.flushSession();
+        }
         return Response.ok().build();
     }
 }

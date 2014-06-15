@@ -1,12 +1,10 @@
 package org.seadva.registry.mapper;
 
+import com.google.gson.GsonBuilder;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.dataconservancy.model.dcs.*;
-import org.seadva.model.SeadDataLocation;
-import org.seadva.model.SeadDeliverableUnit;
-import org.seadva.model.SeadEvent;
-import org.seadva.model.SeadFile;
+import org.seadva.model.*;
 import org.seadva.model.pack.ResearchObject;
 import org.seadva.registry.client.RegistryClient;
 import org.seadva.registry.database.model.obj.vaRegistry.*;
@@ -26,7 +24,6 @@ public class DcsDBMapper {
 
     public DcsDBMapper(String registryUrl){
         client = new RegistryClient(registryUrl);
-        DcsDBField.load();
     }
 
     /**
@@ -69,8 +66,9 @@ public class DcsDBMapper {
                     collection.addProperty(property);
                 }
             }
+
             if(du.getType()!=null)
-                collection.setState((State) client.getEntity(DcsDBField.nameStateMap.get(du.getType()), State.class.getName()));
+                collection.setState((State) client.getStateByName(du.getType()));
 
             List<Property> properties = new ArrayList<Property>();
             for(DcsMetadata metadata:du.getMetadata()){
@@ -404,11 +402,30 @@ public class DcsDBMapper {
             du.addAlternateId(dcsResourceIdentifier);
         }
 
-        du.setType(DcsDBField.stateNameMap.get(collection.getState().getId()));
+        du.setType(collection.getState().getStateType());
+
+        du.setDataContributors(new HashSet<SeadPerson>());
 
         for(Property property:collection.getProperties()){
             if(property.getMetadata().getMetadataElement().equals(DcsDBField.CoreMetadataField.ABSTRACT.dbPropertyName()))
                 du.setAbstrct(property.getValuestr());
+            else if(property.getMetadata().getMetadataElement().equals(DcsDBField.CoreMetadataField.TYPE.dbPropertyName()))
+                du.setType(property.getValuestr());
+            else if(property.getMetadata().getMetadataElement().equals(DcsDBField.CoreMetadataField.CONTRIBUTOR.dbPropertyName()))
+            {
+                SeadPerson person = new SeadPerson();
+                String contributor = property.getValuestr();
+                if(contributor.contains(";")){
+                    String[] arr = contributor.split(";");
+                    person.setName(arr[0]);
+                    person.setId(arr[2]);
+                    person.setIdType(arr[1]);
+                }
+                else
+                    person.setName(contributor);
+
+                du.addDataContributor(person);
+            }
             else{
                 XStream xStream = new XStream(new DomDriver());
                 xStream.alias("map",Map.class);

@@ -59,7 +59,7 @@ public class Property implements Cloneable, Serializable, IPojoGenEntity, IPrope
 	 */
 	public Property() {
 		// Default constructor
-	} 
+	}
 
 	/** Constructor taking a given ID.
 	 * @param id to set

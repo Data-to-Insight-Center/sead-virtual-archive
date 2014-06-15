@@ -15,7 +15,9 @@
  */
 package org.seadva.registry.mapper;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class DcsDBField {
@@ -201,7 +203,7 @@ public class DcsDBField {
 
     public enum CoreMetadataField
     implements DBPropertyName {
-        TITLE("title"), CREATOR("creator"), ABSTRACT("abstract"),
+        TITLE("title"), CREATOR("creator"), ABSTRACT("abstract"), CONTRIBUTOR("contributor"),
         SUBJECT("subject"), TYPE("type"), RIGHTS("rights");
         
         private final String fieldname;
@@ -242,17 +244,4 @@ public class DcsDBField {
             return fieldname;
         }
     }
-
-    public static Map<String,String> nameStateMap = new HashMap<String, String>();
-    public static Map<String,String> stateNameMap = new HashMap<String, String>();
-    public static void load() {
-        nameStateMap.put("PublishedObject", "state:1");
-        nameStateMap.put("CurationObject", "state:2");
-        nameStateMap.put("CapturedObject", "state:3");
-
-        stateNameMap.put("state:1", "PublishedObject");
-        stateNameMap.put("state:2", "CurationObject");
-        stateNameMap.put("state:3", "CapturedObject");
-    }
-
 }

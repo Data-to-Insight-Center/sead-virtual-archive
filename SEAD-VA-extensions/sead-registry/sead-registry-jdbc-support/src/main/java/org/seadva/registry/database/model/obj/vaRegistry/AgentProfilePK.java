@@ -9,6 +9,8 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
+
+import com.google.gson.annotations.Expose;
 import org.seadva.registry.database.model.obj.vaRegistry.iface.IAgentProfilePK;
 
 
@@ -26,14 +28,15 @@ public class AgentProfilePK implements Cloneable, Serializable,  IAgentProfilePK
 	
 
 	/** Field mapping. */
-	@ManyToOne( cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY )
+	@ManyToOne( cascade =  { CascadeType.DETACH }, fetch = FetchType.LAZY )
 	@org.hibernate.annotations.Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
 	@Basic( optional = false )
 	@JoinColumn(name = "agent_id", nullable = false , insertable = false, updatable = false )
 	private Agent agent;
 
+    @Expose
 	/** Field mapping. */
-	@ManyToOne( cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY )
+	@ManyToOne( cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER )
 	@org.hibernate.annotations.Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
 	@Basic( optional = false )
 	@JoinColumn(name = "profile_type_id", nullable = false , insertable = false, updatable = false )
@@ -161,7 +164,7 @@ public class AgentProfilePK implements Cloneable, Serializable,  IAgentProfilePK
 	@Override
 	public int hashCode() {
 	int hash = 0;
-		hash = hash + getAgent().hashCode();
+	//	hash = hash + getAgent().hashCode();
 		hash = hash + getProfileType().hashCode();
 	return hash;
 	}

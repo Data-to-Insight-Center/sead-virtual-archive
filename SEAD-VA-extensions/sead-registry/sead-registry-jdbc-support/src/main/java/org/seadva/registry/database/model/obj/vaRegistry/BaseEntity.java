@@ -2,12 +2,7 @@ package org.seadva.registry.database.model.obj.vaRegistry;
 
 import com.felees.hbnpojogen.persistence.IPojoGenEntity;
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.WeakHashMap;
+import java.util.*;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -23,6 +18,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 import com.google.gson.annotations.Expose;
+import org.apache.commons.collections.map.HashedMap;
 import org.hibernate.proxy.HibernateProxy;
 import org.seadva.registry.database.enums.subtype.vaRegistry.BaseEntitySubclassType;
 import org.seadva.registry.database.model.obj.vaRegistry.Aggregation;
@@ -413,7 +409,33 @@ public class BaseEntity implements Cloneable, Serializable, IPojoGenEntity, IBas
 	 */
 	public void addProperty(Property property) {
 		property.setEntity(this);
-		this.properties.add(property);
+
+        //Prevent multiple records for singleValued metadata types
+
+        boolean thisSingleValuedExists = false;
+
+        Set<Property> existingProperties = this.properties;
+        for(Property existingProperty:existingProperties){  //Update single Valued attribute if it already exists
+            String metadataElement = existingProperty.getMetadata().getMetadataElement();
+            if(property.getMetadata().getMetadataElement().equalsIgnoreCase(metadataElement)&&Constants.singleValuedMetadataTypes.contains(metadataElement)){
+                existingProperty.setValuestr(property.getValuestr());
+                thisSingleValuedExists = false;
+                break;
+            }
+        }
+
+        //Prevent duplicate record entry
+        for(Property existingProperty:this.properties){
+            if(property.getEntity().getId().equalsIgnoreCase(existingProperty.getEntity().getId())
+                    &&(property.getMetadata().getId().equalsIgnoreCase(existingProperty.getMetadata().getId()))
+                    &&(property.getValuestr().equalsIgnoreCase(existingProperty.getValuestr())))
+                return;
+        }
+
+        if(!thisSingleValuedExists)
+		    this.properties.add(property);
+        else
+            this.properties = existingProperties;
 	}
 
   
@@ -422,14 +444,91 @@ public class BaseEntity implements Cloneable, Serializable, IPojoGenEntity, IBas
 	 * @param property the property value you wish to set
 	 */
 	public void setProperties(final Set<Property> property) {
+
+       /* Set<Property> existingProperties = new HashSet<Property>(property);
+        List<String> singleValuedMetadataType = new ArrayList<String>();
+
+        for(Property existingProperty:existingProperties){
+            String metadataElement = existingProperty.getMetadata().getMetadataElement();
+            if(Constants.singleValuedMetadataTypes.contains(metadataElement)) {
+                if(singleValuedMetadataType.contains(metadataElement))//Single valued and there are duplicates
+                    property.remove(existingProperty);
+                else
+                    singleValuedMetadataType.add(metadataElement);
+            }
+        }
+
+        existingProperties = new HashSet<Property>(property);*/
+
+        //Prevent duplicate record entry - todo if needed, by overriding SET unique comparison
+       /* for(Property existingProperty:existingProperties){
+            if(property.getEntity().getId().equalsIgnoreCase(existingProperty.getEntity().getId())
+                    &&(property.getMetadata().getId().equalsIgnoreCase(existingProperty.getMetadata().getId()))
+                    &&(property.getValuestr().equalsIgnoreCase(existingProperty.getValuestr())))
+                return;
+        }*/
 		this.properties = property;
 	}
+
+
+    public void setProperties(final Set<Property> oldProperties, final Set<Property> newProperties) {
+
+        Set<Property> existingProperties = new HashSet<Property>(newProperties);
+        List<String> singleValuedMetadataType = new ArrayList<String>();
+
+        //Esnure new properties have only one record for single valued properties
+        for(Property existingProperty:existingProperties){
+            String metadataElement = existingProperty.getMetadata().getMetadataElement();
+            if(Constants.singleValuedMetadataTypes.contains(metadataElement)) {
+                if(singleValuedMetadataType.contains(metadataElement))//Single valued and there are duplicates
+                    newProperties.remove(existingProperty);
+                else
+                    singleValuedMetadataType.add(metadataElement);
+            }
+        }
+
+        //Check if a a new property is a duplicate of what already exists in DB, then just skip this new property
+        existingProperties = new HashSet<Property>(newProperties);
+        for(Property newProperty:existingProperties){
+            String metadataElement = newProperty.getMetadata().getMetadataElement();
+            for(Property oldProperty: oldProperties){
+                if(metadataElement.equalsIgnoreCase(oldProperty.getMetadata().getMetadataElement())
+                        && newProperty.getValuestr().equalsIgnoreCase(oldProperty.getValuestr())){//If already in database
+                    //just remove
+                    newProperties.remove(newProperty);
+                    break;
+                }
+            }
+        }
+
+        //Check if a new single valued property already exists in DB and just needs an update of its value
+
+        existingProperties = new HashSet<Property>(newProperties);
+        for(Property newProperty:existingProperties){
+            String metadataElement = newProperty.getMetadata().getMetadataElement();
+            for(Property oldProperty: oldProperties){
+                if(Constants.singleValuedMetadataTypes.contains(metadataElement)) {//If single valued
+                    if(metadataElement.equalsIgnoreCase(oldProperty.getMetadata().getMetadataElement())){//If already in database
+                        //just update
+                        newProperties.remove(newProperty);
+                        oldProperty.setValuestr(newProperty.getValuestr());
+                        newProperties.add(oldProperty);
+                        break;
+                    }
+                }
+            }
+        }
+
+
+
+        this.properties = newProperties;
+    }
 
     /**
      * Return the value associated with the column: relation.
 	 * @return A Set&lt;Relation&gt; object (this.relation)
 	 */
- 	@OneToMany( fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE }, mappedBy = "id.cause"  )
+ 	@OneToMany( fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE }, mappedBy = "id.cause"  )
  	@org.hibernate.annotations.Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
 	@Basic( optional = false )
 	@Column( name = "entity_id", nullable = false  )

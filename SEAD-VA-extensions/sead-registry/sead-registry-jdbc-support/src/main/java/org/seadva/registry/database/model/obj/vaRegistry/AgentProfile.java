@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import com.google.gson.annotations.Expose;
 import org.seadva.registry.database.model.obj.vaRegistry.iface.IAgentProfile;
 
 
@@ -25,10 +27,12 @@ public class AgentProfile implements Cloneable, Serializable, IPojoGenEntity, IA
 
 	
 
+    @Expose
 	/** Field mapping. */
 	@Id 
 	private AgentProfilePK id;
 
+    @Expose
 	/** Field mapping. */
 	@Column( name = "profile_value", nullable = false, length = 256  )
 	private String profileValue;
