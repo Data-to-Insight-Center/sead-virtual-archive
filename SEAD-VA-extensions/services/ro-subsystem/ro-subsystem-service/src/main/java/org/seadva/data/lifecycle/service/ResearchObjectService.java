@@ -28,9 +28,17 @@ import org.json.JSONObject;
 import org.json.XML;
 import org.seadva.data.lifecycle.support.KomaduIngester;
 import org.seadva.data.lifecycle.support.model.Entity;
+import org.seadva.data.lifecycle.support.model.Event;
 import org.seadva.data.lifecycle.support.model.ROMetadata;
 import org.seadva.data.lifecycle.service.util.Util;
+import org.seadva.model.builder.xstream.SeadXstreamStaxModelBuilder;
+import org.seadva.model.pack.ResearchObject;
 import org.seadva.registry.client.RegistryClient;
+import org.seadva.registry.database.model.obj.vaRegistry.Agent;
+import org.seadva.registry.database.model.obj.vaRegistry.AggregationWrapper;
+import org.seadva.registry.database.model.obj.vaRegistry.BaseEntity;
+import org.seadva.registry.database.model.obj.vaRegistry.Relation;
+import org.seadva.registry.mapper.DcsDBMapper;
 import org.seadva.registry.mapper.OreDBMapper;
 import org.springframework.beans.factory.annotation.Required;
 
@@ -51,6 +59,32 @@ import java.util.*;
 @Path("/resource")
 public class ResearchObjectService {
 
+    static {
+
+        InputStream inputStream =
+                ResearchObjectService.class.getResourceAsStream("./Config.properties");
+
+        StringWriter writer = new StringWriter();
+        try {
+            IOUtils.copy(inputStream, writer);
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+        String result = writer.toString();
+        String[] pairs = result.trim().split(
+                "\n|\\=");
+
+
+        for (int i = 0; i + 1 < pairs.length;) {
+            String name = pairs[i++].trim();
+            String value = pairs[i++].trim();
+            if(name.equalsIgnoreCase("komadu.url"))
+                komaduServiceUrl = value;
+            else if(name.equalsIgnoreCase("registry.url"))
+                registryServiceUrl = value;
+        }
+    }
     private static String komaduServiceUrl;
     private static String registryServiceUrl;
 
@@ -82,11 +116,13 @@ public class ResearchObjectService {
     @GET
     @Path("/agentGraph/{agentId}")
     @Produces("application/json")
-    public Response getAgentGraph(@PathParam("agentId") String agentId){
+    public Response getAgentGraph(@PathParam("agentId") String agentId,
+                                  @QueryParam("callback") String callback){
         try {
             GetAgentGraphRequestDocument agentGraphRequest = GetAgentGraphRequestDocument.Factory.newInstance();
             GetAgentGraphRequestType agentRequestType = GetAgentGraphRequestType.Factory.newInstance();
             agentRequestType.setAgentID(agentId);
+            agentRequestType.setInformationDetailLevel(DetailEnumType.FINE);
             agentGraphRequest.setGetAgentGraphRequest(agentRequestType);
             KomaduServiceStub serviceStub = new KomaduServiceStub(
                     komaduServiceUrl
@@ -95,7 +131,12 @@ public class ResearchObjectService {
             JSONObject xmlJSONObj = XML.toJSONObject(agentResponse.getGetAgentGraphResponse().getDocument().toString());
             String jsonPrettyPrintString = xmlJSONObj.toString(4);
             return Response.ok(
-                           jsonPrettyPrintString ).build();
+                    //"__gwt_jsonp__.P0.onSuccess" +
+                    callback+
+                            "("+
+                            jsonPrettyPrintString
+                            +")"
+            ).header("Content-Type", "application/javascript").build();
         } catch (RemoteException e) {
             return Response.serverError().entity(e.getMessage()).build();
         } catch (JSONException e) {
@@ -111,6 +152,7 @@ public class ResearchObjectService {
 
         GetEntityGraphRequestDocument entityGraphRequest = GetEntityGraphRequestDocument.Factory.newInstance();
         GetEntityGraphRequestType entityRequestType = GetEntityGraphRequestType.Factory.newInstance();
+        entityRequestType.setInformationDetailLevel(DetailEnumType.FINE);
         entityRequestType.setEntityURI(roIdentifier);
         entityRequestType.setEntityType(edu.indiana.d2i.komadu.query.EntityEnumType.COLLECTION);
         entityGraphRequest.setGetEntityGraphRequest(entityRequestType);
@@ -120,7 +162,9 @@ public class ResearchObjectService {
         );
         GetEntityGraphResponseDocument entityResponse = serviceStub.getEntityGraph(entityGraphRequest);
 
-        Util.pullParse(new ByteArrayInputStream(entityResponse.getGetEntityGraphResponse().getDocument().toString().getBytes(StandardCharsets.UTF_8)), "");
+        String graph = entityResponse.getGetEntityGraphResponse().getDocument().toString();
+
+        Util.pullParse(new ByteArrayInputStream(graph.getBytes(StandardCharsets.UTF_8)), "");
 
         Iterator iterator = Util.getGenUsed().entrySet().iterator();
         Map<String, List<String>> genUsedUrl = new HashMap<String, List<String>>();
@@ -161,15 +205,16 @@ public class ResearchObjectService {
         ).build();
     }
 
-
     @GET
-    @Path("listPO")
-    public Response getAllPublishedObjects() throws IOException, URISyntaxException, OREException, ClassNotFoundException {
+    @Path("/listRO")
+    public Response getResearchObjects(@QueryParam("type") String type,
+                                       @QueryParam("submitterId") String submitterId, //Researcher who submitted Curation Object or Curator who submitted Published Object would be the submitters
+                                       @QueryParam("repository") String repository, //Repository Name to which CurationObject is to be submitted or to which Published Object was already Published
+                                       @QueryParam("fromDate") String fromDate,
+                                       @QueryParam("toDate") String toDate) throws IOException, URISyntaxException, OREException, ClassNotFoundException {
 
         List<ROMetadata> roList = new ArrayList<ROMetadata>();
-
-        List<org.seadva.registry.database.model.obj.vaRegistry.Collection> collections = new RegistryClient(registryServiceUrl).getCollections("PublishedObject");
-
+        List<org.seadva.registry.database.model.obj.vaRegistry.Collection> collections = new RegistryClient(registryServiceUrl).getCollectionList(type, repository, submitterId);
 
         for(org.seadva.registry.database.model.obj.vaRegistry.Collection collection:collections){
             ROMetadata ro = new ROMetadata();
@@ -177,33 +222,30 @@ public class ResearchObjectService {
             ro.setName(collection.getEntityName());
             ro.setType(collection.getState().getStateName());
             ro.setUpdatedDate(collection.getEntityLastUpdatedTime().toString());
+            ro.setIsObsolete(collection.getIsObsolete());
+            for(Relation relation:collection.getRelations()){
+                if(relation.getId().getRelationType().getRelationElement().equalsIgnoreCase("curatedBy")){ //must be lazy init, doesn't seem to pick up now
+                    ro.setAgentId(relation.getId().getEffect().getId());
+                    break;
+                }
+            }//Add curator agentId to metadata of RO
             roList.add(ro);
         }
-
         return Response.ok(new GsonBuilder().create().toJson(roList)).build();
     }
 
     @GET
-    @Path("listCO")
-    public Response getAllCurationObjects() throws IOException, URISyntaxException, OREException, ClassNotFoundException {
+    @Path("/getsip/{entityId}")
+    public Response getSip( @PathParam("entityId") String roIdentifier) throws Exception {
 
-        List<ROMetadata> roList = new ArrayList<ROMetadata>();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        new SeadXstreamStaxModelBuilder().buildSip(
+                new DcsDBMapper(registryServiceUrl).getSip(roIdentifier),baos
+        );
 
-        List<org.seadva.registry.database.model.obj.vaRegistry.Collection> collections = new RegistryClient(registryServiceUrl).getCollections("CurationObject");
-
-
-        for(org.seadva.registry.database.model.obj.vaRegistry.Collection collection:collections){
-            ROMetadata ro = new ROMetadata();
-            ro.setIdentifier(collection.getId());
-            ro.setName(collection.getEntityName());
-            ro.setType(collection.getState().getStateName());
-            ro.setUpdatedDate(collection.getEntityLastUpdatedTime().toString());
-            roList.add(ro);
-        }
-
-
-        return Response.ok(new GsonBuilder().create().toJson(roList)).build();
+        return Response.ok( new String(baos.toByteArray(), "UTF-8")).build();
     }
+
 
 
     /**
@@ -278,10 +320,9 @@ public class ResearchObjectService {
                 }
             }
 
-            if(pair.getKey().contains("Derivation")){
+            if(pair.getKey().contains("Derived")){
                 for(String relatedEntityId: pair.getValue()){
-                    Entity relatedEntity = new Entity();
-                    relatedEntity.setId(relatedEntityId);
+                    Entity relatedEntity = getCollection(relatedEntityId);
 
                     Entity thisEntity = new Entity();
                     thisEntity.setId(thisEntityId);
@@ -305,4 +346,77 @@ public class ResearchObjectService {
         }
         return Response.ok().build();
     }
+
+    @POST
+    @Path("/putEvent")
+    public Response trackEvent(@QueryParam("event") String eventStr){
+
+        try {
+            Event event = new GsonBuilder().create().fromJson(eventStr, Event.class);
+            org.seadva.registry.database.model.obj.vaRegistry.Agent agent = getAgent(event.getLinkingAgentIdentifier());
+            Entity collectionEntity  = getCollection(event.getTargetId());
+
+            new KomaduIngester(komaduServiceUrl).trackEvent(event, agent, collectionEntity);
+        } catch (Exception e) {
+            return Response.serverError().entity(e.getMessage()).build();
+        }
+
+        return Response.ok().build();
+
+    }
+
+    private Agent getAgent(String agentId) throws IOException, ClassNotFoundException {
+        return (Agent)new RegistryClient(registryServiceUrl).getEntity(agentId,
+                Agent.class.getName());
+    }
+
+    private Entity getCollection(String collectionId) throws IOException, ClassNotFoundException {
+        org.seadva.registry.database.model.obj.vaRegistry.Collection collection = (org.seadva.registry.database.model.obj.vaRegistry.Collection)new RegistryClient(registryServiceUrl).getEntity(collectionId,
+                org.seadva.registry.database.model.obj.vaRegistry.Collection.class.getName());
+        List<AggregationWrapper> aggregations =  new RegistryClient(registryServiceUrl).getAggregation(collectionId);
+
+        Entity collectionEntity = new Entity();
+        collectionEntity.setId(collectionId);
+        collectionEntity.setName(collection.getName());
+
+        for(AggregationWrapper aggregation:aggregations){
+            Entity child = new Entity();
+            child.setId(aggregation.getChild().getId());
+            BaseEntity baseEntity = new RegistryClient(registryServiceUrl).getEntity(child.getId(), "org.seadva.registry.database.model.obj.vaRegistry.File");
+            child.setName(baseEntity.getEntityName());
+            collectionEntity.addChild(child);
+        }
+
+        return collectionEntity;
+    }
+
+    @POST
+    @Path("/putsip")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response putSip(
+            @FormDataParam("file") InputStream sipStream,
+            @FormDataParam("file") FormDataContentDisposition resourceMapDetail
+    ) throws Exception {
+
+
+        String directory =
+                System.getProperty("java.io.tmpdir");
+        String sipFilePath = directory+"/_"+ UUID.randomUUID().toString()+".xml";
+        IOUtils.copy(sipStream, new FileOutputStream(sipFilePath));
+
+        InputStream input = new FileInputStream(sipFilePath);
+        ResearchObject sip = new SeadXstreamStaxModelBuilder().buildSip(input);
+
+        new DcsDBMapper(registryServiceUrl).mapfromSip(sip);
+
+        return Response.ok().build();
+    }
+
+    @POST
+    @Path("/obsolete/{entityId}")
+    public Response deleteRO( @PathParam("entityId") String roIdentifier) throws Exception {
+       new RegistryClient(registryServiceUrl).makeObsolete(roIdentifier);
+       return Response.ok().build();
+    }
+
 }

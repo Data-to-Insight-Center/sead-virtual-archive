@@ -48,7 +48,7 @@ public class KomaduIngester {
 
         //Track activity and entity
 
-        EntityType collectionEntity = createCollectionEntity(collection, 1);
+        EntityType collectionEntity = createCollectionEntity(collection);
         AddActivityEntityRelationshipDocument activityEntity = AddActivityEntityRelationshipDocument.Factory.newInstance();
         ActivityEntityType activityEntityType = ActivityEntityType.Factory.newInstance();
 
@@ -85,8 +85,8 @@ public class KomaduIngester {
         revision.setUsedEntityID(previousVersion.getId());
         revision.setGeneratedEntityID(nextVersion.getId());
 
-        EntityType previousVersionEntity = createCollectionEntity(previousVersion,1);
-        EntityType nextVersionEntity = createCollectionEntity(nextVersion,1);
+        EntityType previousVersionEntity = createCollectionEntity(previousVersion);
+        EntityType nextVersionEntity = createCollectionEntity(nextVersion);
 
         entityEntityType.setEntity1(previousVersionEntity);
         entityEntityType.setEntity2(nextVersionEntity);
@@ -106,8 +106,8 @@ public class KomaduIngester {
         derivationType.setUsedEntityID(previousVersion.getId());
         derivationType.setGeneratedEntityID(nextVersion.getId());
 
-        EntityType previousVersionEntity = createCollectionEntity(previousVersion,1);
-        EntityType nextVersionEntity = createCollectionEntity(nextVersion,1);
+        EntityType previousVersionEntity = createCollectionEntity(previousVersion);
+        EntityType nextVersionEntity = createCollectionEntity(nextVersion);
 
         entityEntityType.setEntity1(previousVersionEntity);
         entityEntityType.setEntity2(nextVersionEntity);
@@ -118,14 +118,11 @@ public class KomaduIngester {
         serviceStub.addEntityEntityRelationship(activityEntity);
     }
 
-    private static EntityType createCollectionEntity(Entity collectionEntity, int runId) throws Exception {
+    private static EntityType createCollectionEntity(Entity collectionEntity) throws Exception {
         EntityType entity = EntityType.Factory.newInstance();
         CollectionType collection = CollectionType.Factory.newInstance();
         collection.setCollectionURI(collectionEntity.getId());
 
-        // add a file
-//        String collFile1URI = "file://foo/bar/coll_data1.txt_" + runId;
-//        EntityType collEntity1 = createFileEntity(collFile1URI);
 
         if(collectionEntity.getChildren()!=null){
             MembersType members = MembersType.Factory.newInstance();

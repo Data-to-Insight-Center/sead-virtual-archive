@@ -28,9 +28,21 @@ public class ROMetadata {
         this.type = type;
     }
 
-    String identifier;
-    String name;
-    String type;
+    public int getObsolete() {
+        return isObsolete;
+    }
+
+    public void setObsolete(int obsolete) {
+        isObsolete = obsolete;
+    }
+
+    public int getIsObsolete() {
+        return isObsolete;
+    }
+
+    public void setIsObsolete(int obsolete) {
+        isObsolete = obsolete;
+    }
 
     public String getUpdatedDate() {
         return updatedDate;
@@ -40,5 +52,19 @@ public class ROMetadata {
         this.updatedDate = updatedDate;
     }
 
+    public String getAgentId() {
+        return agentId;
+    }
+
+    public void setAgentId(String agentId) {
+        this.agentId = agentId;
+    }
+
+    String identifier;
+    String name;
+    String type;
     String updatedDate;
+    int isObsolete;
+    String agentId;
+
 }
