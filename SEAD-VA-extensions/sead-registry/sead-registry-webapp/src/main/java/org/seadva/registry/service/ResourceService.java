@@ -22,6 +22,7 @@ import com.google.gson.reflect.TypeToken;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.seadva.registry.database.model.obj.vaRegistry.*;
+import org.seadva.registry.database.model.obj.vaRegistry.Collection;
 import org.seadva.registry.database.services.data.ApplicationContextHolder;
 import org.seadva.registry.database.services.data.DataLayerVaRegistry;
 import org.seadva.registry.database.services.data.DataLayerVaRegistryImpl;
@@ -163,7 +164,7 @@ public class ResourceService {
     @Path("/aggregation/{entityId}")
     @Produces("application/json")
     public Response getAggregations( @PathParam("entityId") String entityId) throws Exception {
-
+        querySession.clear();
         querySession.beginTransaction();
         querySession.getTransaction().commit();
         Query query =  querySession.createQuery("SELECT A from Aggregation A where A.id.parent='"+entityId+"'");
@@ -224,7 +225,53 @@ public class ResourceService {
 
         Query query =  querySession.createQuery(queryStr);
         List<Collection> collectionsList = query.list();
-        return Response.ok(gson.toJson(collectionsList)).build();
+        List<CollectionWrapper> finalCollectionWrappers = new ArrayList<CollectionWrapper>();
+
+
+        for(Collection collection:collectionsList){
+            query =  querySession.createQuery("SELECT R from Relation R where R.id.cause.id='"+collection.getId()+"'");
+            List<Relation> relationList = (List<Relation>)query.list();
+            Set<Relation> newRelationList = new HashSet<Relation>();
+            CollectionWrapper newCollectionWrapper = new CollectionWrapper(collection);
+            newCollectionWrapper.setRelations(new HashSet<Relation>());
+
+            for(Relation relation:relationList){
+                Relation newRelation = new Relation();
+                RelationPK newRelationPK = new RelationPK();
+
+                RelationPK relationPK = relation.getId();
+
+                RelationType relationType = new RelationType();
+                relationType.setId(relationPK.getRelationType().getId());
+                relationType.setRelationSchema(relationPK.getRelationType().getRelationSchema());
+                relationType.setRelationElement(relationPK.getRelationType().getRelationElement());
+                newRelationPK.setRelationType(relationType);
+
+                BaseEntity effectEntity = new BaseEntity();
+                effectEntity.setId(relationPK.getEffect().getId());
+                effectEntity.setEntityName(relationPK.getEffect().getEntityName());
+                effectEntity.setEntityCreatedTime(relationPK.getEffect().getEntityCreatedTime());
+                effectEntity.setEntityLastUpdatedTime(relationPK.getEffect().getEntityLastUpdatedTime());
+                newRelationPK.setEffect(effectEntity);
+
+                BaseEntity causeEntity = new BaseEntity();
+                causeEntity.setId(relationPK.getCause().getId());
+                causeEntity.setEntityName(relationPK.getCause().getEntityName());
+                causeEntity.setEntityCreatedTime(relationPK.getCause().getEntityCreatedTime());
+                causeEntity.setEntityLastUpdatedTime(relationPK.getCause().getEntityLastUpdatedTime());
+                newRelationPK.setCause(causeEntity);
+                RelationType rlType = relationPK.getRelationType();
+                newRelationPK.setRelationType(new RelationType(rlType.getId(), rlType.getRelationElement(), rlType.getRelationSchema()));
+                newRelation.setId(newRelationPK);
+
+                newRelationList.add(newRelation);
+            }
+
+
+            newCollectionWrapper.setRelations(newRelationList);
+            finalCollectionWrappers.add(newCollectionWrapper);
+        }
+        return Response.ok(gson.toJson(finalCollectionWrappers)).build();
     }
 
 
@@ -350,8 +397,8 @@ public class ResourceService {
         }
 
 
-//        if(baseEntity instanceof Collection)
-//            ((Collection)baseEntity).setState(dataLayerVaRegistry.getState("state:1"));
+//        if(baseEntity instanceof CollectionWrapper)
+//            ((CollectionWrapper)baseEntity).setState(dataLayerVaRegistry.getState("state:1"));
         dataLayerVaRegistry.merge(baseEntity);      //solve this issue of trying to write again
 
         dataLayerVaRegistry.flushSession();
@@ -466,10 +513,10 @@ public class ResourceService {
 
     {
         BaseEntity baseEntity = dataLayerVaRegistry.getBaseEntity(obsoleteId);
-        if(baseEntity instanceof Collection)
+       if(baseEntity instanceof Collection)
         {
             ((Collection)baseEntity).setIsObsolete(1);
-            dataLayerVaRegistry.merge(baseEntity);
+            dataLayerVaRegistry.update(baseEntity);
             dataLayerVaRegistry.flushSession();
         }
         return Response.ok().build();

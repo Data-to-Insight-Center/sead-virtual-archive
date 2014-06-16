@@ -25,6 +25,7 @@ import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 import org.apache.commons.io.IOUtils;
 import org.seadva.registry.database.model.obj.vaRegistry.*;
+import org.seadva.registry.database.model.obj.vaRegistry.CollectionWrapper;
 
 import javax.ws.rs.core.MultivaluedMap;
 import javax.xml.ws.http.HTTPException;
@@ -149,7 +150,7 @@ public class RegistryClient {
         return gson.fromJson(writer.toString(), listType);
     }
 
-    public List<Collection> getCollectionList(String type, String repository, String submitterId) throws IOException {
+    public List<CollectionWrapper> getCollectionList(String type, String repository, String submitterId) throws IOException {
         WebResource webResource = resource();
         webResource = webResource.path("resource")
                     .path("listCollections")
@@ -169,7 +170,7 @@ public class RegistryClient {
 
         StringWriter writer = new StringWriter();
         IOUtils.copy(response.getEntityInputStream(), writer);
-        Type listType = new TypeToken<ArrayList<Collection>>() {
+        Type listType = new TypeToken<ArrayList<CollectionWrapper>>() {
         }.getType();
         return gson.fromJson(writer.toString(), listType);
     }

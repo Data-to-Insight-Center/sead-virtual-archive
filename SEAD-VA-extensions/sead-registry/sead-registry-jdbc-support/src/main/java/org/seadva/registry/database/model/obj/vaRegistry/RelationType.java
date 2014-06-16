@@ -48,7 +48,7 @@ public class RelationType implements Cloneable, Serializable, IPojoGenEntity, IR
     @Expose
 	private String id;
 	/** Field mapping. */
-	private Set<Relation> relations = new HashSet<Relation>();
+	//private Set<Relation> relations = new HashSet<Relation>();
 
 	/** Field mapping. */
     @Expose
@@ -129,38 +129,38 @@ public class RelationType implements Cloneable, Serializable, IPojoGenEntity, IR
      * Return the value associated with the column: relation.
 	 * @return A Set&lt;Relation&gt; object (this.relation)
 	 */
- 	@OneToMany( fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE }, mappedBy = "id.relationType"  )
+ 	/*@OneToMany( fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE }, mappedBy = "id.relationType"  )
  	@org.hibernate.annotations.Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
 	@Basic( optional = false )
 	@Column( name = "relation_type_id", nullable = false  )
 	public Set<Relation> getRelations() {
 		return this.relations;
-		
-	}
+
+	}*/
 	
 	/**
 	 * Adds a bi-directional link of type Relation to the relations set.
 	 * @param relation item to add
 	 */
-	public void addRelation(Relation relation) {
+	/*public void addRelation(Relation relation) {
 		relation.getId().setRelationType(this);
 		this.relations.add(relation);
-	}
+	}*/
 
   
     /**  
      * Set the value related to the column: relation.
 	 * @param relation the relation value you wish to set
 	 */
-	public void setRelations(final Set<Relation> relation) {
+	/*public void setRelations(final Set<Relation> relation) {
 		this.relations = relation;
-	}
+	}*/
 
     /**
      * Return the value associated with the column: relationElement.
 	 * @return A String object (this.relationElement)
 	 */
-	@Basic( optional = false )
+	@Basic(fetch = FetchType.EAGER, optional = false )
 	@Column( name = "relation_element", nullable = false, length = 256  )
 	public String getRelationElement() {
 		return this.relationElement;
@@ -181,7 +181,7 @@ public class RelationType implements Cloneable, Serializable, IPojoGenEntity, IR
      * Return the value associated with the column: relationSchema.
 	 * @return A String object (this.relationSchema)
 	 */
-	@Basic( optional = false )
+	@Basic(fetch = FetchType.EAGER, optional = false )
 	@Column( name = "relation_schema", nullable = false, length = 256  )
 	public String getRelationSchema() {
 		return this.relationSchema;
@@ -210,9 +210,9 @@ public class RelationType implements Cloneable, Serializable, IPojoGenEntity, IR
         final RelationType copy = (RelationType)super.clone();
 
 		copy.setId(this.getId());
-		if (this.getRelations() != null) {
+		/*if (this.getRelations() != null) {
 			copy.getRelations().addAll(this.getRelations());
-		}
+		}*/
 		copy.setRelationElement(this.getRelationElement());
 		copy.setRelationSchema(this.getRelationSchema());
 		return copy;

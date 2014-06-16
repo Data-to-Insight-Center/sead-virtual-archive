@@ -90,7 +90,8 @@ public class BaseEntity implements Cloneable, Serializable, IPojoGenEntity, IBas
 	private Set<Property> properties = new HashSet<Property>();
 
 	/** Field mapping. */
-	private Set<Relation> relations = new HashSet<Relation>();
+//    @Expose
+//	private Set<Relation> relations = new HashSet<Relation>();
 
 	/**
 	 * Default constructor, mainly for hibernate use.
@@ -528,32 +529,32 @@ public class BaseEntity implements Cloneable, Serializable, IPojoGenEntity, IBas
      * Return the value associated with the column: relation.
 	 * @return A Set&lt;Relation&gt; object (this.relation)
 	 */
- 	@OneToMany( fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE }, mappedBy = "id.cause"  )
+ 	/*@OneToMany( fetch = FetchType.EAGER, cascade = { CascadeType.DETACH }, mappedBy = "id.cause"  )
  	@org.hibernate.annotations.Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
 	@Basic( optional = false )
-	@Column( name = "entity_id", nullable = false  )
-	public Set<Relation> getRelations() {
+	@Column( name = "entity_id", nullable = false  )   */
+	/*public Set<Relation> getRelations() {
 		return this.relations;
 		
-	}
+	}*/
 	
 	/**
 	 * Adds a bi-directional link of type Relation to the relations set.
 	 * @param relation item to add
 	 */
-	public void addRelation(Relation relation) {
+	/*public void addRelation(Relation relation) {
 		relation.getId().setCause(this);
 		this.relations.add(relation);
-	}
+	}*/
 
   
     /**  
      * Set the value related to the column: relation.
 	 * @param relation the relation value you wish to set
 	 */
-	public void setRelations(final Set<Relation> relation) {
+	/*public void setRelations(final Set<Relation> relation) {
 		this.relations = relation;
-	}
+	}*/
 
 
    /**
@@ -588,9 +589,9 @@ public class BaseEntity implements Cloneable, Serializable, IPojoGenEntity, IBas
 		if (this.getProperties() != null) {
 			copy.getProperties().addAll(this.getProperties());
 		}
-		if (this.getRelations() != null) {
+		/*if (this.getRelations() != null) {
 			copy.getRelations().addAll(this.getRelations());
-		}
+		}*/
 		return copy;
 	}
 	

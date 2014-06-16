@@ -29,7 +29,7 @@ public class RelationPK implements Cloneable, Serializable,  IRelationPK {
 
 	/** Field mapping. */
     @Expose
-	@ManyToOne( cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY )
+	@ManyToOne( cascade = { CascadeType.DETACH, CascadeType.MERGE }, fetch = FetchType.LAZY )
 	@org.hibernate.annotations.Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
 	@Basic( optional = false )
 	@JoinColumn(name = "cause_id", nullable = false , insertable = false, updatable = false )

@@ -44,7 +44,7 @@
         <property name="maxIdleTime" value="0"/>
         <property name="maxIdleTimeExcessConnections" value="4"/>
         <property name="maxPoolSize" value="30"/>
-        <property name="minPoolSize" value="1"/>
+        <property name="minPoolSize" value="8"/>
         <property name="initialPoolSize" value="1"/>
         <property name="maxStatements" value="100"/>            
         <property name="acquireIncrement" value="3"/>                              
