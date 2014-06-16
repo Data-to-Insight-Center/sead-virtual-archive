@@ -87,7 +87,7 @@
 
         <dependency>
             <groupId>com.felees</groupId>
-            <artifactId>hbnpojogen-persistence</artifactId>
+            <artifactId>hbnpojogen-persistence-sead</artifactId>
             <version>1.4.4</version>
             <type>jar</type>
         </dependency>
