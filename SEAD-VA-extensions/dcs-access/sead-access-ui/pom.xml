@@ -27,6 +27,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.dataconservancy.access</groupId>
   <artifactId>sead-access</artifactId>
+  <version>1.0.1-SNAPSHOT</version>
   <packaging>war</packaging>
   <name>Access UI</name>
 
@@ -114,8 +115,22 @@
           <groupId>org.seadva.data.lifecycle</groupId>
     	  <artifactId>ro-subsystem-service</artifactId>
     	  <version>1.0.0-SNAPSHOT</version>
+          <exclusions>
+              <exclusion>
+                  <groupId>org.seadva.data.lifecycle</groupId>
+                  <artifactId>ro-subsystem-core</artifactId>
+              </exclusion>
+              <exclusion>
+                  <groupId>org.openprovenance.prov</groupId>
+                  <artifactId>prov-model</artifactId>
+              </exclusion>
+              <exclusion>
+                  <groupId>org.openprovenance.prov</groupId>
+                  <artifactId>prov-xml</artifactId>
+              </exclusion>
+          </exclusions>
       </dependency>
-      
+
       <dependency>
           <groupId>javassist</groupId>
           <artifactId>javassist</artifactId>

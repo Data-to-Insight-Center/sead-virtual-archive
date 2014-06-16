@@ -41,7 +41,7 @@ public class PersonDAOJdbcImpl  implements PersonDAO {
 	
 	public PersonDAOJdbcImpl(String configPath) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
 		dbInstance = DatabaseSingleton.getInstance(configPath);
-		roleDAO = new RoleDAOJdbcImpl();
+		roleDAO = new RoleDAOJdbcImpl(configPath);
 	}
 	
 	@Override
