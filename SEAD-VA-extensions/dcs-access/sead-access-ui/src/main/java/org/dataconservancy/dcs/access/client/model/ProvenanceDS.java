@@ -15,22 +15,21 @@
  */
 
 package org.dataconservancy.dcs.access.client.model;
-  
 
-import org.dataconservancy.dcs.access.client.SeadApp;
 
 import com.smartgwt.client.data.DataSource;
 import com.smartgwt.client.data.fields.DataSourceIntegerField;
-import com.smartgwt.client.data.fields.DataSourceTextField;  
+import com.smartgwt.client.data.fields.DataSourceTextField;
 import com.smartgwt.client.types.DSDataFormat;
-  
+import org.dataconservancy.dcs.access.client.SeadApp;
+
 public class ProvenanceDS extends DataSource {  
   
-    private static ProvenanceDS instance = null;  
+    private static ProvenanceDS instance = null;
   
     public static ProvenanceDS getInstance(String submitterId) {
     	if (instance == null) {  
-            instance = new ProvenanceDS(submitterId);  
+            instance = new ProvenanceDS(submitterId);
         }  
         return instance;  
     }  
@@ -42,21 +41,22 @@ public class ProvenanceDS extends DataSource {
         setRecordXPath("/proveRec");  
         DataSourceTextField nameField = new DataSourceTextField("name", "Name", 128);  
   
-        DataSourceIntegerField employeeIdField = new DataSourceIntegerField("id", "Identifier");  
-        employeeIdField.setPrimaryKey(true);  
-        employeeIdField.setRequired(true);  
+        DataSourceIntegerField idField = new DataSourceIntegerField("id", "Identifier");  
+        idField.setPrimaryKey(true);  
+        idField.setRequired(true);  
   
-        DataSourceIntegerField reportsToField = new DataSourceIntegerField("parentId", "Manager");  
-        reportsToField.setRequired(true);  
-        reportsToField.setForeignKey(id + ".id");  
+        DataSourceIntegerField relationField = new DataSourceIntegerField("parentId", "Manager");  
+        relationField.setRequired(true);  
+        relationField.setForeignKey(id + ".id");  
 //        reportsToField.setRootValue("de62ed08-d61e-4cf2-ad22-41bf142e881e");  
   
-        DataSourceTextField jobField = new DataSourceTextField("status", "Status", 128);  
-        DataSourceTextField emailField = new DataSourceTextField("date", "Date", 128);  
-        DataSourceTextField statusField = new DataSourceTextField("type", "Type", 40);  
+        DataSourceTextField statusField = new DataSourceTextField("status", "Status", 128);
+        DataSourceTextField detailField = new DataSourceTextField("detail", "Detail", 1023);  
+        DataSourceTextField dateField = new DataSourceTextField("date", "Date", 128);  
+        DataSourceTextField typeField = new DataSourceTextField("type", "Type", 40);  
         
-        setFields(nameField, employeeIdField, reportsToField, jobField, emailField,  
-                statusField);  
+        setFields(nameField, idField, relationField, statusField, detailField, dateField,  
+        		typeField);  
   
         
 //        setDataURL("ds/test_data/employees.data.json");

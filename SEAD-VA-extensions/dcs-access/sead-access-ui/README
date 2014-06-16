@@ -1,0 +1,14 @@
+To build code run:
+mvn clean compile gwt:compile package
+
+
+Run commands for Database
+mysql -u root -p
+
+CREATE DATABASE va_user;
+GRANT ALL ON va_user.* TO 'username'@'localhost' IDENTIFIED BY 'pwd';
+GRANT SELECT ON mysql.proc TO 'va_user'@'localhost';
+
+
+mysql -u username -p va_registry < ./sql/va_user.sql
+mysql -u username -p va_registry < ./sql/va_user_insert.sql

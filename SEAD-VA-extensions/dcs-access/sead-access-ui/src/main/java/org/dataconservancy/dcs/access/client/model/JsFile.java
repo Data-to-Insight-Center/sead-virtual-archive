@@ -15,17 +15,6 @@
  */
 package org.dataconservancy.dcs.access.client.model;
 
-import java.util.List;
-import javax.management.InstanceAlreadyExistsException;
-
-import org.dataconservancy.dcs.access.client.SeadApp;
-import org.dataconservancy.dcs.access.client.Util;
-import org.dataconservancy.dcs.access.client.SeadState;
-import org.dataconservancy.dcs.access.client.presenter.MediciIngestPresenter;
-import org.dataconservancy.dcs.access.shared.MediciInstance;
-import org.dataconservancy.dcs.access.ui.client.model.JsFixity;
-import org.dataconservancy.dcs.access.ui.client.model.JsFormat;
-
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -34,16 +23,16 @@ import com.google.gwt.jsonp.client.JsonpRequestBuilder;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.IsSerializable;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DecoratedTabPanel;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Hyperlink;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.TabPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
+import org.dataconservancy.dcs.access.client.SeadApp;
+import org.dataconservancy.dcs.access.client.SeadState;
+import org.dataconservancy.dcs.access.client.Util;
+import org.dataconservancy.dcs.access.client.presenter.MediciIngestPresenter;
+import org.dataconservancy.dcs.access.shared.MediciInstance;
+import org.dataconservancy.dcs.access.ui.client.model.JsFixity;
+import org.dataconservancy.dcs.access.ui.client.model.JsFormat;
+
+import java.util.List;
 
 /**
  * Models a Data Conservancy File
@@ -55,6 +44,10 @@ public final class JsFile
 
     }
 
+    public void setName(String name){
+    	set("name", name);
+    }
+    
     public String getName() {
         return getString("name");
     }
@@ -140,11 +133,11 @@ public final class JsFile
                         "ACR Location");
 
         Util.addColumn(table,
-               // null,
+                // null,
                 "File",
                 getName(),
                 null,
-                "" + getSizeBytes()+" bytes",
+                "" + getSizeBytes() + " bytes",
                 getValid() == null ? "Unknown" : "" + getValid(),
                 "" + isExtant());
 
@@ -152,7 +145,7 @@ public final class JsFile
 
         
     	JsonpRequestBuilder rb = new JsonpRequestBuilder();
-    	String parentdu = SeadApp.accessurl+SeadApp.queryPath+"?q="+"id:(\""+getParent()+"\")"+"&offset=0&max=200";
+    	String parentdu = SeadApp.accessurl+ SeadApp.queryPath+"?q="+"id:(\""+getParent()+"\")"+"&offset=0&max=200";
     	rb.requestObject(parentdu, new AsyncCallback<JsSearchResult>() {
 
             public void onFailure(Throwable caught) {
@@ -207,8 +200,8 @@ public final class JsFile
 								final String finalLink = instance.getUrl()+"/#dataset?id="+value;
 				    			String altIdStr = getName();
 				    		
-				    			Label altIdLabel = Util.label(altIdStr,"Hyperlink");
-				        		altIdLabel.addClickHandler(new ClickHandler() {	
+				    			Label altIdLabel = Util.label(altIdStr, "Hyperlink");
+				        		altIdLabel.addClickHandler(new ClickHandler() {
 									@Override
 									public void onClick(ClickEvent event) {
 										Window.open(finalLink, "_blank", "");

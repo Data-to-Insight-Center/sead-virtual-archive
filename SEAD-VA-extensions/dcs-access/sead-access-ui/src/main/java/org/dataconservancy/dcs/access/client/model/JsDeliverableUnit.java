@@ -15,10 +15,7 @@
  */
 package org.dataconservancy.dcs.access.client.model;
 
-import org.dataconservancy.dcs.access.client.Util;
-import org.dataconservancy.dcs.access.client.ui.EmailPopupPanel;
-import org.dataconservancy.dcs.access.ui.client.model.JsRelation;
-
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -27,13 +24,15 @@ import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.cellview.client.CellTree;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.*;
+import org.dataconservancy.dcs.access.client.SeadApp;
+import org.dataconservancy.dcs.access.client.Util;
+import org.dataconservancy.dcs.access.client.api.InputService;
+import org.dataconservancy.dcs.access.client.api.InputServiceAsync;
+import org.dataconservancy.dcs.access.client.ui.EmailPopupPanel;
+import org.dataconservancy.dcs.access.shared.UserSession;
+import org.dataconservancy.dcs.access.ui.client.model.JsRelation;
 
 // TODO JSON seems to use metadataRefs and metadataRef...
 
@@ -41,11 +40,15 @@ import com.google.gwt.user.client.ui.Widget;
  * Models a Data Conservancy Deliverable Unit
  */
 public final class JsDeliverableUnit
-        extends JsEntity{
+        extends JsEntity {
 	
     protected JsDeliverableUnit() {
     }
 
+    public void setTitle(String title){
+    	getCoreMd().setTitle(title);
+    }
+    
     public JsArrayString getCollections() {
         return getRefs("collections");
     }
@@ -95,6 +98,7 @@ public final class JsDeliverableUnit
         return (JsCoreMetadata) getObject("coreMd");
     }
     
+    public static final InputServiceAsync inputService = GWT.create(InputService.class);
 
     public Widget display(CellTree tree) {
         FlowPanel panel = new FlowPanel();
@@ -109,8 +113,25 @@ public final class JsDeliverableUnit
             	//pop window
             	//send email
                // Window.open(Application.datastreamURLnoEncoding(getId()), "_blank", "");
-                EmailPopupPanel emailPopup = new EmailPopupPanel(getId());
-                emailPopup.show();	 
+            	SeadApp.userService.checkSession(null, new AsyncCallback<UserSession>(
+            			) {
+					
+					@Override
+					public void onSuccess(UserSession session) {
+						String emailAddress = null;
+						if(session.isSession())
+							emailAddress = session.getEmail();
+						EmailPopupPanel emailPopup = new EmailPopupPanel(getId(), emailAddress);
+			            emailPopup.show();	
+					}
+					
+					@Override
+					public void onFailure(Throwable caught) {
+						// TODO Auto-generated method stub
+						
+					}
+				});
+                
             }
         });
         
@@ -121,12 +142,12 @@ public final class JsDeliverableUnit
         
 
 
-        FlexTable table =
+        final FlexTable table =
                 Util.createTable(
-                		"Publication Date:",
-                		"Abstract:",
-                		"Site:",
-                		//"Identifier:",
+                        "Publication Date:",
+                        "Abstract:",
+                        "Site:",
+                        //"Identifier:",
                         "Entity type:",
                         "Creators:",
                         "Parents:",
@@ -137,7 +158,8 @@ public final class JsDeliverableUnit
                         "Surrogate:",
                         "Alternate Ids:",
                         "Location:",
-                        "ACR Location:");
+                        "ACR Location:",
+                        "Lineage:");
         panel.add(table);
         
         
@@ -199,7 +221,7 @@ public final class JsDeliverableUnit
     			else
     				finalLink= altIdStr;
     			
-    			Label altIdLabel = Util.label(altIdStr,"Hyperlink");
+    			Label altIdLabel = Util.label(altIdStr, "Hyperlink");
     			altIdLabel.addClickHandler(new ClickHandler() {
 					
 					@Override
@@ -248,11 +270,12 @@ public final class JsDeliverableUnit
 
                 Label locationLabel;
         		
+                location = location.replace("jspui", "iuswdark");
     			final String finalLink = location;
                 if(!locs.get(i).getName().contains("SDA")){
                     locationLabel = Util.label(
                             location
-                            ,"Hyperlink");
+                            , "Hyperlink");
                     locationLabel.addClickHandler(new ClickHandler() {
 
                         @Override
@@ -286,9 +309,13 @@ public final class JsDeliverableUnit
             panel.add(Util.label("Relations", "SubSectionHeader"));
             JsRelation.display(panel, getRelations());
         }
-
+        
+        TreeDemo demo = new TreeDemo();
+        demo.setId(getId());
+		demo.start();
+		table.setWidget(14, 1, demo);
        
-        return panel;
+       return panel;
     }
 
     public static void display(Panel panel, JsArray<JsDeliverableUnit> array, CellTree tree) {
@@ -305,10 +332,10 @@ public final class JsDeliverableUnit
     
     public interface Resources extends ClientBundle {
 		 @Source("org/dataconservancy/dcs/access/client/resources/IU_Scholarworks.jpg")
-		  ImageResource IuRepo();
+         ImageResource IuRepo();
 		 @Source("org/dataconservancy/dcs/access/client/resources/Ideals.jpg")
-		  ImageResource IdealsRepo();
+         ImageResource IdealsRepo();
 		 @Source("org/dataconservancy/dcs/access/client/resources/local_dspace.jpg")
-		  ImageResource locarlRepo();
+         ImageResource locarlRepo();
 	}
 }

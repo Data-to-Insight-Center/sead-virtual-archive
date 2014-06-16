@@ -16,17 +16,14 @@
 
 package org.dataconservancy.dcs.access.client.api;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpSession;
-
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import org.dataconservancy.dcs.access.client.upload.DepositConfig;
 import org.dataconservancy.dcs.access.client.upload.model.Package;
 import org.dataconservancy.dcs.access.shared.Event;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public interface DepositServiceAsync {
 
@@ -40,19 +37,21 @@ public interface DepositServiceAsync {
 	void getDepositConfig(String endpoint, AsyncCallback<DepositConfig> callback);
 
 	void checkStatus(String process, String statusUrl, int expectedCount,
-			AsyncCallback<String> callback);
+                     AsyncCallback<String> callback);
 
 	void checkDownload(String url, AsyncCallback<Boolean> callback);
 	void getStatusDetails(String process, String statusUrl, int expectedCount,
-			AsyncCallback<String> callback);
+                          AsyncCallback<String> callback);
 
 	void statusUpdate(String statusUrl, Date latestDate,
-			AsyncCallback<Map<Date, List<Event>>> callback);
+                      AsyncCallback<Map<Date, List<Event>>> callback);
 
 	void loadDuIds(List<String> statusUrl, AsyncCallback<Void> callback);
 
 	void deleteCollection(String id, String endpoint, AsyncCallback<Boolean> callback);
 
 	void getLinks(String urlStr, AsyncCallback<String> callback);
+
+	void getResearchObjectId(String statusUrl, AsyncCallback<String> callback);
     
 }

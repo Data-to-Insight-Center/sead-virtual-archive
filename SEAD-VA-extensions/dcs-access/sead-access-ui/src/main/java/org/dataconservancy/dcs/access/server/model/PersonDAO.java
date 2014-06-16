@@ -16,9 +16,9 @@
 
 package org.dataconservancy.dcs.access.server.model;
 
-import java.util.List;
-
 import org.dataconservancy.dcs.access.shared.Person;
+
+import java.util.List;
 
 public interface PersonDAO {
 
@@ -28,5 +28,5 @@ public interface PersonDAO {
 
 	Person selectPerson(String emailAddress);
 
-	List<Person> getAllUsers();
+	List<Person> getAllUsers(String key, String constraintValue, String type);
 }

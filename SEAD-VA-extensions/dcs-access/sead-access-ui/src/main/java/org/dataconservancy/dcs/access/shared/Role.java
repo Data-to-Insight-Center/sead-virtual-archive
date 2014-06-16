@@ -16,14 +16,18 @@
 
 package org.dataconservancy.dcs.access.shared;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 import java.io.Serializable;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
 public enum Role implements IsSerializable, Serializable{
 
-    ROLE_ADMIN("admin"),
+    ROLE_ADMIN("Administrator"),
     ROLE_USER("user"),
-    ROLE_NONSEADUSER("non-seaduser");
+    ROLE_NONSEADUSER("non-seaduser"),
+    ROLE_CURATOR("Curator"),
+    ROLE_RESEARCHER("Researcher"),
+    ROLE_REPO_REP("Repository_representative");
     
     private final String name;
 

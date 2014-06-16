@@ -16,23 +16,18 @@
 
 package org.dataconservancy.dcs.access.server.util;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.io.IOUtils;
 import org.dataconservancy.dcs.access.shared.MediciInstance;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class ServerConstants{
 	static{
@@ -65,6 +60,7 @@ public class ServerConstants{
 				getClass().getResourceAsStream(
 				"../../../../../../passwords.xml"
 				);
+				
 		StringWriter writer = new StringWriter();
 		IOUtils.copy(inputStream, writer);
 		
@@ -125,7 +121,8 @@ public class ServerConstants{
 		List<MediciInstance> instances = new ArrayList<MediciInstance>();
 		InputStream inputStream = 
 				getClass().getResourceAsStream(
-				"../../../../../../acrInstances.xml"
+				"../../../../../../" +
+				"acrInstances.xml"
 				);
 		StringWriter writer = new StringWriter();
 		IOUtils.copy(inputStream, writer);
@@ -162,7 +159,7 @@ public class ServerConstants{
 	        while (eventType != xpp.END_DOCUMENT) {
 	        if(eventType == xpp.START_TAG) {
 	            if(xpp.getName().equals("instance"))
-	            	instance = new MediciInstance();         		
+	            	instance = new MediciInstance();
 	            if(xpp.getName().equals("id"))
 	            	id = 1;
 	            if(xpp.getName().equals("user"))

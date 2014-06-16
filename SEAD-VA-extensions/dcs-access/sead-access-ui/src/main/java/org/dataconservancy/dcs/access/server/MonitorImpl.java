@@ -16,22 +16,20 @@
 
 package org.dataconservancy.dcs.access.server;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.text.ParseException;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.dataconservancy.dcs.access.server.model.ProvenanceDAOJdbcImpl;
+import org.dataconservancy.dcs.access.server.util.ServerConstants;
+import org.dataconservancy.dcs.access.shared.ProvenaceDataset;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.dataconservancy.dcs.access.server.model.ProvenanceDAOJdbcImpl;
-import org.dataconservancy.dcs.access.shared.ProvenaceDataset;
-import org.dataconservancy.dcs.access.server.util.ServerConstants;
-
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.util.List;
+import java.util.logging.Logger;
 
 
 /**
@@ -51,7 +49,9 @@ public class MonitorImpl extends HttpServlet {
 			String jsonString;
 			try {
 				String path = getServletContext().getRealPath("/sead_access/");
-				ProvenanceDAOJdbcImpl provjdbc = new ProvenanceDAOJdbcImpl(path+"/Config.properties");
+				ProvenanceDAOJdbcImpl provjdbc = new ProvenanceDAOJdbcImpl(
+						path+"/Config.properties"
+						);
 				List<ProvenaceDataset> datasets;
 				if(wfInstanceId==null)
 					datasets = provjdbc.getProvenanceForSubmitter(submitterId);
@@ -79,6 +79,9 @@ public class MonitorImpl extends HttpServlet {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

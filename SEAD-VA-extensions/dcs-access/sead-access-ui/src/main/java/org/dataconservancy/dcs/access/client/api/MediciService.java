@@ -16,17 +16,14 @@
 
 package org.dataconservancy.dcs.access.client.api;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import org.dataconservancy.dcs.access.client.model.DatasetRelation;
 import org.dataconservancy.dcs.access.shared.CheckPointDetail;
 import org.dataconservancy.dcs.access.shared.MediciInstance;
 
-import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The client side stub for the RPC service.
@@ -38,14 +35,15 @@ public interface MediciService extends RemoteService {
 	public DatasetRelation getRelations();
 	public String generateWfInstanceId();
 	void toVAmodel(String id, String parent, MediciInstance sparqlEp,
-			String tmpHome);
+                   String tmpHome);
 	
 	int splitSip(String sipFilePath);
 	String submitMultipleSips(String sipEndpoint, String datasetId,
-			MediciInstance sparqlInstance, String sipBasePath,
-			String wfInstanceId, List<String> perviousUrls, int startSipNum,
-			int numberOfSips, String username, String pass,
-			boolean restrictAccess, String baseUrl, String tmpHome);
+                              MediciInstance sparqlInstance, String sipBasePath,
+                              String wfInstanceId, List<String> perviousUrls, int startSipNum,
+                              int numberOfSips, String username, String pass,
+                              boolean restrictAccess, String baseUrl, String tmpHome,
+                              boolean submitMultipleSips);
 	int getFileNos();
 
 	String getBag(String tagId, MediciInstance sparqlEndpoint, String bagitEp, String tmpHome);

@@ -17,16 +17,8 @@
 package org.dataconservancy.dcs.access.client.view;
 
 
-import org.dataconservancy.dcs.access.client.Search;
-import org.dataconservancy.dcs.access.client.model.SearchInput;
+import com.google.gwt.user.client.ui.*;
 import org.dataconservancy.dcs.access.client.ui.SeadAdvancedSearchWidget;
-
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.ScrollPanel;
 
 public class FacetedSearchView extends Composite implements org.dataconservancy.dcs.access.client.presenter.FacetedSearchPresenter.Display{
 	
@@ -58,7 +50,7 @@ public class FacetedSearchView extends Composite implements org.dataconservancy.
         //Widgets for displaying facet Content 
         
         facetContent = new FlowPanel();
-        facetContent.setStylePrimaryName("Facets");
+       // facetContent.setStylePrimaryName("Facets");
 	}
 	
 

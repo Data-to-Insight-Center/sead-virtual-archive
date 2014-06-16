@@ -16,14 +16,24 @@
 
 package org.dataconservancy.dcs.access.server;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.StringBufferInputStream;
-import java.io.StringReader;
-import java.io.StringWriter;
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import org.apache.commons.io.IOUtils;
+import org.dataconservancy.dcs.access.client.api.TransformerService;
+import org.dataconservancy.dcs.access.client.model.SchemaType;
+import org.dataconservancy.dcs.access.server.util.ServerConstants;
+import org.w3c.dom.Document;
+
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.MappedByteBuffer;
@@ -32,29 +42,6 @@ import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.UUID;
 import java.util.regex.Pattern;
-
-import javax.xml.XMLConstants;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Validator;
-
-import org.dataconservancy.dcs.access.client.api.TransformerService;
-import org.dataconservancy.dcs.access.client.model.SchemaType;
-import org.dataconservancy.dcs.access.server.util.ServerConstants;
-import org.dataconservancy.dcs.access.shared.Constants;
-import org.w3c.dom.Document;
-
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 public class TransformerServiceImpl extends RemoteServiceServlet
   implements TransformerService
@@ -222,4 +209,19 @@ String homeDir = "/home/kavchand/tmp/";
 		return ServerConstants.dateFormat.format(date);
 	}
 
+	@Override
+	public String readFile(String filePath){
+		try {
+			return IOUtils.toString( new FileInputStream(filePath));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	
 }

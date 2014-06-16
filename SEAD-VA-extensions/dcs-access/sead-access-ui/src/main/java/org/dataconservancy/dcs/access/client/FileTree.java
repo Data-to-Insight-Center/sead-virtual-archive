@@ -1,20 +1,5 @@
 package org.dataconservancy.dcs.access.client;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import org.dataconservancy.dcs.access.client.model.JsDcp;
-import org.dataconservancy.dcs.access.client.model.JsDeliverableUnit;
-import org.dataconservancy.dcs.access.client.model.JsEntity;
-import org.dataconservancy.dcs.access.client.model.JsFile;
-import org.dataconservancy.dcs.access.ui.client.model.JsManifestationFile;
-import org.dataconservancy.dcs.access.ui.client.model.JsManifestation;
-
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.http.client.URL;
@@ -22,6 +7,9 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.TreeViewModel;
+import org.dataconservancy.dcs.access.client.model.*;
+
+import java.util.*;
 
 public class FileTree implements TreeViewModel {
 	// entity id -> kids
@@ -98,9 +86,9 @@ public class FileTree implements TreeViewModel {
 			add_kid(du, du.getMetadataRefs());
 			
 			// TODO Hack for no collections
-			if (dcp.getCollections().length() == 0) {
+			//if (dcp.getCollections().length() == 0) {
 				top.add(du);
-			}
+			//}
 
 			add_kids(filemap, du.getMetadataRefs(), du.getId());
 		}
@@ -295,7 +283,7 @@ public class FileTree implements TreeViewModel {
 			sb.append(SafeHtmlUtils.fromTrustedString(link));
 		}
 	}
-	
+
 	private static class JsParentDu extends AbstractCell<JsEntity> {
 		public void render(com.google.gwt.cell.client.Cell.Context context,
 				JsEntity value, SafeHtmlBuilder sb) {

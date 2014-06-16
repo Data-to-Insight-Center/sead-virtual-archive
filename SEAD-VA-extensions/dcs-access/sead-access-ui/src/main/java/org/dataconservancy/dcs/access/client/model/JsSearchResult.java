@@ -17,6 +17,7 @@ package org.dataconservancy.dcs.access.client.model;
 
 import com.google.gwt.core.client.JsArray;
 import org.dataconservancy.dcs.access.ui.client.model.JsModel;
+
 /**
  * Result from calling an DCS access service search.
  */
@@ -24,6 +25,11 @@ public final class JsSearchResult
         extends JsModel{
 
     protected JsSearchResult() {
+    }
+    
+    public static JsSearchResult create(String jsonString) {
+        return (JsSearchResult) JsModel
+                .parseJSON(jsonString);
     }
 
     @SuppressWarnings("unchecked")

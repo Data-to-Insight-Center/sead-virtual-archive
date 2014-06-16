@@ -16,6 +16,19 @@
 
 package org.dataconservancy.dcs.access.server;
 
+import com.google.api.services.oauth2.model.Userinfo;
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import org.dataconservancy.dcs.access.client.api.UserService;
+import org.dataconservancy.dcs.access.server.model.Email;
+import org.dataconservancy.dcs.access.server.model.PersonDAOJdbcImpl;
+import org.dataconservancy.dcs.access.server.model.RoleDAOJdbcImpl;
+import org.dataconservancy.dcs.access.server.util.ServerConstants;
+import org.dataconservancy.dcs.access.server.util.VivoUtil;
+import org.dataconservancy.dcs.access.shared.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -24,25 +37,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
-
-import javax.servlet.http.HttpSession;
-
-import org.dataconservancy.dcs.access.client.api.UserService;
-import org.dataconservancy.dcs.access.server.model.Email;
-import org.dataconservancy.dcs.access.server.model.PersonDAOJdbcImpl;
-import org.dataconservancy.dcs.access.server.util.ServerConstants;
-import org.dataconservancy.dcs.access.shared.Authentication;
-import org.dataconservancy.dcs.access.shared.OAuthType;
-import org.dataconservancy.dcs.access.shared.Person;
-import org.dataconservancy.dcs.access.shared.RegistrationStatus;
-import org.dataconservancy.dcs.access.shared.Role;
-import org.dataconservancy.dcs.access.shared.UserSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.api.services.oauth2.model.Userinfo;
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import java.util.UUID;
 
 @SuppressWarnings("serial")
 public class UserServiceImpl extends RemoteServiceServlet
@@ -50,17 +48,22 @@ public class UserServiceImpl extends RemoteServiceServlet
 {
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	final static Email emailSender = new Email("iu", "seadva", ServerConstants.emailPassword);
-	PersonDAOJdbcImpl getPersonJdbc() throws InstantiationException, IllegalAccessException, ClassNotFoundException{
-		String path = getServletContext().getRealPath("/sead_access/");
-		return new PersonDAOJdbcImpl(path+"/Config.properties");
-  }
+	PersonDAOJdbcImpl getPersonJdbc() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
+        String path = getServletContext().getRealPath("/sead_access/");
+        return new PersonDAOJdbcImpl(path+"/Config.properties");
+	}
+	
+	public RoleDAOJdbcImpl getRoleJdbc() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
+        String path = getServletContext().getRealPath("/sead_access/");
+		return new RoleDAOJdbcImpl(path+"/Config.properties");
+	}
 
   public UserServiceImpl(){}
 
   public void sendEmail(String[] toAddress, String subject, String messageStr){ 
 	  emailSender.sendEmail(toAddress, subject, messageStr);
   }
-  public Authentication authenticate(String url, String user, String pass) throws InstantiationException, IllegalAccessException, ClassNotFoundException
+  public Authentication authenticate(String url, String user, String pass) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException
   {
 	Person person = getPersonJdbc().selectPerson(user);
 	Authentication authentication;
@@ -76,6 +79,8 @@ public class UserServiceImpl extends RemoteServiceServlet
           getSession().setAttribute("fName", person.getFirstName());
           getSession().setAttribute("lName", person.getLastName());
           getSession().setAttribute("sessionType", "database");
+          getSession().setAttribute("vivoId", person.getVivoId());
+          getSession().setAttribute("registryId", person.getRegistryId());
           getSession().setAttribute("password", person.getPassword());
           authentication = new Authentication(true);
           return authentication;
@@ -114,26 +119,80 @@ public class UserServiceImpl extends RemoteServiceServlet
     }
   }
 
-  public List<Person> getAllUsers() throws InstantiationException, IllegalAccessException, ClassNotFoundException
+  public List<Person> getAllUsers() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException
   {
-    return getPersonJdbc().getAllUsers();
+    return getPersonJdbc().getAllUsers(null, null, null);
+  }
+  
+/*  public static void main(String[] args) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
+	  new UserServiceImpl().emailCurators("Indiana University");
+  }*/
+  @Override
+  public boolean emailCurators(String affiliation) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
+	  List<Person> curators = getAllUsersByRole(Role.ROLE_CURATOR);
+	  List<String> toAddress = new ArrayList<String>();
+	  for(Person curator: curators){
+		  if(curator.getVivoId()!=null){
+			  String vivoAffiliation = new VivoSparqlServiceImpl().getAgentAffiliation(curator.getVivoId());
+			  //System.out.println("#1"+VivoUtil.vivoVAInstiutionMap.get(affiliation).trim());
+			  //System.out.println("#2"+vivoAffiliation.trim());
+			  if(affiliation!=null
+					  	&&vivoAffiliation!=null
+				  		&& VivoUtil.vivoVAInstiutionMap.containsKey(affiliation)
+				  		&& VivoUtil.vivoVAInstiutionMap.get(affiliation).trim().equalsIgnoreCase(vivoAffiliation.trim())){
+				 // System.out.println(curator.getEmailAddress());
+				  if(curator.getEmailAddress()!=null)
+					  toAddress.add(curator.getEmailAddress());
+			  }
+		  }
+	  }
+	  
+	  String[] toAddressArr = toAddress.toArray(new String[toAddress.size()]);
+	  emailSender.sendEmail(toAddressArr, "New Research Object available for curation", "Please note that a new Research Object" +
+	  		" has been submitted for review to be deposited under your Institutional Repository at " + affiliation+".");
+	  return true;
+  }
+  
+  public List<Person> getAllUsersByRole(Role role) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException
+  {
+	  int roleId = getRoleJdbc().getRoleIdByName(role.getName());
+	  
+	  return getPersonJdbc().getAllUsers("ROLEID", String.valueOf(roleId), "int");
+  }
+  
+  public List<Role> getAllRoles() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException
+  {
+    return getRoleJdbc().getAllRoles();
   }
 
-  public void updateAllUsers(List<Person> userList, List<Person> sendEmailList) throws InstantiationException, IllegalAccessException, ClassNotFoundException
+
+  public void updateAllUsers(List<Person> userList, List<Person> sendEmailList, String registryUrl) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException
   {
-    for (Person user : userList) {
-    	getPersonJdbc().updatePerson(user);
-    }
+  
+	  for (Person user : userList) {
+		user.setRegistryId("agent:"+UUID.randomUUID().toString());
+    	getPersonJdbc().updatePerson(user); 
+	  }
 
     for (Person user : sendEmailList) {
+    	Person person = getPersonJdbc().selectPerson(user.getEmailAddress());
+    	
+    	List<Person> persons = new ArrayList<Person>();
+    	persons.add(
+    			person
+    			);
+        new RegistryServiceImpl().registerAgents(persons, registryUrl);
+        
     	String[] userEmail = new String[1];
     	userEmail[0] = user.getEmailAddress();
-    	emailSender.sendEmail(userEmail, "Account approved", "Hi\n " + user.getFirstName() + " " + user.getLastName() + 
-        "Your account has been approved in Sead VA.\nThanks\n Sead VA Team");
+    	emailSender.sendEmail(userEmail, "Account approved", "Hi " + user.getFirstName() + " " + user.getLastName() + 
+        ",\nYour account has been approved in Sead VA.\nThanks\nSead VA Team");
     }
   }
 
-  public String register(String firstName, String lastName, String email, String password, String confirmPwd, String[] admins) throws InstantiationException, IllegalAccessException, ClassNotFoundException
+  public String register(String firstName, String lastName, String email, String password, String confirmPwd,
+		  String[] admins,
+		  String vivoId) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException
   {
 	Person personCheck = getPersonJdbc().selectPerson(email);
 	
@@ -156,9 +215,12 @@ public class UserServiceImpl extends RemoteServiceServlet
     person.setEmailAddress(email);
     person.setPassword(hashPassword(password));
     person.setRegistrationStatus(RegistrationStatus.PENDING);
-    //person.setRole(Role.ROLE_USER);
+    person.setRole(Role.ROLE_RESEARCHER);
+    if(vivoId!=null)
+    	vivoId = vivoId.split(";")[vivoId.split(";").length-1];
+    person.setVivoId(vivoId);
     getPersonJdbc().insertPerson(person);
-
+    
     emailSender.sendEmail(admins, "New user", "New user " + firstName + " " + lastName + "(" + email + ") has requested an account in SEAD VA." + 
       "Please approve if you know the person.");
     String[] user = new String[1];
@@ -183,6 +245,8 @@ public class UserServiceImpl extends RemoteServiceServlet
       userSession.setRole((Role)getSession().getAttribute("role"));
       userSession.setfName((String)getSession().getAttribute("fName"));
       userSession.setlName((String)getSession().getAttribute("lName"));
+      userSession.setVivoId((String)getSession().getAttribute("vivoId"));
+      userSession.setRegistryId((String)getSession().getAttribute("registryId"));
       userSession.setSessionType((String)getSession().getAttribute("sessionType"));
       userSession.setSession(true);
       return userSession;
@@ -282,9 +346,9 @@ public Authentication authenticateOAuth(String token, OAuthType type, String[] a
 		      }
 		    }
 		    else{
-		    	register(firstName, lastName, email, "what are the odds this would be a password", "what are the odds this would be a password",admins);  
+		    	register(firstName, lastName, email, "what are the odds this would be a password", "what are the odds this would be a password",admins,null);  
 		    	authentication = new Authentication(false);
-		        authentication.setErrorMessage("You have requested an account using your "+OAuthType.GOOGLE.getName()+" id. Your request is yet to be approved by an admin.");
+		        authentication.setErrorMessage("You have requested an account using your "+ OAuthType.GOOGLE.getName()+" id. Your request is yet to be approved by an admin.");
 		    }
 		} catch (InstantiationException e) {
 			e.printStackTrace();
@@ -293,6 +357,9 @@ public Authentication authenticateOAuth(String token, OAuthType type, String[] a
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

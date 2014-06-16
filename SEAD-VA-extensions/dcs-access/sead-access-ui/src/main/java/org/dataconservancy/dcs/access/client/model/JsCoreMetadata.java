@@ -15,6 +15,15 @@
  */
 package org.dataconservancy.dcs.access.client.model;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JsArrayString;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.cellview.client.CellTree;
+import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.*;
 import org.dataconservancy.dcs.access.client.SeadApp;
 import org.dataconservancy.dcs.access.client.SeadState;
 import org.dataconservancy.dcs.access.client.Util;
@@ -23,23 +32,6 @@ import org.dataconservancy.dcs.access.client.api.DepositServiceAsync;
 import org.dataconservancy.dcs.access.shared.UserSession;
 import org.dataconservancy.dcs.access.ui.client.model.JsModel;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JsArray;
-import com.google.gwt.core.client.JsArrayString;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.cellview.client.CellTree;
-import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.rpc.IsSerializable;
-import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.Widget;
-
 /**
  * Encapsulates core metadata fields that can be associated with DCS entities.
  */
@@ -47,6 +39,10 @@ public final class JsCoreMetadata
         extends JsModel{
 
     protected JsCoreMetadata() {
+    }
+    
+    public void setTitle(String title) {
+        set("title", title);
     }
     public String getTitle() {
         return getString("title");
@@ -77,8 +73,8 @@ public final class JsCoreMetadata
     public Widget display(final String entityId, final CellTree tree) {
     	final Grid grid = //new Grid(7,2);
         
-      	Util.createGrid(7, 2, 
-    					"Title:","", "Creators:", "Contact:","Subjects:", "Type:", "Rights:");
+      	Util.createGrid(7, 2,
+                "Title:", "", "Creators:", "Contact:", "Subjects:", "Type:", "Rights:");
         
         grid.getCellFormatter().setStyleName(1, 1, "PaddedCell");
 
@@ -87,8 +83,8 @@ public final class JsCoreMetadata
         hp.setSpacing(5);
         
         final Image image= new Image("images/wait.gif");
-        final Label delete = Util.label("Delete [X]","SimplerButton");
-        final Label title = Util.label(getTitle(),"HeadingField");
+        final Label delete = Util.label("Delete [X]", "SimplerButton");
+        final Label title = Util.label(getTitle(), "HeadingField");
         
         final Label expand = new Label("[+]");
         expand.setStyleName("Expand");
@@ -140,7 +136,7 @@ public final class JsCoreMetadata
 				}
 				else
 				{
-					History.newItem("related;"+entityId);
+					History.newItem("related;" + entityId);
 				}
 			}
 		});

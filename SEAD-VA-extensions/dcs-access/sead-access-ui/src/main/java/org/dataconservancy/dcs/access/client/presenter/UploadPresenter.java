@@ -19,7 +19,6 @@ package org.dataconservancy.dcs.access.client.presenter;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TabPanel;
-import com.google.web.bindery.event.shared.Event;
 
 public class UploadPresenter implements Presenter {
 

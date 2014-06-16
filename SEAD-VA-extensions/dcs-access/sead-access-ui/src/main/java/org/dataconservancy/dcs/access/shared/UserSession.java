@@ -17,7 +17,6 @@
 package org.dataconservancy.dcs.access.shared;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import org.dataconservancy.dcs.access.shared.Role;
 
 public class UserSession
 					implements IsSerializable {
@@ -25,6 +24,8 @@ public class UserSession
 	private Role role;
 	private String fName;
 	private String lName;
+	private String vivoId;
+	private String registryId;
 	private String sessionType;
 	private boolean session;
 	public String getEmail() {
@@ -62,6 +63,18 @@ public class UserSession
 	}
 	public void setSessionType(String sessionType) {
 		this.sessionType = sessionType;
+	}
+	public String getVivoId() {
+		return vivoId;
+	}
+	public void setVivoId(String vivoId) {
+		this.vivoId = vivoId;
+	}
+	public String getRegistryId() {
+		return registryId;
+	}
+	public void setRegistryId(String registryId) {
+		this.registryId = registryId;
 	}
 	
 	

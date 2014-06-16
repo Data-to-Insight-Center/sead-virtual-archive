@@ -16,24 +16,19 @@
 
 package org.dataconservancy.dcs.access.server.model;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.dataconservancy.dcs.access.server.util.ServerConstants;
 import org.dataconservancy.dcs.access.server.util.StatusReader.Status;
 import org.dataconservancy.dcs.access.shared.Event;
+import org.dataconservancy.dcs.access.shared.ProvenaceDataset;
 import org.dataconservancy.dcs.access.shared.ProvenanceRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.dataconservancy.dcs.access.shared.ProvenaceDataset;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public class ProvenanceDAOJdbcImpl  implements ProvenanceDAO {
 
@@ -45,7 +40,7 @@ public class ProvenanceDAOJdbcImpl  implements ProvenanceDAO {
 	private static final String PROVENANCE_TBL = "PROVENANCE";
 	private static final String EVENT_TBL = "EVENT";
 	
-	public ProvenanceDAOJdbcImpl(String configPath) throws InstantiationException, IllegalAccessException, ClassNotFoundException{
+	public ProvenanceDAOJdbcImpl(String configPath) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
 		dbInstance = DatabaseSingleton.getInstance(configPath);
 	}
 
@@ -162,13 +157,14 @@ public class ProvenanceDAOJdbcImpl  implements ProvenanceDAO {
 
 	private void insertEvent(Connection conn, String sipId, Event event) throws SQLException{
 		 String insertStmt = "INSERT INTO " + EVENT_TBL +
-            		" (sipId, eventType, percentage, status, date) VALUES(?,?,?,?,?)";
+            		" (sipId, eventType, percentage, status, date, detail) VALUES(?,?,?,?,?,?)";
          
 		 PreparedStatement pst = conn.prepareStatement(insertStmt);
          
          pst.setString(1, sipId);
          pst.setString(2, event.getEventType());
          pst.setInt(3, event.getEventPercent());
+         
          if(event.getEventPercent()==100)
         	 pst.setString(4, Status.Completed.getText());
          else
@@ -176,6 +172,7 @@ public class ProvenanceDAOJdbcImpl  implements ProvenanceDAO {
  		pst.setTimestamp(5,   new Timestamp(event.getEventDate().getTime())
  		//ServerConstants.dateFormat.format(event.getEventDate())
  		);
+ 		pst.setString(6, event.getEventDetail());
  		
         pst.executeUpdate();
 	}
@@ -191,7 +188,13 @@ public class ProvenanceDAOJdbcImpl  implements ProvenanceDAO {
 		pst.setString(2, provenanceRecord.getSubmitterId());
 		pst.setString(3, provenanceRecord.getSipId());
 		pst.setString(4, provenanceRecord.getStatus().getText());
-		pst.setTimestamp(5,  new Timestamp(provenanceRecord.getDate().getTime())
+		
+//		System.out.println(provenanceRecord.getDate());
+//		System.out.println(provenanceRecord.getDate().getTime());
+		if(provenanceRecord.getDate().getTime()<0)
+			pst.setTimestamp(5,  new Timestamp((new Date()).getTime()));
+		else
+			pst.setTimestamp(5,  new Timestamp(provenanceRecord.getDate().getTime())
 				//ServerConstants.dateFormat.format(provenanceRecord.getDate())
 				);
 		pst.setString(6, provenanceRecord.getWfInstanceId());
@@ -240,11 +243,11 @@ public class ProvenanceDAOJdbcImpl  implements ProvenanceDAO {
 	        	 provenanceRecord.setSipId(results.getString("SIPID"));
 	        	 provenanceRecord.setDate(new Date(results.getTimestamp("DATE").getTime()));
 	        	 String status = results.getString("STATUS");
-	        	 if(Status.fromString(status)==Status.Pending)
+	        	 if(Status.fromString(status)== Status.Pending)
 	        		 provenanceRecord.setStatus(org.dataconservancy.dcs.access.shared.Status.Pending);
-	        	 else if(Status.fromString(status)==Status.Failed)
+	        	 else if(Status.fromString(status)== Status.Failed)
 	        		 provenanceRecord.setStatus(org.dataconservancy.dcs.access.shared.Status.Failed);
-	        	 if(Status.fromString(status)==Status.Completed)
+	        	 if(Status.fromString(status)== Status.Completed)
 	        		 provenanceRecord.setStatus(org.dataconservancy.dcs.access.shared.Status.Completed);
 	        	 
 	            	 query = "SELECT * FROM " + EVENT_TBL
@@ -260,6 +263,7 @@ public class ProvenanceDAOJdbcImpl  implements ProvenanceDAO {
 	                	  event.setId(eventResults.getInt("eventId"));
 	                	  event.setEventPercent(eventResults.getInt("percentage"));
 	                	  event.setEventType(eventResults.getString("eventtype"));
+	                	  event.setEventDetail(eventResults.getString("detail"));
 	                	  event.setEventDate(
 	                			  new Date(eventResults.getTimestamp("DATE").getTime()));
 	                	  provenanceRecord.addEvent(event);
@@ -309,7 +313,7 @@ public class ProvenanceDAOJdbcImpl  implements ProvenanceDAO {
 		List<ProvenaceDataset> provDatasets = new ArrayList<ProvenaceDataset>();
 		List<ProvenanceRecord> provenance = new ArrayList<ProvenanceRecord>();
 		String query = "SELECT * FROM " + PROVENANCE_TBL
-				+ " WHERE SUBMITTERID = ? AND  WFINSTANCEID = ? AND DATE(DATE) > DATE(TIMESTAMP('"+ServerConstants.dateFormat.format(latestDate)
+				+ " WHERE SUBMITTERID = ? AND  WFINSTANCEID = ? AND DATE(DATE) > DATE(TIMESTAMP('"+ ServerConstants.dateFormat.format(latestDate)
 				.replace("T", " ").replace("Z", " ")+"')) ORDER BY DATASETID, WFINSTANCEID";//SQL
 		String datasetId = null;
 		String datasetTitle = null;
@@ -340,11 +344,11 @@ public class ProvenanceDAOJdbcImpl  implements ProvenanceDAO {
         	 provenanceRecord.setSipId(results.getString("SIPID"));
         	 provenanceRecord.setDate(new Date(results.getTimestamp("DATE").getTime()));
         	 String status = results.getString("STATUS");
-        	 if(Status.fromString(status)==Status.Pending)
+        	 if(Status.fromString(status)== Status.Pending)
         		 provenanceRecord.setStatus(org.dataconservancy.dcs.access.shared.Status.Pending);
-        	 else if(Status.fromString(status)==Status.Failed)
+        	 else if(Status.fromString(status)== Status.Failed)
         		 provenanceRecord.setStatus(org.dataconservancy.dcs.access.shared.Status.Failed);
-        	 if(Status.fromString(status)==Status.Completed)
+        	 if(Status.fromString(status)== Status.Completed)
         		 provenanceRecord.setStatus(org.dataconservancy.dcs.access.shared.Status.Completed);
         	 
             	 //read from table
@@ -361,6 +365,7 @@ public class ProvenanceDAOJdbcImpl  implements ProvenanceDAO {
                 	  event.setId(eventResults.getInt("eventId"));
                 	  event.setEventPercent(eventResults.getInt("percentage"));
                 	  event.setEventType(eventResults.getString("eventtype"));
+                	  event.setEventDetail(eventResults.getString("detail"));
                 	  event.setEventDate(
                 			  new Date(eventResults.getTimestamp("DATE").getTime())
                 			  );
@@ -411,7 +416,7 @@ public class ProvenanceDAOJdbcImpl  implements ProvenanceDAO {
 		if(dataset.datasetTitle!=null)
 			provDatasets+=",\"name\":"+"\""+dataset.datasetTitle+"\"";
 		provDatasets+= ",\"type\":"+"\"Dataset\""+"}";
-		for (Map.Entry<String,List<ProvenanceRecord>> entry : dataset.provRecordbyWf.entrySet()) 
+		for (Map.Entry<String,List<ProvenanceRecord>> entry : dataset.provRecordbyWf.entrySet())
 		{
 			provDatasets += "," +
 					"{\"id\":"+"\""+entry.getKey()+"\""+
@@ -432,7 +437,7 @@ public class ProvenanceDAOJdbcImpl  implements ProvenanceDAO {
 				",\"parentId\":"+"\""+provRecord.getWfInstanceId()+"\""+
 				",\"status\":"+"\""+provRecord.getStatus().getText()+"\""+
 				",\"type\":"+"\"Sub-workflow (SIP)\""+
-				",\"date\":"+ "\""+ServerConstants.dateFormat.format(provRecord.getDate())+"\""+
+				",\"date\":"+ "\""+ ServerConstants.dateFormat.format(provRecord.getDate())+"\""+
 				"}";
 		for(Event event:provRecord.getEvents()){
 			record+=","+eventToJson(event,provRecord.getSipId());
@@ -441,10 +446,10 @@ public class ProvenanceDAOJdbcImpl  implements ProvenanceDAO {
 	}
 	 public String eventToJson(Event event, String sipId){
 		 
-		 Status status; 
+		 Status status;
 	 
 		 if(event.getEventPercent()==100)
-			 status =Status.Completed;
+			 status = Status.Completed;
 		 else
 			 status = Status.Pending;
 			String eventStr = "{"+
@@ -452,7 +457,8 @@ public class ProvenanceDAOJdbcImpl  implements ProvenanceDAO {
 							",\"type\":"+"\"sub-event\""+
 							",\"parentId\":"+"\""+sipId+"\""+
 							",\"name\":"+"\""+event.getEventType()+"\""+
-							",\"date\":" + "\""+ServerConstants.dateFormat.format(event.getEventDate())+"\""+
+							",\"detail\":"+"\""+event.getEventDetail()+"\""+
+							",\"date\":" + "\""+ ServerConstants.dateFormat.format(event.getEventDate())+"\""+
 							",\"status\":"+"\""+status.getText()+"\""+"}";
 			return eventStr;
 		}

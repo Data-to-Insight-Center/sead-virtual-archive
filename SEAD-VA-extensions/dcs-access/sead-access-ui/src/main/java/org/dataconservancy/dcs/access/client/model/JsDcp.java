@@ -17,8 +17,6 @@ package org.dataconservancy.dcs.access.client.model;
 
 import com.google.gwt.core.client.JsArray;
 import org.dataconservancy.dcs.access.ui.client.model.JsCollection;
-import org.dataconservancy.dcs.access.ui.client.model.JsEvent;
-import org.dataconservancy.dcs.access.ui.client.model.JsManifestation;
 import org.dataconservancy.dcs.access.ui.client.model.JsModel;
 
 /**
@@ -33,6 +31,11 @@ public final class JsDcp
     public static JsDcp create() {
         return (JsDcp) JsModel
                 .parseJSON("{\"deliverableUnits\": [], \"collections\": [], \"manifestations\": [], \"files\": [], \"events\": []}");
+    }
+    
+    public static JsDcp create(String jsonString) {
+        return (JsDcp) JsModel
+                .parseJSON(jsonString);
     }
 
     @SuppressWarnings("unchecked")

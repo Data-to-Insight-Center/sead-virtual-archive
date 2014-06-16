@@ -16,25 +16,10 @@
 
 package org.dataconservancy.dcs.access.client.view;
 
-import org.dataconservancy.dcs.access.client.SeadApp;
+import com.google.gwt.user.client.ui.*;
 import org.dataconservancy.dcs.access.client.Util;
-import org.dataconservancy.dcs.access.client.upload.DepositConfig;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.PasswordTextBox;
-import com.google.gwt.user.client.ui.TabPanel;
-import com.google.gwt.user.client.ui.TextBox;
-
-public class LoginView extends Composite implements org.dataconservancy.dcs.access.client.presenter.LoginPresenter.Display{
+public class LoginView extends Composite {// implements org.dataconservancy.dcs.access.client.presenter.LoginPresenter.Display{
 	
 	TabPanel loginPanel;
 	Panel loginTab;
@@ -77,11 +62,11 @@ public class LoginView extends Composite implements org.dataconservancy.dcs.acce
 		
 		userNameLbl = new Label();
 		regsiterLbl =
-				Util.label("Register New User","SimpleButton");
+				Util.label("Register New User", "SimpleButton");
 
     
 	    FlexTable tempTable = Util.createTable("");
-	    Util.addColumn(tempTable,regsiterLbl);
+	    Util.addColumn(tempTable, regsiterLbl);
 	    loginTab.add(tempTable);
 	    userDetails = new UserDetails();
 	 //   userDetails.depositConfig = depositConfig;
@@ -123,7 +108,7 @@ public class LoginView extends Composite implements org.dataconservancy.dcs.acce
 	}
 
 
-	@Override
+	/*@Override
 	public TabPanel getLoginPanel() {
 		return loginPanel;
 	}
@@ -163,5 +148,5 @@ public class LoginView extends Composite implements org.dataconservancy.dcs.acce
 	@Override
 	public Button getGoogleLogin() {
 		return googleLogin;
-	}
+	}*/
 }

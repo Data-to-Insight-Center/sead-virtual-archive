@@ -16,21 +16,23 @@
 
 package org.dataconservancy.dcs.access.client.api;
 
-import java.util.Date;
-
-import org.dataconservancy.dcs.access.client.model.SchemaType.Name;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.dataconservancy.dcs.access.client.model.SchemaType.Name;
+
+import java.util.Date;
 
 public interface TransformerServiceAsync {
 
    void validateXML(String inputXml, String schemaURI,
-			AsyncCallback<Name> callback);
+                    AsyncCallback<Name> callback);
 
 	void xslTransform(Name inputSchema, Name outputSchema, String metadataXml,
-			AsyncCallback<String> callback);
+                      AsyncCallback<String> callback);
 
 	void fgdcToHtml(String inputFilePath, String format, AsyncCallback<String> callback);
 
 	void dateToString(Date date, AsyncCallback<String> callback);
+
+	void readFile(String filePath, AsyncCallback<String> callback);
 
 }

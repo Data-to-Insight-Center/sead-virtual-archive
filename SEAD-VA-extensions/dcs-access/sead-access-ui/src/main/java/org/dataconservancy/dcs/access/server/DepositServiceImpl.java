@@ -15,45 +15,18 @@
  */
 package org.dataconservancy.dcs.access.server;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.StringReader;
-import java.io.StringWriter;
-
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.methods.GetMethod;
-
-import javax.servlet.ServletException;
-
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthPolicy;
-import org.apache.commons.httpclient.auth.BasicScheme;
-
 import org.apache.abdera.Abdera;
 import org.apache.abdera.protocol.client.AbderaClient;
 import org.apache.abdera.protocol.client.ClientResponse;
 import org.apache.abdera.protocol.client.RequestOptions;
-
-import org.dataconservancy.dcs.access.client.SeadApp;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.commons.httpclient.auth.AuthPolicy;
+import org.apache.commons.httpclient.auth.BasicScheme;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.dataconservancy.dcs.access.client.api.DepositService;
 import org.dataconservancy.dcs.access.client.upload.DepositConfig;
 import org.dataconservancy.dcs.access.client.upload.RPCException;
 import org.dataconservancy.dcs.access.client.upload.model.Package;
@@ -63,10 +36,6 @@ import org.dataconservancy.dcs.access.server.util.StatusReader;
 import org.dataconservancy.dcs.access.server.util.StatusReader.Status;
 import org.dataconservancy.dcs.access.shared.Constants;
 import org.dataconservancy.dcs.access.shared.Event;
-import org.dataconservancy.dcs.access.client.api.DepositService;
-import org.dataconservancy.dcs.access.client.model.FileNode;
-import org.dataconservancy.dcs.access.client.presenter.MediciIngestPresenter;
-import org.dataconservancy.dcs.ingest.Events;
 import org.dataconservancy.model.builder.DcsModelBuilder;
 import org.dataconservancy.model.builder.InvalidXmlException;
 import org.dataconservancy.model.builder.xstream.DcsXstreamStaxModelBuilder;
@@ -75,9 +44,17 @@ import org.dataconservancy.model.dcs.DcsDeliverableUnit;
 import org.dataconservancy.model.dcs.DcsResourceIdentifier;
 import org.seadva.model.builder.xstream.SeadXstreamStaxModelBuilder;
 import org.seadva.model.pack.ResearchObject;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
+
+import javax.servlet.ServletException;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("serial")
 public class DepositServiceImpl
@@ -290,6 +267,11 @@ public class DepositServiceImpl
 	
 
 	@Override
+	public String getResearchObjectId(String statusUrl) throws InvalidXmlException, IOException{
+		return new StatusReader().getResearchObjectId(statusUrl);
+	}
+	
+	@Override
 	public void loadDuIds(List<String> statusUrl){
 		if(statusUrl==null)
 			return;
@@ -309,7 +291,7 @@ public class DepositServiceImpl
 							  id.getTypeId().equalsIgnoreCase("lowermississipppi"))
 							  if(!Constants.duIds.containsKey(id.getIdValue()))
 							  {
-						  			Constants.duIds.put(id.getIdValue(), du.getId()); 
+						  			Constants.duIds.put(id.getIdValue(), du.getId());
 						  			break;
 							  }
 					   }

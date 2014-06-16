@@ -24,9 +24,9 @@ import java.util.List;
  */
 
 public enum SeadState {
-    HOME("home"), SEARCH("search"), ENTITY("entity"), 
-    RELATED("related"),GEOSEARCH("geosearch"),GEORESULT("georesult"),GEOENTITY("geoentity"),
-    LOGIN("login"),LOGOUT("logout"),REGISTER("register"),AUTH("auth"),
+    HOME("home"), SEARCH("search"), ENTITY("entity"), BROWSE ("browse"), ADVANCED("advanced"), EDIT("edit"),ACRUPLOAD("acrPublish"),
+    RELATED("related"),GEOSEARCH("geosearch"),GEORESULT("georesult"),GEOENTITY("geoentity"),CURATOR("curator"),
+    LOGIN("login"),LOGOUT("logout"),REGISTER("register"),AUTH("auth"), ACTIVITY("activity"), PUBLISH("publish"),
     OAUTH("oauthcallback"),UPLOAD("upload"),FILE("file"), DELIVERABLE_UNIT("deliverableunit"),
     COLLECTION("collection"), SUBMIT("submit"),ADMIN("admin"),XMCFACETEDSEARCH("xmcfacetedsearch"),
     MEDICI("medici"), MONITOR("monitor");

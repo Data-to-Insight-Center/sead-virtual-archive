@@ -16,12 +16,11 @@
 
 package org.dataconservancy.dcs.access.client.api;
 
-import java.util.Date;
-
-import org.dataconservancy.dcs.access.client.model.SchemaType;
-
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import org.dataconservancy.dcs.access.client.model.SchemaType;
+
+import java.util.Date;
 
 
 @RemoteServiceRelativePath("transform")
@@ -34,5 +33,6 @@ public interface TransformerService
 	String fgdcToHtml(String inputFilePath, String format);
 
 	String dateToString(Date date);
+	String readFile(String filePath);
 	
 }

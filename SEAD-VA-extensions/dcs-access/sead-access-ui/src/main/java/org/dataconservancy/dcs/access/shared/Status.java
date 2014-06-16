@@ -16,30 +16,31 @@
 
 package org.dataconservancy.dcs.access.shared;
 
-import java.io.Serializable;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-	public enum Status implements IsSerializable, Serializable{
+import java.io.Serializable;
 
-		Completed("completed"), Pending("pending"), Timeout("timeout"), Failed("failed");
-		  private String text; 
+public enum Status implements IsSerializable, Serializable{
 
-		  Status(String text) {
-		    this.text = text;
-		  }
+    Completed("completed"), Pending("pending"), Timeout("timeout"), Failed("failed");
+      private String text;
 
-		  public String getText() {
-		    return this.text;
-		  }
+      Status(String text) {
+        this.text = text;
+      }
 
-		  public static Status fromString(String text) {
-		    if (text != null) {
-		      for (Status b : Status.values()) {
-		        if (text.equalsIgnoreCase(b.text)) {
-		          return b;
-		        }
-		      }
-		    }
-		    return null;
-		  }
+      public String getText() {
+        return this.text;
+      }
+
+      public static Status fromString(String text) {
+        if (text != null) {
+          for (Status b : Status.values()) {
+            if (text.equalsIgnoreCase(b.text)) {
+              return b;
+            }
+          }
+        }
+        return null;
+      }
 }

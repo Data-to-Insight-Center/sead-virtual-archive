@@ -16,10 +16,12 @@
 
 package org.dataconservancy.dcs.access.client.ui;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.*;
 import org.dataconservancy.dcs.access.client.api.DbQueryService;
 import org.dataconservancy.dcs.access.client.api.DbQueryServiceAsync;
 import org.dataconservancy.dcs.access.shared.Constants;
@@ -27,20 +29,10 @@ import org.dataconservancy.dcs.access.shared.Event;
 import org.dataconservancy.dcs.access.shared.ProvenaceDataset;
 import org.dataconservancy.dcs.access.shared.ProvenanceRecord;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.PopupPanel;
- 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class WfEventRefresherPanel extends PopupPanel {
  private Grid grid;
  Label insideProgressPanel = new Label("Progress");
@@ -87,13 +79,18 @@ public class WfEventRefresherPanel extends PopupPanel {
 				  public void onSuccess(List<ProvenaceDataset> result) {
 		            	String events = "<ul>";
 		            	for(final ProvenaceDataset dataset:result){
-		            		for (Map.Entry<String,List<ProvenanceRecord>> entry : dataset.provRecordbyWf.entrySet()) 
+		            		for (Map.Entry<String,List<ProvenanceRecord>> entry : dataset.provRecordbyWf.entrySet())
 		            		{
 		            			for(final ProvenanceRecord provRecord: entry.getValue()){
 		            				int i =0;
 		            				for(Event event:provRecord.getEvents()){
 		            					
-		            					events+="<li>"+Constants.eventMessages.get(event.getEventType())+ ": Completed</li>";
+		            					if(event.getEventType().contains("match"))
+		            						events+="<li>"+ Constants.eventMessages.get(event.getEventType())+ ": Completed(" +
+		            								event.getEventDetail()+")"+
+		            								"</li>";
+		            					else
+		            						events+="<li>"+ Constants.eventMessages.get(event.getEventType())+ ": Completed</li>";
 		            					if(i==provRecord.getEvents().size()-1){
 		            						events+="</ul>";
 		            						final String temp =events;
@@ -149,7 +146,7 @@ public class WfEventRefresherPanel extends PopupPanel {
      close = new Button("Close");
 	 close.addClickHandler(new ClickHandler() {
 		@Override
-		public void onClick(ClickEvent event) {	
+		public void onClick(ClickEvent event) {
 			hidePanel();
 			timer.cancel();
 		}

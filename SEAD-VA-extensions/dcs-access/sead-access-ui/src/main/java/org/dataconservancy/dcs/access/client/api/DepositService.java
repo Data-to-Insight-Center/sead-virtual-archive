@@ -16,19 +16,16 @@
 
 package org.dataconservancy.dcs.access.client.api;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpSession;
-
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-
 import org.dataconservancy.dcs.access.client.upload.DepositConfig;
 import org.dataconservancy.dcs.access.client.upload.RPCException;
 import org.dataconservancy.dcs.access.client.upload.model.Package;
 import org.dataconservancy.dcs.access.shared.Event;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @RemoteServiceRelativePath("deposit")
 public interface DepositService
@@ -41,7 +38,7 @@ public interface DepositService
      * @param pass
      * @param pkg
      * @return Ticket for SIP.
-     * @throws RPCException
+     * @throws org.dataconservancy.dcs.access.client.upload.RPCException
      */
     String submitSIP(String endpoint, String user, String pass, Package pkg)
             throws RPCException;
@@ -53,4 +50,5 @@ public interface DepositService
 	Map<Date,List<Event>> statusUpdate(String statusUrl, Date latestDate);
 	void loadDuIds(List<String> statusUrl);
 	boolean deleteCollection(String id, String endpoint);
+	String getResearchObjectId(String statusUrl) throws Exception;
 }

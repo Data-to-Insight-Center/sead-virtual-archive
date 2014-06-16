@@ -16,27 +16,22 @@
 
 package org.dataconservancy.dcs.access.client.api;
 
-import java.util.List;
-
-import org.dataconservancy.dcs.access.shared.Authentication;
-import org.dataconservancy.dcs.access.shared.OAuthType;
-import org.dataconservancy.dcs.access.shared.Person;
-import org.dataconservancy.dcs.access.shared.Role;
-import org.dataconservancy.dcs.access.shared.UserSession;
-
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.dataconservancy.dcs.access.shared.*;
+
+import java.util.List;
 
 
 public interface UserServiceAsync {
 
     void authenticate(String endpoint,
-               String user,
-               String name,
-               AsyncCallback<Authentication> cb);
+                      String user,
+                      String name,
+                      AsyncCallback<Authentication> cb);
 
 	void register(String firstName, String lastName, String email,
-			String password, String confirmPwd, String[] admins,
-			AsyncCallback<String> callback);
+                  String password, String confirmPwd, String[] admins, String vivoId,
+                  AsyncCallback<String> callback);
 
 	void checkSession(String token, AsyncCallback<UserSession> callback);
 
@@ -44,14 +39,19 @@ public interface UserServiceAsync {
 
 	void clearSession(AsyncCallback<Void> callback);
 
-	void updateAllUsers(List<Person> userList,List<Person> sendEmailList, AsyncCallback<Void> callback);
+	void updateAllUsers(List<Person> userList, List<Person> sendEmailList,
+                        String registryUrl, AsyncCallback<Void> callback);
 
 	void sendEmail(String[] toAddress, String subject, String messageStr,
-			AsyncCallback<Void> callback);
+                   AsyncCallback<Void> callback);
 
 	void setSession(String token, AsyncCallback<Void> callback);
 
 	void authenticateOAuth(String token, OAuthType type, String[] admins,
-			AsyncCallback<Authentication> callback);
+                           AsyncCallback<Authentication> callback);
+
+	void getAllRoles(AsyncCallback<List<Role>> callback);
+
+	void emailCurators(String affiliation, AsyncCallback<Boolean> callback);
 
 }

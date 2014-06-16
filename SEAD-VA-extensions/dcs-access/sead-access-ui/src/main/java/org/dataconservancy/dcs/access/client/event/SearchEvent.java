@@ -16,11 +16,10 @@
 
 package org.dataconservancy.dcs.access.client.event;
 
-import org.dataconservancy.dcs.access.client.model.SearchInput;
-
 import com.google.web.bindery.event.shared.Event;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.HandlerRegistration;
+import org.dataconservancy.dcs.access.client.model.SearchInput;
 
 public class SearchEvent extends Event<SearchEvent.Handler> {
 
@@ -28,30 +27,36 @@ public class SearchEvent extends Event<SearchEvent.Handler> {
         void onMessageReceived(SearchEvent event);
     }
 
-    private static final Type<SearchEvent.Handler> TYPE =
-        new Type<SearchEvent.Handler>();
+    private static final Type<Handler> TYPE =
+            new Type<Handler>();
 
-   
+
     public static HandlerRegistration register(EventBus eventBus,
-    		SearchEvent.Handler handler) {
-      return eventBus.addHandler(TYPE, handler);
-    }    
+                                               SearchEvent.Handler handler) {
+        return eventBus.addHandler(TYPE, handler);
+    }
 
     private final SearchInput searchInput;
+    private final boolean isAdvanced;
 
-    public SearchEvent(SearchInput searchInput) {
+    public SearchEvent(SearchInput searchInput, boolean isAdvanced) {
         this.searchInput = searchInput;
+        this.isAdvanced = isAdvanced;
     }
 
     @Override
-    public Type<SearchEvent.Handler> getAssociatedType() {
+    public Type<Handler> getAssociatedType() {
         return TYPE;
     }
 
     public SearchInput getSearchInput() {
         return this.searchInput;
     }
-   
+
+    public boolean getIsAdvanced() {
+        return this.isAdvanced;
+    }
+
     @Override
     protected void dispatch(Handler handler) {
         handler.onMessageReceived(this);

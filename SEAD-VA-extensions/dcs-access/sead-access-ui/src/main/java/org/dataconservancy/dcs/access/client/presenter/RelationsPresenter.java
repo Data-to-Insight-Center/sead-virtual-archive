@@ -16,26 +16,16 @@
 
 package org.dataconservancy.dcs.access.client.presenter;
 
-import org.dataconservancy.dcs.access.client.SeadApp;
-import org.dataconservancy.dcs.access.client.FileTree;
-import org.dataconservancy.dcs.access.client.Search;
-import org.dataconservancy.dcs.access.client.SolrField;
-import org.dataconservancy.dcs.access.client.Util;
-import org.dataconservancy.dcs.access.client.model.JsDcp;
-import org.dataconservancy.dcs.access.client.model.JsSearchResult;
-import org.dataconservancy.dcs.access.client.view.FacetedSearchView;
-
 import com.google.gwt.http.client.URL;
 import com.google.gwt.jsonp.client.JsonpRequestBuilder;
 import com.google.gwt.user.cellview.client.CellTree;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.view.client.TreeViewModel;
-import com.google.web.bindery.event.shared.Event;
+import org.dataconservancy.dcs.access.client.*;
+import org.dataconservancy.dcs.access.client.model.JsDcp;
+import org.dataconservancy.dcs.access.client.model.JsSearchResult;
 
 public class RelationsPresenter implements Presenter {
 
@@ -58,7 +48,7 @@ public class RelationsPresenter implements Presenter {
 		content = this.display.getContent();
 		id=this.display.getEntityId();
 		String query = Search.createLiteralQuery("OR",
-				SolrField.EntityField.IMM_ANCESTRY.solrName(), id,
+                SolrField.EntityField.IMM_ANCESTRY.solrName(), id,
 //				SolrField.EntityField.ANCESTRY.solrName(), id,
                 SolrField.EventField.TARGET.solrName(), id,
                 SolrField.EntityField.ID.solrName(), id,

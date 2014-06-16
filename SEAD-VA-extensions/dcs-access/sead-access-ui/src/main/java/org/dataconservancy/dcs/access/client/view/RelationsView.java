@@ -30,23 +30,18 @@ public class RelationsView extends Composite implements org.dataconservancy.dcs.
 		 
 			content = new FlowPanel();
 	        content.setStylePrimaryName("Content");
-	       // contentScrollPanel = new ScrollPanel(content);
-	       // content.add(new AdvancedSearchWidget(null, null));
-	        entityId =id;
-	        
+	        entityId =id;	        
 	}
 	
-	
-	
-		@Override
-		public Panel getContent() {
-			return content;
-		}
+	@Override
+	public Panel getContent() {
+		return content;
+	}
 
-		@Override
-		public String getEntityId() {
-			return entityId;
-		}
+	@Override
+	public String getEntityId() {
+		return entityId;
+	}
 
 	
 	

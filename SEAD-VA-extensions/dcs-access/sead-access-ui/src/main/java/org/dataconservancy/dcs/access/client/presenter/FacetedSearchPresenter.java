@@ -16,36 +16,8 @@
 
 package org.dataconservancy.dcs.access.client.presenter;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import org.dataconservancy.dcs.access.client.SeadApp;
-import org.dataconservancy.dcs.access.client.SeadState;
-import org.dataconservancy.dcs.access.client.Search;
-import org.dataconservancy.dcs.access.client.Util;
-import org.dataconservancy.dcs.access.client.api.UserService;
-import org.dataconservancy.dcs.access.client.api.UserServiceAsync;
-import org.dataconservancy.dcs.access.client.event.SearchEvent;
-import org.dataconservancy.dcs.access.client.model.JsCreator;
-import org.dataconservancy.dcs.access.client.model.JsDeliverableUnit;
-import org.dataconservancy.dcs.access.client.model.JsEntity;
-import org.dataconservancy.dcs.access.client.model.JsFacet;
-import org.dataconservancy.dcs.access.client.model.JsMatch;
-import org.dataconservancy.dcs.access.client.model.JsSearchResult;
-import org.dataconservancy.dcs.access.client.model.SearchInput;
-import org.dataconservancy.dcs.access.client.ui.ResultNavigationWidget;
-import org.dataconservancy.dcs.access.client.ui.SeadAdvancedSearchWidget;
-import org.dataconservancy.dcs.access.shared.Constants;
-import org.dataconservancy.dcs.access.shared.UserSession;
-import org.dataconservancy.dcs.access.ui.client.model.JsModel;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArray;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.EventBus;
@@ -53,22 +25,23 @@ import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.jsonp.client.JsonpRequestBuilder;
 import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Hyperlink;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.Tree;
-import com.google.gwt.user.client.ui.TreeItem;
+import com.google.gwt.user.client.ui.*;
+import org.dataconservancy.dcs.access.client.SeadApp;
+import org.dataconservancy.dcs.access.client.SeadState;
+import org.dataconservancy.dcs.access.client.Search;
+import org.dataconservancy.dcs.access.client.Util;
+import org.dataconservancy.dcs.access.client.api.UserService;
+import org.dataconservancy.dcs.access.client.api.UserServiceAsync;
+import org.dataconservancy.dcs.access.client.event.SearchEvent;
+import org.dataconservancy.dcs.access.client.model.*;
+import org.dataconservancy.dcs.access.client.ui.ResultNavigationWidget;
+import org.dataconservancy.dcs.access.client.ui.SeadAdvancedSearchWidget;
+import org.dataconservancy.dcs.access.client.ui.SeadSimpleSearchWidget;
+import org.dataconservancy.dcs.access.shared.Constants;
+import org.dataconservancy.dcs.access.ui.client.model.JsModel;
 
+import java.util.*;
 
 public class FacetedSearchPresenter implements Presenter {
 
@@ -106,116 +79,85 @@ public class FacetedSearchPresenter implements Presenter {
 		
 		//Binding facet content
 		facetPanel = this.display.getFacetContent();
-		//setResults(Application.searchInput);
-		
 		content.clear();
 		facetPanel.clear();
-	
 
 		final SearchEvent.Handler searchHandler = new SearchEvent.Handler() {
     			@Override
     			public void onMessageReceived(final SearchEvent event) {
     				   content.clear();
     				   facetPanel.clear();
+    				   final VerticalPanel verticalPanel = new VerticalPanel();
     				   final HorizontalPanel middlePanel = new HorizontalPanel();
 			           middlePanel.setWidth("100%");
-			           final Label viewData = Util.label("View Collections uploaded by you","LogoutButton");
+			           //final Label viewData = Util.label("View Collections uploaded by you","LogoutButton");
 			           
-    				   final AsyncCallback<UserSession> cb =
-    			                new AsyncCallback<UserSession>() {
 
-    			                    public void onSuccess(final UserSession result) {
-    			                    	SearchInput searchInput = ((SearchEvent)event).getSearchInput();
-    			      				  
-    			     				   if (searchInput.getUserfields() == null || searchInput.getUserqueries() == null) {
-    			     			        	
-    			     			        	final Search.UserField[] tempUserfields = new Search.UserField[0];
-    			     			    	    final String[] tempUserqueries = new String[0];
-    			     			    		searchFacet(tempUserfields,
-    			     			    					tempUserqueries, 0,
-    			     			    	        		new String[0],new String[0]
-    			     			    	        		);
-    			     			            
-    			     			          
-    			     			            middlePanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
-    			     			            
-    			     			            content.add(middlePanel);
-    			     			            middlePanel.add(new SeadAdvancedSearchWidget(searchInput.getUserfields(), searchInput.getUserqueries()));
-	    			     			        if(result.isSession()){
-	    			     			        	middlePanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-	    			     			        	viewData.addClickHandler(new ClickHandler() {
-	    			     							
-	    			     							@Override
-	    			     							public void onClick(ClickEvent event) {
-	    			     								String[] data = new String[6];
-	    			     								data[0] = "entityType";
-	    			     								data[1] = "Collection";
-	    			     								data[2] = "submitterId";
-	    			     								data[3] = result.getEmail();
-	    			     								data[4] = "0";
-	    			     								data[5] = "2";
-	    			     								History.newItem(SeadState.SEARCH.toToken(data));
-	    			     							}
-	    			     						});
-	    			     			        	middlePanel.add(viewData);
-	    			     			        }
-	    			      			        
-    			     			            return;
-    			     			        }	
+                   	SearchInput searchInput = ((SearchEvent)event).getSearchInput();
+     				  
+    				   if (searchInput.getUserfields() == null || searchInput.getUserqueries() == null) {
+    			        	
+    			        	final Search.UserField[] tempUserfields = new Search.UserField[0];
+    			    	    final String[] tempUserqueries = new String[0];
+    			    	   if(((SearchEvent)event).getIsAdvanced())
+    			    		   searchFacet(tempUserfields,
+    			    				   	tempUserqueries, 0,
+    			    				   	new String[0],new String[0]
+    			    	        		);
+    			          
+    			            middlePanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
+    			            
+    			           verticalPanel.add(middlePanel);
+   			               if(SeadApp.isHome&&!((SearchEvent)event).getIsAdvanced())
+   			            	   verticalPanel.add(SeadApp.outerMoreLinks);
+   			               content.add(verticalPanel);
+                          
+   			               if(((SearchEvent)event).getIsAdvanced())
+                       	   middlePanel.add(new SeadAdvancedSearchWidget(searchInput.getUserfields(), searchInput.getUserqueries()));
+                           else
+                       	   middlePanel.add(new SeadSimpleSearchWidget(searchInput.getUserfields(), searchInput.getUserqueries()));
 
-    			     			       content.add(middlePanel);
-    			     			      middlePanel.add(new SeadAdvancedSearchWidget(searchInput.getUserfields(), searchInput.getUserqueries()));
-    			     			     if(result.isSession()){
-    			     			    	 middlePanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-    			     			    	middlePanel.add(viewData);
-    			     			     }
-    			   			            
+    			            return;
+    			        }	
 
-    			     				   //Create Search Query
-    			     				   
-    			     				   final String query = Search.createQuery(
-    			     						   searchInput.getUserfields(),
-    			     						   searchInput.getUserqueries(), 
-    			     						   searchInput.getFacetField(),
-    			     						   searchInput.getFacetValue()
-    			     						   );
-    			     				   String facets = "";
-    			     				   	 
-    			     				  			   
-    			     				   
-    			     				   Iterator it = constants.facets.entrySet().iterator();
-    			     				   	   while (it.hasNext()) {
-    			     				   	       Map.Entry pairs = (Map.Entry)it.next();
-    			     				   	       facets+=pairs.getKey()+",";
-    			     				   	   }
-    			     				   	facets=facets.substring(0,facets.length()-1);
-    			     				   	    
-    			     			        String searchUrl = searchURL(query, 
-    			     			        		searchInput.getOffset(), 
-    			     			        		true, 
-    			     			        		Constants.MAX_SEARCH_RESULTS,
-    			     			        		"_facet.field",
-    			     			   			 	facets);
-    			     				   
-    			     			      //get Query results in searchResults variable
-    			     				   getQueryResults(
-    			     						   searchUrl,
-    			     						   facets,
-    			     						   searchInput
-    			     						   );
-    			     				  
-    			     			
-    			                    }
-    			                    public void onFailure(Throwable error) {
-    			                        Window.alert("Failed to login: "
-    			                                + error.getMessage());
-    			                         
-    			                    }
-    				   };
-    			     		
-    			     		
-    			        userService.checkSession(null,cb);
+    			      content.add(middlePanel);
+    			      if(((SearchEvent)event).getIsAdvanced())
+                         middlePanel.add(new SeadAdvancedSearchWidget(searchInput.getUserfields(), searchInput.getUserqueries()));
+                      else
+                         middlePanel.add(new SeadSimpleSearchWidget(searchInput.getUserfields(), searchInput.getUserqueries()));
+  			     
+
+    				   //Create Search Query
     				   
+    				   final String query = Search.createQuery(
+                               searchInput.getUserfields(),
+                               searchInput.getUserqueries(),
+                               searchInput.getFacetField(),
+                               searchInput.getFacetValue()
+                       );
+    				   String facets = "";
+    				   
+    				   Iterator it = constants.facets.entrySet().iterator();
+    				   	   while (it.hasNext()) {
+    				   	       Map.Entry pairs = (Map.Entry)it.next();
+    				   	       facets+=pairs.getKey()+",";
+    				   	   }
+    				   	facets=facets.substring(0,facets.length()-1);
+    				   	    
+    			        String searchUrl = searchURL(query, 
+    			        		searchInput.getOffset(), 
+    			        		true, 
+    			        		Constants.MAX_SEARCH_RESULTS,
+    			        		"_facet.field",
+    			   			 	facets);
+    				   
+    			      //get Query results in searchResults variable
+    				   getQueryResults(
+    						   searchUrl,
+    						   facets,
+    						   searchInput,
+    						  ((SearchEvent)event).getIsAdvanced()
+    						   );
     			}
 		};
 		SearchEvent.register(FacetedSearchPresenter.EVENT_BUS, searchHandler);
@@ -233,11 +175,11 @@ public class FacetedSearchPresenter implements Presenter {
 	}
 	 
 	private void displaySearchResults(String query,
-	            JsSearchResult result, String facets, SearchInput searchInput) {
+	            JsSearchResult result, String facets, SearchInput searchInput, boolean isAdvanced) {
 
 	    	
     		content.add(Util.label("Total matches: " + result.total(),
-                "SectionHeader"));
+                    "SectionHeader"));
 	    		
 	        int numpages = (int) result.total() / Constants.MAX_SEARCH_RESULTS;
 
@@ -247,7 +189,7 @@ public class FacetedSearchPresenter implements Presenter {
 
 	        int page = result.offset() / Constants.MAX_SEARCH_RESULTS;
 
-	        content.add(new ResultNavigationWidget(page, numpages,searchInput));
+	        content.add(new ResultNavigationWidget(page, numpages,searchInput,result.total(), isAdvanced));
 
 	        Grid grid = new Grid(Constants.MAX_SEARCH_RESULTS,
 	        					 1);
@@ -255,7 +197,7 @@ public class FacetedSearchPresenter implements Presenter {
 	        if(result.total()>0)
 	    	{
 		        grid.setStylePrimaryName("FacetedResults");
-		        grid.setWidget(0, 0, Util.label("Dataset Name","SubSectionHeader"));
+//		        grid.setWidget(0, 0, Util.label("Dataset Name","SubSectionHeader"));
 	    	}
 	        
 	        for (int i = 0; i < result.matches().length(); i++) {
@@ -265,14 +207,26 @@ public class FacetedSearchPresenter implements Presenter {
 	            
 
 	            JsEntity entity = m.getEntity();
-	            String entityId = m.getEntity().getId();
-	            String entityNumber = entityId.substring(entityId.lastIndexOf('/')+1,entityId.length()).replace("-", "");
 	            FlowPanel desc = new FlowPanel();
+	            desc.setStyleName("SearchTable");
 	            grid.setWidget(resultrow, 0, desc);
 	            grid.getCellFormatter().addStyleName(resultrow,0,"SearchRow");
+	            
+	            if(i%2==0){
+	            	grid.getCellFormatter().addStyleName(resultrow,0,"SearchRow");
+	            }else{
+	            	grid.getCellFormatter().addStyleName(resultrow,0,"SearchRowAlt");
+	            }
 
-	            Hyperlink title = new Hyperlink(m.getSummaryStr(), true, SeadState.ENTITY
+	            Hyperlink title;
+	            
+	            if (m.getEntityType().equals("file")) 
+	            	title = new Hyperlink(m.getSummaryStr(), true, SeadState.ENTITY
+	                        .toToken(((JsFile)m.getEntity()).getParent()));
+	            else
+	            	title = new Hyperlink(m.getSummaryStr(), true, SeadState.ENTITY
                         .toToken(entity.getId()));
+	            
 	            title.setStyleName("my-HyperLink");
 	            desc.add(
 	            		title
@@ -285,7 +239,8 @@ public class FacetedSearchPresenter implements Presenter {
 	                	String authors="";
 	                	for(int j=0;j<creators.length();j++)
 	                		authors+=creators.get(j).getCreatorName();
-	                	desc.add(new HTML("<span class='ResultSnippet'>Author(s):</span>"+authors));	
+	                	desc.add(new HTML("<span class='ResultSnippet'>Author(s):</span>"+authors));
+	                	desc.add(new HTML("<br> "));
 	                }	
 	            }
 	            
@@ -295,8 +250,10 @@ public class FacetedSearchPresenter implements Presenter {
 	            	int len =250;
 	            	if(entity.getAbstract().length()<len)
 	            		len = entity.getAbstract().length();
-	            	if(entity.getAbstract().length()>0)
+	            	if(entity.getAbstract().length()>0){
 	            		desc.add(new HTML("<span class='ResultSnippet'>About:</span>"+entity.getAbstract().substring(0,len)+".."));
+	            		desc.add(new HTML("<br> "));
+	            	}
 	            }
 	            
 
@@ -306,6 +263,7 @@ public class FacetedSearchPresenter implements Presenter {
 	                context = context.substring(0,context.indexOf("FacetCategory"));
 	                desc.add(new HTML("<span class='ResultSnippet'>" +"Appears in:</span>"+ context
 	                        ));
+	                desc.add(new HTML("<br> "));
 	            }
 	        }
 
@@ -322,7 +280,7 @@ public class FacetedSearchPresenter implements Presenter {
             final String[] facetValue
             ){
     	 JsonpRequestBuilder rb = new JsonpRequestBuilder();
-    	 String query = Search.createQuery(userfields, userqueries,facetField,facetValue);
+    	 String query = Search.createQuery(userfields, userqueries, facetField, facetValue);
     	 String facets = "";
     	 
     	 Iterator it = constants.facets.entrySet().iterator();
@@ -360,7 +318,7 @@ public class FacetedSearchPresenter implements Presenter {
 	    		Map<String,List<String>> facets
 	           )
 	    {
-			facetPanel.add(Util.label("Browse", "GradientFacet"));
+			facetPanel.add(Util.label("Filter By", "GradientFacet"));
         	FlexTable table = Util.createTable();
 	 		Tree tree = new Tree();
 	 		facetPanel.add(table);
@@ -383,13 +341,13 @@ public class FacetedSearchPresenter implements Presenter {
 	 		int orderIndex = 0;
 	 		int i=0;
 
-	 	    while (orderIndex<Constants.displayOrder.size()) {
+	 	    while (orderIndex< Constants.displayOrder.size()) {
 	 			List<String> tempFacets = facets.get(Constants.displayOrder.get(orderIndex));//pairs.getValue();
 	 		
 	 			TreeItem rootItem = new TreeItem();//pairs.getKey());
-	 			rootItem.setHTML("<b>By " +Constants.displayOrder.get(orderIndex)+"</b>");
+//	 			rootItem.setHTML("<b>By " +Constants.displayOrder.get(orderIndex)+"</b>");
 	 			
-	 			
+	 			rootItem.setHTML("<b>" + Constants.displayOrder.get(orderIndex)+"</b>");
 	 			
 	 			String key ="";
 	 			 Iterator tempiterator = constants.facets.entrySet().iterator();
@@ -472,14 +430,14 @@ public class FacetedSearchPresenter implements Presenter {
 	 			  
 	 		       CheckBox checkBox;
 	 				
-	 		       FlexTable smallTable; 	
+	 		       FlexTable smallTable;
 	 		       Label lbl ;
 	 		        if(Constants.displayOrder.get(orderIndex).equals("metadata standard")&&tempFacets.get(j).contains("fgdc"))
 	 		        {
 	 		        	String labelValue = tempFacets.get(j);
 	 		        	labelValue = labelValue.substring(labelValue.lastIndexOf('('), labelValue.lastIndexOf(')')+1);
 	 		        	//labelValue = "FGDC"+labelValue;type filter text
-	 		        	lbl = Util.label("FGDC","FacetHyperlink");
+	 		        	lbl = Util.label("FGDC", "FacetHyperlink");
 	 		        	Label countLbl = new Label(" ("+countStr+")");
 	 		        	smallTable = Util.createTable();
 	 		        	smallTable.setWidget(0, 0, lbl);
@@ -503,7 +461,7 @@ public class FacetedSearchPresenter implements Presenter {
 	 		        	if(facetString.length()==0){
 	 		        		continue;
 	 		        	}
-	 		        	lbl = Util.label(facetString,"FacetHyperlink");
+	 		        	lbl = Util.label(facetString, "FacetHyperlink");
 	 		        	Label countLbl = new Label(" ("+countStr+")");
 	 		        	smallTable = Util.createTable();
 	 		        	smallTable.setWidget(0, 0, lbl);
@@ -522,7 +480,6 @@ public class FacetedSearchPresenter implements Presenter {
 				tree.addItem(rootItem); 
 		 	    }
  				orderIndex++;
- 				
 			
  			//it.remove();
  			//change the display later
@@ -535,7 +492,9 @@ public class FacetedSearchPresenter implements Presenter {
 					  Iterator iterator = constants.facets.entrySet().iterator();
 				   	  while (iterator.hasNext()) {
 				   	       Map.Entry pairs = (Map.Entry)iterator.next();
-				   	       if(pairs.getValue().equals(item.getParentItem().getText().substring(3)))
+				   	       String value = (String) pairs.getValue();
+				   	       String itemText = item.getParentItem().getText();
+				   	       if(value.equals(itemText))
 				   	    		   key= (String)pairs.getKey();
 				   	  }
 				    
@@ -549,7 +508,7 @@ public class FacetedSearchPresenter implements Presenter {
 						  if(children.size()==0)
 							  SeadApp.selectedItems.remove(key);
 						  else
-							  SeadApp.selectedItems.put(key, children);					    	 
+							  SeadApp.selectedItems.put(key, children);
 					  }
 					  else
 					  {
@@ -557,7 +516,7 @@ public class FacetedSearchPresenter implements Presenter {
 						  if(children==null)
 							  children = new ArrayList<String>();
 						  children.add(((CheckBox)item.getWidget()).getName());
-						  SeadApp.selectedItems.put(key, children);	
+						  SeadApp.selectedItems.put(key, children);
 					  }  
 					  
 					  int totalFacets = 0;
@@ -601,9 +560,8 @@ public class FacetedSearchPresenter implements Presenter {
 	     }
 	 
 	private void getQueryResults(final String searchUrl,
-			final String facets, final SearchInput searchInput)
+			final String facets, final SearchInput searchInput, final boolean isAdvanced)
 	{
-
         JsonpRequestBuilder rb = new JsonpRequestBuilder();
         rb.setTimeout(100000);
         rb.requestObject(searchUrl, new AsyncCallback<JsModel>() {
@@ -613,7 +571,7 @@ public class FacetedSearchPresenter implements Presenter {
             }
 
             public void onSuccess(JsModel result) {
-            	 displaySearchResults(searchUrl, (JsSearchResult)result, facets, searchInput);
+            	 displaySearchResults(searchUrl, (JsSearchResult)result, facets, searchInput, isAdvanced);
             	
             	 Map<String,List<String>> facetsList = //JsFacet.getFacets();
 	                		((JsFacet)result).getFacets();
@@ -647,6 +605,4 @@ public class FacetedSearchPresenter implements Presenter {
         }
         return s;
     }
-	
-
 }

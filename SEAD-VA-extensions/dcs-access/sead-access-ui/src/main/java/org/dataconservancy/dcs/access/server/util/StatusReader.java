@@ -16,22 +16,22 @@
 
 package org.dataconservancy.dcs.access.server.util;
 
+import org.dataconservancy.dcs.access.shared.Event;
+import org.dataconservancy.model.builder.InvalidXmlException;
+import org.dataconservancy.model.dcs.DcsDeliverableUnit;
+import org.seadva.model.builder.xstream.SeadXstreamStaxModelBuilder;
+import org.seadva.model.pack.ResearchObject;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.dataconservancy.dcs.access.shared.Event;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
+import java.util.*;
 
 public class StatusReader {
 	public enum Status {
@@ -162,7 +162,7 @@ public class StatusReader {
 	}
     
 
-public String pullParseEventDetail(InputStream input, String process) throws IOException{
+    public String pullParseEventDetail(InputStream input, String process) throws IOException{
 	
 	XmlPullParserFactory factory;
 	int count=0;
@@ -217,6 +217,23 @@ public String pullParseEventDetail(InputStream input, String process) throws IOE
 	return null;
 }
 
+	public String getResearchObjectId(String statusUrl) throws IOException, InvalidXmlException{
+		URL status = new URL(statusUrl);
+		InputStream inputStream =
+			status.openStream();
+		
+		ResearchObject researchObject = new SeadXstreamStaxModelBuilder().buildSip(inputStream);
+		String ROId = null;
+		for(DcsDeliverableUnit du:researchObject.getDeliverableUnits()){
+			if(du.getParents()==null||du.getParents().size()==0){
+				ROId = du.getId();
+				break;
+			}
+		}
+		
+		return ROId;
+	}
+
 public Map<Date,List<Event>> getEvents(String statusUrl, Date latestDate) throws IOException{
 	
 		URL status = new URL(statusUrl);
@@ -261,11 +278,11 @@ public Map<Date,List<Event>> getEvents(String statusUrl, Date latestDate) throws
 				    	 } 	
 			    	 	 
 		 	    	 	 if(eventDate==1) {
-		 	    	 		String s = xpp.getText().replace("Z","-0500");
+		 	    	 		String s = xpp.getText().replace("-0500","Z");
 		 	    	 		
 		 	    	 		Date date = null;
 							try {
-								date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").parse(s);
+								date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(s);
 							} catch (ParseException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();

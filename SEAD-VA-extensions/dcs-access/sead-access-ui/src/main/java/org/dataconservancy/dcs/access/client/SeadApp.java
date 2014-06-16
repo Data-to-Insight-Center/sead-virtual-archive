@@ -20,30 +20,36 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.dataconservancy.dcs.access.client.Search.UserField;
 import org.dataconservancy.dcs.access.client.api.UserService;
 import org.dataconservancy.dcs.access.client.api.UserServiceAsync;
 import org.dataconservancy.dcs.access.client.event.SearchEvent;
 import org.dataconservancy.dcs.access.client.model.SearchInput;
+import org.dataconservancy.dcs.access.client.presenter.AcrPublishDataPresenter;
+import org.dataconservancy.dcs.access.client.presenter.ActivityPresenter;
 import org.dataconservancy.dcs.access.client.presenter.AdminPresenter;
+import org.dataconservancy.dcs.access.client.presenter.CuratorViewPresenter;
+import org.dataconservancy.dcs.access.client.presenter.EditPresenter;
 import org.dataconservancy.dcs.access.client.presenter.EntityPresenter;
 import org.dataconservancy.dcs.access.client.presenter.FacetedSearchPresenter;
 import org.dataconservancy.dcs.access.client.presenter.LoginPresenter;
-import org.dataconservancy.dcs.access.client.presenter.MediciIngestPresenter;
 import org.dataconservancy.dcs.access.client.presenter.Presenter;
 import org.dataconservancy.dcs.access.client.presenter.ProvenancePresenter;
-import org.dataconservancy.dcs.access.client.presenter.RegisterPresenter;
+import org.dataconservancy.dcs.access.client.presenter.PublishDataPresenter;
 import org.dataconservancy.dcs.access.client.presenter.RelationsPresenter;
-import org.dataconservancy.dcs.access.client.presenter.UploadPresenter;
+import org.dataconservancy.dcs.access.client.ui.ErrorPopupPanel;
+import org.dataconservancy.dcs.access.client.ui.LoginPopupPanel;
 import org.dataconservancy.dcs.access.client.upload.Util;
+import org.dataconservancy.dcs.access.client.view.AcrPublishDataView;
+import org.dataconservancy.dcs.access.client.view.ActivityView;
 import org.dataconservancy.dcs.access.client.view.AdminView;
+import org.dataconservancy.dcs.access.client.view.CuratorView;
+import org.dataconservancy.dcs.access.client.view.EditView;
 import org.dataconservancy.dcs.access.client.view.EntityView;
 import org.dataconservancy.dcs.access.client.view.FacetedSearchView;
-import org.dataconservancy.dcs.access.client.view.LoginView;
-import org.dataconservancy.dcs.access.client.view.MediciIngestView;
 import org.dataconservancy.dcs.access.client.view.ProvenanceView;
-import org.dataconservancy.dcs.access.client.view.RegisterView;
+import org.dataconservancy.dcs.access.client.view.PublishDataView;
 import org.dataconservancy.dcs.access.client.view.RelationsView;
-import org.dataconservancy.dcs.access.client.view.UploadView;
 import org.dataconservancy.dcs.access.shared.Constants;
 import org.dataconservancy.dcs.access.shared.Role;
 import org.dataconservancy.dcs.access.shared.UserSession;
@@ -67,7 +73,6 @@ import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -80,13 +85,14 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+
 /**
  * User interface.
  */
 public class SeadApp implements EntryPoint {
 	
 	//Variables
-    static final String BUG_SUBMIT_EMAIL = "sead-va-l@indiana.edu";
+    static final String BUG_SUBMIT_EMAIL = "sead-dev-l@indiana.edu";
     public static final int MAX_SEARCH_RESULTS = 20;
 
     //Load from configuration file
@@ -94,7 +100,10 @@ public class SeadApp implements EntryPoint {
     public static String queryPath;
     public static String bagIturl;
     public static String deposit_endpoint;
+    public static String registryUrl;
+    public static String roUrl;
     public static String tmpHome;
+    public static boolean isHome;
     
     public static Map<String,List<String>> selectedItems = new HashMap<String,List<String>>();  
     	
@@ -102,27 +111,41 @@ public class SeadApp implements EntryPoint {
     static String datastreamUrl;
     public static String[] admins;
 
+    static HorizontalPanel mainHorz;
     static DockLayoutPanel main;
    
     static Panel centerPanel;
     static Panel facetContent;
     static Panel loginPanel;
+    public static HorizontalPanel outerMoreLinks;
     Panel header;
 
-    HorizontalPanel OptionsHorz;
+    HorizontalPanel optionsHorz;
         
     Label dataSearch;
     Label uploadData;
     Label dataHistory;
     Label adminPage;
+    Label curatorPage;
+    Label activityPage;
+    Label home;
+    Label features;
+  //  Label team; 
+    Label resources;
+    Label partners;
+    Button logoutButton;
+    Button loginButton;
     
     TabPanel uploadPanel;
     Panel localUpload;
     Panel mediciUpload;
+    Panel publishData;
     Panel bagUpload;
-    Panel facetOuterPanel ;
-    Label loginLabel;
+    Panel facetOuterPanel;
     Panel notificationPanel;
+    
+    
+    
     public static final String FILE_UPLOAD_URL =
             GWT.getModuleBaseURL() + "fileupload";
     public static final String BAG_UPLOAD_URL =
@@ -142,11 +165,6 @@ public class SeadApp implements EntryPoint {
     public static final UserServiceAsync userService =
             GWT.create(UserService.class);
  
-    
-
- //   private final SparqlQueryServletAsync sparql =
-   //         GWT.create(SparqlQueryServlet.class);
- 
   
     static List<String> fileids = new ArrayList<String>();
     static List<String> colids=  new ArrayList<String>();
@@ -154,9 +172,6 @@ public class SeadApp implements EntryPoint {
     public static int colseq;
 	public static int fileseq;
 	public static int duseq;
-
-  
-
 
 
     static void reportInternalError(String message, Throwable e) {
@@ -168,27 +183,103 @@ public class SeadApp implements EntryPoint {
     }
 
   
+    public void initLogoutButton(){
+    	if(logoutButton==null){
+	    	 logoutButton = new Button("LOG OUT");
+	 		 logoutButton.setStyleName("LogoutButton");
+	 		 ClickHandler logout = new ClickHandler() {
+	   			
+	   			@Override
+	   			public void onClick(ClickEvent event) {
+	   				loginPanel.clear();   
+	   				loginPanel.add(loginButton);
+	   				dataHistory.setStyleName("Option");
+	   				adminPage.setStyleName("Option");
+	   				curatorPage.setStyleName("Option");
+	   				optionsHorz.add(curatorPage);
+	   				optionsHorz.add(adminPage);
+	   				optionsHorz.add(dataHistory);
+	   				History.newItem("logout");
+	   			}
+	   		}; 
+	   		logoutButton.addClickHandler(logout);
+    	}
+   		
+    }
     int i  = 1;
     //Module Load function
     public void onModuleLoad() {
   
+    	mainHorz = new HorizontalPanel();
+    	mainHorz.setSize("100%", "100%");
+    	mainHorz.setHorizontalAlignment(HorizontalPanel.ALIGN_CENTER);
+    	mainHorz.setStylePrimaryName("MainHorz");
+    	
     	accessurl_tb = new TextBox();
         main = new DockLayoutPanel(Unit.PX);
         main.setStylePrimaryName("Main");
-        main.setStyleName("orientation-style");
-        main.setSize("100%", "100%");
+//        main.setStyleName("orientation-style");
+        main.setSize("80%", "100%");
+        mainHorz.add(main);
+        
+        //header parameters
         
         header = new VerticalPanel();
         header.setStylePrimaryName("TopHeader");
         header.setHeight(Window.getClientHeight()/4 + "px");
 
         
-        Panel footer = new FlowPanel();
-        footer.setStylePrimaryName("Footer");
+        HorizontalPanel footer = new HorizontalPanel();
+        footer.setStylePrimaryName("SeadFooter");
+        footer.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+        footer.setWidth("100%");
+        
+        HorizontalPanel footerContent = new HorizontalPanel();
+        footerContent.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+        footerContent.setWidth("30%");
+        Image nsfFooterImage = new Image(GWT.getModuleBaseURL()+ "../images/nsf_footer.png");
+        Label nsfFooterText = Util.label("SEAD is funded by the National Science Foundation under cooperative agreement #OCI0940824", "greyFont");
+        footerContent.add(nsfFooterImage);
+        footerContent.add(nsfFooterText);
+        
+        footer.add(footerContent);
+        
+        
+        outerMoreLinks = new HorizontalPanel();
+        outerMoreLinks.setStyleName("MoreLinkStyle");
+        
+        final Grid moreLinks = new Grid(1,4);
+        moreLinks.setCellPadding(7);
+        
+        Image more = new Image(GWT.getModuleBaseURL()+ "../images/more.png");
+        Button browseButton = new Button("Browse Data");
+        Button uploadButton = new Button("Publish Data");
+          
+        browseButton.setStyleName("OptionButtons");
+        uploadButton.setStyleName("OptionButtons");
+            
+        ClickHandler goUploadData1 = new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                History.newItem(SeadState.AUTH.toToken());
+            }
+        };
+        
+        ClickHandler browseDataHandler = new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                History.newItem("browse"); 
+            }
+        };
+        
+        uploadButton.addClickHandler(goUploadData1);
+        browseButton.addClickHandler(browseDataHandler);
+          
+        moreLinks.setWidget(0, 1, browseButton);
+        moreLinks.setWidget(0, 2, uploadButton);
+
 
         main.addNorth(header, 150);//,DockPanel.NORTH);
-        main.addSouth(footer,40);//,DockPanel.SOUTH);
-        
+        main.addSouth(footer,Window.getClientHeight()/17);
+        outerMoreLinks.add(moreLinks); 
         
         facetOuterPanel = new FlowPanel(); 
         
@@ -199,51 +290,57 @@ public class SeadApp implements EntryPoint {
         facetOuterPanel.add(facetContent);
       
         main.addWest(facetOuterPanel,250);
+        
+        loginPanel = new FlowPanel();
+        loginButton = new Button("LOG IN");
+        loginButton.setStyleName("LoginButton");
+        loginPanel.add(loginButton);
+        //loginPanel1.add(registerLabel);
+        loginButton.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				History.newItem("login");
+			}
+		});
+        
+        main.addEast(loginPanel, 200);
 
-       
         final Panel headerOuterPanel = new FlowPanel();
         headerOuterPanel.setStyleName("HeaderOuter");
         HorizontalPanel middlePanel = new HorizontalPanel();
         middlePanel.setWidth("100%");
+        middlePanel.setStyleName("Menu");
         
-        OptionsHorz = new HorizontalPanel();
+        optionsHorz = new HorizontalPanel(); 
         dataSearch =Util.label("Data Search", "Option");
-        OptionsHorz.add(dataSearch);
+       // OptionsHorz.add(dataSearch);
         uploadData =Util.label("Upload Data", "Option");
-        OptionsHorz.add(uploadData);
+      //  OptionsHorz.add(uploadData);
+        
+        home = Util.label("Home", "Option");
+        home.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				History.newItem(SeadState.HOME.toToken());	
+			}
+		});
+        features = Util.label("Features", "Option");
+     //   team = Util.label("Team", "Option");
+        resources = Util.label("Resources", "Option");
+        partners = Util.label("Partners", "Option");
+        
+        optionsHorz.add(home);
+        optionsHorz.add(features);
+      //  optionsHorz.add(team);
+        optionsHorz.add(resources);
+        optionsHorz.add(partners);
         
         middlePanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
-        middlePanel.add(OptionsHorz);
-        
-        HorizontalPanel externalLinksPanel = new HorizontalPanel();
-        notificationPanel = new FlowPanel();
-        
-        Label seadAcr =Util.label("SEAD ACR", "Option");
-        Label seadVivo =Util.label("SEAD VIVO", "Option");
-        
-        seadAcr.addClickHandler( new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				Window.open("http://nced.ncsa.illinois.edu/", "_blank", "");
-			}
-		});
- 
-        seadVivo.addClickHandler( new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				Window.open("http://sead-vivo.d2i.indiana.edu:8080/sead-vivo/", "_blank", "");
-			}
-		});
-		
-		externalLinksPanel.add(notificationPanel);
-//        externalLinksPanel.add(seadAcr);
-//        externalLinksPanel.add(seadVivo);
-        
-        
+        middlePanel.add(optionsHorz);
+          
         middlePanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-        middlePanel.add(externalLinksPanel);
         
         headerOuterPanel.add(middlePanel);
         headerOuterPanel.setStyleName("Gradient");
@@ -258,8 +355,6 @@ public class SeadApp implements EntryPoint {
          }
         });
         
-
-              
        ClickHandler goDataSearch = new ClickHandler() {
             public void onClick(ClickEvent event) {
             	History.newItem(SeadState.HOME.toToken());
@@ -276,8 +371,6 @@ public class SeadApp implements EntryPoint {
         };
         
         uploadData.addClickHandler(goUploadData);
-        
-        
       
         adminPage =Util.label("Administration", "Option");
         
@@ -289,6 +382,28 @@ public class SeadApp implements EntryPoint {
         };
         
         adminPage.addClickHandler(goAdminPage);
+        
+        curatorPage =Util.label("Curate", "Option");
+        
+        ClickHandler goCuratorPage = new ClickHandler() {
+            public void onClick(ClickEvent event) {
+            	
+                History.newItem(SeadState.CURATOR.toToken());
+            }
+        };
+        
+        curatorPage.addClickHandler(goCuratorPage);
+        
+        activityPage =Util.label("Activity", "Option");
+        
+        ClickHandler goActivityPage = new ClickHandler() {
+            public void onClick(ClickEvent event) {
+            	
+                History.newItem(SeadState.ACTIVITY.toToken());
+            }
+        };
+        
+        activityPage.addClickHandler(goActivityPage);
        
         dataHistory = Util.label("Data Ingest Monitor", "Option");
         
@@ -303,9 +418,9 @@ public class SeadApp implements EntryPoint {
         centerPanel = new ScrollPanel();
         main.add(centerPanel);
         
-        uploadPanel =
-        		new TabPanel();
-        
+        uploadPanel = new TabPanel();
+        uploadPanel.setStylePrimaryName("UploadTabPanel");
+
         localUpload = new FlowPanel();
         mediciUpload = new FlowPanel();
         bagUpload = new FlowPanel();
@@ -317,8 +432,12 @@ public class SeadApp implements EntryPoint {
         uploadPanel.setSize("100%", "100%");
  
         
-        Image logo = new Image(GWT.getModuleBaseURL()
-                + "../images/sead_logo_2.png");
+        publishData = new FlowPanel();
+        
+        /* Image logo = new Image(GWT.getModuleBaseURL()
+                 + "../images/sead_logo_2.png");*/
+         Image logo = new Image(GWT.getModuleBaseURL()
+                 + "../images/sead_logoV2_a.png");
 
         ClickHandler gohome = new ClickHandler() {
             public void onClick(ClickEvent event) {
@@ -331,7 +450,7 @@ public class SeadApp implements EntryPoint {
         
 
         Image toptext = new Image(GWT.getModuleBaseURL()
-                + "../images/topic.png");
+        		 + "../images/topic_V2_a.png");
 
        
         toptext.addClickHandler(gohome);
@@ -340,33 +459,14 @@ public class SeadApp implements EntryPoint {
         Panel logoPanel = new HorizontalPanel();
         logoPanel.add(logo);
         logoPanel.add(toptext);
-        loginPanel = new FlowPanel();
-        loginPanel.setStyleName("logoutPanel");
-        loginLabel = Util.label("Sign In/ Register","LogoutButton");
-        
-        loginLabel.addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				History.newItem("login");
-			}
-		});
-        
-
-    	
-        logoPanel.add(loginPanel);
+       
         header.setWidth("100%");
         header.add(logoPanel);
 
        
         header.add(headerOuterPanel);
         
-        footer.add(createAccessServiceUrlEditor());
-        footer.add(new HTML(
-                "<a href='http://sead-data.net/'>http://sead-data.net/</a>"));
-
-    
-        RootLayoutPanel.get().add(main);
+        RootLayoutPanel.get().add(mainHorz);
         
         final AsyncCallback<UserSession> cb =
                 new AsyncCallback<UserSession>() {
@@ -374,35 +474,17 @@ public class SeadApp implements EntryPoint {
                     public void onSuccess(UserSession result) {
                        
                   	  if(result.isSession())
-                  	  {
-                  		Label  logoutLbl = Util.label("Logout", "LogoutButton");
-                    		ClickHandler logout = new ClickHandler() {
-                    			
-                    			@Override
-                    			public void onClick(ClickEvent event) {
-                    				loginPanel.clear();   
-                    				loginPanel.add(loginLabel);
-                    				dataHistory.setStyleName("Option");
-                    				adminPage.setStyleName("Option");
-                    				OptionsHorz.add(adminPage);
-                    				OptionsHorz.add(dataHistory);
-                    				History.newItem("logout");
-                    			}
-                    		}; 
-                    		
-                    		logoutLbl.addClickHandler(logout);
-                    		loginPanel.add(logoutLbl);
+                  	  { 
+                  		    initLogoutButton();
+                    		loginPanel.clear();
+                    		loginPanel.add(logoutButton);
                   	  }
                   	  else
-                  		  loginPanel.add(loginLabel);
-                       
-                        
+                  		  loginPanel.add(loginButton);
                     }
-
                     public void onFailure(Throwable error) {
-                        Window.alert("Failed to login: "
-                                + error.getMessage());
-                         
+                        new ErrorPopupPanel("Failed to login: "
+                                + error.getMessage()).show();
                     }
                 };
                 
@@ -452,6 +534,12 @@ public class SeadApp implements EntryPoint {
                                 if (name.equals("bagItServiceURL")) {
                                     bagIturl = value;
                                 }
+                                if (name.equals("registryUrl")) {
+                                    registryUrl = value;
+                                }
+                                if (name.equals("roUrl")) {
+                                    roUrl = value;
+                                }
                                 
                                 if (name.equals("queryPath")) {
                                 	queryPath = value;
@@ -481,43 +569,21 @@ public class SeadApp implements EntryPoint {
     Presenter presenter;
     private void historyChanged(String token) {
     	
-    	 if (token.isEmpty()) {
-        	dataSearch.setStyleName("OptionSelected");
-        	uploadData.setStyleName("Option");
-        	adminPage.setStyleName("Option");
-        	dataHistory.setStyleName("Option");
-        	
-        	FacetedSearchPresenter.EVENT_BUS = GWT.create(SimpleEventBus.class);
-        	SearchInput input = new SearchInput(null, null, 0, new String[0],new String[0]);
-         	presenter = new FacetedSearchPresenter(new FacetedSearchView());
-         	presenter.display(centerPanel, facetContent, header, loginPanel, notificationPanel);
-        	selectedItems = new HashMap<String, List<String>>();
-        	FacetedSearchPresenter.EVENT_BUS.fireEvent(new SearchEvent(input));
-            return;
-        }
-
-        SeadState state = SeadState.fromToken(token);
-        final List<String> args = SeadState.tokenArguments(token);
-
-        if (state == null) {
-            handleHistoryTokenError(token);
-            return;
-        }
-
-        if (state == SeadState.HOME) {
-        	
-        	if(facetOuterPanel.isAttached()){
-        		main.setWidgetSize(facetOuterPanel,250);
+    	if (token.isEmpty()) {
+    		if(facetOuterPanel.isAttached()){
+        		main.setWidgetSize(facetOuterPanel,0);
         	}
-        	else
-        		main.addWest(facetOuterPanel,250);
+        	
         	if(!centerPanel.isAttached())
         		main.add(centerPanel);
             
-        	dataSearch.setStyleName("OptionSelected");
-        	uploadData.setStyleName("Option");
-        	adminPage.setStyleName("Option");
-        	dataHistory.setStyleName("Option");
+        	 home.setStyleName("OptionSelected");
+			  features.setStyleName("Option");
+			//  team.setStyleName("Option");
+			  resources.setStyleName("Option");
+			  partners.setStyleName("Option");
+     		  
+        	isHome = true;
         	        	
         	selectedItems = new HashMap<String, List<String>>();
         	SearchInput input = new SearchInput(null, null, 0, new String[0],new String[0]);
@@ -525,8 +591,114 @@ public class SeadApp implements EntryPoint {
         	presenter = new FacetedSearchPresenter(new FacetedSearchView());
         	presenter.display(centerPanel, facetContent, header, loginPanel, notificationPanel);
         	
-        	FacetedSearchPresenter.EVENT_BUS.fireEvent(new SearchEvent(input));
-        } else if (state == SeadState.SEARCH) {
+        	FacetedSearchPresenter.EVENT_BUS.fireEvent(new SearchEvent(input, false));
+        	return;
+       }
+    	   
+	   SeadState state = SeadState.fromToken(token);
+       final List<String> args = SeadState.tokenArguments(token);
+
+       if (state == null) {
+           handleHistoryTokenError(token);
+           return;
+       }
+        if (state == SeadState.HOME) {
+        	
+        	if(facetOuterPanel.isAttached()){
+        		main.setWidgetSize(facetOuterPanel,0);
+        	}
+        	
+        	if(!centerPanel.isAttached())
+        		main.add(centerPanel);
+            
+        	AsyncCallback<UserSession> cb =
+                    new AsyncCallback<UserSession>() {
+
+                        public void onSuccess(UserSession result) {
+                           
+                      	  if(result.isSession())
+                      	  {
+                      		  
+                      		  
+                      		  
+	                  		  if(result.getRole() == Role.ROLE_ADMIN)
+	                  		  {                      			
+	                  			initAdminLogin();
+	                  		  }
+	                  		  else if(result.getRole() == Role.ROLE_CURATOR)
+	                  		  {                      			
+	                  			initCuratorLogin();
+	                  		  }
+	                  		 else
+	                  		  {                      			
+	                  			initUserLogin();
+	                  		  }
+	                  		  initLogoutButton();
+	                  		  
+	                  		 String displayName = "";
+							if(result.getfName()!=null)
+								displayName = result.getfName();
+							if(result.getlName()!=null)
+								displayName += " "+result.getlName();
+						
+							Label displayNameLabel = new Label();
+							displayNameLabel.setStyleName("welcomeFont");
+							displayNameLabel.setText("Welcome "+displayName);
+							loginPanel.clear();
+							loginPanel.add(displayNameLabel);
+	                  		  
+	                  		  if(!logoutButton.isAttached())
+	                  			  loginPanel.add(logoutButton);
+	                  		activityPage.setStyleName("Option");
+	                        adminPage.setStyleName("Option"); 
+	                        home.setStyleName("OptionSelected");
+	                        uploadData.setStyleName("Option");
+	                        curatorPage.setStyleName("Option");
+                      	  }
+                      	  else
+                      		initNoLogin();
+
+                        }
+
+                        public void onFailure(Throwable error) {
+                            Window.alert("Failed to login: "
+                                    + error.getMessage());
+                             
+                        }
+                    };
+            
+            userService.checkSession(null,cb);
+		
+        	isHome = true;
+        	        	
+        	selectedItems = new HashMap<String, List<String>>();
+        	SearchInput input = new SearchInput(null, null, 0, new String[0],new String[0]);
+        	FacetedSearchPresenter.EVENT_BUS = GWT.create(SimpleEventBus.class);
+        	presenter = new FacetedSearchPresenter(new FacetedSearchView());
+        	presenter.display(centerPanel, facetContent, header, loginPanel, notificationPanel);
+        	
+        	FacetedSearchPresenter.EVENT_BUS.fireEvent(new SearchEvent(input, false));
+        }else if (state == SeadState.ADVANCED) {
+            if(facetOuterPanel.isAttached()){
+                main.setWidgetSize(facetOuterPanel,250);
+
+                if(!centerPanel.isAttached())
+                    main.add(centerPanel);
+
+                dataSearch.setStyleName("OptionSelected");
+                uploadData.setStyleName("Option");
+                adminPage.setStyleName("Option");
+                dataHistory.setStyleName("Option");
+
+                selectedItems = new HashMap<String, List<String>>();
+                SearchInput input = new SearchInput(null, null, 0, new String[0],new String[0]);
+                FacetedSearchPresenter.EVENT_BUS = GWT.create(SimpleEventBus.class);
+                presenter = new FacetedSearchPresenter(new FacetedSearchView());
+                presenter.display(centerPanel, facetContent, header, loginPanel, notificationPanel);
+
+                FacetedSearchPresenter.EVENT_BUS.fireEvent(new SearchEvent(input, true));
+            }
+        }else if (state == SeadState.BROWSE) {
         	if(facetOuterPanel.isAttached()){
         		main.setWidgetSize(facetOuterPanel,250);
         	}
@@ -534,6 +706,43 @@ public class SeadApp implements EntryPoint {
         		main.addWest(facetOuterPanel,250);
         	if(!centerPanel.isAttached())
         		main.add(centerPanel);
+        	if(loginPanel.isAttached()){
+        		main.setWidgetSize(loginPanel, 0);
+        	}
+        	
+        	UserField[] userfields = new UserField[1];
+        	String[] userqueries = new String[1];
+            String facetFields[] = new String[1];
+            String facetValues[] = new String[1];
+
+        	userfields[0] =  UserField.ABSTRACT;
+        	userqueries[0] = "'' TO *";
+            facetFields[0] = "entityType";
+            facetValues[0] = "Collection";
+        	
+            
+            SearchInput input = new SearchInput(userfields, userqueries, 0, facetFields, facetValues);
+        	FacetedSearchPresenter.EVENT_BUS = GWT.create(SimpleEventBus.class);
+        	presenter = new FacetedSearchPresenter(new FacetedSearchView());
+        	presenter.display(centerPanel, facetContent, header, loginPanel, notificationPanel);
+        	selectedItems = new HashMap<String, List<String>>();
+        	
+        	FacetedSearchPresenter.EVENT_BUS.fireEvent(new SearchEvent(input, false));
+        	return;
+
+        } 
+        
+        else if (state == SeadState.SEARCH) {
+        	if(facetOuterPanel.isAttached()){
+        		main.setWidgetSize(facetOuterPanel,250);
+        	}
+        	else
+        		main.addWest(facetOuterPanel,250);
+        	if(!centerPanel.isAttached())
+        		main.add(centerPanel);
+        	if(loginPanel.isAttached()){
+        		main.setWidgetSize(loginPanel, 0);
+        	}
         	
             if (args.size() == 0) {
             	SearchInput input = new SearchInput(null, null, 0, new String[0],new String[0]);
@@ -542,7 +751,7 @@ public class SeadApp implements EntryPoint {
             	presenter.display(centerPanel, facetContent, header, loginPanel, notificationPanel);
             	selectedItems = new HashMap<String, List<String>>();
             	
-            	FacetedSearchPresenter.EVENT_BUS.fireEvent(new SearchEvent(input));
+            	FacetedSearchPresenter.EVENT_BUS.fireEvent(new SearchEvent(input, false));
                 return;
             }
             
@@ -569,15 +778,16 @@ public class SeadApp implements EntryPoint {
                 return;
             }
             
-           selectedItems = new HashMap<String, List<String>>();
-         
+            selectedItems = new HashMap<String, List<String>>();
+            isHome = false;
+           
             int userFieldsLength =(args.size() - 2-facetCount*2)/2;
-            Search.UserField[] userfields = new Search.UserField[userFieldsLength];
+            UserField[] userfields = new UserField[userFieldsLength];
             String[] userqueries = new String[userFieldsLength];
 
             int argIndex=-1;
             for (int i = 0; i < userFieldsLength; i++) {
-                userfields[i] = Search.UserField.valueOf(args.get(++argIndex));
+                userfields[i] = UserField.valueOf(args.get(++argIndex));
                 userqueries[i] = args.get(++argIndex);
 
                 if (userfields[i] == null) {
@@ -606,7 +816,7 @@ public class SeadApp implements EntryPoint {
             presenter = new FacetedSearchPresenter(new FacetedSearchView());//);
         	presenter.display(centerPanel, facetContent, header, loginPanel, notificationPanel);
         	
-        	FacetedSearchPresenter.EVENT_BUS.fireEvent(new SearchEvent(input));
+        	FacetedSearchPresenter.EVENT_BUS.fireEvent(new SearchEvent(input, false));
         } else if (state == SeadState.ENTITY) {
         	if(facetOuterPanel.isAttached()){
         		main.setWidgetSize(facetOuterPanel,0);
@@ -628,6 +838,12 @@ public class SeadApp implements EntryPoint {
         	}
         	if(!centerPanel.isAttached())
         		main.add(centerPanel);
+        	if(loginPanel.isAttached()){
+        		main.setWidgetSize(loginPanel, 0);
+        	}
+        	if(outerMoreLinks.isAttached()){
+        		main.setWidgetSize(outerMoreLinks, 0);
+        	}
             if (args.size() != 1) {
                 handleHistoryTokenError(token);
                 return;
@@ -636,32 +852,26 @@ public class SeadApp implements EntryPoint {
             presenter = new RelationsPresenter(new RelationsView(args.get(0)));
             presenter.display(centerPanel, facetContent, header, loginPanel, notificationPanel);
         }else if (state == SeadState.LOGIN) {
-        	if(facetOuterPanel.isAttached())
-        		main.setWidgetSize(facetOuterPanel,0);
-        	if(!centerPanel.isAttached())
-        		main.add(centerPanel);
-            
-            //DataUpload.viewUpload(centerPanel);
-        	presenter = new LoginPresenter(new LoginView());
-        	presenter.display(centerPanel, facetContent, header, loginPanel, notificationPanel);
+        	try{
+            	presenter = new LoginPresenter(new LoginPopupPanel());
+            	presenter.display(centerPanel, facetContent, header, loginPanel, notificationPanel);
+
+            }
+        	catch (Exception e){
+        		e.printStackTrace();
+        	}
             
         }else if (state == SeadState.LOGOUT) {
         	if(!centerPanel.isAttached())
         		main.add(centerPanel);
-            
-        	
 
         	AsyncCallback<Void> cb =
                       new AsyncCallback<Void>() {
 
                           public void onSuccess(Void result) {
 
-                        	// Options.remove(adminPage);
-                        	 OptionsHorz.remove(adminPage);
-                        	 OptionsHorz.remove(dataHistory);
-                        	 dataSearch.setStyleName("OptionSelected");
-                             uploadData.setStyleName("Option");
-                             History.newItem("home");
+                        	 initNoLogin();
+                             History.newItem(SeadState.HOME.toToken());
                           }
 
                           public void onFailure(Throwable error) {
@@ -674,13 +884,200 @@ public class SeadApp implements EntryPoint {
                       userService.clearSession(cb);
           
             
-        }else if (state == SeadState.REGISTER) {
+        }else if (state == SeadState.CURATOR) {
         	if(!centerPanel.isAttached())
         		main.add(centerPanel);
-            presenter = new RegisterPresenter(new RegisterView());
+        	if(facetOuterPanel.isAttached()){
+        		main.setWidgetSize(facetOuterPanel,0);
+        	}
+        	
+        	AsyncCallback<UserSession> cb =
+                    new AsyncCallback<UserSession>() {
+
+                        public void onSuccess(UserSession result) {
+                           
+                      	  if(result.isSession())
+                      	  {
+                      		 
+                      		  if(result.getRole() == Role.ROLE_CURATOR){
+                    			initCuratorLogin();
+                      		  }
+                      		  else if(result.getRole() == Role.ROLE_ADMIN)
+                      		  {
+                      			initAdminLogin();
+                      		  }
+                      		  else{
+                      			 History.newItem(SeadState.HOME.toToken()); //no permissions
+                      		  }
+                      		  initLogoutButton();
+                      		  if(!logoutButton.isAttached())
+                      			  loginPanel.add(logoutButton);
+                            //  History.newItem("upload");
+                      	  }
+                      	  else
+                      		  History.newItem(SeadState.LOGIN.toToken());
+
+                        }
+
+                        public void onFailure(Throwable error) {
+                            Window.alert("Failed to login: "
+                                    + error.getMessage());
+                        }
+                    };
+                    
+                    
+            curatorPage.setStyleName("OptionSelected");
+            adminPage.setStyleName("Option"); 
+            home.setStyleName("Option");
+            uploadData.setStyleName("Option");
+                    
+            userService.checkSession(null,cb);
+            presenter = new CuratorViewPresenter(new CuratorView());
         	presenter.display(centerPanel, facetContent, header, loginPanel, notificationPanel);
             
-        }else if (state == SeadState.AUTH) {
+        }
+        else if (state == SeadState.EDIT) {
+        	if(!centerPanel.isAttached())
+        		main.add(centerPanel);
+        	if(facetOuterPanel.isAttached()){
+        		main.setWidgetSize(facetOuterPanel,0);
+        	}
+        	List<String> tempargs = SeadState.tokenArguments(token);
+        	
+        	AsyncCallback<UserSession> cb =
+                    new AsyncCallback<UserSession>() {
+
+                        public void onSuccess(UserSession result) {
+                           
+                      	  if(result.isSession())
+                      	  {
+	                  		  if(result.getRole() == Role.ROLE_ADMIN)
+	                  		  {                      			
+	                  			initAdminLogin();
+	                  		  }
+	                  		  else if(result.getRole() == Role.ROLE_CURATOR)
+	                  		  {                      			
+	                  			initCuratorLogin();
+	                  		  }
+	                  		 else
+	                  		  {                      			
+	                  			initUserLogin();
+	                  		  }
+	                  		  initLogoutButton();
+	                  		  
+	                  		 String displayName = "";
+							if(result.getfName()!=null)
+								displayName = result.getfName();
+							if(result.getlName()!=null)
+								displayName += " "+result.getlName();
+						
+							Label displayNameLabel = new Label();
+							displayNameLabel.setStyleName("welcomeFont");
+							displayNameLabel.setText("Welcome "+displayName);
+							loginPanel.clear();
+							loginPanel.add(displayNameLabel);
+	                  		  
+	                  		  if(!logoutButton.isAttached())
+	                  			  loginPanel.add(logoutButton);
+	                        //  History.newItem("upload");
+                      	  }
+                      	  else
+                      		  History.newItem(SeadState.LOGIN.toToken());
+
+                        }
+
+                        public void onFailure(Throwable error) {
+                            Window.alert("Failed to login: "
+                                    + error.getMessage());
+                             
+                        }
+                    };
+                    
+            curatorPage.setStyleName("OptionSelected");
+            adminPage.setStyleName("Option"); 
+            home.setStyleName("Option");
+            uploadData.setStyleName("Option");
+                    
+            userService.checkSession(null,cb);
+            
+            presenter = new EditPresenter(new EditView(tempargs.get(0)));
+        	presenter.display(centerPanel, facetContent, header, loginPanel, notificationPanel);
+            
+        }
+        else if (state == SeadState.ACTIVITY) {
+        /*	if(count==0){
+        		forceReload();
+        		count++;
+        	}*/
+        	
+        	
+        	if(!centerPanel.isAttached())
+        		main.add(centerPanel);
+        	if(facetOuterPanel.isAttached()){
+        		main.setWidgetSize(facetOuterPanel,0);
+        	}
+        	
+        	AsyncCallback<UserSession> cb =
+                    new AsyncCallback<UserSession>() {
+
+                        public void onSuccess(UserSession result) {
+                           
+                      	  if(result.isSession())
+                      	  {
+                      		  
+                      		  
+                      		  
+	                  		  if(result.getRole() == Role.ROLE_ADMIN)
+	                  		  {                      			
+	                  			initAdminLogin();
+	                  		  }
+	                  		  else if(result.getRole() == Role.ROLE_CURATOR)
+	                  		  {                      			
+	                  			initCuratorLogin();
+	                  		  }
+	                  		 else
+	                  		  {                      			
+	                  			initUserLogin();
+	                  		  }
+	                  		  initLogoutButton();
+	                  		  
+	                  		 String displayName = "";
+							if(result.getfName()!=null)
+								displayName = result.getfName();
+							if(result.getlName()!=null)
+								displayName += " "+result.getlName();
+						
+							Label displayNameLabel = new Label();
+							displayNameLabel.setStyleName("welcomeFont");
+							displayNameLabel.setText("Welcome "+displayName);
+							loginPanel.clear();
+							loginPanel.add(displayNameLabel);
+	                  		  
+	                  		  if(!logoutButton.isAttached())
+	                  			  loginPanel.add(logoutButton);
+	                  		activityPage.setStyleName("OptionSelected");
+	                        adminPage.setStyleName("Option"); 
+	                        home.setStyleName("Option");
+	                        uploadData.setStyleName("Option");
+	                        curatorPage.setStyleName("Option");
+                      	  }
+                      	  else
+                      		  History.newItem(SeadState.LOGIN.toToken());
+
+                        }
+
+                        public void onFailure(Throwable error) {
+                            Window.alert("Failed to login: "
+                                    + error.getMessage());
+                             
+                        }
+                    };
+            
+            userService.checkSession(null,cb);
+            presenter = new ActivityPresenter(new ActivityView());
+        	presenter.display(centerPanel, facetContent, header, loginPanel, notificationPanel);
+        }
+        else if (state == SeadState.AUTH) {
         	if(!centerPanel.isAttached())
         		main.add(centerPanel);
         	else
@@ -689,9 +1086,7 @@ public class SeadApp implements EntryPoint {
         	if(facetOuterPanel.isAttached()){
         		main.setWidgetSize(facetOuterPanel,0);
         	}
-        	
-        	
-        	
+
         	dataSearch.setStyleName("Option");
         	uploadData.setStyleName("OptionSelected");
         	
@@ -703,11 +1098,7 @@ public class SeadApp implements EntryPoint {
                         	  {
                         		  if(result.getRole() == Role.ROLE_ADMIN)
                         		  {
-                        			  //Options.add(adminPage);;//add admin button
-                        			  OptionsHorz.add(adminPage);//add admin button
-                        	          adminPage.setStyleName("Option");
-                        	          OptionsHorz.add(dataHistory);//add admin button
-                        	          dataHistory.setStyleName("Option");
+                        			
                         	          Label  logoutLbl = Util.label("Logout", "LogoutButton");
                               			if(args.size()>0){
                               				ClickHandler logout = new ClickHandler() {
@@ -715,7 +1106,7 @@ public class SeadApp implements EntryPoint {
 		                              			@Override
 		                              			public void onClick(ClickEvent event) {
 		                              				loginPanel.clear();   
-		                              				loginPanel.add(loginLabel);
+//		                              				loginPanel.add(loginLabel);
 		                              				History.newItem("logout");
 		                              			}
 		                              		}; 
@@ -729,14 +1120,10 @@ public class SeadApp implements EntryPoint {
                         	  }
                         	  else
                         		  History.newItem("login");
-                             
-                              
                           }
-
                           public void onFailure(Throwable error) {
                               Window.alert("Failed to login: "
                                       + error.getMessage());
-                               
                           }
                       };
 
@@ -746,9 +1133,127 @@ public class SeadApp implements EntryPoint {
                       userService.checkSession(argument,cb);
             
         }else if (state == SeadState.UPLOAD) {
+        	 if(args.size()>0)
+        		 History.newItem(SeadState.UPLOAD.toToken());
         	if(facetOuterPanel.isAttached())
         		main.setWidgetSize(facetOuterPanel,0);
 
+        	if(!centerPanel.isAttached())
+        		main.add(centerPanel);
+        	
+        	AsyncCallback<UserSession> cb =
+                    new AsyncCallback<UserSession>() {
+
+                        public void onSuccess(UserSession result) {
+                          if(result.isSession())
+                      	  {
+	                  		  if(result.getRole() == Role.ROLE_ADMIN)
+	                  			  initAdminLogin();
+	                  		  else if(result.getRole() == Role.ROLE_CURATOR)
+	                  			  initCuratorLogin();
+	                  		  else
+	                  			  initUserLogin();
+	                  		  initLogoutButton();
+	                  		  String displayName = "";
+							  if(result.getfName()!=null)
+								displayName = result.getfName();
+							  if(result.getlName()!=null)
+								displayName += " "+result.getlName();
+						
+							  Label displayNameLabel = new Label();
+							  displayNameLabel.setStyleName("welcomeFont");
+							  displayNameLabel.setText("Welcome "+displayName);
+							  loginPanel.clear();
+							  loginPanel.add(displayNameLabel);
+	                  		  
+	                  		  if(!logoutButton.isAttached())
+	                  			  loginPanel.add(logoutButton);
+	                        //  History.newItem("upload");
+	                  		  curatorPage.setStyleName("Option");
+	                          adminPage.setStyleName("Option"); 
+	                          home.setStyleName("Option");
+	                          uploadData.setStyleName("OptionSelected");
+                      	  }
+                      	  else
+                      		  History.newItem(SeadState.LOGIN.toToken());
+
+                        }
+
+                        public void onFailure(Throwable error) {
+                            Window.alert("Failed to login: "
+                                    + error.getMessage());
+                             
+                        }
+                    };
+                    
+            userService.checkSession(null,cb);         
+            
+            centerPanel.clear();
+            centerPanel.add(publishData);
+        	presenter = new PublishDataPresenter(new PublishDataView());
+        	presenter.display(publishData, facetContent, header, loginPanel, notificationPanel);
+        	            
+        }else if (state == SeadState.ACRUPLOAD) {
+       	if(facetOuterPanel.isAttached())
+    		main.setWidgetSize(facetOuterPanel,0);
+
+    	if(!centerPanel.isAttached())
+    		main.add(centerPanel);
+    	
+    	AsyncCallback<UserSession> cb =
+                new AsyncCallback<UserSession>() {
+
+                    public void onSuccess(UserSession result) {
+                      if(result.isSession())
+                  	  {
+                  		  if(result.getRole() == Role.ROLE_ADMIN)
+                  			  initAdminLogin();
+                  		  else if(result.getRole() == Role.ROLE_CURATOR)
+                  			  initCuratorLogin();
+                  		  else
+                  			  initUserLogin();
+                  		  initLogoutButton();
+                  		  String displayName = "";
+						  if(result.getfName()!=null)
+							displayName = result.getfName();
+						  if(result.getlName()!=null)
+							displayName += " "+result.getlName();
+					
+						  Label displayNameLabel = new Label();
+						  displayNameLabel.setStyleName("welcomeFont");
+						  displayNameLabel.setText("Welcome "+displayName);
+						  loginPanel.clear();
+						  loginPanel.add(displayNameLabel);
+                  		  
+                  		  if(!logoutButton.isAttached())
+                  			  loginPanel.add(logoutButton);
+                        //  History.newItem("upload");
+                  		  curatorPage.setStyleName("Option");
+                          adminPage.setStyleName("Option"); 
+                          home.setStyleName("Option");
+                          uploadData.setStyleName("OptionSelected");
+                  	  }
+                  	  else
+                  		  History.newItem(SeadState.LOGIN.toToken());
+
+                    }
+
+                    public void onFailure(Throwable error) {
+                        Window.alert("Failed to login: "
+                                + error.getMessage());
+                         
+                    }
+                };
+                
+        userService.checkSession(null,cb);         
+        
+        centerPanel.clear();
+        centerPanel.add(publishData);
+    	presenter = new AcrPublishDataPresenter(new AcrPublishDataView());
+    	presenter.display(publishData, facetContent, header, loginPanel, notificationPanel);
+    	            
+    }else if (state == SeadState.ADMIN) {
+        	
         	if(!centerPanel.isAttached())
         		main.add(centerPanel);
         	AsyncCallback<UserSession> cb =
@@ -761,15 +1266,13 @@ public class SeadApp implements EntryPoint {
                       		  if(result.getRole() == Role.ROLE_ADMIN)
                       		  {
                       			 
-                      			OptionsHorz.add(adminPage);//add admin button
-                      			OptionsHorz.add(dataHistory);//add upload button
+                      			initAdminLogin();
                       		  }
-                              History.newItem("upload");
+                      		  else
+                      			  History.newItem(SeadState.HOME.toToken());//no permissions
                       	  }
                       	  else
                       		  History.newItem("login");
-                           
-                            
                         }
 
                         public void onFailure(Throwable error) {
@@ -778,25 +1281,6 @@ public class SeadApp implements EntryPoint {
                              
                         }
                     };
-                    
-            userService.checkSession(null,cb);
-            centerPanel.clear();
-            centerPanel.add(uploadPanel);
-            
-            presenter = new MediciIngestPresenter(new MediciIngestView());
-        	presenter.display(mediciUpload, facetContent, header, loginPanel, notificationPanel);
-        	
-            presenter = new UploadPresenter(new UploadView());
-        	presenter.display(localUpload, facetContent, header, loginPanel, notificationPanel);
-        	            
-        }else if (state == SeadState.ADMIN) {
-        	
-        	if(!centerPanel.isAttached())
-        		main.add(centerPanel);
-        	
-        	dataSearch.setStyleName("Option");
-        	uploadData.setStyleName("Option");
-        	adminPage.setStyleName("OptionSelected");
         	presenter = new AdminPresenter(new AdminView());
         	presenter.display(centerPanel, facetContent, header, loginPanel, notificationPanel);
             
@@ -813,17 +1297,44 @@ public class SeadApp implements EntryPoint {
                            
                       	  if(result.isSession())
                       	  {
-                      		  if(result.getRole() == Role.ROLE_ADMIN)
-                      		  {
-                      			 
-                      			OptionsHorz.add(adminPage);//add admin button
-                      		  }
-                              History.newItem("upload");
+	                  		  if(result.getRole() == Role.ROLE_ADMIN)
+	                  		  {                      			
+	                  			initAdminLogin();
+	                  		  }
+	                  		  else if(result.getRole() == Role.ROLE_CURATOR)
+	                  		  {                      			
+	                  			initCuratorLogin();
+	                  		  }
+	                  		 else
+	                  		  {                      			
+	                  			initUserLogin();
+	                  		  }
+	                  		  initLogoutButton();
+	                  		  
+	                  		 String displayName = "";
+							if(result.getfName()!=null)
+								displayName = result.getfName();
+							if(result.getlName()!=null)
+								displayName += " "+result.getlName();
+						
+							Label displayNameLabel = new Label();
+							displayNameLabel.setStyleName("welcomeFont");
+							displayNameLabel.setText("Welcome "+displayName);
+							loginPanel.clear();
+							loginPanel.add(displayNameLabel);
+	                  		  
+                  		    if(!logoutButton.isAttached())
+                  			  loginPanel.add(logoutButton);
+	                  		  
+	                  		dataHistory.setStyleName("OptionSelected");
+	                        adminPage.setStyleName("Option"); 
+	                        home.setStyleName("Option");
+	                        uploadData.setStyleName("Option");
+	                        curatorPage.setStyleName("Option");
                       	  }
                       	  else
-                      		  History.newItem("login");
-                           
-                            
+                      		  History.newItem(SeadState.LOGIN.toToken());
+
                         }
 
                         public void onFailure(Throwable error) {
@@ -832,11 +1343,9 @@ public class SeadApp implements EntryPoint {
                              
                         }
                     };
-          
-        	dataSearch.setStyleName("Option");
-        	uploadData.setStyleName("Option");
-        	adminPage.setStyleName("Option");
-        	dataHistory.setStyleName("OptionSelected");
+                    
+            
+
         	presenter = new ProvenancePresenter(new ProvenanceView());
         	presenter.display(centerPanel, facetContent, header, loginPanel, notificationPanel);
             
@@ -857,21 +1366,18 @@ public class SeadApp implements EntryPoint {
 
     public static String datastreamURLnoEncoding(String id) {
         id=id.replace("%2F","/");
-        return accessurl + "datastream/" + id;
+        return accessurl + "tastream/" + id;
     }
     
     public static String packageLinkURLnoEncoding(String id) {
-        id=id.replace("%2F","/");
-        return accessurl + "package/link/" + id;
+        id=id.replace("%2F","/").replace(":", "%3A");
+        return accessurl + "packageLink/" + id;
     }
     private static String encodeURLPath(String path) {
         return URL.encodePathSegment(path);
     }
 
- 
 
-   
-   
     public static Constants constants = new Constants();
     
  
@@ -883,16 +1389,23 @@ public class SeadApp implements EntryPoint {
     }
 
     private Widget createAccessServiceUrlEditor() {
-        FlexTable table = Util.createTable("Access service:");
-
-        Button set = new Button("Set");
-
-        Util.addColumn(table, accessurl_tb);
-        Util.addColumn(table, set);
+    	FlexTable table = new FlexTable();
+    	table.setText(0, 0, "");
+    	table.setStyleName("FooterTable");
         Label aboutLabel = Util.label("About", "Hyperlink");
         Util.addColumn(table, aboutLabel);
         aboutLabel.addStyleName("LeftPad");
         aboutLabel.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				Window.open("http://sead-data.net/","_blank","");
+			}
+		});
+        
+        Label faq = Util.label("FAQ", "Hyperlink");
+        Util.addColumn(table, faq);
+        faq.addStyleName("LeftPad");
+        faq.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				Window.open("http://sead-data.net/","_blank","");
@@ -908,8 +1421,18 @@ public class SeadApp implements EntryPoint {
 				Window.open("mailto:seadva-l@indiana.edu","_blank","");
 			}
 		});
+        
+        Label privacyLabel = Util.label("Privay Policy", "Hyperlink");
+        Util.addColumn(table, privacyLabel);
+        privacyLabel.addStyleName("LeftPad");
+        privacyLabel.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				
+			}
+		});
 
-        set.addClickHandler(new ClickHandler() {
+        /*set.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
                 String s = accessurl_tb.getText().trim();
@@ -919,14 +1442,147 @@ public class SeadApp implements EntryPoint {
                     History.fireCurrentHistoryState();
                 }
             }
-        });
+        });*/
 
         return table;
     }
 
     
     Grid upload;
- 
- 
- 
+    
+    void initCuratorLogin(){
+    	home.setStyleName("Option");
+		features.setStyleName("Option");
+		resources.setStyleName("Option");
+		partners.setStyleName("Option");
+		uploadData.setStyleName("Option");
+		curatorPage.setStyleName("OptionSelected");
+		activityPage.setStyleName("Option");
+		dataHistory.setStyleName("Option");
+		
+		 if(!home.isAttached())
+			 optionsHorz.add(home);
+		 
+		 if(!features.isAttached())
+			 optionsHorz.add(features);
+		 
+		 if(!resources.isAttached())
+			 optionsHorz.add(resources);
+		 
+		 if(!partners.isAttached())
+			 optionsHorz.add(partners);
+		
+		 if(!uploadData.isAttached())
+			 optionsHorz.add(uploadData);   	 	
+		 
+		 if(!curatorPage.isAttached())
+  	 		optionsHorz.add(curatorPage);
+   	
+		 if(!activityPage.isAttached())
+	  	 		optionsHorz.add(activityPage);
+		 
+		 if(!dataHistory.isAttached())
+	  	 		optionsHorz.add(dataHistory);
+    }
+    
+    void initUserLogin(){
+    	home.setStyleName("Option");
+		features.setStyleName("Option");
+		resources.setStyleName("Option");
+		partners.setStyleName("Option");
+		uploadData.setStyleName("OptionSelected");
+		activityPage.setStyleName("Option");
+		dataHistory.setStyleName("Option");
+		
+		 if(!home.isAttached())
+			 optionsHorz.add(home);
+		 
+		 if(!features.isAttached())
+			 optionsHorz.add(features);
+		 
+		 if(!resources.isAttached())
+			 optionsHorz.add(resources);
+		 
+		 if(!partners.isAttached())
+			 optionsHorz.add(partners);
+		
+		 if(!uploadData.isAttached())
+			 optionsHorz.add(uploadData);   	 	
+	
+		 if(!activityPage.isAttached())
+	  	 		optionsHorz.add(activityPage);
+		 
+		 if(!dataHistory.isAttached())
+	  	 		optionsHorz.add(dataHistory);
+    }
+    
+    void initAdminLogin(){
+    	home.setStyleName("Option");
+		features.setStyleName("Option");
+		resources.setStyleName("Option");
+		partners.setStyleName("Option");
+		uploadData.setStyleName("Option");
+		curatorPage.setStyleName("Option");
+		adminPage.setStyleName("OptionSelected");
+		activityPage.setStyleName("Option");
+		dataHistory.setStyleName("Option");
+		
+		 if(!home.isAttached())
+			 optionsHorz.add(home);
+		 
+		 if(!features.isAttached())
+			 optionsHorz.add(features);
+		 
+		 if(!resources.isAttached())
+			 optionsHorz.add(resources);
+		 
+		 if(!partners.isAttached())
+			 optionsHorz.add(partners);
+		
+		 if(!uploadData.isAttached())
+			 optionsHorz.add(uploadData);   	 	
+		 
+		 if(!curatorPage.isAttached())
+  	 		optionsHorz.add(curatorPage);
+		 if(!adminPage.isAttached())
+  	 		optionsHorz.add(adminPage);
+   	
+		 if(!activityPage.isAttached())
+	  	 		optionsHorz.add(activityPage);
+		 
+		 if(!dataHistory.isAttached())
+	  	 		optionsHorz.add(dataHistory);
+		
+    }
+    
+    
+    void initNoLogin(){
+    	
+    	 home.setStyleName("OptionSelected");
+		 features.setStyleName("Option");
+		// team.setStyleName("Option");
+		 resources.setStyleName("Option");
+		 partners.setStyleName("Option");
+		 
+		 if(!home.isAttached())
+			 optionsHorz.add(home);
+		 
+		 if(!features.isAttached())
+			 optionsHorz.add(features);
+		 
+		 if(!resources.isAttached())
+			 optionsHorz.add(resources);
+		 
+		 if(!partners.isAttached())
+			 optionsHorz.add(partners);
+		
+    	if(curatorPage.isAttached())
+   	 		optionsHorz.remove(curatorPage);
+    	if(adminPage.isAttached())
+   	 		optionsHorz.remove(adminPage);
+    	
+		optionsHorz.remove(uploadData);   	 	
+		optionsHorz.remove(activityPage);
+		optionsHorz.remove(dataHistory);
+    }
 }

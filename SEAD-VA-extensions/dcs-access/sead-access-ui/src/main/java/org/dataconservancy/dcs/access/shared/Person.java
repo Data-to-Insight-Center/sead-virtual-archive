@@ -27,6 +27,10 @@ public class Person implements java.io.Serializable{
 	private String emailAddress;
 	private String phoneNumber;
 	
+	private String registryId;
+	
+	private String vivoId;
+	
 	private RegistrationStatus registrationStatus;
 	private boolean readOnly = false;
 
@@ -54,6 +58,7 @@ public class Person implements java.io.Serializable{
         this.emailAddress = toCopy.getEmailAddress();
         this.phoneNumber = toCopy.getPhoneNumber();
         this.registrationStatus = toCopy.getRegistrationStatus();
+        this.registryId = toCopy.getRegistryId();
         // Defensively copy the collection
         this.role = toCopy.getRole(); 
         this.readOnly = toCopy.getReadOnly();
@@ -197,4 +202,20 @@ public class Person implements java.io.Serializable{
         result = 31 * result + (phoneNumber != null ? phoneNumber.hashCode() : 0);
         return result;
     }
+
+	public String getRegistryId() {
+		return registryId;
+	}
+
+	public void setRegistryId(String registryId) {
+		this.registryId = registryId;
+	}
+
+	public String getVivoId() {
+		return vivoId;
+	}
+
+	public void setVivoId(String vivoId) {
+		this.vivoId = vivoId;
+	}
 }

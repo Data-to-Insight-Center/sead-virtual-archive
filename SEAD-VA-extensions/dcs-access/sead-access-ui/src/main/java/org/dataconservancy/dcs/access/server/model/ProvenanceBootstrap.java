@@ -34,7 +34,7 @@ public class ProvenanceBootstrap {
 		try
         {
 			if(dbInstance==null)
-			dbInstance = DatabaseSingleton.getInstance("");
+			dbInstance = DatabaseSingleton.getInstance();
 	
 			
 	        Connection conn = dbInstance.getConnection();

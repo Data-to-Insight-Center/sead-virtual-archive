@@ -16,14 +16,13 @@
 
 package org.dataconservancy.dcs.access.shared;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+import org.dataconservancy.dcs.ingest.Events;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.dataconservancy.dcs.ingest.Events;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class Constants 
 		implements IsSerializable {
@@ -69,7 +68,9 @@ public class Constants
 		
 		eventMessages.put(Events.ARCHIVE, "Archival in Repository");
 		eventMessages.put(org.seadva.ingest.Events.COLD_COPY, "Archival a cold copy of the collection");
-		eventMessages.put(org.seadva.ingest.Events.MATCH_MAKING, "Match-making of repositories");
+		eventMessages.put("matchmaking1", "Match-making of repositories");
+		eventMessages.put("matchmaking2", "Match-making of repositories");
+		eventMessages.put("matchmaking3", "Match-making of repositories");
 		eventMessages.put(Events.BATCH, "Performed Batch Ingest");
 		eventMessages.put(Events.INGEST_START, "Ingest  Process Initiation");
 		eventMessages.put(Events.CHARACTERIZATION_FORMAT, "File Chracterization");

@@ -16,21 +16,20 @@
 
 package org.dataconservancy.dcs.access.server.model;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.sql.Connection;
-import java.util.Properties;
-
-import javax.sql.DataSource;
-
 import org.apache.commons.dbcp.ConnectionFactory;
 import org.apache.commons.dbcp.DriverConnectionFactory;
 import org.apache.commons.dbcp.PoolableConnectionFactory;
 import org.apache.commons.dbcp.PoolingDataSource;
 import org.apache.commons.pool.impl.GenericObjectPool;
 
+import javax.sql.DataSource;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Properties;
 
 
 public class DatabaseSingleton {
@@ -46,7 +45,7 @@ public class DatabaseSingleton {
 	   public static String dbUrl;
 	   public static String driver;
 	   
-	   protected DatabaseSingleton() throws InstantiationException, IllegalAccessException, ClassNotFoundException{
+	   protected DatabaseSingleton() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
 		   
 		   Class.forName(this.driver).newInstance();
 
@@ -54,10 +53,16 @@ public class DatabaseSingleton {
 	        connectionPool.setMaxActive(10);
 
 	        Properties props = new Properties();
+            props.setProperty("user", "username");
+	        props.setProperty("password", "pwd");
+
 
 	        ConnectionFactory cf =
-	                new DriverConnectionFactory(new org.apache.derby.jdbc.EmbeddedDriver(),
+	                new DriverConnectionFactory(
+	                		//new org.apache.derby.jdbc.EmbeddedDriver(),
+	                		new com.mysql.jdbc.Driver(), 
 	                        dbUrl,
+//	                		 "jdbc:mysql://localhost/va_user",
 	                		props);
 	        PoolableConnectionFactory pcf =
 	                new PoolableConnectionFactory(cf, connectionPool,
@@ -67,7 +72,7 @@ public class DatabaseSingleton {
 
 		}
 	  
-	   public static DatabaseSingleton getInstance(String configPath) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+	   public static DatabaseSingleton getInstance(String configPath) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 	      if(instance == null) {
 	    	String fileContents = readFile(configPath);
 	    	  
@@ -84,7 +89,9 @@ public class DatabaseSingleton {
                 }
             }
                         
-	    	  driver  = "org.apache.derby.jdbc.EmbeddedDriver";
+	    	  driver  = 
+	    			  //"org.apache.derby.jdbc.EmbeddedDriver";
+	    			  "com.mysql.jdbc.Driver";
 	    	  instance = new DatabaseSingleton();
 	      }
 	      return instance;

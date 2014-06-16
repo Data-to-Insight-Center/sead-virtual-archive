@@ -1,17 +1,12 @@
 package org.dataconservancy.dcs.access.client.ui;
 
-import org.dataconservancy.dcs.access.client.Util;
-import org.dataconservancy.dcs.access.client.model.JsDcp;
-import org.dataconservancy.dcs.access.client.model.JsDeliverableUnit;
-import org.dataconservancy.dcs.access.client.model.JsFile;
-import org.dataconservancy.dcs.access.ui.client.model.JsCollection;
-import org.dataconservancy.dcs.access.ui.client.model.JsEvent;
-import org.dataconservancy.dcs.access.ui.client.model.JsManifestation;
-
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import org.dataconservancy.dcs.access.client.Util;
+import org.dataconservancy.dcs.access.client.model.*;
+import org.dataconservancy.dcs.access.ui.client.model.JsCollection;
 
-public class DcpDisplay extends Composite{
+public class DcpDisplay extends Composite {
 
 	VerticalPanel panel;
 	
@@ -37,7 +32,7 @@ public class DcpDisplay extends Composite{
                 panel.add(Util.label("Deliverable Units", "SectionHeader"));
             }
 
-            JsDeliverableUnit.display(panel, dcp.getDeliverableUnits(),null);
+            JsDeliverableUnit.display(panel, dcp.getDeliverableUnits(), null);
         }
 
         if (dcp.getManifestations().length() > 0) {

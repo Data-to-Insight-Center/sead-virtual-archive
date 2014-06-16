@@ -17,45 +17,6 @@
 package org.dataconservancy.dcs.access.client.presenter;
 
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import org.dataconservancy.dcs.access.client.SeadApp;
-import org.dataconservancy.dcs.access.client.Util;
-import org.dataconservancy.dcs.access.client.api.DepositService;
-import org.dataconservancy.dcs.access.client.api.DepositServiceAsync;
-import org.dataconservancy.dcs.access.client.api.LogService;
-import org.dataconservancy.dcs.access.client.api.LogServiceAsync;
-import org.dataconservancy.dcs.access.client.api.MediciService;
-import org.dataconservancy.dcs.access.client.api.MediciServiceAsync;
-import org.dataconservancy.dcs.access.client.api.UserService;
-import org.dataconservancy.dcs.access.client.api.UserServiceAsync;
-import org.dataconservancy.dcs.access.client.event.CollectionClickEvent;
-import org.dataconservancy.dcs.access.client.event.CollectionPassiveSelectEvent;
-import org.dataconservancy.dcs.access.client.event.CollectionSelectEvent;
-import org.dataconservancy.dcs.access.client.event.WorkflowStatusEvent;
-import org.dataconservancy.dcs.access.client.model.CollectionNode;
-import org.dataconservancy.dcs.access.client.model.CollectionTreeViewModel;
-import org.dataconservancy.dcs.access.client.model.DatasetRelation;
-import org.dataconservancy.dcs.access.client.model.FileNode;
-import org.dataconservancy.dcs.access.client.model.JsSearchResult;
-import org.dataconservancy.dcs.access.client.model.CollectionNode.SubType;
-import org.dataconservancy.dcs.access.client.resources.TableResources;
-import org.dataconservancy.dcs.access.client.resources.TreeResources;
-import org.dataconservancy.dcs.access.client.ui.MessagePopupPanel;
-import org.dataconservancy.dcs.access.client.ui.StatusPopupPanel;
-import org.dataconservancy.dcs.access.client.ui.WfEventRefresherPanel;
-import org.dataconservancy.dcs.access.shared.CheckPointDetail;
-import org.dataconservancy.dcs.access.shared.Constants;
-import org.dataconservancy.dcs.access.shared.MediciInstance;
-import org.dataconservancy.dcs.access.shared.Query;
-import org.dataconservancy.dcs.access.shared.Role;
-import org.dataconservancy.dcs.access.shared.UserSession;
-
 import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.ImageResourceCell;
@@ -65,12 +26,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
-import com.google.gwt.http.client.Request;
-import com.google.gwt.http.client.RequestBuilder;
-import com.google.gwt.http.client.RequestCallback;
-import com.google.gwt.http.client.RequestException;
-import com.google.gwt.http.client.Response;
-import com.google.gwt.http.client.URL;
+import com.google.gwt.http.client.*;
 import com.google.gwt.jsonp.client.JsonpRequestBuilder;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
@@ -81,18 +37,25 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.DefaultSelectionEventManager;
-import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.MultiSelectionModel;
-import com.google.gwt.view.client.SelectionChangeEvent;
-import com.google.gwt.view.client.TreeViewModel;
+import com.google.gwt.user.client.ui.*;
+import com.google.gwt.view.client.*;
+import org.dataconservancy.dcs.access.client.SeadApp;
+import org.dataconservancy.dcs.access.client.Util;
+import org.dataconservancy.dcs.access.client.api.*;
+import org.dataconservancy.dcs.access.client.event.CollectionClickEvent;
+import org.dataconservancy.dcs.access.client.event.CollectionPassiveSelectEvent;
+import org.dataconservancy.dcs.access.client.event.CollectionSelectEvent;
+import org.dataconservancy.dcs.access.client.event.WorkflowStatusEvent;
+import org.dataconservancy.dcs.access.client.model.*;
+import org.dataconservancy.dcs.access.client.model.CollectionNode.SubType;
+import org.dataconservancy.dcs.access.client.resources.TableResources;
+import org.dataconservancy.dcs.access.client.resources.TreeResources;
+import org.dataconservancy.dcs.access.client.ui.MessagePopupPanel;
+import org.dataconservancy.dcs.access.client.ui.StatusPopupPanel;
+import org.dataconservancy.dcs.access.client.ui.WfEventRefresherPanel;
+import org.dataconservancy.dcs.access.shared.*;
+
+import java.util.*;
 
 
 public class MediciIngestPresenter  implements Presenter {
@@ -232,27 +195,26 @@ public class MediciIngestPresenter  implements Presenter {
 	
 	void registerWorkflowEvent(){//This event simply changes what is displayed on the popup panel
 		WorkflowStatusEvent.register(EVENT_BUS, new WorkflowStatusEvent.Handler() {
-			   public void onMessageReceived(final WorkflowStatusEvent event) {
-				   
-				   if(event.getPercent()==-10)
-					   statusPopupPanel.setValue(Constants.eventMessages.get(event.getMessage()), 
-							   event.getDetail(),
-							   event.getSymbol(), 100);
-				   else if(event.getPercent()>-1){
-					   int number = 0;
-					   if(Constants.multiEventCheck.get(event.getMessage())==1)
-						   number = totalNumOfFiles;
-					   else
-						   number = totalNumOfEntities; 
-					   statusPopupPanel.setValue(Constants.eventMessages.get(event.getMessage()), 
-							   //event.getDetail(),
-							   Constants.eventMessages.get(event.getMessage())+ " was completed for "+number+" files and/or collections.",
-							   event.getSymbol(), event.getPercent());
-				   }
-				   else
-					   statusPopupPanel.setValue(Constants.eventMessages.get(event.getMessage()), event.getDetail(), event.getSymbol());
-			   }		
-			});
+            public void onMessageReceived(final WorkflowStatusEvent event) {
+
+                if (event.getPercent() == -10)
+                    statusPopupPanel.setValue(Constants.eventMessages.get(event.getMessage()),
+                            event.getDetail(),
+                            event.getSymbol(), 100);
+                else if (event.getPercent() > -1) {
+                    int number = 0;
+                    if (Constants.multiEventCheck.get(event.getMessage()) == 1)
+                        number = totalNumOfFiles;
+                    else
+                        number = totalNumOfEntities;
+                    statusPopupPanel.setValue(Constants.eventMessages.get(event.getMessage()),
+                            //event.getDetail(),
+                            Constants.eventMessages.get(event.getMessage()) + " was completed for " + number + " files and/or collections.",
+                            event.getSymbol(), event.getPercent());
+                } else
+                    statusPopupPanel.setValue(Constants.eventMessages.get(event.getMessage()), event.getDetail(), event.getSymbol());
+            }
+        });
 	}
 	
 	void addGetPubHandler(){
@@ -280,12 +242,12 @@ public class MediciIngestPresenter  implements Presenter {
 				        
 				        RequestBuilder rb = new RequestBuilder(RequestBuilder.GET, SeadApp.ACRCOMMON+"?instance="+
 				        		URL.encodeQueryString(
-				        		sparqlEndpoint.getTitle()
-				        		)+"&"+
+                                        sparqlEndpoint.getTitle()
+                                )+"&"+
 				        		"query="+
 				        		URL.encodeQueryString(
-				        		Query.PROPOSED_FOR_PUBLICATION.getTitle()
-				        		)
+                                        Query.PROPOSED_FOR_PUBLICATION.getTitle()
+                                )
 				        );
 
 				        rb.setHeader("Content-type", "application/x-www-form-urlencoded");
@@ -326,9 +288,9 @@ public class MediciIngestPresenter  implements Presenter {
 										       
 										        flagHyperlink =0;
 										        String tagRetrieveUrl =
-										        		SeadApp.accessurl+SeadApp.queryPath+"?q=resourceValue:"+
+										        		SeadApp.accessurl+ SeadApp.queryPath+"?q=resourceValue:"+
 										        		"("+
-										        		URL.encodeQueryString(((String)pair.getKey()).replace(":", "\\:"))+
+										        		URL.encodeQueryString(((String) pair.getKey()).replace(":", "\\:"))+
 										        		")";
 										        rb.requestObject(tagRetrieveUrl, new AsyncCallback<JsSearchResult>() {
 
@@ -340,7 +302,7 @@ public class MediciIngestPresenter  implements Presenter {
 										            public void onSuccess(JsSearchResult result) {
 //									            	if(result.matches().length()==0||sparqlEndpoint.equals("http://sead.ncsa.illinois.edu/acr/resteasy/sparql"))
 //									            	{
-										            		dataset = Util.label(dName.substring(dName.lastIndexOf("/")+1),"Hyperlink");
+										            		dataset = Util.label(dName.substring(dName.lastIndexOf("/") + 1), "Hyperlink");
 										            		flagHyperlink =1;					            		
 //									            	}				            	
 //									            	else
@@ -401,15 +363,15 @@ public class MediciIngestPresenter  implements Presenter {
 																										@Override
 																										public void onFailure(
 																												Throwable caught) {
-																											Window.alert("Failed:"+caught.getMessage());
+																											Window.alert("Failed:" + caught.getMessage());
 																											
 																										}
 
 																										@Override
 																										public void onSuccess(Integer size) {
-																											if(size>Constants.MAX){
-																												Window.alert("This collection has more than "+Constants.MAX+" files.\n"+
-																															 "Hence preview is not possible. But you can start the ingest");
+																											if(size> Constants.MAX){
+																												Window.alert("This collection has more than " + Constants.MAX + " files.\n" +
+                                                                                                                        "Hence preview is not possible. But you can start the ingest");
 																												if(collectionWait.isShowing())
 																													collectionWait.hide();
 																												getPub.setEnabled(false);
@@ -438,7 +400,7 @@ public class MediciIngestPresenter  implements Presenter {
 																														AsyncCallback<Void> vaModelCb = new AsyncCallback<Void>() {
 																																@Override
 																																public void onSuccess(Void result) {
-																																	mediciService.addMetadata(metadataSrc,SeadApp.tmpHome+guid+"_sip", new AsyncCallback<Void>() {
+																																	mediciService.addMetadata(metadataSrc, SeadApp.tmpHome+guid+"_sip", new AsyncCallback<Void>() {
 																																		
 																																		@Override
 																																		public void onSuccess(Void result) {
@@ -475,10 +437,10 @@ public class MediciIngestPresenter  implements Presenter {
 																																										mediciService.submitMultipleSips(SeadApp.deposit_endpoint + "sip",
 																																												(String) pair.getKey(),
 																																												sparqlEndpoint,
-																																												SeadApp.tmpHome+guid+"_sip", 
+																																												SeadApp.tmpHome+guid+"_sip",
 																																												wfInstanceId,
 																																												null,
-																																												l, n, "", "", false, GWT.getModuleBaseURL(),SeadApp.tmpHome,
+																																												l, n, "", "", false, GWT.getModuleBaseURL(), SeadApp.tmpHome,false,
 																																												new AsyncCallback<String>() {
 																																													
 																																													@Override
@@ -560,7 +522,7 @@ public class MediciIngestPresenter  implements Presenter {
 																													@Override
 																													public void onFailure(
 																															Throwable caught) {
-																														Window.alert("Failed:"+caught.getMessage());
+																														Window.alert("Failed:" + caught.getMessage());
 																														
 																													}
 
@@ -578,45 +540,43 @@ public class MediciIngestPresenter  implements Presenter {
 																														    CellTree tree = new CellTree(model, null,resource);
 																														    //collection select
 																															CollectionSelectEvent.register(EVENT_BUS, new CollectionSelectEvent.Handler() {
-																																   public void onMessageReceived(final CollectionSelectEvent event) {
-																																				
-																																		rightPanel.clear();
-																																		rightPanel.add(getFiles(relations.getDuAttrMap(), relations.getFileAttrMap(), event.getCollection().getId(),event.getValue()));
-																																   }
-																															});
+                                                                                                                                public void onMessageReceived(final CollectionSelectEvent event) {
+
+                                                                                                                                    rightPanel.clear();
+                                                                                                                                    rightPanel.add(getFiles(relations.getDuAttrMap(), relations.getFileAttrMap(), event.getCollection().getId(), event.getValue()));
+                                                                                                                                }
+                                                                                                                            });
 																															
 																															//collection click
 																															CollectionClickEvent.register(EVENT_BUS, new CollectionClickEvent.Handler() {
-																																   public void onMessageReceived(final CollectionClickEvent event) {
-																																	  
-																																	   if(existingFileSets.containsKey(event.getCollection().getId())){
-																																		    rightPanel.clear();
-																																			rightPanel.add(existingFileSets.get(event.getCollection().getId()).cellTable);
-																																		}
-																																		else{	
-																																		  
-																																			rightPanel.clear();
-																																			rightPanel.add(getFiles(relations.getDuAttrMap(), relations.getFileAttrMap(), event.getCollection().getId(),false));														
-																																	   }
-																																   }
-																																});
+                                                                                                                                public void onMessageReceived(final CollectionClickEvent event) {
+
+                                                                                                                                    if (existingFileSets.containsKey(event.getCollection().getId())) {
+                                                                                                                                        rightPanel.clear();
+                                                                                                                                        rightPanel.add(existingFileSets.get(event.getCollection().getId()).cellTable);
+                                                                                                                                    } else {
+
+                                                                                                                                        rightPanel.clear();
+                                                                                                                                        rightPanel.add(getFiles(relations.getDuAttrMap(), relations.getFileAttrMap(), event.getCollection().getId(), false));
+                                                                                                                                    }
+                                                                                                                                }
+                                                                                                                            });
 																															//collection passive click
 																															CollectionPassiveSelectEvent.register(EVENT_BUS, new CollectionPassiveSelectEvent.Handler() {
-																																   public void onMessageReceived(final CollectionPassiveSelectEvent event) {
-																																	  
-																																	   CellTable files ;
-																																	   if(existingFileSets.containsKey(event.getCollection().getId())){
-																																		   files = existingFileSets.get(event.getCollection().getId()).cellTable;
-																																		   for(String file:relations.getDuAttrMap().get(event.getCollection().getId()).getSub().get(SubType.File)){
-																																			   files.getSelectionModel().setSelected((FileNode)relations.getFileAttrMap().get(file),event.getValue());
-																																		   }
-																																	   }
-																																	   else{
-																																		   files = (CellTable) getFiles(relations.getDuAttrMap(), relations.getFileAttrMap(), event.getCollection().getId(),event.getValue());
-																																	   }
-																																	  
-																																   }
-																																});
+                                                                                                                                public void onMessageReceived(final CollectionPassiveSelectEvent event) {
+
+                                                                                                                                    CellTable files;
+                                                                                                                                    if (existingFileSets.containsKey(event.getCollection().getId())) {
+                                                                                                                                        files = existingFileSets.get(event.getCollection().getId()).cellTable;
+                                                                                                                                        for (String file : relations.getDuAttrMap().get(event.getCollection().getId()).getSub().get(SubType.File)) {
+                                                                                                                                            files.getSelectionModel().setSelected((FileNode) relations.getFileAttrMap().get(file), event.getValue());
+                                                                                                                                        }
+                                                                                                                                    } else {
+                                                                                                                                        files = (CellTable) getFiles(relations.getDuAttrMap(), relations.getFileAttrMap(), event.getCollection().getId(), event.getValue());
+                                                                                                                                    }
+
+                                                                                                                                }
+                                                                                                                            });
 
 																															collectionWait.hide();
 																															leftPanel.clear();
@@ -686,7 +646,7 @@ public class MediciIngestPresenter  implements Presenter {
 																																											SeadApp.tmpHome+guid+"_sip",
 																																											wfInstanceId,
 																																											null,
-																																											l, n, "", "", false, GWT.getModuleBaseURL(),SeadApp.tmpHome,
+																																											l, n, "", "", false, GWT.getModuleBaseURL(), SeadApp.tmpHome,false,
 																																											new AsyncCallback<String>() {
 																																												
 																																												@Override
@@ -723,21 +683,21 @@ public class MediciIngestPresenter  implements Presenter {
 																																						
 																																						@Override
 																																						public void onFailure(Throwable caught) {
-																																							Window.alert("Failed. \n"+caught.getMessage());
+																																							Window.alert("Failed. \n" + caught.getMessage());
 																																						}
 																																					});
 																																				}
 																																				
 																																				@Override
 																																				public void onFailure(Throwable caught) {
-																																					Window.alert("Failed. \n"+caught.getMessage());
+																																					Window.alert("Failed. \n" + caught.getMessage());
 																																				}
 																																			});
 																																		}
 																																	
 																																	@Override
 																																	public void onFailure(Throwable caught) {
-																																		Window.alert("Failed. \n"+caught.getMessage());
+																																		Window.alert("Failed. \n" + caught.getMessage());
 																																	}
 																																};
 																																mediciService.toVAmodel(rootMediciId,rootMediciId, sparqlEndpoint, SeadApp.tmpHome, vaModelCb );
@@ -754,7 +714,7 @@ public class MediciIngestPresenter  implements Presenter {
 																								
 																								@Override
 																								public void onFailure(Throwable caught) {
-																									Window.alert("Failed:"+caught.getMessage());
+																									Window.alert("Failed:" + caught.getMessage());
 																									
 																								}
 																							});						
@@ -766,7 +726,7 @@ public class MediciIngestPresenter  implements Presenter {
 																						
 																						@Override
 																						public void onFailure(Throwable caught) {
-																							Window.alert("Failed:"+caught.getMessage());
+																							Window.alert("Failed:" + caught.getMessage());
 																							
 																						}
 																					});						 	
@@ -792,7 +752,7 @@ public class MediciIngestPresenter  implements Presenter {
 																						result.getResumeSipPath().replace("_"+l+".xml", ""),
 																						wfInstanceId,
 																						result.getPreviousStatusUrls(),
-																						l, n, "", "", false, GWT.getModuleBaseURL(),SeadApp.tmpHome,
+																						l, n, "", "", false, GWT.getModuleBaseURL(), SeadApp.tmpHome,false,
 																						new AsyncCallback<String>() {
 																							
 																							@Override
@@ -892,7 +852,7 @@ public class MediciIngestPresenter  implements Presenter {
 		});
 	}
 	
-public Widget getFiles(Map<String, CollectionNode> dusMap,Map<String, FileNode> filesMap, final String selectedCollection, Boolean valForAll) {	
+public Widget getFiles(Map<String, CollectionNode> dusMap,Map<String, FileNode> filesMap, final String selectedCollection, Boolean valForAll) {
 		 
 	List<String> files = dusMap.get(selectedCollection).getSub().get(SubType.File);
 	final FileTable fileTable = new FileTable();
@@ -1011,15 +971,15 @@ public Widget getFiles(Map<String, CollectionNode> dusMap,Map<String, FileNode> 
 	
 	public interface Resources extends ClientBundle {
 		 @Source("org/dataconservancy/dcs/access/client/resources/file.png")
-		  ImageResource file();
+         ImageResource file();
 	}
 	
 	
 
 		
 	class FileTable{
-		CellTable.Resources resource; 
-		CellTable<FileNode> cellTable;		
+		CellTable.Resources resource;
+		CellTable<FileNode> cellTable;
 	    MultiSelectionModel<FileNode> selectionFileModel;
 	}
 	    	

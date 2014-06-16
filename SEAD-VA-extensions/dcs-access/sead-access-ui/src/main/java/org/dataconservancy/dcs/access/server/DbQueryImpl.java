@@ -16,26 +16,28 @@
 
 package org.dataconservancy.dcs.access.server;
 
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.dataconservancy.dcs.access.client.api.DbQueryService;
 import org.dataconservancy.dcs.access.server.model.ProvenanceDAOJdbcImpl;
 import org.dataconservancy.dcs.access.server.util.ServerConstants;
 import org.dataconservancy.dcs.access.shared.ProvenaceDataset;
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public final class DbQueryImpl extends RemoteServiceServlet
-implements DbQueryService{
+implements DbQueryService {
 	@Override
 	public List<ProvenaceDataset> getProv(String submitterId, String wfInstanceId, String  latestDateStr) {
 		String path = getServletContext().getRealPath("/sead_access/");
 		List<ProvenaceDataset> datasets = new ArrayList<ProvenaceDataset>();
 		try {
-			datasets = new ProvenanceDAOJdbcImpl(path+"/Config.properties")
+			datasets = new ProvenanceDAOJdbcImpl(
+					path+"/Config.properties"
+					)
 			.getProvForSubmitterWf(submitterId, wfInstanceId, ServerConstants.dateFormat.parse(latestDateStr));
 		} catch (InstantiationException e) {
 			// TODO Auto-generated catch block
@@ -47,6 +49,9 @@ implements DbQueryService{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

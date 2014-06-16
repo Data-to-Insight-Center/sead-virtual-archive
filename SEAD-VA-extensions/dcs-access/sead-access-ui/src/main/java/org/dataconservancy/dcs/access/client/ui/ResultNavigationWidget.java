@@ -16,27 +16,57 @@
 
 package org.dataconservancy.dcs.access.client.ui;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
+import org.dataconservancy.dcs.access.client.SeadState;
 import org.dataconservancy.dcs.access.client.Util;
 import org.dataconservancy.dcs.access.client.event.SearchEvent;
 import org.dataconservancy.dcs.access.client.model.SearchInput;
 import org.dataconservancy.dcs.access.client.presenter.FacetedSearchPresenter;
 import org.dataconservancy.dcs.access.shared.Constants;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Hyperlink;
-import com.google.gwt.user.client.ui.Label;
-
-public class ResultNavigationWidget extends Composite{
+public class ResultNavigationWidget extends Composite {
 
 	HorizontalPanel navigationPanel;
-	public ResultNavigationWidget(final int page, final int numpages, final SearchInput searchInput) {
+	public ResultNavigationWidget(final int page, final int numpages, final SearchInput searchInput, long totalResults, final boolean isAdvanced) {
 		navigationPanel = new HorizontalPanel();
 		initWidget(navigationPanel);
 		navigationPanel.setStylePrimaryName("ResultsNav");
-		navigationPanel.setSpacing(2);
+//		navigationPanel.setSpacing(2);
+		
+		int currentRangeMin = (page)* Constants.MAX_SEARCH_RESULTS+1;
+        int currentRangeMax = (page+1) * Constants.MAX_SEARCH_RESULTS;
+        if(currentRangeMax>totalResults){
+        	currentRangeMax = (int)totalResults;
+        }
+        Label resultNavigator = Util.label("  ", "ResultNavigator");
+        if (SeadState.fromToken(History.getToken()) == SeadState.SEARCH){
+        	String queries = "";
+        	if(searchInput.getUserqueries().length>0){
+        		for(int i =0;i<searchInput.getUserqueries().length;i++){
+        			queries+=searchInput.getUserqueries()[i];
+        			if(i<searchInput.getUserqueries().length-1)
+        				queries+=",";
+        		}
+        	}
+        	
+        	if(searchInput.getFacetValue().length>0){
+        		if(searchInput.getUserqueries().length>0)
+        			queries+=",";
+        		for(int i =0;i<searchInput.getFacetField().length;i++){
+        			queries+=searchInput.getFacetValue()[i];
+        			if(i<searchInput.getFacetValue().length-1)
+        				queries+=",";
+        		}
+        	}
+        	String showingString = "\""+queries+ "\"\t Showing "+ currentRangeMin +" - "+currentRangeMax + " out of "+totalResults;
+        	resultNavigator = Util.label(showingString, "ResultNavigator");
+        }
+        navigationPanel.add(resultNavigator);
 
         if (numpages > 1) {
             if (page > 0) {
@@ -54,7 +84,8 @@ public class ResultNavigationWidget extends Composite{
     							0,
     							searchInput.getFacetField(),
     							searchInput.getFacetValue()
-    							))); 
+    							),
+    							isAdvanced)); 
     					
     				}
     			});
@@ -75,7 +106,8 @@ public class ResultNavigationWidget extends Composite{
     							offset,
     							searchInput.getFacetField(),
     							searchInput.getFacetValue()
-    							))); 
+    							),
+    							isAdvanced)); 
     					
     				}
     			});
@@ -114,7 +146,8 @@ public class ResultNavigationWidget extends Composite{
         							offset,
         							searchInput.getFacetField(),
         							searchInput.getFacetValue()
-        							))); 
+        							),
+        							isAdvanced)); 
         					
         				}
         			});
@@ -139,7 +172,8 @@ public class ResultNavigationWidget extends Composite{
     							offset,
     							searchInput.getFacetField(),
     							searchInput.getFacetValue()
-    							))); 
+    							),
+    							isAdvanced)); 
     					
     				}
     			});
@@ -160,7 +194,8 @@ public class ResultNavigationWidget extends Composite{
     							(numpages - 1) * Constants.MAX_SEARCH_RESULTS,
     							searchInput.getFacetField(),
     							searchInput.getFacetValue()
-    							))); 
+    							),
+    							isAdvanced)); 
     					
     				}
     			});

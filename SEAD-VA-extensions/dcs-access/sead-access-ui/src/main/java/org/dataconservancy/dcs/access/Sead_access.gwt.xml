@@ -21,12 +21,11 @@
   <inherits name='com.google.gwt.xml.XML'/>
   <inherits name='com.google.gwt.jsonp.Jsonp'/>
   <inherits name="com.google.api.gwt.oauth2.OAuth2" />
+  <inherits name='com.github.gwtd3.D3' />
   <inherits name='org.dataconservancy.dcs.access.ui.Application'/>
   <inherits name='com.google.gwt.http.HTTP'/>
   <inherits name='com.google.gwt.user.theme.standard.Standard'/>
   <inherits name='com.google.gwt.user.theme.clean.Clean'/>
-
-
 
   <!-- Specify the app entry point class.                         -->
   <entry-point class='org.dataconservancy.dcs.access.client.SeadApp'/>

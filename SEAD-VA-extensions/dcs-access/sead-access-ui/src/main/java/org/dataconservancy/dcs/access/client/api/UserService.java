@@ -16,16 +16,11 @@
 
 package org.dataconservancy.dcs.access.client.api;
 
-import java.util.List;
-
-import org.dataconservancy.dcs.access.shared.Authentication;
-import org.dataconservancy.dcs.access.shared.OAuthType;
-import org.dataconservancy.dcs.access.shared.Person;
-import org.dataconservancy.dcs.access.shared.Role;
-import org.dataconservancy.dcs.access.shared.UserSession;
-
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import org.dataconservancy.dcs.access.shared.*;
+
+import java.util.List;
 
 
 @RemoteServiceRelativePath("user")
@@ -34,16 +29,19 @@ public interface UserService
 
     Authentication authenticate(String url, String user, String pass) throws Exception;
     
-	String register(String firstName,String lastName, String email, String password,
-			String confirmPwd, String[] admins) throws Exception;
+	String register(String firstName, String lastName, String email, String password,
+                    String confirmPwd, String[] admins, String vivoId) throws Exception;
+	
+	boolean emailCurators(String affiliation) throws Exception;
 
 	UserSession checkSession(String token);
 
 	List<Person> getAllUsers() throws Exception;
-
+	List<Role> getAllRoles() throws Exception;
+	
 	void clearSession();
 
-	void updateAllUsers(List<Person> userList, List<Person> sendEmailList) throws Exception;
+	void updateAllUsers(List<Person> userList, List<Person> sendEmailList, String registryUrl) throws Exception;
     
 	void sendEmail(String[] toAddress, String subject, String messageStr);
 	

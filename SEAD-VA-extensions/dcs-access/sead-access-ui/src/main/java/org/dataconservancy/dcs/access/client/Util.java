@@ -15,15 +15,10 @@
  */
 package org.dataconservancy.dcs.access.client;
 
+import org.dataconservancy.dcs.access.client.model.*;
 import org.dataconservancy.dcs.access.shared.Constants;
 import org.dataconservancy.dcs.access.ui.client.model.JsCollection;
-import org.dataconservancy.dcs.access.client.model.JsDcp;
-import org.dataconservancy.dcs.access.client.model.JsDeliverableUnit;
-import org.dataconservancy.dcs.access.client.model.JsEntity;
-import org.dataconservancy.dcs.access.client.model.JsFile;
-import org.dataconservancy.dcs.access.client.model.JsSearchResult;
 import org.dataconservancy.dcs.access.ui.client.model.JsFormat;
-import org.dataconservancy.dcs.access.client.model.JsMatch;
 import org.dataconservancy.dcs.access.client.ui.MetadataPopupPanel;
 
 import com.google.gwt.core.client.JsArray;
@@ -194,6 +189,25 @@ public class Util {
             dcp.getManifestations().push((JsManifestation) entity);
         }*/ else if (type.equals("event")) {
            // dcp.getEvents().push((JsEvent) entity);
+        } else {
+            throw new RuntimeException("Unknown type: " + type);
+        }
+    }
+
+    public static void add(JsDcp dcp, JsEntity entity, String type) {
+        if (type.equals("deliverableUnit")) {
+            int index = find(dcp.getDeliverableUnits(), entity.getId());
+            if(index!=-1)
+                removeDeliverableUnit(dcp.getDeliverableUnits(), index);
+            dcp.getDeliverableUnits().push((JsDeliverableUnit) entity);
+        } else if (type.equals("collection")) {
+            //dcp.getCollections().push((JsCollection) entity);
+        } else if (type.equals("file")) {
+            dcp.getFiles().push((JsFile) entity);
+        } else if (type.equals("manifestation")) {
+            dcp.getManifestations().push((JsManifestation) entity);
+        } else if (type.equals("event")) {
+            // dcp.getEvents().push((JsEvent) entity);
         } else {
             throw new RuntimeException("Unknown type: " + type);
         }

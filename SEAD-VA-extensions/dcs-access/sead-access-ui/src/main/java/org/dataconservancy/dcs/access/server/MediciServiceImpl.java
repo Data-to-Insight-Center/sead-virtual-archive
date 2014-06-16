@@ -16,43 +16,12 @@
 
 package org.dataconservancy.dcs.access.server;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.StringWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.logging.Logger;
-
-import javax.servlet.ServletException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.core.util.MultivaluedMapImpl;
+import com.sun.jersey.multipart.FormDataMultiPart;
+import com.sun.jersey.multipart.file.FileDataBodyPart;
 import org.apache.abdera.Abdera;
 import org.apache.abdera.protocol.client.AbderaClient;
 import org.apache.abdera.protocol.client.ClientResponse;
@@ -74,24 +43,11 @@ import org.dataconservancy.dcs.access.server.model.ProvenanceDAOJdbcImpl;
 import org.dataconservancy.dcs.access.server.util.ByteArray;
 import org.dataconservancy.dcs.access.server.util.ServerConstants;
 import org.dataconservancy.dcs.access.server.util.StatusReader.Status;
-import org.dataconservancy.dcs.access.shared.CheckPointDetail;
-import org.dataconservancy.dcs.access.shared.Constants;
-import org.dataconservancy.dcs.access.shared.Event;
-import org.dataconservancy.dcs.access.shared.MediciInstance;
-import org.dataconservancy.dcs.access.shared.ProvenanceRecord;
-import org.dataconservancy.dcs.access.shared.Query;
+import org.dataconservancy.dcs.access.shared.*;
 import org.dataconservancy.dcs.ingest.Events;
-import org.dataconservancy.model.builder.DcsModelBuilder;
 import org.dataconservancy.model.builder.InvalidXmlException;
 import org.dataconservancy.model.builder.xstream.DcsXstreamStaxModelBuilder;
-import org.dataconservancy.model.dcs.DcsDeliverableUnit;
-import org.dataconservancy.model.dcs.DcsFile;
-import org.dataconservancy.model.dcs.DcsFileRef;
-import org.dataconservancy.model.dcs.DcsFormat;
-import org.dataconservancy.model.dcs.DcsManifestation;
-import org.dataconservancy.model.dcs.DcsManifestationFile;
-import org.dataconservancy.model.dcs.DcsMetadataRef;
-import org.dspace.foresite.OREException;
+import org.dataconservancy.model.dcs.*;
 import org.sead.acr.common.utilities.json.JSONArray;
 import org.sead.acr.common.utilities.json.JSONException;
 import org.sead.acr.common.utilities.json.JSONObject;
@@ -100,13 +56,16 @@ import org.seadva.model.SeadPerson;
 import org.seadva.model.builder.xstream.SeadXstreamStaxModelBuilder;
 import org.seadva.model.pack.ResearchObject;
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
-import com.sun.jersey.multipart.FormDataMultiPart;
-import com.sun.jersey.multipart.file.FileDataBodyPart;
-
+import javax.servlet.ServletException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import java.io.*;
+import java.net.*;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.logging.Logger;
 
 
 /**
@@ -114,7 +73,7 @@ import com.sun.jersey.multipart.file.FileDataBodyPart;
  */
 @SuppressWarnings("serial")
 public class MediciServiceImpl extends RemoteServiceServlet implements
-		MediciService {
+        MediciService {
 	Logger logger = Logger.getLogger(this.getClass().toString());
 	
 	DatasetRelation relations = new DatasetRelation();
@@ -124,7 +83,7 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
 	
 	private Abdera abdera;
 
-    private DcsModelBuilder seadbuilder;
+    private SeadXstreamStaxModelBuilder seadbuilder;
     
     public void init() throws ServletException {
         this.abdera = new Abdera();
@@ -133,7 +92,9 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
         String path = getServletContext().getRealPath("/sead_access/");
 		
         try {
-			this.provDao = new ProvenanceDAOJdbcImpl(path+"/Config.properties");
+			this.provDao = new ProvenanceDAOJdbcImpl(
+					path+"/Config.properties"
+					);
 		} catch (InstantiationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -141,6 +102,9 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -253,7 +217,7 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
 				if(contact!=null)
 					collection.setContact(contact);
 				Collection<SeadPerson> creators = ((SeadDeliverableUnit)deliverableUnit).getDataContributors();
-				Set<Creator> tempCreators = new HashSet<Creator>(); 
+				Set<Creator> tempCreators = new HashSet<Creator>();
 				if(creators!=null)
 					for(SeadPerson creator:creators){
 						Creator cr = new Creator();
@@ -364,35 +328,35 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
 	public String getDuTitle(String tagId, String baseUrl, MediciInstance sparqlEndpoint){
 		//Http call to VA query servlet
 		String url = baseUrl+ "acrcommon"+"?instance="+
-				java.net.URLEncoder.encode(sparqlEndpoint.getTitle())
+				URLEncoder.encode(sparqlEndpoint.getTitle())
         		+"&"+
         		"query="+
-        		java.net.URLEncoder.encode(Query.DU_TITLE.getTitle())+
+        		URLEncoder.encode(Query.DU_TITLE.getTitle())+
         		"&"+
         		"tagid="+
-        		java.net.URLEncoder.encode(tagId)
+        		URLEncoder.encode(tagId)
         		;
- 
+
 		URL obj;
 		try {
 			obj = new URL(url);
 			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-			 
+
 			// optional default is GET
 			con.setRequestMethod("GET");
-	 
+
 			int responseCode = con.getResponseCode();
-		
+
 			BufferedReader in = new BufferedReader(
 			        new InputStreamReader(con.getInputStream()));
 			String inputLine;
 			StringBuffer response = new StringBuffer();
-	 
+
 			while ((inputLine = in.readLine()) != null) {
 				response.append(inputLine);
 			}
 			in.close();
-			
+
 			return parseJsonAttribute(response.toString(),"title");
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
@@ -403,11 +367,11 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
 		}
 		return null;
 	}
-	
-	
+
+
 
 	public void addMetadata(String fileSrc, String sipFilePath) {
-		
+
 		ResearchObject masterSip = null;
 		try {
 			masterSip = new SeadXstreamStaxModelBuilder().buildSip(new FileInputStream(sipFilePath+".xml"));
@@ -430,7 +394,7 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
 					du.addMetadataRef(ref);
 				}
 			}
-			
+
 			masterSip.setDeliverableUnits(dus);
 			DcsFile file = new DcsFile();
 			file.setId(guid);
@@ -441,7 +405,7 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
 			file.setName("FGDC");
 			file.setSource(fileSrc);
 			file.setExtant(true);
-			
+
 			masterSip.addFile(file);
 
             Collection<DcsManifestation> manifestations = masterSip.getManifestations();
@@ -466,20 +430,21 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
 			   String sipFilePath,
                String user,
                String pass,
-               boolean restrictAccess) throws RPCException {
+               boolean restrictAccess,
+               boolean curation) throws RPCException {
 		   AbderaClient client = null;
-			
+
 			try {
-			
+
 			client = getClient(endpoint, user, pass);
-			
+
 			RequestOptions opts = new RequestOptions();
 			opts.setContentType("application/xml");
 			opts.setHeader("X-Packaging",
 			              "http://dataconservancy.org/schemas/dcp/1.0");
 			opts.setHeader("X-Verbose", "true");
-			
-			
+
+
 			 InputStream inputStream = new FileInputStream(sipFilePath);
 			 ResearchObject sip = (ResearchObject)seadbuilder.buildSip(inputStream);
 			 int tmpFileNos = sip.getFiles().size();
@@ -489,35 +454,71 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
 				if(du.getParents()==null||du.getParents().size()==0){
 					if(restrictAccess)
 						du.setRights("restricted");
+					if(curation)
+						du.setType("CurationObject");
+					else
+						du.setType("PublishedObject");
 					((SeadDeliverableUnit)du).setFileNo(fileNos);
+					SeadPerson submitter = new SeadPerson();
+					submitter.setId(
+							(String)getThreadLocalRequest().getSession().getAttribute("registryId")
+							);
+					//submitter.setIdType("sead-email");
+					submitter.setIdType("registry-id");
+					submitter.setName((String)getThreadLocalRequest().getSession().getAttribute("fName")
+							+" "+(String)getThreadLocalRequest().getSession().getAttribute("lName"));
+					((SeadDeliverableUnit)du).setSubmitter(submitter);
 				}
+				if(!curation)
+					du.setId("fake://"+du.getId());
 			}
 			sip.setDeliverableUnits(dus);
-			
-			
+
+
 			Collection<DcsManifestation> manifestations = sip.getManifestations();
 			for(DcsManifestation manifestation:manifestations){
 				if(Constants.duIds.containsKey(manifestation.getDeliverableUnit()))
 						manifestation.setDeliverableUnit(Constants.duIds.get(manifestation.getDeliverableUnit()));
+				if(!curation)
+					manifestation.setId("fake://"+manifestation.getId());
+
+				if(!curation){
+					Collection<DcsManifestationFile> mFiles = manifestation.getManifestationFiles();
+					for(DcsManifestationFile mFile:mFiles){
+						DcsFileRef ref = new DcsFileRef();
+						ref.setRef("fake://"+mFile.getRef().getRef());
+						mFile.setRef(ref);
+					}
+					manifestation.setManifestationFiles(mFiles);
+					manifestation.setDeliverableUnit("fake://"+manifestation.getDeliverableUnit());
+				}
+
 			}
 			sip.setManifestations(manifestations);
-			
+
+			if(!curation){
+				Collection<DcsFile> files = sip.getFiles();
+				for(DcsFile file: files)
+					file.setId("fake://"+file.getId());
+				sip.setFiles(files);
+			}
+
 			ByteArray buf = new ByteArray(8 * 1024);
 			seadbuilder.buildSip(sip, buf.asOutputStream());
-		
-				
+
+
 			ClientResponse resp =
-			       client.post(endpoint, 
-//			    		   buf.asInputStream(),
-			    		   new FileInputStream(sipFilePath),
+			       client.post(endpoint,
+			    		   buf.asInputStream(),
+//			    		   new FileInputStream(sipFilePath),
 			    		   opts);
-			
+
 			int status = resp.getStatus();
-			
+
 			StringWriter result = new StringWriter();
 			resp.getDocument().writeTo(result);
-			
-		
+
+
 			if (status == 200 || status == 201 || status == 202) {
 				HashMap<String,HashMap<String,String>> resultMap = new HashMap<String,HashMap<String,String>>();
 				HashMap<String,String> subResultMap = new HashMap<String,String>();
@@ -525,7 +526,7 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
 				resultMap.put(String.valueOf(tmpFileNos),subResultMap);
 				return resultMap;
 			} else {
-				 
+
 			   throw new RPCException("Package deposit failed: " + result);
 			}
 			} catch (IOException e) {
@@ -540,8 +541,8 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
 			}
 			}
 	 }
-	  
- 
+
+
 	@Override
 	public String submitMultipleSips(String sipEndpoint,
 				String datasetId,
@@ -553,61 +554,63 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
 			   int numberOfSips,
                String user,
                String pass,
-               boolean restrictAccess, 
+               boolean restrictAccess,
                String appBaseUrl,
-               String tmpHome){
-		
-		
+               String tmpHome,
+               boolean curation){
 
+
+		String statusUrl = "";
 		(new DepositServiceImpl()).loadDuIds(previousUrls);
 
 		String submitterId = (String)getThreadLocalRequest().getSession().getAttribute("email");
 		String sessionType = (String)getThreadLocalRequest().getSession().getAttribute("sessionType");
 		String passwordToken  = (String)getThreadLocalRequest().getSession().getAttribute("password");
 		/*if(sessionType.equalsIgnoreCase("database")){
-			
+
 		}
 		else{
 //			passwordToken = "";//token
 			submitterId = "seadva@gmail.com";
 			passwordToken = new UserServiceImpl().hashPassword("password");
 		}*/
-		
+
 		int i = 0;
-		
+
 		if(datasetId==null){
 			String[] arr = sipBasePath.split("_sip")[0].split("/");
 			datasetId = "tag:cet.ncsa.uiuc.edu,2008:/bean/Collection/"+arr[arr.length-1];
 		}
 		String datasetTitle = datasetId;
-		
+
 		if(sparqlEndpoint!=null)
 			datasetTitle = getDuTitle(datasetId, appBaseUrl, sparqlEndpoint);
-		
-		SimpleDateFormat ft = 
+
+		SimpleDateFormat ft =
 			      new SimpleDateFormat ("yyyy-MM-dd");
 
 		Date latestDate;
 		try {
-			latestDate = ft.parse( "1800-01-01");
-			String statusUrl = "";
+			latestDate = ft.parse( "0000-00-00");//0000-00-00 00:00:00
+
 			int totalNumOfFiles = 0;
 			int totalNumOfEntities = 0;
 			boolean newSip = true;
 			finishedFiles = 0;
-		
+
 			while(true){
 				//submit sip file
 				if(newSip){
-				
+
 					HashMap<String,HashMap<String,String>> resultMap
 					= submitSIPFile(sipEndpoint,
 								sipBasePath + "_" + startSipNum + ".xml",
 								"seadva@gmail.com",
-								new UserServiceImpl().hashPassword("password"), 
+								new UserServiceImpl().hashPassword("password"),
 								false//restrict access
+								, curation //curation or publish
 								);
-					totalNumOfFiles = Integer.parseInt(resultMap.entrySet().iterator().next().getKey());	
+					totalNumOfFiles = Integer.parseInt(resultMap.entrySet().iterator().next().getKey());
 					Map.Entry<String,String> subResult = resultMap.entrySet().iterator().next().getValue().entrySet().iterator().next();
 					totalNumOfEntities  = Integer.parseInt(subResult.getKey());
 					String result = subResult.getValue();
@@ -619,22 +622,22 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
 				}
 				//sleep
 				Thread.sleep(5*1000);//check every 30 seconds
-				
+
 				//check status -> update latest date
 				//also inherently updates provenance record
 				Stats stats = checkStatus(statusUrl,submitterId,datasetTitle,
 						wfInstanceId,
-						latestDate, 
-						sipBasePath, 
-						totalNumOfEntities, 
+						latestDate,
+						sipBasePath,
+						totalNumOfEntities,
 						totalNumOfFiles);
 				latestDate = stats.latestDate;
 				//if ingest.complete reached then
-				if(stats.status==Status.Completed||stats.status==Status.Failed){
-					
+				if(stats.status== Status.Completed||stats.status== Status.Failed){
+
 					//create checkpoint
-					createCheckPoint(sipBasePath+"_"+(startSipNum)+".xml", statusUrl,numberOfSips, tmpHome);
-					
+				//	createCheckPoint(sipBasePath+"_"+(startSipNum)+".xml", statusUrl,numberOfSips, tmpHome);
+
 					//Get things ready for next SIP ingest if this is not the final SIP
 					startSipNum++;
 					if(startSipNum>numberOfSips)
@@ -645,9 +648,10 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
 					newSip = true;
 				}
 			}
-			
-			String message = "Ingest workflow for dataset "+ datasetTitle + " finished running successfully.";
-			return message;
+
+//			String message = "Ingest workflow for dataset "+ datasetTitle + " finished running successfully.";
+//			return message;
+			return statusUrl;
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -658,15 +662,17 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return "Ingest workflow failed";
+		//return "Ingest workflow failed";
+		return statusUrl;
 	}
-		
-			                      
-	int finishedFiles = 0;								       
+
+
+	int finishedFiles = 0;
+
 	private Stats checkStatus(String statusUrl, String submitterId, String datasetTitle, String wfInstanceId, Date latestDate, String sipBasePath, int totalNumOfEntities, int totalNumOfFiles){
-		
+
 		Map<Date, List<Event>> events = (new DepositServiceImpl()).statusUpdate(statusUrl, latestDate);
-		
+
 		List<Date> sortedDates = new ArrayList<Date>();
 		Map<Date,List<Event>> tempEvents = new HashMap<Date,List<Event>>(events);
 		Iterator iterator = tempEvents.entrySet().iterator();
@@ -676,13 +682,13 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
 			iterator.remove();
 		}
 		Stats stats = new Stats();
-		
+
 		Collections.sort(sortedDates);
 		String previousEvent = null;
 		int sortedDatesCount = 0;
 		for(Date date:sortedDates){
 			sortedDatesCount++;
-			if(date.after(latestDate)){
+			if(date.after(latestDate)||date.equals(latestDate)){
 					//get events from that date and fire events accordingly
 					int tmpEventsCount = 0;
 					List<Event> currentEvents = events.get(date);
@@ -692,11 +698,11 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
 							if(event.getEventType().equalsIgnoreCase(Events.FIXITY_DIGEST))//why are we skipping fixity digest?
 								continue;
 							//if complete, do something
-								
+
 								if(event.getEventType().equalsIgnoreCase("ingest.complete")){
 									stats.latestDate = latestDate;
 									stats.status = Status.Completed;
-									
+
 									ProvenanceRecord provRecord = new ProvenanceRecord();
 									String[] arr = sipBasePath.split("_sip")[0].split("/");
 									String datasetId = arr[arr.length-1];
@@ -704,23 +710,30 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
 									provRecord.setWfInstanceId(wfInstanceId);
 									provRecord.setDatasetTitle(datasetTitle);
 									provRecord.setSipId(statusUrl);
-									provRecord.setDate(latestDate);
+									provRecord.setDate(
+//											latestDate
+											event.getEventDate()
+											);
 									provRecord.setSubmitterId(submitterId);
 									provRecord.setStatus(org.dataconservancy.dcs.access.shared.Status.fromString(stats.status.getText()));
 									Event provEvent = new Event();
 									provEvent.setEventPercent(100);
 									provEvent.setEventType(event.getEventType());
-									provEvent.setEventDate(latestDate);
+									provEvent.setEventDate(
+//											latestDate
+											event.getEventDate()
+											);
+									provEvent.setEventDetail(event.getEventDetail());
 									provRecord.addEvent(provEvent);
-									
+
 									provDao.insertProvenanceRecord(provRecord);
-									
+
 									return stats;
-									//possibly re-submit?													
-									
+									//possibly re-submit?
+
 							}//if failed, do something
 							if(event.getEventType().contains("fail")){
-								
+
 								stats.latestDate = latestDate;
 								stats.status = Status.Failed;
 								ProvenanceRecord provRecord = new ProvenanceRecord();
@@ -730,37 +743,44 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
 								provRecord.setDatasetTitle(datasetTitle);
 								provRecord.setSipId(statusUrl);
 								provRecord.setWfInstanceId(wfInstanceId);
-								provRecord.setDate(latestDate);
+								provRecord.setDate(
+//										latestDate
+										event.getEventDate()
+										);
 								provRecord.setSubmitterId(submitterId);
 								provRecord.setStatus(org.dataconservancy.dcs.access.shared.Status.fromString(stats.status.getText()));
 								Event provEvent = new Event();
 								provEvent.setEventPercent(100);
 								provEvent.setEventType(event.getEventType());
-								provEvent.setEventDate(latestDate);
+								provEvent.setEventDate(
+//										latestDate
+										event.getEventDate()
+										);
+								provEvent.setEventDetail(event.getEventDetail());
 								provRecord.addEvent(provEvent);
-			
+
 								provDao.insertProvenanceRecord(provRecord);
 								return stats;
 							}
 							else{//else just insert new event values in the database possibly
-									
-								
+
+
 								stats.status = Status.Pending;
-								
-								if(previousEvent!=null&&previousEvent.equals(event.getEventType())&&Constants.multiEventMessages.contains(previousEvent))
+
+								if(previousEvent!=null&&previousEvent.equals(event.getEventType())&& Constants.multiEventMessages.contains(previousEvent))
 								{//Case #1 - continuation of an event
 									finishedFiles++;
 									int number = 0;
 									   if(Constants.multiEventCheck.get(event.getEventType())==1)
 										   number = totalNumOfFiles;
 									   else
-										   number = totalNumOfEntities; 
-									   
+										   number = totalNumOfEntities;
+
 									   //In the case below, we handle completion of a multi-event (finishedFiles==number) or completion of the list of events in which case the last event could have completed upto, say 60% - both inner and outer loop (sortedDatesCount==sortedDates.size()&&tmpEventsCount==tmpEvents.size())
-									if((sortedDatesCount==sortedDates.size()&&tmpEventsCount==currentEvents.size())||finishedFiles==number)//case #4 - 100% completion of a continued task 
-									{	
+									if((sortedDatesCount==sortedDates.size()&&tmpEventsCount==currentEvents.size())||finishedFiles==number)//case #4 - 100% completion of a continued task
+									{
 										event.setEventPercent(finishedFiles/number*100);
-										
+
 										ProvenanceRecord provRecord = new ProvenanceRecord();
 										String[] arr = sipBasePath.split("_sip")[0].split("/");
 										String datasetId = arr[arr.length-1];
@@ -775,6 +795,7 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
 										provEvent.setEventPercent(finishedFiles/number*100);
 										provEvent.setEventType(event.getEventType());
 										provEvent.setEventDate(latestDate);
+										provEvent.setEventDetail(event.getEventDetail());
 										provRecord.addEvent(provEvent);
 										provDao.insertProvenanceRecord(provRecord);
 										if(finishedFiles==number)
@@ -785,10 +806,11 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
 								else{
 									if(previousEvent==null){//case #2-First event
 									finishedFiles++;
-										
-										
+
+
 										if(!Constants.multiEventMessages.contains(event.getEventType())) //case #2.a - Done only once
 										{
+											System.out.println(event.getEventType());
 											event.setEventPercent(
 													//finishedFiles*100/1
 													-10
@@ -800,13 +822,20 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
 											provRecord.setDatasetTitle(datasetTitle);
 											provRecord.setSipId(statusUrl);
 											provRecord.setWfInstanceId(wfInstanceId);
-											provRecord.setDate(latestDate);
+											provRecord.setDate(
+//													latestDate
+													event.getEventDate()
+													);
 											provRecord.setSubmitterId(submitterId);
 											provRecord.setStatus(org.dataconservancy.dcs.access.shared.Status.fromString(stats.status.getText()));
 											Event provEvent = new Event();
 											provEvent.setEventType(event.getEventType());
 											provEvent.setEventPercent(100);
-											provEvent.setEventDate(latestDate);
+											provEvent.setEventDate(
+//													latestDate
+													event.getEventDate()
+													);
+											provEvent.setEventDetail(event.getEventDetail());
 											provRecord.addEvent(provEvent);
 											provDao.insertProvenanceRecord(provRecord);
 											finishedFiles = 0;
@@ -816,8 +845,8 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
 										//Do nothing
 											//till the event changes or till end of this event in the list - it might be done only 60% during this status check
 										}
-										
-										
+
+
 										previousEvent = event.getEventType();//else case #1
 									}
 									else if(!previousEvent.equals(event.getEventType())){//Case #3 - New event
@@ -835,13 +864,20 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
 											provRecord.setDatasetTitle(datasetTitle);
 											provRecord.setSipId(statusUrl);
 											provRecord.setWfInstanceId(wfInstanceId);
-											provRecord.setDate(latestDate);
+											provRecord.setDate(
+//													latestDate
+													event.getEventDate()
+													);
 											provRecord.setSubmitterId(submitterId);
 											provRecord.setStatus(org.dataconservancy.dcs.access.shared.Status.fromString(stats.status.getText()));
 											Event provEvent = new Event();
 											provEvent.setEventPercent(100);
 											provEvent.setEventType(event.getEventType());
-											provEvent.setEventDate(latestDate);
+											provEvent.setEventDate(
+//													latestDate
+													event.getEventDate()
+													);
+											provEvent.setEventDetail(event.getEventDetail());
 											provRecord.addEvent(provEvent);
 											provDao.insertProvenanceRecord(provRecord);
 											finishedFiles = 0;
@@ -852,7 +888,7 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
 												//till the event changes or till end of this event in the list - it might be done only 60% during this status check
 											}
 										previousEvent = event.getEventType();
-										
+
 									}
 								}
 
@@ -860,21 +896,21 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
 								//with 2 second gaps at the minimum
 							latestDate = date;
 						}
-								
-								
-									
+
+
+
 					}
-						
+
 							//Issues:
 							//Some ACR instance with ip 71.x.x.x (check) keeps querying without escaping - send email about it
 			}
 		stats.latestDate = latestDate;
 		return stats;
 	}
-	
+
     private AbderaClient getClient(String endpoint, String user, String pass)
             throws MalformedURLException, URISyntaxException {
-    	
+
     	AbderaClient   client = new AbderaClient(abdera);
 
         AbderaClient.registerTrustManager(); // needed for SSL
@@ -886,13 +922,13 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
                               "basic",
                               new UsernamePasswordCredentials(user, pass));
         return client;
-        
+
     }
 	@Override
 	public DatasetRelation getRelations() {
 		return relations;
 	}
-	
+
 	@Override
 	public int getFileNos() {
 		return relations.getFileAttrMap().size();
@@ -901,19 +937,23 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
 
 	@Override
 	public String getBag(String tagId, MediciInstance sparqlEndpoint, String bagitEp, String tmpHome) {
-		
+
 		String splitChar = "/";
 		if(!tagId.contains("/"))
 			 splitChar = ":";
 		String guid = tagId.split(splitChar)[tagId.split(splitChar).length-1];
-		
+
 		Client client = Client.create();
-		com.sun.jersey.api.client.WebResource webResource = client
-				   .resource(bagitEp + "bag/");
+		WebResource webResource = client
+				   .resource(
+						   //bagitEp + "bag/"
+						   "http://seadva-test.d2i.indiana.edu:8080/bagit/acrToBag/bag/"
+
+						   );
 
 	     MultivaluedMap<String, String> params = new MultivaluedMapImpl();
 	     params.add("sparqlEpEnum", String.valueOf(sparqlEndpoint.getId()));
-	
+
 	     com.sun.jersey.api.client.ClientResponse response = webResource
 	                .path(
 	                        URLEncoder.encode(
@@ -923,7 +963,7 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
 	                .queryParams(params)
 	                .accept("application/zip")
 	                .get(com.sun.jersey.api.client.ClientResponse.class);
-	 
+
         StringWriter writer = new StringWriter();
         try {
 			IOUtils.copy(response.getEntityInputStream(),new FileOutputStream(tmpHome+guid+".zip"));
@@ -940,10 +980,10 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
 
 	@Override
 	public String getSipFromBag(String bagPath, String sipPath, String bagitEp) {
-		
-		 
+
+
 		Client client = Client.create();
-		com.sun.jersey.api.client.WebResource webResource = client
+		WebResource webResource = client
 				   .resource(bagitEp + "sip/");
 
         File file = new File(bagPath);
@@ -993,7 +1033,7 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
 
             Collection<DcsFile> files = masterSip.getFiles();
 	        fileNos = files.size();
-	        if(fileNos>Constants.MAX)
+	        if(fileNos> Constants.MAX)
 	        {
 		        if(i==0){  //#1 Make a SIP out of all DUs
 		            sipNew.setDeliverableUnits(masterSip.getDeliverableUnits());
@@ -1024,7 +1064,7 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
 	
 		        for(DcsManifestation manifestation:masterSip.getManifestations()){
 		        	//If a manifestation contains more than the allowed maximum, we make an exception and allow all the files in the same package for the sake of simplicity
-		            if(manifestation.getManifestationFiles().size()>Constants.MAX){
+		            if(manifestation.getManifestationFiles().size()> Constants.MAX){
 		            	ResearchObject sipTemp = new ResearchObject();
 		                sipTemp.addManifestation(manifestation);
 		                
@@ -1046,7 +1086,7 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
 		            }
 		            else{ //Otherwise we limit the number of files in a package to less than/equal to the MAX
 	
-		                if(fileCount+manifestation.getManifestationFiles().size()>Constants.MAX)
+		                if(fileCount+manifestation.getManifestationFiles().size()> Constants.MAX)
 		                {
 		                    String sipFileName = sipFilePath+"_" + i + ".xml";
 		                    File sipFile = new File(sipFileName);

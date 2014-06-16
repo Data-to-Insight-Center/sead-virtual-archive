@@ -16,40 +16,32 @@
 
 package org.dataconservancy.dcs.access.client.presenter;
 
-import java.io.IOException;
-
-import org.dataconservancy.dcs.access.client.SeadApp;
-import org.dataconservancy.dcs.access.client.api.GoogleHelper;
-import org.dataconservancy.dcs.access.client.api.GoogleHelperAsync;
-import org.dataconservancy.dcs.access.client.api.UserService;
-import org.dataconservancy.dcs.access.client.api.UserServiceAsync;
-import org.dataconservancy.dcs.access.client.upload.Util;
-import org.dataconservancy.dcs.access.client.view.LoginView.UserDetails;
-import org.dataconservancy.dcs.access.shared.Authentication;
-import org.dataconservancy.dcs.access.shared.GoogleDetails;
-import org.dataconservancy.dcs.access.shared.OAuthType;
-import org.dataconservancy.dcs.access.shared.UserSession;
-
-import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
-import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.api.gwt.oauth2.client.Auth;
 import com.google.api.gwt.oauth2.client.AuthRequest;
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.TabPanel;
+import com.google.gwt.user.client.ui.*;
+import org.dataconservancy.dcs.access.client.SeadApp;
+import org.dataconservancy.dcs.access.client.api.*;
+import org.dataconservancy.dcs.access.client.ui.ErrorPopupPanel;
+import org.dataconservancy.dcs.access.client.ui.LoginPopupPanel.UserLoginDetails;
+import org.dataconservancy.dcs.access.client.ui.LoginPopupPanel.UserRegisterDetails;
+import org.dataconservancy.dcs.access.client.upload.Util;
+import org.dataconservancy.dcs.access.shared.*;
+
+import java.util.Set;
 
 public class LoginPresenter implements Presenter {
 
 	Display display;
-	UserDetails ud;
+	UserLoginDetails userLoginDetails;
+	UserRegisterDetails userRegisterDetails;
 	String deposit_endpoint ;
 	String deposit_user ;
     String deposit_pass ;
@@ -65,8 +57,15 @@ public class LoginPresenter implements Presenter {
             GWT.create(UserService.class);
     static final GoogleHelperAsync googleHelper =
             GWT.create(GoogleHelper.class);
+    
+    static final VivoSparqlServiceAsync vivo =
+            GWT.create(VivoSparqlService.class);
+	public static final RegistryServiceAsync registryService =
+            GWT.create(RegistryService.class);
+
+	
 	boolean login = false ;  
-	Panel loginTab;
+//	Panel loginTab;
 	
 	Label errorLabel;
 	Button googleLogin;
@@ -81,11 +80,16 @@ public class LoginPresenter implements Presenter {
 		TabPanel getLoginPanel();
 		Panel getLoginTab();
 		Button getLoginButton();
-		Label getRegisterLabel();
-		UserDetails getUserDetails();
+		Button getRegisterButton();
+		UserLoginDetails getUserLoginDetails();
+		UserRegisterDetails getUserRegisterDetails();
 		Label getError();
 		Label getUserLabel();
 		Button getGoogleLogin();
+		void hide1();
+		SuggestBox getSuggestBox();
+		DisclosurePanel getDisclosurePanel();
+		Grid getRegisterForm();
 	   
 	  }
 	public LoginPresenter(Display view)
@@ -95,35 +99,94 @@ public class LoginPresenter implements Presenter {
 	@Override
 	public void bind() {
 		
-		ud = this.display.getUserDetails();
-		loginTab = this.display.getLoginTab();
+		
+//		loginTab = this.display.getLoginTab();
 		errorLabel = this.display.getError();
 		userNameLbl = this.display.getUserLabel();
 		googleLogin = this.display.getGoogleLogin();
+		userLoginDetails = display.getUserLoginDetails();
+		userRegisterDetails = display.getUserRegisterDetails();
 		Auth.export();
 		
-		ClickHandler  register =  new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				History.newItem("register");
+		this.display.getDisclosurePanel().addOpenHandler(new OpenHandler<DisclosurePanel>() {
+			
+			@Override
+			public void onOpen(OpenEvent<DisclosurePanel> event) {
+				vivo.getPeople(new AsyncCallback<Set<Person>>() {
+					
+					@Override
+					public void onSuccess(Set<Person> result) {
+						MultiWordSuggestOracle oracle = new MultiWordSuggestOracle();
+						for(Person person: result){
+							oracle.add(person.getFirstName()+" "+person.getLastName()+";"
+									+person.getEmailAddress());
+						}
+						userRegisterDetails.suggestBox = new SuggestBox(oracle);
+						userRegisterDetails.suggestBox.ensureDebugId("cwSuggestBox");
+						display.getRegisterForm().setWidget(6, 1, userRegisterDetails.suggestBox);
+					}
+					
+					@Override
+					public void onFailure(Throwable caught) {
+						// TODO Auto-generated method stub
+						
+					}
+				});
 			}
+		});
+		
+		
+		ClickHandler register =  new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				
+
+         		AsyncCallback<String> cb =
+                         new AsyncCallback<String>() {
+
+                             public void onSuccess(String result) {
+                                 if(result.equalsIgnoreCase("success")){
+                                	 display.getDisclosurePanel().setOpen(false);
+                                	 errorLabel.setText("You have requested an account. Please wait for an administrator to provide you the necessary authorization.");
+                                 }
+                            	 else
+                            		userRegisterDetails.errorMessage.setText("Error: "+result+" Please try again.");
+                            		 
+                             }
+
+                             public void onFailure(Throwable error) {
+                            	 new ErrorPopupPanel("Failed to register: "
+                                         + error.getMessage()).show();
+                             }
+
+    						
+                         };
+                         
+               user.register(userRegisterDetails.firstName.getText(), userRegisterDetails.lastName.getText(), userRegisterDetails.email.getText(),
+            		   userRegisterDetails.password.getText(),userRegisterDetails.confirmPassword.getText(), SeadApp.admins,
+            		   userRegisterDetails.suggestBox.getText(),//vivoId
+            		   cb);
+    	     	
+         	 }
 		};
-		this.display.getRegisterLabel().addClickHandler(register);
+		this.display.getRegisterButton().addClickHandler(register);
 		
 		final AsyncCallback<Authentication> authenticateCB =
                   new AsyncCallback<Authentication>() {
 
                       public void onSuccess(Authentication result) {
+                    	
                         if(result.authResult())
                         {
-                        	loginTab.clear();
-                        	logoutLbl = Util.label("Logout","LogoutButton");
+//                        	loginTab.clear();
+                        	display.hide1();
+                        	logoutLbl = Util.label("Logout", "LogoutButton");
                     		ClickHandler logout = new ClickHandler() {
                     			
                     			@Override
                     			public void onClick(ClickEvent event) {
-                    				lPanel.clear();
+                    			//	lPanel.clear();
                     				AUTH.clearAllTokens(); 
-                    				Label loginLabel = Util.label("Sign In/ Register","LogoutButton");
+                    				Label loginLabel = Util.label("Sign In/ Register", "LogoutButton");
                     			        
                     			        loginLabel.addClickHandler(new ClickHandler() {
                     						
@@ -144,22 +207,15 @@ public class LoginPresenter implements Presenter {
 								
 								@Override
 								public void onSuccess(UserSession result) {
-									String displayName = "";
-									if(result.getfName()!=null)
-										displayName = result.getfName();
-									if(result.getlName()!=null)
-										displayName += " "+result.getlName();
-								
-									userNameLbl.setText(displayName);
-									lPanel.add(userNameLbl);
+							
 									
-		                    		lPanel.add(logoutLbl);
+		                    	//	lPanel.add(logoutLbl);
 		                          	History.newItem("upload");
 								}
 								
 								@Override
 								public void onFailure(Throwable caught) {
-									Window.alert(caught.getMessage());
+									new ErrorPopupPanel("Error:"+caught.getMessage()).show();
 								}
 							});
                     		
@@ -172,8 +228,8 @@ public class LoginPresenter implements Presenter {
                       }
 
                       public void onFailure(Throwable error) {
-                          Window.alert("Failed to login: "
-                                  + error.getMessage());
+                    	  new ErrorPopupPanel("Error: "
+                                  + error.getMessage()).show();
                       }
                   };
         
@@ -182,8 +238,8 @@ public class LoginPresenter implements Presenter {
 				
 	            public void onClick(ClickEvent arg0) {
 
-	            	deposit_user = ud.user_tb.getText();
-                    deposit_pass = ud.pass_tb.getText();
+	            	deposit_user = userLoginDetails.user_tb.getText();
+                    deposit_pass = userLoginDetails.pass_tb.getText();
 	                user.authenticate(deposit_endpoint, deposit_user, deposit_pass, authenticateCB);
                    
 	            }
@@ -199,7 +255,7 @@ public class LoginPresenter implements Presenter {
 
 							@Override
 							public void onFailure(Throwable caught) {
-								Window.alert("Unable to retrieve client id");
+								new ErrorPopupPanel("Unable to retrieve client id:"+caught.getMessage()).show();
 							}
 
 							@Override
@@ -216,7 +272,7 @@ public class LoginPresenter implements Presenter {
 
 					          @Override
 					          public void onFailure(Throwable caught) {
-					            Window.alert("Error:\n" + caught.getMessage());
+					        	  new ErrorPopupPanel("Error:" + caught.getMessage()).show();
 					          }
 					        
 					        });
@@ -233,7 +289,7 @@ public class LoginPresenter implements Presenter {
 	public void display(Panel mainContainer, Panel facetContent, Panel headerPanel, Panel logoutPanel, Panel notifcationPanel) {
 		mainContainer.clear();
 		facetContent.clear();
-		lPanel = logoutPanel;
+		this.lPanel = logoutPanel;
 		bind();
 		mainContainer.add(this.display.getLoginPanel());
 	}

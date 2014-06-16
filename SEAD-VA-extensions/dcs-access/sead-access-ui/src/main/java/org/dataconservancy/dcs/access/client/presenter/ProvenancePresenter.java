@@ -16,16 +16,15 @@
 
 package org.dataconservancy.dcs.access.client.presenter;
 
-import org.dataconservancy.dcs.access.client.SeadApp;
-import org.dataconservancy.dcs.access.client.model.ProvenanceDS;
-import org.dataconservancy.dcs.access.shared.UserSession;
-
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Panel;
 import com.smartgwt.client.widgets.tree.TreeGrid;
 import com.smartgwt.client.widgets.tree.TreeGridField;
+import org.dataconservancy.dcs.access.client.SeadApp;
+import org.dataconservancy.dcs.access.client.model.ProvenanceDS;
+import org.dataconservancy.dcs.access.shared.UserSession;
 
 public class ProvenancePresenter implements Presenter {
 
@@ -49,7 +48,7 @@ public class ProvenancePresenter implements Presenter {
 			public void onSuccess(UserSession result) {
 				
 				TreeGrid treeGrid =  new TreeGrid();
-				ProvenanceDS provDS = ProvenanceDS.getInstance(result.getEmail()); 
+				ProvenanceDS provDS = ProvenanceDS.getInstance(result.getEmail());
 		        treeGrid.setDataSource(provDS);
 		        
 				treeGrid.setStyleName("Center");
@@ -64,16 +63,17 @@ public class ProvenancePresenter implements Presenter {
 		        treeGrid.setCanFreezeFields(true);  
 		        treeGrid.setCanReparentNodes(true);          
 		  
-		        TreeGridField nameField = new TreeGridField("id");  
-		        nameField.setFrozen(true);  
+		        TreeGridField idField = new TreeGridField("id");  
+		        idField.setFrozen(true);  
 		  
-		        TreeGridField jobField = new TreeGridField("name");  
-		        TreeGridField employeeTypeField = new TreeGridField("type");  
-		        TreeGridField employeeStatusField = new TreeGridField("status");  
-		        TreeGridField salaryField = new TreeGridField("date");  
+		        TreeGridField nameField = new TreeGridField("name");  
+		        TreeGridField typeField = new TreeGridField("type");  
+		        TreeGridField statusField = new TreeGridField("status"); 
+		        TreeGridField detailField = new TreeGridField("detail"); 
+		        TreeGridField dateField = new TreeGridField("date");  
 		        
-		        treeGrid.setFields(nameField, jobField, employeeTypeField,employeeStatusField,  
-		                salaryField);  
+		        treeGrid.setFields(idField, nameField, typeField, statusField, detailField,  
+		                dateField);  
 				
 		        treeGrid.draw();
 		        provPanel.remove(image);
@@ -81,7 +81,7 @@ public class ProvenancePresenter implements Presenter {
 			}
 			@Override
 			public void onFailure(Throwable caught) {
-				Window.alert("Failed:"+caught.getMessage());
+				Window.alert("Failed:" + caught.getMessage());
 			}
         });
 	}

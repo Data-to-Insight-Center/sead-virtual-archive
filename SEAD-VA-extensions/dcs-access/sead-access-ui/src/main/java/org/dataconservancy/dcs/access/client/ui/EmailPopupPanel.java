@@ -16,32 +16,25 @@
 
 package org.dataconservancy.dcs.access.client.ui;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.*;
 import org.dataconservancy.dcs.access.client.SeadApp;
 import org.dataconservancy.dcs.access.client.api.DepositService;
 import org.dataconservancy.dcs.access.client.api.DepositServiceAsync;
 import org.dataconservancy.dcs.access.client.api.UserService;
 import org.dataconservancy.dcs.access.client.api.UserServiceAsync;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
- 
 public class EmailPopupPanel extends PopupPanel {
  private Grid grid = new Grid(1, 2);
  private Grid buttonGrid = new Grid(1, 2);
  private String emailId = "";
  TextBox emailBox;
  
- public EmailPopupPanel(final String entityId) {
+ public EmailPopupPanel(final String entityId, String emailAddress) {
  super(false);
  grid.getRowFormatter().setStyleName(0, "emailPopupPanelText");
 // grid.setColumnWidth(0, 40, Unit.PX);
@@ -53,6 +46,8 @@ public class EmailPopupPanel extends PopupPanel {
  setStyleName("emailPopupPanelContainer");
  emailBox = new TextBox();
  emailBox.setStyleName("textbox");
+ if(emailAddress!=null)
+	 emailBox.setText(emailAddress);
  grid.setStyleName("Middle");
  buttonGrid.setStyleName("Middle");
  grid.setWidget(0, 1, emailBox);
@@ -153,7 +148,7 @@ public class EmailPopupPanel extends PopupPanel {
  cancel.addClickHandler(new ClickHandler() {
 		
 		@Override
-		public void onClick(ClickEvent event) {	
+		public void onClick(ClickEvent event) {
 			emailId = "";
 			hidePanel();
 		}

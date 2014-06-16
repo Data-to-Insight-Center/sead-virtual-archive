@@ -17,37 +17,27 @@
 package org.dataconservancy.dcs.access.client.ui;
 
 
-import java.util.UUID;
-
-import org.dataconservancy.dcs.access.client.SeadApp;
-import org.dataconservancy.dcs.access.client.api.MediciService;
-import org.dataconservancy.dcs.access.client.api.MediciServiceAsync;
-import org.dataconservancy.dcs.access.server.MediciServiceImpl;
-import org.dataconservancy.dcs.access.shared.UserSession;
-
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.FileUpload;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.Hidden;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
+import org.dataconservancy.dcs.access.client.SeadApp;
+import org.dataconservancy.dcs.access.client.Util;
+import org.dataconservancy.dcs.access.client.event.EntityEditEvent;
+import org.dataconservancy.dcs.access.client.model.JsDcp;
+import org.dataconservancy.dcs.access.client.model.JsSearchResult;
+import org.dataconservancy.dcs.access.client.view.PublishDataView;
 
 public class UploadBagDialog {
 
 	DialogBox dBox;
-	public static final MediciServiceAsync mediciService = GWT.create(MediciService.class);
+
 	
-	public UploadBagDialog(String bagUrl)
+	public UploadBagDialog(String bagUrl
+						//, final CaptionPanel researchObjectPanel, final Button ingestButton
+						)
 	{
 		dBox = new DialogBox(false, true);
 
@@ -110,65 +100,22 @@ public class UploadBagDialog {
                     dBox.hide();
                     return;
                 }
-
-                String[] parts = event.getResults().split("\\^");
-
-                if (parts.length != 3) {
-                    Window.alert("File upload failed: " + event.getResults());
-                    dBox.hide();
-                    return;
-                }
-
-                final String sipPath = parts[1].trim();
+              
+                String[] tempString = event.getResults().split(";");
+                final String sipPath = tempString[tempString.length-1].split("<")[0];
+                String jsonString = event.getResults();
+                jsonString = jsonString.substring(jsonString.indexOf('{'), jsonString.lastIndexOf('}')+1);
+              
                 dBox.hide();
-                SeadApp.userService.checkSession(null, new AsyncCallback<UserSession>() {
-        			
-        			@Override
-        			public void onSuccess(final UserSession userSession) {
-        				 mediciService.generateWfInstanceId(new AsyncCallback<String>() {
-        						
-        						@Override
-        						public void onSuccess(final String wfInstanceId) {
-        							WfEventRefresherPanel eventRefresher = new WfEventRefresherPanel(userSession.getEmail(), wfInstanceId);
-        							eventRefresher.show();
-        							mediciService.submitMultipleSips(
-        					                SeadApp.deposit_endpoint + "sip",
-        					                null,
-        									null,
-        									sipPath.replace("_0.xml", ""), 
-        									wfInstanceId,
-        									null,
-        									0, 0, "", "", false, GWT.getModuleBaseURL(),SeadApp.tmpHome,
-        									new AsyncCallback<String>() {
-        										
-        										@Override
-        										public void onSuccess(String result) {
-//        											Window.alert("Done:" + result);
-        											MessagePopupPanel popUpPanel = new MessagePopupPanel(result, "done", true);
-        											popUpPanel.show();
-        										}
-        										
-        										@Override
-        										public void onFailure(Throwable caught) {
-        											;
-        										}
-        									});
-        						}
-        						
-        						@Override
-        						public void onFailure(Throwable caught) {
-        							;
-        						}
-        					});
-        	            }
-
-					@Override
-					public void onFailure(Throwable caught) {
-						// TODO Auto-generated method stub
-						
-					}
-        	        });
+        		
+                JsDcp dcp = JsDcp.create();
+	            JsSearchResult result = JsSearchResult.create(jsonString);
+	            for (int i = 0; i < result.matches().length(); i++) {
+                    Util.add(dcp, result.matches().get(i));
+                }
+	            	           
+		        PublishDataView.EVENT_BUS.fireEvent(new EntityEditEvent(dcp, true, sipPath));
             }
         });
-	}   
+	}
 }

@@ -16,37 +16,27 @@
 
 package org.dataconservancy.dcs.access.client.ui;
 
+import com.google.gwt.event.dom.client.*;
+import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.ui.*;
 import org.dataconservancy.dcs.access.client.SeadState;
 import org.dataconservancy.dcs.access.client.Search;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
+public class SeadAdvancedSearchWidget extends Composite {
 
-public class SeadAdvancedSearchWidget extends Composite{
+    FlowPanel advancedPanel;
+    public SeadAdvancedSearchWidget(Search.UserField[] userfields,
+                                    String[] userqueries) {
 
-	FlowPanel advancedPanel;
-	public SeadAdvancedSearchWidget(Search.UserField[] userfields,
-            String[] userqueries) {
-    
-		advancedPanel = new FlowPanel();
-		initWidget(advancedPanel);
+        advancedPanel = new FlowPanel();
+        advancedPanel.setStyleName("advancedSearchPanel");
+        initWidget(advancedPanel);
         Button search = new Button("Search");
 
         final FlexTable table = new FlexTable();
 
-        Button add = new Button("Add field");
+        final Button add = new Button("<image src='images/add.ico'>");
+        add.addStyleName("addRemoveButton");
 
         advancedPanel.add(table);
 
@@ -99,12 +89,12 @@ public class SeadAdvancedSearchWidget extends Composite{
                 int row = table.getRowCount();
 
                 TextBox tb = new TextBox();
-                tb.setStyleName("Pad");
+                //tb.setStyleName("SimpleTextBox");
                 table.setWidget(row, 0, tb);
                 table.setWidget(row, 1, new Label("in"));
                 table.setWidget(row, 2 , createAdvancedSearchFieldSelector());
 
-                
+
 
                 tb.addKeyDownHandler(new KeyDownHandler() {
 
@@ -115,9 +105,13 @@ public class SeadAdvancedSearchWidget extends Composite{
                     }
                 });
 
-                final Button remove = new Button("Remove");
-
+                
+                //final Button remove = new Button("Remove");
+                final Button remove = new Button("<image src='images/remove.png'>");
+                remove.addStyleName("addRemoveButton");
+                
                 table.setWidget(row, 3, remove);
+                table.setWidget(row, 4 , add);
 
                 remove.addClickHandler(new ClickHandler() {
 
@@ -144,7 +138,6 @@ public class SeadAdvancedSearchWidget extends Composite{
                 addlistener.onClick(null);
 
                 ListBox lb = (ListBox) table.getWidget(row,2);
-                lb.setItemSelected(userfields[i].ordinal(), true);
                 TextBox tb = (TextBox) table.getWidget(row, 0);
                 tb.setText(userqueries[i]);
             }
@@ -153,18 +146,20 @@ public class SeadAdvancedSearchWidget extends Composite{
         }
 
         HorizontalPanel hp = new HorizontalPanel();
+        hp.setHorizontalAlignment(HorizontalPanel.ALIGN_RIGHT);
         hp.setSpacing(5);
-        hp.add(add);
+        //hp.add(add);
         hp.add(search);
 
         advancedPanel.add(hp);
+        hp.setWidth("80%");	// 80% to align hp to the right of AdvancedPanel
         search.addClickHandler(searchlistener);
 
     }
 
-	ListBox createAdvancedSearchFieldSelector() {
+    ListBox createAdvancedSearchFieldSelector() {
         ListBox lb = new ListBox();
-        lb.setStyleName("Pad");
+        //lb.setStyleName("SimpleTextBox");
 
         for (Search.UserField uf : Search.UserField.values()) {
             lb.addItem(uf.display);

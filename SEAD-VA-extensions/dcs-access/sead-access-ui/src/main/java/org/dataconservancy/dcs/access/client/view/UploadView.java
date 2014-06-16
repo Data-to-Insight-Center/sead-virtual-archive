@@ -1,55 +1,30 @@
 package org.dataconservancy.dcs.access.client.view;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.*;
+import com.google.gwt.xml.client.Element;
+import com.google.gwt.xml.client.NodeList;
+import com.google.gwt.xml.client.XMLParser;
 import org.dataconservancy.dcs.access.client.SeadApp;
 import org.dataconservancy.dcs.access.client.Util;
 import org.dataconservancy.dcs.access.client.api.DepositService;
 import org.dataconservancy.dcs.access.client.api.DepositServiceAsync;
 import org.dataconservancy.dcs.access.client.api.MediciService;
 import org.dataconservancy.dcs.access.client.api.MediciServiceAsync;
-import org.dataconservancy.dcs.access.client.ui.UploadBagDialog;
-import org.dataconservancy.dcs.access.client.ui.UploadCollectionDialog;
 import org.dataconservancy.dcs.access.client.ui.UploadFileDialog;
 import org.dataconservancy.dcs.access.client.upload.CollectionEditor;
 import org.dataconservancy.dcs.access.client.upload.DeliverableUnitEditor;
 import org.dataconservancy.dcs.access.client.upload.FileEditor;
 import org.dataconservancy.dcs.access.client.upload.model.Package;
 import org.dataconservancy.dcs.access.client.upload.model.Repository;
-import org.dataconservancy.dcs.access.shared.MediciInstance;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.Hidden;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.TabPanel;
-import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.xml.client.Element;
-import com.google.gwt.xml.client.NodeList;
-import com.google.gwt.xml.client.XMLParser;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UploadView extends Composite implements org.dataconservancy.dcs.access.client.presenter.UploadPresenter.Display{
 	
@@ -151,13 +126,14 @@ public class UploadView extends Composite implements org.dataconservancy.dcs.acc
         
         filesTab.add(files);
         filesTab.add(buttons);
-        
+        /*
         uploadBag.addClickHandler(new ClickHandler() {
 
 	        public void onClick(ClickEvent event) {
-	            new UploadBagDialog(SeadApp.bagIturl);
+	            new UploadBagDialog(SeadApp.bagIturl, filesTab, null);
+	            
 	        }
-        });
+        });*/
 
         remove.addClickHandler(new ClickHandler() {
 
@@ -191,7 +167,7 @@ public class UploadView extends Composite implements org.dataconservancy.dcs.acc
             upload.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                new UploadFileDialog(files,fileids,SeadApp.deposit_endpoint + "file");
+                new UploadFileDialog(files,fileids, SeadApp.deposit_endpoint + "file");
             }
         });
             
@@ -220,7 +196,7 @@ public class UploadView extends Composite implements org.dataconservancy.dcs.acc
 	        deliverablesTab
 	                .add(Util
 	                        .label("A Deliverable Unit is a semantically meaningful container for files and metadata.",
-	                               "Explanation"));
+                                    "Explanation"));
 	     
 	        deliverablesTab.add(dus);
 

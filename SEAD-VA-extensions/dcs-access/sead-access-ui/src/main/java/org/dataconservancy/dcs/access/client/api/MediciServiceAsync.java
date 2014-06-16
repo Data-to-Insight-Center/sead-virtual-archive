@@ -16,16 +16,14 @@
 
 package org.dataconservancy.dcs.access.client.api;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.dataconservancy.dcs.access.client.model.DatasetRelation;
 import org.dataconservancy.dcs.access.shared.CheckPointDetail;
 import org.dataconservancy.dcs.access.shared.MediciInstance;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public interface MediciServiceAsync {
@@ -34,26 +32,26 @@ public interface MediciServiceAsync {
 	
 	void getRelations(AsyncCallback<DatasetRelation> callback);
 	void toVAmodel(String id, String parent, MediciInstance sparqlEp, String tmpHome,
-			AsyncCallback<Void> callback);
+                   AsyncCallback<Void> callback);
 	void getBag(String tagId, MediciInstance sparqlEndpoint, String bagitEp,
-			String tmpHome, AsyncCallback<String> callback);
+                String tmpHome, AsyncCallback<String> callback);
 	void getSipFromBag(String bagPath, String sipPath, String bagitEp,
-			AsyncCallback<String> callback);
+                       AsyncCallback<String> callback);
 	void addMetadata(String fileSrc, String sipFilePath,
-			AsyncCallback<Void> callback);
+                     AsyncCallback<Void> callback);
 	void splitSip(String sip, AsyncCallback<Integer> callback);
 	void getFileNos(AsyncCallback<Integer> callback);
 	void restartIngest(String datasetId, String tmpHome,
-			AsyncCallback<CheckPointDetail> callback);
+                       AsyncCallback<CheckPointDetail> callback);
 	void submitMultipleSips(String sipEndpoint, String datasetId,
-			MediciInstance sparqlInstance, String sipBasePath,
-			String wfInstanceId, List<String> perviousUrls, int startSipNum,
-			int numberOfSips, String username, String pass,
-			boolean restrictAccess, String baseUrl, String tmpHome,
-			AsyncCallback<String> callback);
+                            MediciInstance sparqlInstance, String sipBasePath,
+                            String wfInstanceId, List<String> perviousUrls, int startSipNum,
+                            int numberOfSips, String username, String pass,
+                            boolean restrictAccess, String baseUrl, String tmpHome,
+                            boolean submitMultipleSips, AsyncCallback<String> callback);
 	void generateWfInstanceId(AsyncCallback<String> callback);
 	void parseJson(String json, AsyncCallback<Map<String, String>> callback);
-	void getAcrInstances(AsyncCallback<List<MediciInstance>> callback); 
+	void getAcrInstances(AsyncCallback<List<MediciInstance>> callback);
 	
 	
 }
