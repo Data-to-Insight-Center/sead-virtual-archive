@@ -20,9 +20,9 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.apache.commons.io.FileUtils;
 import org.dataconservancy.model.dcs.*;
 import org.dspace.foresite.*;
-import org.seadva.bagit.model.PackageDescriptor;
 import org.seadva.bagit.event.api.Handler;
 import org.seadva.bagit.model.MediciInstance;
+import org.seadva.bagit.model.PackageDescriptor;
 import org.seadva.bagit.util.Constants;
 import org.seadva.model.SeadDeliverableUnit;
 import org.seadva.model.SeadFile;
@@ -39,7 +39,7 @@ import java.util.*;
 /**
  * Handler to generate SIP from ORE
  */
-public class SipGenerationHandler implements Handler{
+public class SipGenerationHandler implements Handler {
 
     private static Predicate DC_TERMS_IDENTIFIER = null;
     private static Predicate DC_TERMS_SOURCE = null;
@@ -174,9 +174,13 @@ public class SipGenerationHandler implements Handler{
     @Override
     public PackageDescriptor execute(PackageDescriptor packageDescriptor) {
         try {
-            generateSIP( packageDescriptor.getPackageId(), null, packageDescriptor.getUnzippedBagPath());
+
+            if(packageDescriptor.getAggregationId()==null)
+                packageDescriptor.setAggregationId(packageDescriptor.getPackageId());
+
+            generateSIP(packageDescriptor.getPackageId(), packageDescriptor.getAggregationId(), null, packageDescriptor.getUnzippedBagPath());
             String sipPath =
-                    packageDescriptor.getUnzippedBagPath() +"sip.xml";
+                    packageDescriptor.getUnzippedBagPath() +"/"+ packageDescriptor.getPackageId() + "_sip.xml";
 
             File sipFile = new File(sipPath);
 
@@ -195,14 +199,14 @@ public class SipGenerationHandler implements Handler{
 
 
     ResearchObject sip = new ResearchObject();
-    public void generateSIP(String collectionId, String parentId, String unzippedDir) throws FileNotFoundException {//top collection id
+    public void generateSIP(String packageId, String collectionId, String parentId, String unzippedDir) throws FileNotFoundException {//top collection id
 
 
         try{
             collectionId = collectionId.split("/")[collectionId.split("/").length-1];
             String duId = collectionId;
 
-            InputStream input = new FileInputStream(new File(unzippedDir +"/"+ collectionId + "_oaiore.xml"));
+            InputStream input = new FileInputStream(new File(unzippedDir +"/"+ packageId + "_oaiore.xml"));
             OREParser parser = OREParserFactory.getInstance("RDF/XML");
             ResourceMap rem = parser.parse(input);
 
@@ -213,11 +217,12 @@ public class SipGenerationHandler implements Handler{
 
                 du = FgdcGenerator.fromFGDC(unzippedDir + fgdcFilePath[fgdcFilePath.length - 1], du);
             }*/
+
             if(du.getTitle()==null){
                 TripleSelector titleSelector = new TripleSelector();
-                titleSelector.setSubjectURI(rem.getURI());
+                titleSelector.setSubjectURI(rem.getAggregation().getURI());
                 titleSelector.setPredicate(DC_TERMS_TITLE);
-                List<Triple> titleTriples = rem.listAllTriples(titleSelector);
+                List<Triple> titleTriples = rem.getAggregation().listAllTriples(titleSelector);
 
                 if(titleTriples.size()>0){
                     du.setTitle(titleTriples.get(0).getObjectLiteral());
@@ -225,48 +230,68 @@ public class SipGenerationHandler implements Handler{
             }
 
             TripleSelector idSelector = new TripleSelector();
-            idSelector.setSubjectURI(rem.getURI());
+            idSelector.setSubjectURI(rem.getAggregation().getURI());
             idSelector.setPredicate(DC_TERMS_IDENTIFIER);
-            List<Triple> idTriples = rem.listAllTriples(idSelector);
+            List<Triple> idTriples = rem.getAggregation().listAllTriples(idSelector);
 
             if(idTriples.size()>0){
-                duId = idTriples.get(0).getObjectLiteral().replace("_Aggregation", "");
+                for(Triple triple:idTriples){
+                     if(triple.getObjectLiteral().contains("doi")){
+                        DcsResourceIdentifier alternateId = new DcsResourceIdentifier();
+                        alternateId.setIdValue(triple.getObjectLiteral());
+                        alternateId.setTypeId("doi");
+                        du.addAlternateId(alternateId);
+                    }
+                     else if(triple.getObjectLiteral().contains("medici")){
+                         DcsResourceIdentifier alternateId = new DcsResourceIdentifier();
+                         alternateId.setIdValue(triple.getObjectLiteral());
+                         alternateId.setTypeId("medici");
+                         du.addAlternateId(alternateId);
+                     }else{
+                         duId = triple.getObjectLiteral().replace("_Aggregation", "");
+                     }
+                }
             }
 
             du.setId(duId);
 
             TripleSelector abstractSelector = new TripleSelector();
-            abstractSelector.setSubjectURI(rem.getURI());
+            abstractSelector.setSubjectURI(rem.getAggregation().getURI());
             abstractSelector.setPredicate(DC_TERMS_ABSTRACT);
-            List<Triple> abstractTriples = rem.listAllTriples(abstractSelector);
+            List<Triple> abstractTriples = rem.getAggregation().listAllTriples(abstractSelector);
 
             if(abstractTriples.size()>0){
                 du.setAbstrct(abstractTriples.get(0).getObjectLiteral());
             }
 
             TripleSelector typeSelector = new TripleSelector();
-            typeSelector.setSubjectURI(rem.getURI());
+            typeSelector.setSubjectURI(rem.getAggregation().getURI());
             typeSelector.setPredicate(DC_TERMS_TYPE);
-            List<Triple> typeTriples = rem.listAllTriples(typeSelector);
+            List<Triple> typeTriples = rem.getAggregation().listAllTriples(typeSelector);
 
             if(typeTriples.size()>0){
 
-                for(MediciInstance instance: Constants.acrInstances){
-                    if(instance.getType().equalsIgnoreCase(typeTriples.get(0).getObjectLiteral())) {
-                        DcsResourceIdentifier duAltId = new DcsResourceIdentifier();
-                        duAltId.setIdValue(duId);
-                        duAltId.setTypeId(instance.getType());
-                        du.addAlternateId(duAltId);
-                        break;
+                if(Constants.acrInstances!=null) {
+                    for(MediciInstance instance: Constants.acrInstances){
+                        if(instance.getType().equalsIgnoreCase(typeTriples.get(0).getObjectLiteral())) {
+                            DcsResourceIdentifier duAltId = new DcsResourceIdentifier();
+                            duAltId.setIdValue(duId);
+                            duAltId.setTypeId(instance.getType());
+                            du.addAlternateId(duAltId);
+                            break;
+                        }
                     }
+                }
+                else{
+                    du.setType(typeTriples.get(0).getObjectLiteral());
                 }
             }
 
             //get any metadata file associated
             TripleSelector tripleSelector = new TripleSelector();
-            tripleSelector.setSubjectURI(rem.getURI());
+            tripleSelector.setSubjectURI(rem.getAggregation().getURI());
             tripleSelector.setPredicate(CITO_IS_DOCUMENTED_BY);
-            List<Triple> metadataTriples = rem.listAllTriples(tripleSelector);
+            List<Triple> metadataTriples = rem.getAggregation().listAllTriples(tripleSelector);
 
             if(metadataTriples!=null && metadataTriples.size()>0){
                 for(Triple metadataTriple: metadataTriples){
@@ -277,9 +302,9 @@ public class SipGenerationHandler implements Handler{
             }
 
             TripleSelector refTripleSelector = new TripleSelector();
-            refTripleSelector.setSubjectURI(rem.getURI());
+            refTripleSelector.setSubjectURI(rem.getAggregation().getURI());
             refTripleSelector.setPredicate(DC_REFERENCES);
-            metadataTriples = rem.listAllTriples(refTripleSelector);
+            metadataTriples = rem.getAggregation().listAllTriples(refTripleSelector);
 
             if(metadataTriples!=null && metadataTriples.size()>0){
                 for(Triple metadataTriple: metadataTriples){
@@ -290,15 +315,25 @@ public class SipGenerationHandler implements Handler{
             }
 
             TripleSelector contributorTripleSelector = new TripleSelector();
-            contributorTripleSelector.setSubjectURI(rem.getURI());
+            contributorTripleSelector.setSubjectURI(rem.getAggregation().getURI());
             contributorTripleSelector.setPredicate(DC_TERMS_CONTRIBUTOR);
-            List<Triple> contributorTriples = rem.listAllTriples(contributorTripleSelector);
+            List<Triple> contributorTriples = rem.getAggregation().listAllTriples(contributorTripleSelector);
 
             if(contributorTriples!=null && contributorTriples.size()>0){
                 for(Triple contributorTriple: contributorTriples){
                     SeadPerson person = new SeadPerson();
-                    person.setName(contributorTriple.getObjectLiteral());
-                    //person.setId(UUID.randomUUID().toString());
+                    String contributorStr = contributorTriple.getObjectLiteral();
+                    if(contributorStr.contains(";"))
+                    {
+                        String[] arr = contributorStr.split(";");
+                        person.setName(arr[0]);
+                        person.setIdType(arr[1]);
+                        person.setId(arr[2]);
+                    }
+                    else{
+                        person.setName(contributorStr);
+                        //person.setId(UUID.randomUUID().toString());
+                    }
                     du.addDataContributor(person);
                 }
             }
@@ -306,9 +341,9 @@ public class SipGenerationHandler implements Handler{
 
             //get any rights associated with DU
             TripleSelector rightsTripleSelector = new TripleSelector();
-            rightsTripleSelector.setSubjectURI(rem.getURI());
+            rightsTripleSelector.setSubjectURI(rem.getAggregation().getURI());
             rightsTripleSelector.setPredicate(DC_TERMS_RIGHTS);
-            List<Triple> rightsTriples = rem.listAllTriples(rightsTripleSelector);
+            List<Triple> rightsTriples = rem.getAggregation().listAllTriples(rightsTripleSelector);
 
             if(rightsTriples!=null && rightsTriples.size()>0){
                 for(Triple rightsTriple: rightsTriples){
@@ -318,7 +353,7 @@ public class SipGenerationHandler implements Handler{
 
             //Get all triples not already assigned to a known predicate and add them as key value pairs that still get indexed
 
-            List<Triple> allTriples = rem.listTriples();
+            List<Triple> allTriples = rem.getAggregation().listTriples();
             if(allTriples!=null)
                 for(Triple triple: allTriples){
                     if(triple.getPredicate()!=null)
@@ -348,7 +383,7 @@ public class SipGenerationHandler implements Handler{
                             Map<String,Object> map = new HashMap<String,Object>();
                             map.put(predicate, objValue);
                             XStream xStream = new XStream(new DomDriver());
-                            xStream.alias("map", java.util.Map.class);
+                            xStream.alias("map", Map.class);
                             String metadata = xStream.toXML(map);
                             dcsMetadata.setMetadata(metadata);
                             du.addMetadata(dcsMetadata);
@@ -375,7 +410,7 @@ public class SipGenerationHandler implements Handler{
             manifestation.setDeliverableUnit(duId);
             for(AggregatedResource aggregatedResource:aggregatedResources){
                 List<URI> types = aggregatedResource.getTypes();
-                if(types==null||types.size()==0){//file
+                if(types==null||types.size()==0||types.get(0).toString().contains("AggregatedResource")){//file
                     if(!filesExist){
                         filesExist = true;
                     }
@@ -409,6 +444,12 @@ public class SipGenerationHandler implements Handler{
                         }
                     }
 
+                    selector = new TripleSelector();
+                    selector.setSubjectURI(aggregatedResource.getURI());
+                    selector.setPredicate(DC_TERMS_TITLE);
+                    triples = aggregatedResource.listAllTriples(selector);
+                    if(triples.size()>0)
+                        file.setName(triples.get(0).getObjectLiteral());
 
                     TripleSelector sourceselector = new TripleSelector();
                     sourceselector.setSubjectURI(aggregatedResource.getURI());
@@ -417,18 +458,15 @@ public class SipGenerationHandler implements Handler{
 
                     if(sourcetriples.size()>0)
                     {
-                        if(sourcetriples.get(0).getObjectLiteral().startsWith("http"))
+                        if (sourcetriples.get(0).getObjectLiteral().contains("datastream"))
+                            file.setSource("file://"+unzippedDir+"data/"+file.getName());
+                        else if(sourcetriples.get(0).getObjectLiteral().startsWith("http"))
                             file.setSource(sourcetriples.get(0).getObjectLiteral());
                         else
                             file.setSource("file://"+unzippedDir+sourcetriples.get(0).getObjectLiteral());
                     }
 
-                    selector = new TripleSelector();
-                    selector.setSubjectURI(aggregatedResource.getURI());
-                    selector.setPredicate(DC_TERMS_TITLE);
-                    triples = aggregatedResource.listAllTriples(selector);
-                    if(triples.size()>0)
-                        file.setName(triples.get(0).getObjectLiteral());
+
 
 
                     refTripleSelector = new TripleSelector();
@@ -491,7 +529,7 @@ public class SipGenerationHandler implements Handler{
                                     Map<String,String> map = new HashMap<String, String>();
                                     map.put(predicate, triple.getObjectLiteral());
                                     XStream xStream = new XStream(new DomDriver());
-                                    xStream.alias("map", java.util.Map.class);
+                                    xStream.alias("map", Map.class);
                                     String metadata = xStream.toXML(map);
                                     dcsMetadata.setMetadata(metadata);
                                     file.addMetadata(dcsMetadata);
@@ -512,7 +550,7 @@ public class SipGenerationHandler implements Handler{
                     if(encodedId.contains("uri="))
                         encodedId = encodedId.split("uri=")[1];
                     String newId = URLDecoder.decode(encodedId);
-                    generateSIP(newId,duId,unzippedDir);
+                    generateSIP(newId, newId,duId,unzippedDir);
                 }
             }
             if(filesExist)

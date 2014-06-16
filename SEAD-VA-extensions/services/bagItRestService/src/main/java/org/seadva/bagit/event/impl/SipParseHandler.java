@@ -23,6 +23,7 @@ import org.seadva.bagit.event.api.Handler;
 import org.seadva.bagit.model.AggregationType;
 import org.seadva.bagit.model.PackageDescriptor;
 import org.seadva.bagit.util.Constants;
+import org.seadva.model.SeadDataLocation;
 import org.seadva.model.SeadDeliverableUnit;
 import org.seadva.model.SeadPerson;
 import org.seadva.model.builder.xstream.SeadXstreamStaxModelBuilder;
@@ -99,8 +100,12 @@ public class SipParseHandler implements Handler {
             SeadDeliverableUnit seadDeliverableUnit = (SeadDeliverableUnit)du;
 
             List<String> creatorList = new ArrayList<String>();
-            for(SeadPerson person: seadDeliverableUnit.getDataContributors())
-                creatorList.add(person.getName());//+";"+person.getId());
+            for(SeadPerson person: seadDeliverableUnit.getDataContributors()){
+                if(person.getId()!=null)
+                    creatorList.add(person.getName()+";"+person.getIdType()+";"+person.getId());
+                else
+                    creatorList.add(person.getName());
+            }
             propertyValues.put(Constants.contributor, creatorList);
 
             List<String> metadataRefList = new ArrayList<String>();
@@ -112,6 +117,16 @@ public class SipParseHandler implements Handler {
             abstractList.add(seadDeliverableUnit.getAbstrct());
             propertyValues.put(Constants.abstractTerm, abstractList);
 
+
+            List<String> typeList = new ArrayList<String>();
+            typeList.add(seadDeliverableUnit.getType());
+            propertyValues.put(Constants.typeTerm, typeList);
+
+            SeadDataLocation  location  = seadDeliverableUnit.getPrimaryLocation();
+            String locationStr = location.getName()+";"+location.getType()+";"+location.getLocation();
+            List<String> locList = new ArrayList<String>();
+            locList.add(locationStr);
+            propertyValues.put(Constants.sourceTerm, locList);
 
 
             for(DcsMetadata metadata: du.getMetadata()){

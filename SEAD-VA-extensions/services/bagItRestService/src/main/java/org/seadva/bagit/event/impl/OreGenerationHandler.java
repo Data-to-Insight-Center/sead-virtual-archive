@@ -18,9 +18,9 @@ package org.seadva.bagit.event.impl;
 import org.dspace.foresite.*;
 import org.dspace.foresite.jena.TripleJena;
 import org.sead.acr.common.utilities.json.JSONException;
+import org.seadva.bagit.event.api.Handler;
 import org.seadva.bagit.model.AggregationType;
 import org.seadva.bagit.model.PackageDescriptor;
-import org.seadva.bagit.event.api.Handler;
 import org.seadva.bagit.util.Constants;
 
 import java.io.BufferedWriter;
@@ -36,7 +36,7 @@ import java.util.Map;
 /**
  * Handler for ORE generation
  */
-public class OreGenerationHandler implements Handler{
+public class OreGenerationHandler implements Handler {
 
     private static final String RESOURCE_MAP_SERIALIZATION_FORMAT = "RDF/XML";
 
@@ -107,17 +107,17 @@ public class OreGenerationHandler implements Handler{
 
         if(type == AggregationType.COLLECTION){
 
-            String remId = id;
+            String aggId = id;
 
-            if(!remId.startsWith("http:"))
-                remId = DEFAULT_URL_PREFIX + URLEncoder.encode(id);
+            if(!aggId.startsWith("http:"))
+                aggId = DEFAULT_URL_PREFIX + URLEncoder.encode(id);
             agg = OREFactory.createAggregation(new URI(
-                    remId + "_Aggregation"
+                    aggId
             ));
 
             rem = agg.createResourceMap(
                     new URI(
-                            remId
+                            aggId + "_ResourceMap"
                     ));
         }
 
@@ -210,35 +210,45 @@ public class OreGenerationHandler implements Handler{
             }
 
         //This section gets properties of the current entity (collection/file) and puts them in the ORE map. The properties data structure should be populated beforehand by querying ACR for metadata by ACRQueryHandler
+
             Iterator props = properties.get(id).entrySet().iterator();
             while(props.hasNext()) {
                 Map.Entry<String,List<String>> pair = (Map.Entry) props.next();
 
                 for(String value: pair.getValue()){
+                    if(value==null)
+                        continue;
                     Triple triple = new TripleJena();
-                    triple.initialise(rem);
+                    if(typeProperty.get(id)== AggregationType.COLLECTION)
+                        triple.initialise(agg);
+                    else if(typeProperty.get(id)== AggregationType.FILE)
+                        triple.initialise(rem);
 
                     Predicate ORE_TERM_PREDICATE =  new Predicate();
                     ORE_TERM_PREDICATE.setNamespace(Vocab.dcterms_Agent.ns().toString());
                     ORE_TERM_PREDICATE.setPrefix(Vocab.dcterms_Agent.schema());
                     URI uri = new URI((String)pair.getKey());
+                  //  System.out.println("------------------"+pair.getKey()+"-------------------");
                     ORE_TERM_PREDICATE.setName(uri.toString().substring(uri.toString().lastIndexOf("/")));
                     ORE_TERM_PREDICATE.setURI(uri);
                     triple.relate(ORE_TERM_PREDICATE, value);
-                    rem.addTriple(triple);
+                    if(typeProperty.get(id)== AggregationType.COLLECTION)
+                        agg.addTriple(triple);
+                    else if(typeProperty.get(id)== AggregationType.FILE)
+                        rem.addTriple(triple);
                 }
             }
 
         //Finally, a check is made to see if the entity is a Collection (if file, do nothing). If it is a collection, then the ORE strcuture in memory is serialized as a file.
-        if(typeProperty.get(id)==AggregationType.COLLECTION){
+        if(typeProperty.get(id)== AggregationType.COLLECTION){
             dataPath+=title+"/";
-            Agent creator = OREFactory.createAgent();
+            /*Agent creator = OREFactory.createAgent();
             creator.addName("SEAD_VA BagItService");
 
             rem.addCreator(creator);
 
             agg.addCreator(creator);
-            agg.addTitle("Transit BagIt - Sub Collection");
+            agg.addTitle("Transit BagIt - Sub Collection");*/
             FileWriter oreStream = new FileWriter(bagPath +"/" + guid + "_oaiore.xml");
             BufferedWriter ore = new BufferedWriter(oreStream);
 

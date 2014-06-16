@@ -20,9 +20,9 @@ import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
 import org.apache.commons.io.IOUtils;
 import org.dspace.foresite.OREException;
-import org.seadva.bagit.model.PackageDescriptor;
 import org.seadva.bagit.event.api.Event;
 import org.seadva.bagit.impl.ConfigBootstrap;
+import org.seadva.bagit.model.PackageDescriptor;
 import org.seadva.bagit.util.Constants;
 
 import javax.servlet.ServletContext;
@@ -117,10 +117,37 @@ public class Sip {
 
         IOUtils.copy(uploadedInputStream, new FileOutputStream(zippedBag));
 
+
+        String aggregationId = fileDetail.getFileName().replace(".zip","");
+
         new ConfigBootstrap().load();
         PackageDescriptor packageDescriptor = new PackageDescriptor(fileDetail.getFileName(), zippedBag,"");
-        packageDescriptor.setPackageId(fileDetail.getFileName().replace(".zip",""));
+        packageDescriptor.setPackageId(aggregationId);
         packageDescriptor = ConfigBootstrap.packageListener.execute(Event.UNZIP_BAG, packageDescriptor);
+
+
+        File bagInfo = new File(packageDescriptor.getUnzippedBagPath()+"bag-info.txt");
+
+        if(bagInfo.exists()){
+            StringWriter writer = new StringWriter();
+
+            IOUtils.copy(new FileInputStream(
+                    bagInfo
+            ), writer);
+            String result = writer.toString();
+            String[] lines = result.trim().split(
+                    "\n");
+
+
+            for (int i = 0; i < lines.length; i++) {
+                if(lines[i].contains("Aggregation-id")){
+                    aggregationId = lines[i].replace("Aggregation-id: ","");
+                    packageDescriptor.setAggregationId(aggregationId);
+                    break;
+                }
+            }
+        }
+
         packageDescriptor = ConfigBootstrap.packageListener.execute(Event.GENERATE_SIP, packageDescriptor);
 
 

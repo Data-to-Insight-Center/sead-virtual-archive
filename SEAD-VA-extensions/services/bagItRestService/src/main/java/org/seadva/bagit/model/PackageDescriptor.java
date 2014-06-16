@@ -10,6 +10,7 @@ import java.util.Map;
 public class PackageDescriptor {
 
     private String packageId;
+    private String aggregationId;
     private MediciInstance mediciInstance;
     private String packageName;
     private String bagPath;
@@ -18,11 +19,6 @@ public class PackageDescriptor {
     private String oreFilePath;
     private String manifestFilePath;
     private String sipPath;
-    private String unTarredBagPath;
-    private String bagittxtFilePath;
-    private String bagInfoTxtFilePath;
-    private String tagManifestFilePath;
-    private String dpntagTxtFilePath;
 
     /**
      * Contains aggregations with structure:
@@ -73,46 +69,6 @@ public class PackageDescriptor {
 
     public void setUnzippedBagPath(String unzippedBagPath) {
         this.unzippedBagPath = unzippedBagPath;
-    }
-
-    public String getUntarredBagPath() {
-        return unTarredBagPath;
-    }
-
-    public void setUntarredBagPath(String unTarredBagPath) {
-        this.unTarredBagPath = unTarredBagPath;
-    }
-
-    public String getBagittxtFilePath() {
-        return bagittxtFilePath;
-    }
-
-    public void setBagittxtFilePath(String manifestFilePath) {
-        this.bagittxtFilePath = bagittxtFilePath;
-    }
-
-    public void setBagInfoTxtFilePath(String manifestFilePath) {
-        this.bagInfoTxtFilePath = bagInfoTxtFilePath;
-    }
-
-    public String getBagInfoTxtFilePath() {
-        return bagInfoTxtFilePath;
-    }
-
-    public void setDpntagTxtFilePath(String dpntagTxtFilePath) {
-        this.dpntagTxtFilePath = dpntagTxtFilePath;
-    }
-
-    public String getDpntagTxtFilePath() {
-        return dpntagTxtFilePath;
-    }
-
-    public void setTagManifestFilePath(String manifestFilePath) {
-        this.tagManifestFilePath = tagManifestFilePath;
-    }
-
-    public String getTagManifestFilePath() {
-        return tagManifestFilePath;
     }
 
     public String getSipPath() {
@@ -187,5 +143,13 @@ public class PackageDescriptor {
 
     public void setFetchFilePath(String fetchFilePath) {
         this.fetchFilePath = fetchFilePath;
+    }
+
+    public String getAggregationId() {
+        return aggregationId;
+    }
+
+    public void setAggregationId(String aggregationId) {
+        this.aggregationId = aggregationId;
     }
 }
