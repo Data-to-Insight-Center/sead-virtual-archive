@@ -86,7 +86,7 @@ public class DoiCreationService  extends IngestServiceBase
         String year = null;
 
         idService.setCredentials(doiUserName, doiPassword);
-        idService.setService("https://n2t.net/ezid/shoulder/" +
+        idService.setService("https://ezid.cdlib.org/shoulder/"+
           //      "doi:10.5967/M0"
           //      "doi:10.5072/FK2"
                 doiShoulder
