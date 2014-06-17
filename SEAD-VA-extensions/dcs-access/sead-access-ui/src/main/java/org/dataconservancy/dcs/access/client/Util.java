@@ -185,9 +185,9 @@ public class Util {
             //dcp.getCollections().push((JsCollection) entity);
         } else if (type.equals("file")) {
             dcp.getFiles().push((JsFile) entity);
-        } /*else if (type.equals("manifestation")) {
+        } else if (type.equals("manifestation")) {
             dcp.getManifestations().push((JsManifestation) entity);
-        }*/ else if (type.equals("event")) {
+        } else if (type.equals("event")) {
            // dcp.getEvents().push((JsEvent) entity);
         } else {
             throw new RuntimeException("Unknown type: " + type);
