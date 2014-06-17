@@ -21,11 +21,14 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.jsonp.client.JsonpRequestBuilder;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.*;
-
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import org.dataconservancy.dcs.access.client.SeadApp;
 import org.dataconservancy.dcs.access.client.SeadState;
 import org.dataconservancy.dcs.access.client.api.*;
@@ -39,19 +42,17 @@ import org.dataconservancy.dcs.access.client.upload.Util;
 import org.dataconservancy.dcs.access.shared.MediciInstance;
 import org.dataconservancy.dcs.access.shared.UserSession;
 
+import java.util.Date;
 import java.util.List;
+import java.util.TreeMap;
 
 
 public class ActivityPresenter implements Presenter {
 
 	public static EventBus EVENT_BUS = GWT.create(SimpleEventBus.class);
-	public static int eventInvoked=0;
-	public static String metadataSrc=null;
-	
+
 	Display display;
-	ListBox ir;	//projectList in PublishDataView
-	ListBox ROList;
-	
+
 	public static final MediciServiceAsync mediciService = GWT.create(MediciService.class);
 	
 	public interface Display {
@@ -64,18 +65,6 @@ public class ActivityPresenter implements Presenter {
 	public static MediciInstance sparqlEndpoint = null;
 	final public static StatusPopupPanel statusPopupPanel = new StatusPopupPanel("Characterizing Files","wait",true);
 	
-	static int l = -1 ;
-	int n = 0;
-	int totalNumOfFiles = 0;
-	int totalNumOfEntities = 0;
-	int finishedFiles = 0;
-	String previousEvent = null; 
-	String submitterId = null;
-	int flagHyperlink;
-	int first=0;
-	int last;
-	
-	Label dataset;
 	public static final RegistryServiceAsync registryService =
             GWT.create(RegistryService.class);
 	
@@ -94,7 +83,7 @@ public class ActivityPresenter implements Presenter {
 				  String queryUrl=
 						  SeadApp.roUrl+"resource/agentGraph/"
 						  +agentUrl;
-				  
+						  
 				  JsonpRequestBuilder rb = new JsonpRequestBuilder();
 			      rb.setTimeout(100000);
 			      rb.requestObject(queryUrl, new AsyncCallback<JsAgentGraph>() {
@@ -113,6 +102,7 @@ public class ActivityPresenter implements Presenter {
 							  
 							  List<String> activityIds = document.getActivityIds();
 							  
+							  TreeMap<Date,HTML> htmlMap = new TreeMap<Date,HTML>();
 							  for(String activityId : activityIds){
 								
 								  String eventType = document.getEventType(activityId);
@@ -136,7 +126,10 @@ public class ActivityPresenter implements Presenter {
 								  final JsProvEntity entity = document.getEntity(entityId);
 								  Label entityLbl = Util.label(entity.getEntityTitle(), "Hyperlink");
 								  
-								  HTML html = new HTML("<font color=\"gray\">"+gen.getTimeString().substring(0, gen.getTimeString().length()-2)+"</font>" +
+								  if(gen.getTimeString()==null||gen.getTimeString().length()<2)
+									  continue;
+								  String timeString = gen.getTimeString().substring(0, gen.getTimeString().length()-2);
+								  HTML html = new HTML("<font color=\"gray\">"+timeString+"</font>" +
 										  "&nbsp;&nbsp;"+
 										  activityString + "<a href=\""+ GWT.getModuleName().replace("sead_access",
 //												  "Sead_access.html?gwt.codesvr=127.0.0.1:9997"
@@ -151,13 +144,14 @@ public class ActivityPresenter implements Presenter {
 										History.newItem(SeadState.ENTITY.toToken(entity.getEntityUrl()));
 									}
 								  });
-								  
-								  HorizontalPanel activityPanel = new HorizontalPanel();
-								  activityPanel.add(agentLabel);
-								  activityPanel.add(activityLabel);
-								  activityPanel.add(entityLbl);
-								  display.getActivityContainer().add(html);
+								  DateTimeFormat format = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:ss");
+								  htmlMap.put(format.parse(timeString), html);
 							  } 
+							  
+							  //sort the htmlArray by Date
+							
+							  for(HTML html:htmlMap.values())
+							    display.getActivityContainer().add(html);
 						}
 			        });
 			}
