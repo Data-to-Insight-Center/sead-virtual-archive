@@ -5,108 +5,135 @@
          version="2.5"
          xmlns="http://java.sun.com/xml/ns/javaee">
 
-  <!-- Servlets -->
-  <servlet>
-    <servlet-name>mediciServlet</servlet-name>
-    <servlet-class>org.dataconservancy.dcs.access.server.MediciServiceImpl</servlet-class>
-  </servlet>
-  <servlet>
-    <servlet-name>depositServlet</servlet-name>
-    <servlet-class>org.dataconservancy.dcs.access.server.DepositServiceImpl</servlet-class>
-  </servlet>
-  <servlet>
-    <servlet-name>fileUploadServlet</servlet-name>
-    <servlet-class>org.dataconservancy.dcs.access.server.FileUploadServlet</servlet-class>
-  </servlet>
-  
-  <servlet>
-    <servlet-name>bagUploadServlet</servlet-name>
-    <servlet-class>org.dataconservancy.dcs.access.server.BagUploadServlet</servlet-class>
-  </servlet>
-   <servlet>
-    <servlet-name>dbServlet</servlet-name>
-    <servlet-class>org.dataconservancy.dcs.access.server.DbQueryImpl</servlet-class>
-  </servlet>
-  <servlet>
-    <servlet-name>userServlet</servlet-name>
-    <servlet-class>org.dataconservancy.dcs.access.server.UserServiceImpl</servlet-class>
-  </servlet>
-  
-  <servlet>
-    <servlet-name>transformServlet</servlet-name>
-    <servlet-class>org.dataconservancy.dcs.access.server.TransformerServiceImpl</servlet-class>
-  </servlet>
-  
-  <servlet>
-    <servlet-name>googleoauthServlet</servlet-name>
-    <servlet-class>org.dataconservancy.dcs.access.server.GoogleAuthHelper</servlet-class>
-  </servlet>
+    <!-- Servlets -->
+    <servlet>
+        <servlet-name>mediciServlet</servlet-name>
+        <servlet-class>org.dataconservancy.dcs.access.server.MediciServiceImpl</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>depositServlet</servlet-name>
+        <servlet-class>org.dataconservancy.dcs.access.server.DepositServiceImpl</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>fileUploadServlet</servlet-name>
+        <servlet-class>org.dataconservancy.dcs.access.server.FileUploadServlet</servlet-class>
+    </servlet>
 
-  <servlet>
-    <servlet-name>logServlet</servlet-name>
-    <servlet-class>org.dataconservancy.dcs.access.server.LogServiceImpl</servlet-class>
-  </servlet>
+    <servlet>
+        <servlet-name>registryServlet</servlet-name>
+        <servlet-class>org.dataconservancy.dcs.access.server.RegistryServiceImpl</servlet-class>
+    </servlet>
 
-  <servlet>
-    <servlet-name>monitorServlet</servlet-name>
-    <servlet-class>org.dataconservancy.dcs.access.server.MonitorImpl</servlet-class>
-  </servlet>
-  
-  <servlet>
-    <servlet-name>acrcommonServlet</servlet-name>
-    <servlet-class>org.dataconservancy.dcs.access.server.VAQueryServlet</servlet-class>
-  </servlet>
-  
- <servlet-mapping>
-    <servlet-name>monitorServlet</servlet-name>
-    <url-pattern>/sead_access/monitor</url-pattern>
-  </servlet-mapping>
-    
-  
-  <servlet-mapping>
-    <servlet-name>mediciServlet</servlet-name>
-    <url-pattern>/sead_access/sparql</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>depositServlet</servlet-name>
-    <url-pattern>/sead_access/deposit</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>fileUploadServlet</servlet-name>
-    <url-pattern>/sead_access/fileupload</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>bagUploadServlet</servlet-name>
-    <url-pattern>/sead_access/bagupload</url-pattern>
-  </servlet-mapping>
-   <servlet-mapping>
-    <servlet-name>userServlet</servlet-name>
-    <url-pattern>/sead_access/user</url-pattern>
-  </servlet-mapping>
-   <servlet-mapping>
-    <servlet-name>transformServlet</servlet-name>
-    <url-pattern>/sead_access/transform</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>googleoauthServlet</servlet-name>
-    <url-pattern>/sead_access/googleoauth</url-pattern>
-  </servlet-mapping>
- <servlet-mapping>
-    <servlet-name>logServlet</servlet-name>
-    <url-pattern>/sead_access/log</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>dbServlet</servlet-name>
-    <url-pattern>/sead_access/dbquery</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>acrcommonServlet</servlet-name>
-    <url-pattern>/sead_access/acrcommon</url-pattern>
-  </servlet-mapping>
-  
-  <!-- Default page to serve -->
-  <welcome-file-list>
-    <welcome-file>Sead_access.html</welcome-file>
-  </welcome-file-list>
+    <servlet>
+        <servlet-name>bagUploadServlet</servlet-name>
+        <servlet-class>org.dataconservancy.dcs.access.server.BagUploadServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>dbServlet</servlet-name>
+        <servlet-class>org.dataconservancy.dcs.access.server.DbQueryImpl</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>userServlet</servlet-name>
+        <servlet-class>org.dataconservancy.dcs.access.server.UserServiceImpl</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>transformServlet</servlet-name>
+        <servlet-class>org.dataconservancy.dcs.access.server.TransformerServiceImpl</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>googleoauthServlet</servlet-name>
+        <servlet-class>org.dataconservancy.dcs.access.server.GoogleAuthHelper</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>logServlet</servlet-name>
+        <servlet-class>org.dataconservancy.dcs.access.server.LogServiceImpl</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>monitorServlet</servlet-name>
+        <servlet-class>org.dataconservancy.dcs.access.server.MonitorImpl</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>inputServlet</servlet-name>
+        <servlet-class>org.dataconservancy.dcs.access.server.GenerateTreeInputImpl</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>acrcommonServlet</servlet-name>
+        <servlet-class>org.dataconservancy.dcs.access.server.VAQueryServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>vivoServlet</servlet-name>
+        <servlet-class>org.dataconservancy.dcs.access.server.VivoSparqlServiceImpl</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>monitorServlet</servlet-name>
+        <url-pattern>/sead_access/monitor</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet-mapping>
+        <servlet-name>mediciServlet</servlet-name>
+        <url-pattern>/sead_access/sparql</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>depositServlet</servlet-name>
+        <url-pattern>/sead_access/deposit</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>fileUploadServlet</servlet-name>
+        <url-pattern>/sead_access/fileupload</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>bagUploadServlet</servlet-name>
+        <url-pattern>/sead_access/bagupload</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>userServlet</servlet-name>
+        <url-pattern>/sead_access/user</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>transformServlet</servlet-name>
+        <url-pattern>/sead_access/transform</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>googleoauthServlet</servlet-name>
+        <url-pattern>/sead_access/googleoauth</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>logServlet</servlet-name>
+        <url-pattern>/sead_access/log</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>dbServlet</servlet-name>
+        <url-pattern>/sead_access/dbquery</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>inputServlet</servlet-name>
+        <url-pattern>/sead_access/input</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>registryServlet</servlet-name>
+        <url-pattern>/sead_access/registry</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>acrcommonServlet</servlet-name>
+        <url-pattern>/sead_access/acrcommon</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>vivoServlet</servlet-name>
+        <url-pattern>/sead_access/vivo</url-pattern>
+    </servlet-mapping>
+
+    <!-- Default page to serve -->
+    <welcome-file-list>
+        <welcome-file>Sead_access.html</welcome-file>
+    </welcome-file-list>
 
 </web-app>
