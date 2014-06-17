@@ -171,10 +171,14 @@
 		<artifactId>persistence-api</artifactId>
 		<version>1.0.2</version>
  	</dependency>
-      
 
-    
-    <dependency>
+      <dependency>
+          <groupId>net.sf.saxon</groupId>
+          <artifactId>saxon-dom</artifactId>
+          <version>8.7</version>
+      </dependency>
+
+      <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>
       <version>${gwt.version}</version>
