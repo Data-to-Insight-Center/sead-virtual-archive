@@ -10,7 +10,7 @@ Please request an account in Active Content Repository at http://sead-demo.ncsa.
 <li>Build requirements:
 For building code  please use maven and jdk (1.7.x)
 Please setup latest version of Apache Tomcat
-Once tomcat is setup, please copy Hibernate jar[] and mysql-connector jar [] into the into the lib folder inside tomcat folder.
+Once tomcat is setup, please copy Hibernate jar[http://seadva-test.d2i.indiana.edu:8081/artifactory/ext-release-local/h2/h2/1.2.139/h2-1.2.139.jar] and mysql-connector jar [http://dev.mysql.com/downloads/connector/j/] into the into the lib folder inside tomcat folder.
 <li>Increase the stack size as with JAVA_OPTS environment variable for jvm and to also allow encoding of slash and backslash as shown below.
 </ul>
 ```export JAVA_OPTS="-Xss512m -Xms512m -Xmx1024m -XX:MaxPermSize=1024m
@@ -26,7 +26,7 @@ Build Pre-requisites:
 <li>Before building the code, please copy the settings.xml file from maven/conf folder in the git repository into your maven folder.
 
 <li>Setting up Database:
-Please use the jar in utils/initDB folder to initialize the database. Command to initialize the db is "java -jar initDB.jar /path/to/database" eg: java -jar initDB.jar /tmp/database will create a derby database in the /tmp/database later needed for the UI. <output log confusing.> 
+Please follow instructions in dcs-access/sead-access-ui/README file
 </ul>
 
 <u><b>Build</b></u>
@@ -37,11 +37,13 @@ Support will be developed soon to build/deploy some of these module in a single 
 <li>Building Komadu: Please follow instructions from Komadu github site [https://github.com/Data-to-Insight-Center/komadu/]
 <li>Building RO REST service:
 <br/>cd SEAD-VA-extensions/services/ro-subsystem/
+<br/>Please ensure port numbers are right in ro-subsystem-service/src/main/resources/org/seadva/data/lifecycle/service/Config.properties
 <br/>mvn clean install -DskipTests
 <br/>Then copy ro-subsystem-service/ro-x.x.x.war into tomcat/webapp/ro.war
 <li>Building BagIt Service:
+<br/>Copy acrInstances.xml into resources folder []
 <br/>mvn clean install -DskipTests
-<br/>Then copy bagitRestService/bagit-x.x.x.war into tomcat/webapp/bagit.war
+<br/>Then copy bagItRestService/bagit-x.x.x.war into tomcat/webapp/bagit.war
 <li>Building backend workflow: See below
 
 cd dcs-integration/sead-workflow-integration
