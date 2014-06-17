@@ -24,6 +24,7 @@ import org.apache.commons.pool.impl.GenericObjectPool;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Properties;
 
 
@@ -39,8 +40,10 @@ public class DatabaseSingleton {
 	  
 	   public static String dbUrl;
 	   public static String driver;
+       public static String dbUsername;
+       public static String dbUserPwd;
 	   
-	   protected DatabaseSingleton() throws InstantiationException, IllegalAccessException, ClassNotFoundException{
+	   protected DatabaseSingleton() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		   
 		   Class.forName(this.driver).newInstance();
 
@@ -48,9 +51,12 @@ public class DatabaseSingleton {
 	        connectionPool.setMaxActive(10);
 
 	        Properties props = new Properties();
+           props.setProperty("user", dbUsername);
+           props.setProperty("password", dbUserPwd);
 
 	        ConnectionFactory cf =
-	                new DriverConnectionFactory(new org.apache.derby.jdbc.EmbeddedDriver(),
+	                new DriverConnectionFactory(
+                            new com.mysql.jdbc.Driver(),
 	                        dbUrl,
 	                		props);
 	        PoolableConnectionFactory pcf =
@@ -61,20 +67,15 @@ public class DatabaseSingleton {
 
 		}
 	  
-	   public static DatabaseSingleton getInstance(String databasePath) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+	   public static DatabaseSingleton getInstance(String databasePath, String username, String userPwd) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 	      if(instance == null) {
               dbUrl = databasePath;
-              driver  = "org.apache.derby.jdbc.EmbeddedDriver";
+              driver  =  "com.mysql.jdbc.Driver";
+              dbUsername = username;
+              dbUserPwd =  userPwd;
 	    	  instance = new DatabaseSingleton();
 	      }
 	      return instance;
-	   }
-	   
-	   
-	  
-	   public Connection getConnection() throws Exception {
-		   
-		   return dataSource.getConnection();
 	   }
 }
 
