@@ -20,10 +20,7 @@ import org.seadva.access.security.RegistrationStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,8 +34,8 @@ public class PersonDAOJdbcImpl  implements PersonDAO {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 	private static final String PERSON_TBL = "users";
 	
-	public PersonDAOJdbcImpl(String databasePath) throws InstantiationException, IllegalAccessException, ClassNotFoundException{
-		dbInstance = DatabaseSingleton.getInstance(databasePath);
+	public PersonDAOJdbcImpl(String databasePath, String dbUser, String dbpwd) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		dbInstance = DatabaseSingleton.getInstance(databasePath, dbUser, dbpwd);
 	}
 	
 	@Override

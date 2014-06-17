@@ -77,6 +77,13 @@ public class DatabaseSingleton {
 	      }
 	      return instance;
 	   }
+
+
+    public Connection getConnection() throws Exception {
+
+        return dataSource.getConnection();
+    }
+
 }
 
 
