@@ -460,7 +460,7 @@ public class SipGenerationHandler implements Handler {
                     {
                         if (sourcetriples.get(0).getObjectLiteral().contains("datastream"))
                             file.setSource("file://"+unzippedDir+"data/"+file.getName());
-                        else if(sourcetriples.get(0).getObjectLiteral().startsWith("http"))
+                        else if(sourcetriples.get(0).getObjectLiteral().startsWith("http")||sourcetriples.get(0).getObjectLiteral().startsWith("file:"))
                             file.setSource(sourcetriples.get(0).getObjectLiteral());
                         else
                             file.setSource("file://"+unzippedDir+sourcetriples.get(0).getObjectLiteral());

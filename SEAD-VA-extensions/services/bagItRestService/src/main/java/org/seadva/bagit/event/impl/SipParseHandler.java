@@ -123,10 +123,12 @@ public class SipParseHandler implements Handler {
             propertyValues.put(Constants.typeTerm, typeList);
 
             SeadDataLocation  location  = seadDeliverableUnit.getPrimaryLocation();
-            String locationStr = location.getName()+";"+location.getType()+";"+location.getLocation();
-            List<String> locList = new ArrayList<String>();
-            locList.add(locationStr);
-            propertyValues.put(Constants.sourceTerm, locList);
+            if(location.getLocation()!=null&&location.getName()!=null&&location.getType()!=null){
+                String locationStr = location.getName()+";"+location.getType()+";"+location.getLocation();
+                List<String> locList = new ArrayList<String>();
+                locList.add(locationStr);
+                propertyValues.put(Constants.sourceTerm, locList);
+            }
 
 
             for(DcsMetadata metadata: du.getMetadata()){
