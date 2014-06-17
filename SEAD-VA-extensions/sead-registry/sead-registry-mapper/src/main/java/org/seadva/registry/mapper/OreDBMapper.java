@@ -7,7 +7,9 @@ import org.seadva.registry.database.model.obj.vaRegistry.*;
 import org.seadva.registry.database.model.obj.vaRegistry.Collection;
 import org.seadva.registry.mapper.util.Constants;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
@@ -120,7 +122,7 @@ public class OreDBMapper {
     }
 
 
-    public void mapfromOre(ResourceMap resourceMap) throws IOException, ClassNotFoundException, OREException {
+    public void mapfromOre(ResourceMap resourceMap) throws IOException, ClassNotFoundException, OREException, OREParserException {
 
         BaseEntity resourceMapEntity = new BaseEntity();
         resourceMapEntity.setId(resourceMap.getURI().toString());
@@ -168,7 +170,6 @@ public class OreDBMapper {
 
         if(locTriples.size()>0){
             for(Triple locTriple:locTriples){
-
                 String[] locArr = locTriple.getObjectLiteral().split(";");
                 DataLocation dataLocation = new DataLocation();
                 DataLocationPK dataLocationPK = new DataLocationPK();
@@ -239,7 +240,36 @@ public class OreDBMapper {
         relations.add(relation);
         client.postRelation(relations);
 
-        for(AggregatedResource aggregatedResource:resourceMap.getAggregatedResources()){
+        List<AggregatedResource> aggregatedResources= resourceMap.getAggregation().getAggregatedResources();
+
+        for(AggregatedResource aggregatedResource: aggregatedResources){
+
+            List<URI> types = aggregatedResource.getTypes();
+            boolean childIsCollection = false;
+            for(URI type:types){
+                if(type.toString().contains("Aggregation")){
+                    locSelector = new TripleSelector();
+                    locSelector.setSubjectURI(aggregatedResource.getURI());
+                    locSelector.setPredicate(METS_LOCATION);
+                    locTriples = resourceMap.getAggregation().listAllTriples(locSelector);
+
+                    if(locTriples.size()>0){
+                        for(Triple locTriple:locTriples){
+                            String oreFilePath = locTriple.getObjectLiteral();
+                            OREParser parser = OREParserFactory.getInstance("RDF/XML");
+                            ResourceMap rem = parser.parse(new FileInputStream(oreFilePath));
+                            mapfromOre(rem);
+                            break;
+                        }
+                    }
+                    childIsCollection = true;
+                    break;
+                }
+            }
+
+            if(childIsCollection)
+                continue;
+
             titleSelector = new TripleSelector();
             titleSelector.setSubjectURI(aggregatedResource.getURI());
             titleSelector.setPredicate(DC_TERMS_TITLE);
@@ -269,9 +299,11 @@ public class OreDBMapper {
           //  List<Triple>
                     metadataTriples = resourceMap.listAllTriples(metadataSelector);
             for(Triple metadataTriple: metadataTriples){
+                if(!metadataTriple.isLiteral())
+                    continue;
                 Predicate predicate = metadataTriple.getPredicate();
                 String predicateUri = predicate.getURI().toString();
-                String splitChar = "/";
+                 String splitChar = "/";
                 if(predicateUri.contains("#"))
                     splitChar = "#";
                 String[] metadataUri = predicateUri.split(splitChar);
@@ -287,7 +319,6 @@ public class OreDBMapper {
                     property.setEntity(collection);
                     properties.add(property);
                 }
-
             }
             for(Property property1:properties)
                 file.addProperty(property1);
@@ -296,13 +327,26 @@ public class OreDBMapper {
         }
 
         //Insert Aggregtaions
-        List<AggregatedResource> aggregatedResources= resourceMap.getAggregation().getAggregatedResources();
-        List<AggregationWrapper> aggregationWrappers = new ArrayList<AggregationWrapper>();
 
         for(AggregatedResource aggregatedResource: aggregatedResources){
+            List<AggregationWrapper> aggregationWrappers = new ArrayList<AggregationWrapper>();
             AggregationWrapper aggregationWrapper = new AggregationWrapper();
-            aggregationWrapper.setParentType("org.seadva.registry.database.model.obj.vaRegistry.Collection");
-            aggregationWrapper.setChildType("org.seadva.registry.database.model.obj.vaRegistry.File");
+            aggregationWrapper.setParentType(Collection.class.getName());
+
+            boolean childIsCollection = false;
+            List<URI> types = aggregatedResource.getTypes();
+            for(URI type:types){
+                if(type.toString().contains("Aggregation")){
+                    childIsCollection = true;
+                    break;
+                }
+            }
+
+            if(childIsCollection)
+                aggregationWrapper.setChildType(Collection.class.getName());
+            else
+                aggregationWrapper.setChildType(File.class.getName());
+
             BaseEntity child = new BaseEntity();
             child.setId(aggregatedResource.getURI().toString());
             BaseEntity parent = new BaseEntity();
@@ -310,8 +354,10 @@ public class OreDBMapper {
             parent.setId(resourceMap.getAggregation().getURI().toString());
             aggregationWrapper.setParent(parent);
             aggregationWrappers.add(aggregationWrapper);
+            client.postAggregation(aggregationWrappers, resourceMap.getAggregation().getURI().toString());
         }
-        client.postAggregation(aggregationWrappers, resourceMap.getAggregation().getURI().toString());
+
+
     }
 
     Map<String, List<AggregationWrapper>> aggregationMap = new HashMap<String, List<AggregationWrapper>>();
@@ -334,7 +380,6 @@ public class OreDBMapper {
         if(collectionId==null)
             return resourceMap;*/
 
-
         populateCollection(collectionId, Collection.class.getName());
 
 
@@ -345,9 +390,7 @@ public class OreDBMapper {
             {
                 resourceMap.getAggregation().addAggregatedResource(getAggregatedResource((File)baseEntity));//Add aggregated resource metadata
             }
-
         }
-
         return resourceMap;
     }
 
