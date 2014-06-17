@@ -52,8 +52,8 @@ public class HandlersTest extends JerseyTest {
         if(!new File(Constants.unzipDir).exists()) {
             new File(Constants.unzipDir).mkdirs();
         }
-
     }
+
     @Before
     public void init(){
         configBootstrap = new ConfigBootstrap();
@@ -74,22 +74,6 @@ public class HandlersTest extends JerseyTest {
         assertNotNull(packageDescriptor.getBagPath());
     }
 
-    @Test
-    /* Output goes into target/test-classes/org/seadva/bagit/ */
-    public void testUntarHandler() throws IllegalAccessException, InstantiationException, ClassNotFoundException {
-        PackageDescriptor packageDescriptor = new PackageDescriptor("sample_bag1.tar",getClass().getResource("../../sample_bag1.tar").getPath(),null);
-        packageDescriptor = ConfigBootstrap.packageListener.execute(Event.UNTAR_BAG, packageDescriptor);
-        assertNotNull(packageDescriptor.getUntarredBagPath());
-    }
-
-    @Test
-    /* Input directory file should be placed under test/resources and output will go to bag at the top level */
-    public void testTarHandler() throws IllegalAccessException, InstantiationException, ClassNotFoundException {
-        PackageDescriptor packageDescriptor = new PackageDescriptor("sample_bag.tar", null, getClass().getResource("../../sample_bag").getPath());
-        packageDescriptor.setUntarredBagPath(getClass().getResource("../../sample_bag").getPath());
-        packageDescriptor = ConfigBootstrap.packageListener.execute(Event.TAR_BAG, packageDescriptor);
-        assertNotNull(packageDescriptor.getBagPath());
-    }
 
     @Test
     public void testDirectoryParseHandler() throws IllegalAccessException, InstantiationException, ClassNotFoundException {
