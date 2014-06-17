@@ -10,5 +10,5 @@ GRANT ALL ON va_user.* TO 'username'@'localhost' IDENTIFIED BY 'pwd';
 GRANT SELECT ON mysql.proc TO 'va_user'@'localhost';
 
 
-mysql -u username -p va_registry < ./sql/va_user.sql
-mysql -u username -p va_registry < ./sql/va_user_insert.sql
+mysql -u username -p va_user < ./sql/va_user.sql
+mysql -u username -p va_user < ./sql/va_user_insert.sql
