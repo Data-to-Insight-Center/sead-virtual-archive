@@ -7,10 +7,13 @@ import org.dataconservancy.dcs.ingest.Events;
 import org.dataconservancy.model.builder.DcsModelBuilder;
 import org.dataconservancy.model.builder.xstream.DcsXstreamStaxModelBuilder;
 import org.dataconservancy.model.dcp.Dcp;
+import org.dataconservancy.model.dcs.DcsDeliverableUnit;
 import org.dataconservancy.model.dcs.DcsEntity;
 import org.dataconservancy.model.dcs.DcsEntityReference;
 import org.dataconservancy.model.dcs.DcsEvent;
 import org.seadva.archive.SeadArchiveStore;
+import org.seadva.model.SeadDataLocation;
+import org.seadva.model.SeadDeliverableUnit;
 import org.seadva.model.SeadRepository;
 import org.seadva.model.builder.api.SeadModelBuilder;
 import org.seadva.model.builder.xstream.SeadXstreamStaxModelBuilder;
@@ -32,8 +35,9 @@ public class SeadArchiver
 
     private SeadArchiveStore archive;
     private String type;
-
     private String name;
+    private String id;
+    private String communityUrl;
 
     @Required
     public void setModelBuilder(DcsModelBuilder mb) {
@@ -52,6 +56,18 @@ public class SeadArchiver
     }
 
     @Required
+    public void setId(String id)
+    {
+        this.id = id;
+    }
+
+    @Required
+    public void setCommunityUrl(String communityUrl)
+    {
+        this.communityUrl = communityUrl;
+    }
+
+    @Required
     public void setArchiveStore(SeadArchiveStore store) {
         archive = store;
     }
@@ -59,36 +75,50 @@ public class SeadArchiver
     public void execute(String sipRef) {
         if (isDisabled()) return;
 
-        boolean matchesName = false;
-
-
         ResearchObject dcp = (ResearchObject)this.ingest.getSipStager().getSIP(sipRef);
-        for (SeadRepository institionalRepository : dcp.getRepositories()) {
-            if (institionalRepository.getType().equalsIgnoreCase(this.type))
-            {
-                String[] arr = this.name.split(";");
-                for (int i = 0; i < arr.length; i++) {
-                    if (institionalRepository.getName().equalsIgnoreCase(arr[i])) {
-                        matchesName = true;
-                    }
+        Collection<DcsDeliverableUnit> dus = dcp.getDeliverableUnits();
+        String roType = null;
+        for(DcsDeliverableUnit du:dus){
+            if(du.getParents()==null||du.getParents().size()==0){
+                roType = du.getType();
+                if(du.getType().equalsIgnoreCase("CurationObject")){
+                    SeadDataLocation dataLocation = new SeadDataLocation();
+                    dataLocation.setName(this.name);
+                    dataLocation.setLocation(this.communityUrl);//you can even store filePath/temporary location
+                    dataLocation.setType(this.type);
+                    ((SeadDeliverableUnit)du).setPrimaryLocation(dataLocation);
+                    break;
                 }
+                else{
+                 ((SeadDeliverableUnit)du).setPrimaryLocation(new SeadDataLocation());
+                    SeadRepository repository = new SeadRepository();
+                    repository.setType(this.type);
+                    repository.setName(this.name);
+                    repository.setIrId(this.id);
+                    repository.setUrl(this.communityUrl);
+                    dcp.addRepository(repository);
+                 }
+                 break;
             }
         }
-        if (!matchesName) {
-            return;
-        }
 
-        ByteArrayOutputStream sink = new ByteArrayOutputStream();
-        SeadXstreamStaxModelBuilder builder = new SeadXstreamStaxModelBuilder();
-        builder.buildSip((ResearchObject)dcp, sink);
-        ResearchObject sip = null;
-        try {
-            sip = archive.putResearchPackage(new ByteArrayInputStream(sink.toByteArray()));
-        } catch (AIPFormatException e) {
-            throw new RuntimeException("Error depositing to repository", e);
+        dcp.setDeliverableUnits(dus);
+        ingest.getSipStager().updateSIP(dcp, sipRef);
+
+        if(roType!=null&& roType.equalsIgnoreCase("PublishedObject")){
+
+            ByteArrayOutputStream sink = new ByteArrayOutputStream();
+            SeadXstreamStaxModelBuilder builder = new SeadXstreamStaxModelBuilder();
+            builder.buildSip((ResearchObject)dcp, sink);
+            ResearchObject sip = null;
+            try {
+                sip = archive.putResearchPackage(new ByteArrayInputStream(sink.toByteArray()));
+            } catch (AIPFormatException e) {
+                throw new RuntimeException("Error depositing to repository", e);
+            }
+            ingest.getSipStager().updateSIP(sip,sipRef);
+            addArchiveEvent(sipRef);
         }
-        ingest.getSipStager().updateSIP(sip,sipRef);
-        addArchiveEvent(sipRef);
     }
 
     private void addArchiveEvent(String sipRef) {
