@@ -42,6 +42,10 @@ public final class JsAssociatedWith
     }
     
     public String getEventType(){
-    	return ((JsEventType)getObject("ext:event-type")).getContent();
+    	JsModel event = getObject("ext:event-type");
+    	if(event!=null)
+    		return ((JsEventType)event).getContent();
+    	else
+    		return null;
     }
 }

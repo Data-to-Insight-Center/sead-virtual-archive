@@ -38,7 +38,11 @@ public final class JsAgent
     }
     
     public String getAgentName(){
-    	return ((JsUrl)getObject("kom:name")).getContent();
+    	JsModel agent = getObject("kom:name");
+    	if(agent!=null)
+    		return ((JsUrl)agent).getContent();
+    	else
+    		return null;
     }
     
 }

@@ -57,7 +57,7 @@ public final class JsPrimaryDataLocation
       	Image image;
 
     	if(getLocation()!=null){
-    		String location = getLocation();
+    		String location = getLocation().replace("jspui", "iuswdark");
     		if(getType()!=null)
     			if(getType().contains("dspace")&&getName().contains("Ideals"))
     				location = location.replace("xmlui/", "");

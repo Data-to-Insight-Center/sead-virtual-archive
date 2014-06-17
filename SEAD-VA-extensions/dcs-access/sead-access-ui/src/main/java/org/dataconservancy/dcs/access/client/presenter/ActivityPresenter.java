@@ -25,6 +25,8 @@ import com.google.gwt.jsonp.client.JsonpRequestBuilder;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
+
+import org.dataconservancy.dcs.access.client.SeadApp;
 import org.dataconservancy.dcs.access.client.SeadState;
 import org.dataconservancy.dcs.access.client.api.*;
 import org.dataconservancy.dcs.access.client.model.JsAgentGraph;
@@ -90,8 +92,7 @@ public class ActivityPresenter implements Presenter {
 				final String agentUrl = 
 						result.getRegistryId();
 				  String queryUrl=
-//						  "http://localhost:8080/ro/resource/agentGraph/"
-						  "http://seadva-test.d2i.indiana.edu:5667/ro/resource/agentGraph/"
+						  SeadApp.roUrl+"resource/agentGraph/"
 						  +agentUrl;
 				  
 				  JsonpRequestBuilder rb = new JsonpRequestBuilder();
@@ -115,14 +116,18 @@ public class ActivityPresenter implements Presenter {
 							  for(String activityId : activityIds){
 								
 								  String eventType = document.getEventType(activityId);
-								  String activityString = "You ("+agentName+")  ";
+								  String activityString;
 								  if(agentName==null)
 									  activityString = "You ";
+								  else
+									  activityString = "You ("+agentName+")  ";
 								  Label agentLabel = new Label(activityString);
 								  
+								  if(eventType==null)
+									  eventType = "an action";
 								  if(eventType.equalsIgnoreCase("Curation-Workflow"))
 									  eventType = "Submission-Workflow";
-								  
+								  								  
 								  activityString +=" performed "+eventType+" on  ";
 								  Label activityLabel = new Label();//Map activity to verb
 								  
