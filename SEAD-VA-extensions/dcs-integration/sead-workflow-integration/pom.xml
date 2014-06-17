@@ -511,12 +511,12 @@
             <scope>runtime</scope>
         </dependency>
 
-        <dependency>
+        <!--<dependency>
             <groupId>org.dataconservancy.archive</groupId>
             <artifactId>dcs-archive-impl-fcrepo</artifactId>
             <version>1.1.0-SNAPSHOT</version>
             <scope>runtime</scope>
-        </dependency>
+        </dependency>-->
 
         <dependency>
             <groupId>com.sun.jersey.contribs</groupId>
