@@ -114,12 +114,6 @@
         <property name="contentResourceLocator" ref="contentResourceLocator" />
     </bean>
 
-    <bean id="org.dataconservancy.dcs.ingest.services.MatchmakerClient"
-          class="org.dataconservancy.dcs.ingest.services.MatchmakerClient">
-        <property name="ingestFramework" ref="ingestFramework" />
-        <property name="modelBuilder" ref="seadModelBuilder" />
-    </bean>
-
     <bean id="dcpPackaging" class="org.dataconservancy.deposit.sword.SWORDPackaging">
         <constructor-arg value="http://dataconservancy.org/schemas/dcp/1.0" />
     </bean>
@@ -422,6 +416,51 @@
         </property>
     </bean>
 
+
+    <bean
+            id="org.dataconservancy.dcs.ingest.services.runners.RulesExecutorBootstrap"
+            class="org.dataconservancy.dcs.ingest.services.runners.RulesExecutorBootstrap"
+            lazy-init="true">
+        <property name="ingestFramework" ref="ingestFramework" />
+        <property name="executor" ref="${ingest.bootstrap.executor}" />
+        <property name="serviceMap">
+            <map>
+                <entry><key><value>doi-creation</value></key><ref bean="org.dataconservancy.dcs.ingest.services.DoiCreationService" /></entry>
+                <!--entry><key><value>dataone-id-creation</value></key><ref bean="org.dataconservancy.dcs.ingest.services.DataOneIdService" /></entry-->
+                <!--entry key="y"><ref bean="org.dataconservancy.dcs.ingest.services.MetadataGenerator" /-->
+                <entry><key><value>labeller</value></key><ref bean="org.dataconservancy.dcs.ingest.services.Labeller" /></entry>
+                <!--entry key="y"><ref bean="org.dataconservancy.dcs.ingest.services.MatchmakerClient" /-->
+                <entry><key><value>content-stager</value></key><ref bean="org.dataconservancy.dcs.ingest.services.ExternalContentStager" /></entry>
+                <entry><key><value>content-resolver</value></key><ref bean="org.dataconservancy.dcs.ingest.services.StagedContentResolver" /></entry>
+                <!--entry><key><value>lineage-labeller</value></key><ref bean="org.dataconservancy.dcs.ingest.services.LineageLabeller" /></entry-->
+                <entry><key><value>virus-checker</value></key><ref bean="org.dataconservancy.dcs.ingest.services.CmdLineVirusChecker" /></entry>
+                <!--entry><key><value>branch-checker</value></key><ref bean="org.dataconservancy.dcs.ingest.services.BranchChecker" /></entry-->
+                <entry><key><value>mime-characterizer</value></key><ref bean="org.dataconservancy.dcs.ingest.services.SimpleMimeCharacterizer" /></entry>
+                <!--entry><key><value>link-validator</value></key><ref bean="org.dataconservancy.dcs.ingest.services.SimpleLinkValidator" /></entry-->
+                <entry><key><value>before-index</value></key><ref bean="org.dataconservancy.dcs.ingest.services.BasicFeatureExtraction.BEFORE" /></entry>
+                <!--entry><key><value>dspace</value></key><ref bean="org.dataconservancy.dcs.ingest.services.Archiver.DSPACE" /></entry>
+                <entry><key><value>s3</value></key><ref bean="org.dataconservancy.dcs.ingest.services.Archiver.CLOUD" /></entry-->
+                <entry><key><value>sda</value></key><ref bean="org.dataconservancy.dcs.ingest.services.Archiver.SDA" /></entry>
+                <entry><key><value>uiuc</value></key><ref bean="org.dataconservancy.dcs.ingest.services.Archiver.UIUC" /></entry>
+                <!--entry><key><value>icpsr</value></key><ref bean="org.dataconservancy.dcs.ingest.services.Archiver.SDA" /></entry-->
+                <entry><key><value>iu</value></key><ref bean="org.dataconservancy.dcs.ingest.services.Archiver.IUSW" /></entry>
+                <!--<entry><key><value>doi-updation</value></key><ref bean="org.dataconservancy.dcs.ingest.services.DoiUpdationService" /></entry>-->
+                <entry><key><value>after-index</value></key><ref bean="org.dataconservancy.dcs.ingest.services.BasicFeatureExtraction.AFTER" /></entry>
+                <entry><key><value>ro-ingest</value></key><ref bean="org.dataconservancy.dcs.ingest.services.SeadROIngester" /></entry>
+                <entry><key><value>finisher</value></key><ref bean="org.dataconservancy.dcs.ingest.services.Finisher" /></entry>
+                <entry><key><value>cleanu</value></key><ref bean="org.dataconservancy.dcs.ingest.services.Cleanup" /></entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="org.dataconservancy.dcs.ingest.services.SeadROIngester"
+          class="org.dataconservancy.dcs.ingest.services.SeadROIngester">
+        <property name="ingestFramework" ref="ingestFramework" />
+        <property name="roSubsystemUrl" value="${rosystem.url}" />
+        <property name="disabled" value="false" />
+    </bean>
+
+
     <bean id="org.dataconservancy.dcs.ingest.services.RegistryIngester"
           class="org.dataconservancy.dcs.ingest.services.SeadRegistryIngester">
         <property name="ingestFramework" ref="ingestFramework" />
@@ -465,6 +504,8 @@
         <property name="modelBuilder" ref="seadModelBuilder" />
         <property name="type" value="cloud" />
 	    <property name="name" value="IU SDA" />
+        <property name="id" value="5" />
+        <property name="communityUrl" value="https://www.sdarchive.iu.edu/" />
         <property name="disabled" value="false" />
     </bean>
     <!-- Feature Extraction -->
@@ -493,22 +534,48 @@
         </property>
     </bean>
 
-    <bean id="org.dataconservancy.dcs.ingest.services.Archiver.DSPACE"
+    <!--bean id="org.dataconservancy.dcs.ingest.services.Archiver.DSPACE"
           class="org.dataconservancy.dcs.ingest.services.SeadArchiver">
         <property name="archiveStore" ref="org.dataconservancy.archive.impl.dspacerepo.DspaceRepoArchiveStore" />
         <property name="ingestFramework" ref="ingestFramework" />
         <property name="type" value="dspace" />
-	<property name="name" value="Ideals;IU Scholarworks" />
+	    <property name="name" value="Ideals;IU Scholarworks" />
+        <property name="modelBuilder" ref="seadModelBuilder" />
+        <property name="disabled" value="false" />
+    </bean-->
+
+    <bean id="org.dataconservancy.dcs.ingest.services.Archiver.IUSW"
+          class="org.dataconservancy.dcs.ingest.services.SeadArchiver">
+        <property name="archiveStore" ref="org.dataconservancy.archive.impl.dspacerepo.DspaceRepoArchiveStore" />
+        <property name="ingestFramework" ref="ingestFramework" />
+        <property name="type" value="dspace" />
+        <property name="name" value="IU Scholarworks" />
+        <property name="id" value="1" />
+        <property name="communityUrl" value="http://poplar.dlib.indiana.edu:8250/sead/communities/202" />
         <property name="modelBuilder" ref="seadModelBuilder" />
         <property name="disabled" value="false" />
     </bean>
+
+
+    <bean id="org.dataconservancy.dcs.ingest.services.Archiver.UIUC"
+          class="org.dataconservancy.dcs.ingest.services.SeadArchiver">
+        <property name="archiveStore" ref="org.dataconservancy.archive.impl.dspacerepo.DspaceRepoArchiveStore" />
+        <property name="ingestFramework" ref="ingestFramework" />
+        <property name="type" value="dspace" />
+        <property name="name" value="Ideals" />
+        <property name="id" value="1" />
+        <property name="communityUrl" value="http://poplar.dlib.indiana.edu:8250/sead/communities/202" />
+        <property name="modelBuilder" ref="seadModelBuilder" />
+        <property name="disabled" value="false" />
+    </bean>
+
 
     <bean id="org.dataconservancy.archive.impl.dspacerepo.DspaceRepoArchiveStore"
           class="org.dataconservancy.archive.impl.dspacerepo.DspaceRepoArchiveStore">
         <property name="solrService" ref="solrService" />
     </bean>
 
-    <bean id="org.dataconservancy.dcs.ingest.services.Archiver.CLOUD"
+    <!--bean id="org.dataconservancy.dcs.ingest.services.Archiver.CLOUD"
           class="org.dataconservancy.dcs.ingest.services.SeadArchiver">
         <property name="archiveStore" ref="org.dataconservancy.archive.impl.cloud.AmazonS3ArchiveStore" />
         <property name="ingestFramework" ref="ingestFramework" />
@@ -516,7 +583,7 @@
 	<property name="name" value="Amazon S3" />
         <property name="modelBuilder" ref="seadModelBuilder" />
         <property name="disabled" value="false" />
-    </bean>
+    </bean-->
 
     <bean id="org.dataconservancy.archive.impl.cloud.AmazonS3ArchiveStore"
           class="org.dataconservancy.archive.impl.cloud.AmazonS3ArchiveStore">
@@ -554,7 +621,6 @@
         <property name="hostname" value="${sda.host}" />
         <property name="mountPath" value="${sda.mount}" />
         <property name="solrService" ref="solrService" />
-        <property name="isTar" value="true" />
     </bean>
         <!-- Limited number of executing threads, but unbounded queue. Invoking
 thread drops off a task into this queue, which is then executed asynchronously
@@ -649,11 +715,15 @@ method call. Invoking thread continues once task is completed. -->
     <bean id="customAuthenticationProvider"
           class="org.seadva.access.security.CustomAuthenticationProvider">
         <property name="dbUrl" value="${userdb.url}"/>
+        <property name="dbUser" value="${userdb.user}"/>
+        <property name="dbPwd" value="${userdb.pwd}"/>
     </bean>
     <bean id="authTokenFilter" class="org.seadva.access.security.model.AuthenticationTokenFilter" scope="singleton" />
 
     <bean id="userpwdAuthenticationProvider" class="org.seadva.access.security.FormAuthenticationProvider">
         <property name="dbUrl" value="${userdb.url}"/>
+        <property name="dbUser" value="${userdb.user}"/>
+        <property name="dbPwd" value="${userdb.pwd}"/>
     </bean>
 
     <security:http auto-config='true'>
