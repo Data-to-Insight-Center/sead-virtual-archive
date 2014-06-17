@@ -39,8 +39,19 @@ public class KomaduIngester {
         AssociationType association1 = createAssociation1(agentId, activityId);
         agentActivityType.setActivity(workflowActivity);
         agentActivityType.setAgent(agent);
+
+        AttributesType associationAttributes = AttributesType.Factory.newInstance();
+        AttributeType[] associationAttributesArr = new AttributeType[1];
+        // Attribute 1
+        AttributeType attribute1 = createAttribute("event-type", event.getEventType());
+        associationAttributesArr[0] = attribute1;
+        associationAttributes.setAttributeArray(associationAttributesArr);
+        association1.setAttributes(associationAttributes);
+
         agentActivityType.setAssociation(association1);
         agentActivity.setAddAgentActivityRelationship(agentActivityType);
+
+
 
         // execute
 

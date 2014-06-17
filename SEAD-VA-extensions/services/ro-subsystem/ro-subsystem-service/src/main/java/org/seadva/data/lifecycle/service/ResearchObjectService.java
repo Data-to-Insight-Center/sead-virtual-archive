@@ -34,10 +34,8 @@ import org.seadva.data.lifecycle.service.util.Util;
 import org.seadva.model.builder.xstream.SeadXstreamStaxModelBuilder;
 import org.seadva.model.pack.ResearchObject;
 import org.seadva.registry.client.RegistryClient;
+import org.seadva.registry.database.model.obj.vaRegistry.*;
 import org.seadva.registry.database.model.obj.vaRegistry.Agent;
-import org.seadva.registry.database.model.obj.vaRegistry.AggregationWrapper;
-import org.seadva.registry.database.model.obj.vaRegistry.BaseEntity;
-import org.seadva.registry.database.model.obj.vaRegistry.Relation;
 import org.seadva.registry.mapper.DcsDBMapper;
 import org.seadva.registry.mapper.OreDBMapper;
 import org.springframework.beans.factory.annotation.Required;
@@ -214,15 +212,15 @@ public class ResearchObjectService {
                                        @QueryParam("toDate") String toDate) throws IOException, URISyntaxException, OREException, ClassNotFoundException {
 
         List<ROMetadata> roList = new ArrayList<ROMetadata>();
-        List<org.seadva.registry.database.model.obj.vaRegistry.Collection> collections = new RegistryClient(registryServiceUrl).getCollectionList(type, repository, submitterId);
+        List<CollectionWrapper> collections = new RegistryClient(registryServiceUrl).getCollectionList(type, repository, submitterId);
 
-        for(org.seadva.registry.database.model.obj.vaRegistry.Collection collection:collections){
+        for(CollectionWrapper collection:collections){
             ROMetadata ro = new ROMetadata();
-            ro.setIdentifier(collection.getId());
-            ro.setName(collection.getEntityName());
-            ro.setType(collection.getState().getStateName());
-            ro.setUpdatedDate(collection.getEntityLastUpdatedTime().toString());
-            ro.setIsObsolete(collection.getIsObsolete());
+            ro.setIdentifier(collection.getCollection().getId());
+            ro.setName(collection.getCollection().getEntityName());
+            ro.setType(collection.getCollection().getState().getStateName());
+            ro.setUpdatedDate(collection.getCollection().getEntityLastUpdatedTime().toString());
+            ro.setIsObsolete(collection.getCollection().getIsObsolete());
             for(Relation relation:collection.getRelations()){
                 if(relation.getId().getRelationType().getRelationElement().equalsIgnoreCase("curatedBy")){ //must be lazy init, doesn't seem to pick up now
                     ro.setAgentId(relation.getId().getEffect().getId());
@@ -282,6 +280,13 @@ public class ResearchObjectService {
         DC_TERMS_TITLE.setName("title");
         DC_TERMS_TITLE.setURI(new URI(titleTerm));
 
+        Predicate DC_TERMS_TYPE = new Predicate();
+        String typeTerm = "http://purl.org/dc/terms/type";
+        DC_TERMS_TYPE.setNamespace(Vocab.dcterms_Agent.ns().toString());
+        DC_TERMS_TYPE.setPrefix(Vocab.dcterms_Agent.schema());
+        DC_TERMS_TYPE.setName("type");
+        DC_TERMS_TYPE.setURI(new URI(typeTerm));
+
         String thisEntityId = resourceMap.getAggregation().getURI().toString();
         String title = null;
         TripleSelector titleSelector = new TripleSelector();
@@ -293,56 +298,69 @@ public class ResearchObjectService {
             title = titleTriples.get(0).getObjectLiteral();
         }
 
-        Iterator iterator = metadataMap.entrySet().iterator();
-        while(iterator.hasNext()){
-            Map.Entry<String,List<String>> pair = (Map.Entry<String, List<String>>) iterator.next();
-            if(pair.getKey().contains("Revision")){
-                for(String relatedEntityId: pair.getValue()){
-                    Entity relatedEntity = new Entity();
-                    relatedEntity.setId(relatedEntityId);
 
-                    Entity thisEntity = new Entity();
-                    thisEntity.setId(thisEntityId);
-                    thisEntity.setName(title);
+        TripleSelector typeSelector = new TripleSelector();
+        typeSelector.setSubjectURI(resourceMap.getAggregation().getURI());
+        typeSelector.setPredicate(DC_TERMS_TYPE);
+        List<Triple> typeTriples = resourceMap.getAggregation().listAllTriples(typeSelector);
 
-                    for(AggregatedResource resource:resourceMap.getAggregatedResources())
-                    {
-                        Entity memberEntity = new Entity();
-                        memberEntity.setId(resource.getURI().toString());
-                        titleTriples = resource.listAllTriples(titleSelector);
-                        if(titleTriples.size()>0)
-                            memberEntity.setName(titleTriples.get(0).getObjectLiteral());
-                        thisEntity.addChild(memberEntity);
+        String type = "CurationObject";
+        if(typeTriples.size()>0){
+            type = typeTriples.get(0).getObjectLiteral();
+        }
+
+        if(type.equalsIgnoreCase("PublishedObject")){
+            Iterator iterator = metadataMap.entrySet().iterator();
+            while(iterator.hasNext()){
+                Map.Entry<String,List<String>> pair = (Map.Entry<String, List<String>>) iterator.next();
+                if(pair.getKey().contains("Revision")){
+                    for(String relatedEntityId: pair.getValue()){
+                        Entity relatedEntity = new Entity();
+                        relatedEntity.setId(relatedEntityId);
+
+                        Entity thisEntity = new Entity();
+                        thisEntity.setId(thisEntityId);
+                        thisEntity.setName(title);
+
+                        for(AggregatedResource resource:resourceMap.getAggregatedResources())
+                        {
+                            Entity memberEntity = new Entity();
+                            memberEntity.setId(resource.getURI().toString());
+                            titleTriples = resource.listAllTriples(titleSelector);
+                            if(titleTriples.size()>0)
+                                memberEntity.setName(titleTriples.get(0).getObjectLiteral());
+                            thisEntity.addChild(memberEntity);
+                        }
+                        new KomaduIngester(komaduServiceUrl).trackRevision(relatedEntity,
+                                thisEntity
+                        );
                     }
-                    new KomaduIngester(komaduServiceUrl).trackRevision(relatedEntity,
-                            thisEntity
-                    );
                 }
-            }
 
-            if(pair.getKey().contains("Derived")){
-                for(String relatedEntityId: pair.getValue()){
-                    Entity relatedEntity = getCollection(relatedEntityId);
+                if(pair.getKey().contains("Derived")){
+                    for(String relatedEntityId: pair.getValue()){
+                        Entity relatedEntity = getCollection(relatedEntityId);
 
-                    Entity thisEntity = new Entity();
-                    thisEntity.setId(thisEntityId);
-                    thisEntity.setName(title);
+                        Entity thisEntity = new Entity();
+                        thisEntity.setId(thisEntityId);
+                        thisEntity.setName(title);
 
-                    for(AggregatedResource resource:resourceMap.getAggregatedResources())
-                    {
-                        Entity memberEntity = new Entity();
-                        memberEntity.setId(resource.getURI().toString());
-                        titleTriples = resource.listAllTriples(titleSelector);
-                        if(titleTriples.size()>0)
-                            memberEntity.setName(titleTriples.get(0).getObjectLiteral());
-                        thisEntity.addChild(memberEntity);
+                        for(AggregatedResource resource:resourceMap.getAggregatedResources())
+                        {
+                            Entity memberEntity = new Entity();
+                            memberEntity.setId(resource.getURI().toString());
+                            titleTriples = resource.listAllTriples(titleSelector);
+                            if(titleTriples.size()>0)
+                                memberEntity.setName(titleTriples.get(0).getObjectLiteral());
+                            thisEntity.addChild(memberEntity);
+                        }
+                        new KomaduIngester(komaduServiceUrl).trackDerivation(relatedEntity,
+                                thisEntity
+                        );
                     }
-                    new KomaduIngester(komaduServiceUrl).trackDerivation(relatedEntity,
-                            thisEntity
-                    );
                 }
+                iterator.remove();
             }
-            iterator.remove();
         }
         return Response.ok().build();
     }
