@@ -61,7 +61,7 @@ public class PersonDAOJdbcImpl  implements PersonDAO {
         	 person.setLastName(results.getString("LASTNAME"));
         	 person.setEmailAddress(results.getString("EMAILADDRESS"));
         	 person.setPassword(results.getString("PASSWORD"));
-        	 person.setRole(Role.fromString(results.getString("ROLE")));
+        	// person.setRole(Role.fromString(results.getString("ROLE")));
         	 if(results.getString("REGSTATUS").equalsIgnoreCase("pending"))
         		 person.setRegistrationStatus(RegistrationStatus.PENDING);
         	 else if(results.getString("REGSTATUS").equalsIgnoreCase("approved"))

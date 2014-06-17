@@ -4,13 +4,13 @@ The code includes extensions to Data Conservancy Services code base.<br/>
 <b>Pre-requisites:</b>
 Before setting up the Virtual Archive service, please complete the following tasks:
 <ul>
-<li>Creating an ACR account:
+<li>Creating an ACR account: (Not needed for local bag upload)
 <br/>
 Please request an account in Active Content Repository at http://sead-demo.ncsa.illinois.edu/acr/ 
 <li>Build requirements:
-For building code  please use maven (version 2.2.1 only currently)  and jdk (1.7.x, does not work for 1.6)  
+For building code  please use maven and jdk (1.7.x)
 Please setup latest version of Apache Tomcat
-Once tomcat is setup, please copy Hibernate jar into the lib folder inside tomcat folder.
+Once tomcat is setup, please copy Hibernate jar[] and mysql-connector jar [] into the into the lib folder inside tomcat folder.
 <li>Increase the stack size as with JAVA_OPTS environment variable for jvm and to also allow encoding of slash and backslash as shown below.
 </ul>
 ```export JAVA_OPTS="-Xss512m -Xms512m -Xmx1024m -XX:MaxPermSize=1024m
@@ -31,12 +31,18 @@ Please use the jar in utils/initDB folder to initialize the database. Command to
 
 <u><b>Build</b></u>
 <ol>
-<li>Download the jar file hbnpojogen-persistence-1.4.4.jar
-<br/>
-Copy the jar file to your local maven repository. The file needs to be copied to the directory as shown below:<br/>
-~/.m2/repository/com/felees/hbnpojogen-persistence/1.4.4/
-<li>Building SEAD Registry module
-<li>Building backend workflow
+
+Support will be developed soon to build/deploy some of these module in a single step
+<li>Building SEAD Registry module: Please follow README instructions in sead-registry module
+<li>Building Komadu: Please follow instructions from Komadu github site [https://github.com/Data-to-Insight-Center/komadu/]
+<li>Building RO REST service:
+<br/>cd SEAD-VA-extensions/services/ro-subsystem/
+<br/>mvn clean install -DskipTests
+<br/>Then copy ro-subsystem-service/ro-x.x.x.war into tomcat/webapp/ro.war
+<li>Building BagIt Service:
+<br/>mvn clean install -DskipTests
+<br/>Then copy bagitRestService/bagit-x.x.x.war into tomcat/webapp/bagit.war
+<li>Building backend workflow: See below
 
 cd dcs-integration/sead-workflow-integration
 

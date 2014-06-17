@@ -23,11 +23,23 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     public void setDbUrl(String dbUrl) {
         this.dbUrl = dbUrl;
     }
+    private String dbUser;
+
+    @Required
+    public void setDbUser(String dbUser) {
+        this.dbUser = dbUser;
+    }
+    private String dbPwd;
+
+    @Required
+    public void setDbPwd(String dbPwd) {
+        this.dbPwd = dbPwd;
+    }
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
         String token = ((SeadCredentials)authentication.getCredentials()).getToken();
-        org.seadva.access.security.model.Authentication result = (new UserServiceImpl(this.dbUrl)).authenticateOAuth(
+        org.seadva.access.security.model.Authentication result = (new UserServiceImpl(this.dbUrl, this.dbUser, this.dbPwd)).authenticateOAuth(
                 token,
                 OAuthType.GOOGLE,
                 new String[1]);

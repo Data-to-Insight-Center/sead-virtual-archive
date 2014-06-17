@@ -27,23 +27,27 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
 
 @SuppressWarnings("serial")
 public class UserServiceImpl
   implements UserService
 {
     String dbUrl;
+    String dbUser;
+    String dbPwd;
 
-	PersonDAOJdbcImpl getPersonJdbc() throws InstantiationException, IllegalAccessException, ClassNotFoundException{
-		return new PersonDAOJdbcImpl(dbUrl);
+	PersonDAOJdbcImpl getPersonJdbc() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		return new PersonDAOJdbcImpl(dbUrl, dbUser, dbPwd);
   }
 
-  public UserServiceImpl(String dbUrl){
+  public UserServiceImpl(String dbUrl, String dbUser, String dbPwd){
       this.dbUrl = dbUrl;
+      this.dbUser = dbUser;
+      this.dbPwd = dbPwd;
   }
 
-  public Authentication authenticate(String user, String pass) throws InstantiationException, IllegalAccessException, ClassNotFoundException
-  {
+  public Authentication authenticate(String user, String pass) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 	Person person = getPersonJdbc().selectPerson(user);
 	Authentication authentication;
 	
@@ -128,8 +132,10 @@ public Authentication authenticateOAuth(String token, OAuthType type, String[] a
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-	}
+		} catch (SQLException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
 	return authentication;
 }
 

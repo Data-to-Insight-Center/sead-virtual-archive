@@ -10,6 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -22,6 +23,18 @@ public class FormAuthenticationProvider implements AuthenticationProvider {
     public void setDbUrl(String dbUrl) {
         this.dbUrl = dbUrl;
     }
+    private String dbUser;
+
+    @Required
+    public void setDbUser(String dbUser) {
+        this.dbUser = dbUser;
+    }
+    private String dbPwd;
+
+    @Required
+    public void setDbPwd(String dbPwd) {
+        this.dbPwd = dbPwd;
+    }
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String name = authentication.getName();
@@ -29,7 +42,7 @@ public class FormAuthenticationProvider implements AuthenticationProvider {
 
         org.seadva.access.security.model.Authentication result = null;
         try {
-            result = (new UserServiceImpl(this.dbUrl)).authenticate(name, password);
+            result = (new UserServiceImpl(this.dbUrl, this.dbUser, this.dbPwd)).authenticate(name, password);
             if (result.authResult()){
                 Collection<GrantedAuthority> grantedAuths = new ArrayList<GrantedAuthority>();
                 grantedAuths.add(new SimpleGrantedAuthority("ROLE_admin"));
@@ -43,6 +56,8 @@ public class FormAuthenticationProvider implements AuthenticationProvider {
         } catch (IllegalAccessException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (ClassNotFoundException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (SQLException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
         return null;
