@@ -11,21 +11,22 @@
 
     <!--<rabbit:template id="amqpTemplate" connection-factory="connectionFactory"-->
                      <!--exchange="dpn-control-exchange" routing-key="tdr"/>-->
-    <rabbit:template id="amqpTemplate" connection-factory="connectionFactory"
-                     exchange="myExchange" routing-key="dpn.iu"/>
+    <rabbit:template id="amqpTemplate" connection-factory="connectionFactory" exchange="IU-Exchange" routing-key="dpn.iu"/>
 
     <rabbit:admin connection-factory="connectionFactory"/>
 
-    <rabbit:queue name="myQueue"/>
+    <rabbit:queue id="queue.iu" name="queue.iu" durable="true"/>
+    <rabbit:queue id="queue.broadcast" name="queue.broadcast" durable="true"/>
 
-    <rabbit:topic-exchange name="myExchange">
+    <rabbit:topic-exchange name="IU-Exchange">
         <rabbit:bindings>
-            <rabbit:binding queue="myQueue" pattern="dpn.*"/>
+            <rabbit:binding queue="queue.iu" pattern="dpn.iu"/>
+            <rabbit:binding queue="queue.broadcast" pattern="queue.broadcast"/>
         </rabbit:bindings>
     </rabbit:topic-exchange>
 
     <rabbit:listener-container connection-factory="connectionFactory">
-        <rabbit:listener ref="testListener" method="onMessage" queue-names="myQueue"/>
+        <rabbit:listener ref="MsgListener" method="onMessage" queue-names="queue.iu,queue.broadcast"/>
     </rabbit:listener-container>
-    <bean id="testListener" class="edu.iu.dpn.messaging.DPNMsgListener"/>
+    <bean id="MsgListener" class="edu.iu.dpn.messaging.DPNMsgListener"/>
 </beans>
