@@ -6,6 +6,8 @@
 
 package edu.iu.dpn.messaging;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -20,6 +22,17 @@ public class DPNReplicationInitQuery {
     String replication_size;
     String dpn_object_id;
 
+    @Value("${broadCastKey}")
+    public String broadCastKey;
+
+    public void setBroadCastKey(String broadCastKey){
+        this.broadCastKey = broadCastKey;
+    }
+
+    public String getBroadCastKey(){
+        return broadCastKey;
+    }
+
     public void setReplication_size(String size){
         this.replication_size = size;
     }
@@ -33,7 +46,7 @@ public class DPNReplicationInitQuery {
         DPNMsg msg = new DPNMsg();
         Map<String, Object> headerMap = new HashMap<>();
         headerMap.put(FROM.toString(), DPNMsgConstants.FROM_VALUE);
-        headerMap.put(REPLY_KEY.toString(), DPNMsgConstants.REPLY_KEY_VALUE);
+        headerMap.put(REPLY_KEY.toString(), broadCastKey);
         headerMap.put(SEQUENCE.toString(),DPNMsgConstants.REP_INT_QUERY_SEQUENCE);
         headerMap.put(CORRELATION_ID.toString(), UUID.randomUUID().toString());
         headerMap.put(DATE.toString(), today.format(new Date()).toString());
