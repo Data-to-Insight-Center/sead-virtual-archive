@@ -26,7 +26,8 @@ public class DPNReplicationAvailableReply {
         headerMap.put(FROM.toString(), DPNMsgConstants.FROM_VALUE);
         headerMap.put(REPLY_KEY.toString(), DPNMsgConstants.REPLY_KEY_VALUE);
         headerMap.put(SEQUENCE.toString(),DPNMsgConstants.REP_AVAIL_REPLY_SEQUENCE);
-        headerMap.put(CORRELATION_ID.toString(), UUID.randomUUID().toString());
+        //headerMap.put(CORRELATION_ID.toString(), UUID.randomUUID().toString());
+        headerMap.put(CORRELATION_ID.toString(), correlation_id);
         headerMap.put(DATE.toString(), today.format(new Date()).toString());
         headerMap.put(TTL.toString(),DPNMsgConstants.TTL_DURATION);
         DPNMsgHeader DPNMsgHeader = new DPNMsgHeader();

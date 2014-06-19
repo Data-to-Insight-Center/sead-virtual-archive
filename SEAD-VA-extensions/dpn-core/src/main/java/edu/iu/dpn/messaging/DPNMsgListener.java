@@ -50,7 +50,7 @@ public class DPNMsgListener implements MessageListener{
                 }catch(Exception e){
                     e.printStackTrace();
                 }
-            case "REPLICATION_AVAIL_REPLY":
+            case "REPLICATION_AVAILABLE_REPLY":
                 DPNReplicationLocationReply replicationLocationReply = new DPNReplicationLocationReply();
                 dpnMsg = replicationLocationReply.getDPNReplicationLocationMsg(cid, reply_key);
                 try{

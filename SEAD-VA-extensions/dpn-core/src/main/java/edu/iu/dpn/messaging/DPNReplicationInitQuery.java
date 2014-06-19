@@ -17,7 +17,17 @@ import static edu.iu.dpn.messaging.DPNMsgConstants.DPN_OBJECT_ID;
 import static edu.iu.dpn.messaging.DPNMsgConstants.PROTOCOL;
 
 public class DPNReplicationInitQuery {
-    DPNReplicationInitQuery(){}
+    String replication_size;
+    String dpn_object_id;
+
+    public void setReplication_size(String size){
+        this.replication_size = size;
+    }
+
+    public void setDpn_object_id(String object_id){
+        this.dpn_object_id = object_id;
+    }
+    public DPNReplicationInitQuery(){}
     public DPNMsg getDPNReplicationInitMsg(){
         SimpleDateFormat today = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssz");
         DPNMsg msg = new DPNMsg();
@@ -34,9 +44,9 @@ public class DPNReplicationInitQuery {
 
         Map<String, Object> bodyMap = new HashMap<>();
         bodyMap.put(MESSAGE_NAME.toString(), DPNMsgTypes.REPLICATION_INIT_QUERY);
-        bodyMap.put(REPLICATION_SIZE.toString(), "4096");
+        bodyMap.put(REPLICATION_SIZE.toString(), replication_size);
         bodyMap.put(PROTOCOL.toString(), DPNMsgConstants.PROTOCOL_TYPE);
-        bodyMap.put(DPN_OBJECT_ID.toString(), "45b6-c3869-4869-jgu3");
+        bodyMap.put(DPN_OBJECT_ID.toString(), dpn_object_id);
         DPNMsgBody DPNMsgBody = new DPNMsgBody();
         DPNMsgBody.setBody(bodyMap);
         msg.setBody(DPNMsgBody);
