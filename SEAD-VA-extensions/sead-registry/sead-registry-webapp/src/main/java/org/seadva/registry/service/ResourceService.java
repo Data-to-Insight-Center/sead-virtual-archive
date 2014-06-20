@@ -56,7 +56,7 @@ public class ResourceService {
 
     static Gson gson;
     static DataLayerVaRegistry dataLayerVaRegistry;
-    static Session querySession;
+    static final Session querySession;
     static {
         new DataLayerVaRegistryImpl().setApplicationContext(ApplicationContextHolder.getContext());
         gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
@@ -86,10 +86,16 @@ public class ResourceService {
     @Path("/metadataType/{element}")
     @Produces("application/json")
     public Response getByType( @PathParam("element") String element) throws Exception {
-        Query query =  querySession.createQuery("SELECT M from MetadataType M where M.metadataElement='"+element+"'");
-        if(query.list().size()==0)
-            throw new NotFoundException("Metadata type not found in metadata type registry");
-        MetadataType metadataType = (MetadataType) query.list().get(0);
+        MetadataType metadataType;
+        synchronized (querySession) {
+            querySession.clear();
+            querySession.beginTransaction();
+            Query query =  querySession.createQuery("SELECT M from MetadataType M where M.metadataElement='"+element+"'");
+            if(query.list().size()==0)
+                throw new NotFoundException("Metadata type not found in metadata type registry");
+            metadataType = (MetadataType) query.list().get(0);
+            querySession.getTransaction().commit();
+        }
         return Response.ok(gson.toJson(metadataType)).build();
     }
 
@@ -97,10 +103,16 @@ public class ResourceService {
     @Path("/identifiertype/{typename}")
     @Produces("application/json")
     public Response getIdentifierType( @PathParam("typename") String typeName) throws Exception {
-        Query query =  querySession.createQuery("SELECT D from DataIdentifierType D where D.dataIdentifierTypeName='"+typeName+"'");
-        if(query.list().size()==0)
-            throw new NotFoundException("DataIdentifer type not found in DataIdentifer type registry");
-        DataIdentifierType dataIdentifierType = (DataIdentifierType) query.list().get(0);
+        DataIdentifierType dataIdentifierType;
+        synchronized (querySession) {
+            querySession.clear();
+            querySession.beginTransaction();
+            Query query =  querySession.createQuery("SELECT D from DataIdentifierType D where D.dataIdentifierTypeName='"+typeName+"'");
+            if(query.list().size()==0)
+                throw new NotFoundException("DataIdentifer type not found in DataIdentifer type registry");
+            dataIdentifierType = (DataIdentifierType) query.list().get(0);
+            querySession.getTransaction().commit();
+        }
         return Response.ok(gson.toJson(dataIdentifierType)).build();
     }
 
@@ -109,10 +121,16 @@ public class ResourceService {
     @Path("/relationType/{element}")
     @Produces("application/json")
     public Response getRelationByType( @PathParam("element") String element) throws Exception {
-        Query query =  querySession.createQuery("SELECT R from RelationType R where R.relationElement='"+element+"'");
-        if(query.list().size()==0)
-            throw new NotFoundException("Relation type not found in relation type registry");
-        RelationType relationType = (RelationType) query.list().get(0);
+        RelationType relationType;
+        synchronized (querySession) {
+            querySession.clear();
+            querySession.beginTransaction();
+            Query query =  querySession.createQuery("SELECT R from RelationType R where R.relationElement='"+element+"'");
+            if(query.list().size()==0)
+                throw new NotFoundException("Relation type not found in relation type registry");
+            relationType = (RelationType) query.list().get(0);
+            querySession.getTransaction().commit();
+        }
         return Response.ok(gson.toJson(relationType)).build();
     }
 
@@ -120,10 +138,16 @@ public class ResourceService {
     @Path("/roleType/{element}")
     @Produces("application/json")
     public Response getRoleByType( @PathParam("element") String element) throws Exception {
-        Query query =  querySession.createQuery("SELECT R from RoleType R where R.roleTypeName='"+element+"'");
-        if(query.list().size()==0)
-            throw new NotFoundException("Role type not found in role type registry");
-        RoleType roleType = (RoleType) query.list().get(0);
+        RoleType roleType;
+        synchronized (querySession) {
+            querySession.clear();
+            querySession.beginTransaction();
+            Query query =  querySession.createQuery("SELECT R from RoleType R where R.roleTypeName='"+element+"'");
+            if(query.list().size()==0)
+                throw new NotFoundException("Role type not found in role type registry");
+            roleType = (RoleType) query.list().get(0);
+            querySession.getTransaction().commit();
+        }
         return Response.ok(gson.toJson(roleType)).build();
     }
 
@@ -131,10 +155,16 @@ public class ResourceService {
     @Path("/profileType/{element}")
     @Produces("application/json")
     public Response getProfileByType( @PathParam("element") String element) throws Exception {
-        Query query =  querySession.createQuery("SELECT P from ProfileType P where P.profileTypeName='"+element+"'");
-        if(query.list().size()==0)
-            throw new NotFoundException("Profile type not found in role type registry");
-        ProfileType profileType = (ProfileType) query.list().get(0);
+        ProfileType profileType;
+        synchronized (querySession) {
+            querySession.clear();
+            querySession.beginTransaction();
+            Query query =  querySession.createQuery("SELECT P from ProfileType P where P.profileTypeName='"+element+"'");
+            if(query.list().size()==0)
+                throw new NotFoundException("Profile type not found in role type registry");
+            profileType = (ProfileType) query.list().get(0);
+            querySession.getTransaction().commit();
+        }
         return Response.ok(gson.toJson(profileType)).build();
     }
 
@@ -142,10 +172,16 @@ public class ResourceService {
     @Path("/repository/{name}")
     @Produces("application/json")
     public Response getRepositoryByName( @PathParam("name") String repoName) throws Exception {
-        Query query =  querySession.createQuery("SELECT R from Repository R where R.repositoryName='"+repoName+"'");
-        if(query.list().size()==0)
-            throw new NotFoundException("No repository found matching the given name "+repoName+" in registry");
-        Repository repository = (Repository) query.list().get(0);
+        Repository repository;
+        synchronized (querySession) {
+            querySession.clear();
+            querySession.beginTransaction();
+            Query query =  querySession.createQuery("SELECT R from Repository R where R.repositoryName='"+repoName+"'");
+            if(query.list().size()==0)
+                throw new NotFoundException("No repository found matching the given name "+repoName+" in registry");
+            repository = (Repository) query.list().get(0);
+            querySession.getTransaction().commit();
+        }
         return Response.ok(gson.toJson(repository)).build();
     }
 
@@ -153,10 +189,16 @@ public class ResourceService {
     @Path("/state/{name}")
     @Produces("application/json")
     public Response getStateByName( @PathParam("name") String stateName) throws Exception {
-        Query query =  querySession.createQuery("SELECT S from State S where S.stateType ='"+stateName+"'");
-        if(query.list().size()==0)
-            throw new NotFoundException("No state found matching the given name "+stateName+" in registry");
-        State state = (State) query.list().get(0);
+        State state;
+        synchronized (querySession) {
+            querySession.clear();
+            querySession.beginTransaction();
+            Query query =  querySession.createQuery("SELECT S from State S where S.stateType ='"+stateName+"'");
+            if(query.list().size()==0)
+                throw new NotFoundException("No state found matching the given name "+stateName+" in registry");
+            state = (State) query.list().get(0);
+            querySession.getTransaction().commit();
+        }
         return Response.ok(gson.toJson(state)).build();
     }
 
@@ -164,23 +206,26 @@ public class ResourceService {
     @Path("/aggregation/{entityId}")
     @Produces("application/json")
     public Response getAggregations( @PathParam("entityId") String entityId) throws Exception {
-        querySession.clear();
-        querySession.beginTransaction();
-        querySession.getTransaction().commit();
-        Query query =  querySession.createQuery("SELECT A from Aggregation A where A.id.parent='"+entityId+"'");
-        List<AggregationWrapper> aggregationList = new ArrayList<AggregationWrapper>();
+        List<AggregationWrapper> aggregationList;
+        synchronized (querySession) {
+            querySession.clear();
+            querySession.beginTransaction();
+            Query query =  querySession.createQuery("SELECT A from Aggregation A where A.id.parent='"+entityId+"'");
+            aggregationList = new ArrayList<AggregationWrapper>();
 
-        for(Object aggregation:query.list()){
-            AggregationWrapper aggregationWrapper = new AggregationWrapper();
-            BaseEntity child = ((Aggregation)aggregation).getId().getChild();
-            BaseEntity parent = ((Aggregation)aggregation).getId().getParent();
-            aggregationWrapper.setChild(child);
-            aggregationWrapper.setParent(parent);
-            aggregationWrapper.setChildType(child.getClassType().getName());
-            aggregationWrapper.setParentType(parent.getClassType().getName());
-            aggregationList.add(aggregationWrapper);
+            for(Object aggregation:query.list()){
+                AggregationWrapper aggregationWrapper = new AggregationWrapper();
+                BaseEntity child = ((Aggregation)aggregation).getId().getChild();
+                BaseEntity parent = ((Aggregation)aggregation).getId().getParent();
+                aggregationWrapper.setChild(child);
+                aggregationWrapper.setParent(parent);
+                aggregationWrapper.setChildType(child.getClassType().getName());
+                aggregationWrapper.setParentType(parent.getClassType().getName());
+                aggregationList.add(aggregationWrapper);
+            }
+            querySession.getTransaction().commit();
         }
-      return Response.ok(gson.toJson(aggregationList)).build();
+        return Response.ok(gson.toJson(aggregationList)).build();
     }
 
 
@@ -193,47 +238,115 @@ public class ResourceService {
                                       @QueryParam("fromDate") String fromDate,
                                       @QueryParam("toDate") String toDate) throws Exception {
 
-        querySession.clear();
-        querySession.beginTransaction();
-        querySession.getTransaction().commit();
+        List<CollectionWrapper> finalCollectionWrappers;
+        synchronized (querySession) {
+            querySession.clear();
+            querySession.beginTransaction();
 
-        String queryStr = "SELECT C from Collection C";
-        if(submitterId!=null)
-            queryStr+=", Relation R";
-        if(repository!=null)
-            queryStr+=", DataLocation D";
+            String queryStr = "SELECT C from Collection C";
+            if(submitterId!=null)
+                queryStr+=", Relation R";
+            if(repository!=null)
+                queryStr+=", DataLocation D";
 
-        queryStr+=" where ";
-
-
-       if(type!=null)
-            queryStr += " C.state.stateType='"+type+"' ";
+            queryStr+=" where ";
 
 
-        if(submitterId!=null){
             if(type!=null)
-                queryStr+=" AND ";
-              queryStr += " R.id.cause.id=C.id AND R.id.relationType.id='rl:3' AND R.id.effect.id='"+submitterId+"'"; //querying for submitter/publisher.
+                queryStr += " C.state.stateType='"+type+"' ";
+
+
+            if(submitterId!=null){
+                if(type!=null)
+                    queryStr+=" AND ";
+                queryStr += " R.id.cause.id=C.id AND R.id.relationType.id='rl:3' AND R.id.effect.id='"+submitterId+"'"; //querying for submitter/publisher.
+            }
+            // Todo query from RelationType table instead of providing rl:2 as identifier
+
+            if(repository!=null) {
+                if(type!=null || submitterId!=null)
+                    queryStr+=" AND ";
+                queryStr += "  C.id = D.id.entity.id AND D.id.locationType.repositoryName ='"+repository+"'";
+            }
+
+            Query query =  querySession.createQuery(queryStr);
+            List<Collection> collectionsList = query.list();
+            finalCollectionWrappers = new ArrayList<CollectionWrapper>();
+
+
+            for(Collection collection:collectionsList){
+                query =  querySession.createQuery("SELECT R from Relation R where R.id.cause.id='"+collection.getId()+"'");
+                List<Relation> relationList = (List<Relation>)query.list();
+                Set<Relation> newRelationList = new HashSet<Relation>();
+                CollectionWrapper newCollectionWrapper = new CollectionWrapper(collection);
+                newCollectionWrapper.setRelations(new HashSet<Relation>());
+
+                for(Relation relation:relationList){
+                    Relation newRelation = new Relation();
+                    RelationPK newRelationPK = new RelationPK();
+
+                    RelationPK relationPK = relation.getId();
+
+                    RelationType relationType = new RelationType();
+                    relationType.setId(relationPK.getRelationType().getId());
+                    relationType.setRelationSchema(relationPK.getRelationType().getRelationSchema());
+                    relationType.setRelationElement(relationPK.getRelationType().getRelationElement());
+                    newRelationPK.setRelationType(relationType);
+
+                    BaseEntity effectEntity = new BaseEntity();
+                    effectEntity.setId(relationPK.getEffect().getId());
+                    effectEntity.setEntityName(relationPK.getEffect().getEntityName());
+                    effectEntity.setEntityCreatedTime(relationPK.getEffect().getEntityCreatedTime());
+                    effectEntity.setEntityLastUpdatedTime(relationPK.getEffect().getEntityLastUpdatedTime());
+                    newRelationPK.setEffect(effectEntity);
+
+                    BaseEntity causeEntity = new BaseEntity();
+                    causeEntity.setId(relationPK.getCause().getId());
+                    causeEntity.setEntityName(relationPK.getCause().getEntityName());
+                    causeEntity.setEntityCreatedTime(relationPK.getCause().getEntityCreatedTime());
+                    causeEntity.setEntityLastUpdatedTime(relationPK.getCause().getEntityLastUpdatedTime());
+                    newRelationPK.setCause(causeEntity);
+                    RelationType rlType = relationPK.getRelationType();
+                    newRelationPK.setRelationType(new RelationType(rlType.getId(), rlType.getRelationElement(), rlType.getRelationSchema()));
+                    newRelation.setId(newRelationPK);
+
+                    newRelationList.add(newRelation);
+                }
+
+                newCollectionWrapper.setRelations(newRelationList);
+                finalCollectionWrappers.add(newCollectionWrapper);
+            }
+            querySession.getTransaction().commit();
         }
-              // Todo query from RelationType table instead of providing rl:2 as identifier
+        return Response.ok(gson.toJson(finalCollectionWrappers)).build();
+    }
 
-        if(repository!=null) {
-            if(type!=null || submitterId!=null)
-                queryStr+=" AND ";
-            queryStr += "  C.id = D.id.entity.id AND D.id.locationType.repositoryName ='"+repository+"'";
+
+    @GET
+    @Path("/fixity/{entityId}")
+    @Produces("application/json")
+    public Response getFixities( @PathParam("entityId") String entityId) throws Exception {
+        List<Fixity> fixityList;
+        synchronized (querySession) {
+            querySession.clear();
+            querySession.beginTransaction();
+            Query query =  querySession.createQuery("SELECT F from Fixity F where F.id.entity='"+entityId+"'");
+            fixityList = query.list();
+            querySession.getTransaction().commit();
         }
-
-        Query query =  querySession.createQuery(queryStr);
-        List<Collection> collectionsList = query.list();
-        List<CollectionWrapper> finalCollectionWrappers = new ArrayList<CollectionWrapper>();
-
-
-        for(Collection collection:collectionsList){
-            query =  querySession.createQuery("SELECT R from Relation R where R.id.cause.id='"+collection.getId()+"'");
+        return Response.ok(gson.toJson(fixityList)).build();
+    }
+    @GET
+    @Path("/relation/{entityId}")
+    @Produces("application/json")
+    public Response getRelations( @PathParam("entityId") String entityId) throws Exception {
+        List<Relation> newRelationList;
+        synchronized (querySession) {
+            querySession.clear();
+            querySession.beginTransaction();
+            Query query =  querySession.createQuery("SELECT R from Relation R where R.id.cause.id='"+entityId+"'");
             List<Relation> relationList = (List<Relation>)query.list();
-            Set<Relation> newRelationList = new HashSet<Relation>();
-            CollectionWrapper newCollectionWrapper = new CollectionWrapper(collection);
-            newCollectionWrapper.setRelations(new HashSet<Relation>());
+            newRelationList = new ArrayList<Relation>();
 
             for(Relation relation:relationList){
                 Relation newRelation = new Relation();
@@ -260,73 +373,13 @@ public class ResourceService {
                 causeEntity.setEntityCreatedTime(relationPK.getCause().getEntityCreatedTime());
                 causeEntity.setEntityLastUpdatedTime(relationPK.getCause().getEntityLastUpdatedTime());
                 newRelationPK.setCause(causeEntity);
-                RelationType rlType = relationPK.getRelationType();
-                newRelationPK.setRelationType(new RelationType(rlType.getId(), rlType.getRelationElement(), rlType.getRelationSchema()));
+                newRelationPK.setRelationType(relationPK.getRelationType());
                 newRelation.setId(newRelationPK);
 
                 newRelationList.add(newRelation);
             }
-
-
-            newCollectionWrapper.setRelations(newRelationList);
-            finalCollectionWrappers.add(newCollectionWrapper);
+            querySession.getTransaction().commit();
         }
-        return Response.ok(gson.toJson(finalCollectionWrappers)).build();
-    }
-
-
-    @GET
-    @Path("/fixity/{entityId}")
-    @Produces("application/json")
-    public Response getFixities( @PathParam("entityId") String entityId) throws Exception {
-        querySession.beginTransaction();
-        querySession.getTransaction().commit();
-        Query query =  querySession.createQuery("SELECT F from Fixity F where F.id.entity='"+entityId+"'");
-        List<Fixity> fixityList = query.list();
-        return Response.ok(gson.toJson(fixityList)).build();
-    }
-    @GET
-    @Path("/relation/{entityId}")
-    @Produces("application/json")
-    public Response getRelations( @PathParam("entityId") String entityId) throws Exception {
-        querySession.beginTransaction();
-        querySession.getTransaction().commit();
-        Query query =  querySession.createQuery("SELECT R from Relation R where R.id.cause.id='"+entityId+"'");
-        List<Relation> relationList = (List<Relation>)query.list();
-        List<Relation> newRelationList = new ArrayList<Relation>();
-
-
-        for(Relation relation:relationList){
-            Relation newRelation = new Relation();
-            RelationPK newRelationPK = new RelationPK();
-
-            RelationPK relationPK = relation.getId();
-
-            RelationType relationType = new RelationType();
-            relationType.setId(relationPK.getRelationType().getId());
-            relationType.setRelationSchema(relationPK.getRelationType().getRelationSchema());
-            relationType.setRelationElement(relationPK.getRelationType().getRelationElement());
-            newRelationPK.setRelationType(relationType);
-
-            BaseEntity effectEntity = new BaseEntity();
-            effectEntity.setId(relationPK.getEffect().getId());
-            effectEntity.setEntityName(relationPK.getEffect().getEntityName());
-            effectEntity.setEntityCreatedTime(relationPK.getEffect().getEntityCreatedTime());
-            effectEntity.setEntityLastUpdatedTime(relationPK.getEffect().getEntityLastUpdatedTime());
-            newRelationPK.setEffect(effectEntity);
-
-            BaseEntity causeEntity = new BaseEntity();
-            causeEntity.setId(relationPK.getCause().getId());
-            causeEntity.setEntityName(relationPK.getCause().getEntityName());
-            causeEntity.setEntityCreatedTime(relationPK.getCause().getEntityCreatedTime());
-            causeEntity.setEntityLastUpdatedTime(relationPK.getCause().getEntityLastUpdatedTime());
-            newRelationPK.setCause(causeEntity);
-            newRelationPK.setRelationType(relationPK.getRelationType());
-            newRelation.setId(newRelationPK);
-
-            newRelationList.add(newRelation);
-        }
-
         String json = gson.toJson(newRelationList);
         return Response.ok(json).build();
     }
