@@ -93,10 +93,20 @@ public class ResourceService {
         agentDao = new AgentDaoImpl();
     }
 
+    @GET
+    @Path("/entity/{entityId}")
+    @Produces("application/json")
+    public Response getEntity( @PathParam("entityId") String entityId) throws Exception {
+
+        BaseEntity entity = baseEntityDao.getBaseEntity(entityId);
+        String json = gson.toJson(entity);
+        return Response.ok(json).build();
+    }
+
      @GET
      @Path("/collection/{entityId}")
      @Produces("application/json")
-     public Response getEntity( @PathParam("entityId") String entityId) throws Exception {
+     public Response getCollection( @PathParam("entityId") String entityId) throws Exception {
 
          Collection entity = collectionEntityDao.getCollection(entityId);
          String json = gson.toJson(entity);
@@ -108,7 +118,7 @@ public class ResourceService {
     @Produces("application/json")
     public Response getFile( @PathParam("entityId") String entityId) throws Exception {
 
-        Collection entity = collectionEntityDao.getCollection(entityId);
+        File entity = fileDao.getFile(entityId);
         String json = gson.toJson(entity);
         return Response.ok(json).build();
     }

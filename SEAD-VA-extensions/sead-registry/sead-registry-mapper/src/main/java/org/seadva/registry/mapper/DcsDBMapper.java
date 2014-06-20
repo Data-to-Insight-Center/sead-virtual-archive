@@ -82,7 +82,7 @@ public class DcsDBMapper {
                     String[] arr = pair.getKey().split("/");
                     String element = arr[arr.length-1];
                     metadataType = client.getMetadataByType(element);
-                    if(metadataType!=null){
+                    if(metadataType!=null&& metadataType.getMetadataSchema()!=null){
                         property = new Property();
                         property.setMetadata(metadataType);
                         property.setValuestr(pair.getValue());
@@ -206,7 +206,7 @@ public class DcsDBMapper {
                     String[] arr = pair.getKey().split("/");
                     String element = arr[arr.length-1];
                     MetadataType metadataType = client.getMetadataByType(element);
-                    if(metadataType!=null){
+                    if(metadataType!=null&&metadataType.getMetadataElement()!=null){
                         Property property = new Property();
                         property.setMetadata(metadataType);
                         property.setValuestr(pair.getValue());

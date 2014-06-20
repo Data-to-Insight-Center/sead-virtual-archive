@@ -33,24 +33,37 @@ public class FileDaoImpl implements FileDao {
 
     @Override
     public File getFile(String entityId) {
-        BaseEntity entity = new BaseEntityDaoImpl().getBaseEntity(entityId);
-        File file = new File(entity);
+
+        File file = null;
         Connection connection = null;
         PreparedStatement statement = null;
+        boolean isFile = false;
 
         try {
             connection = getConnection();
 
-            statement = connection.prepareStatement("Select * from collection where entity_id=?");
+            statement = connection.prepareStatement("Select * from file where entity_id=?");
             statement.setString(1, entityId);
             ResultSet resultSet = statement.executeQuery();
 
+            String fileName = null;
+            int isObsolete = 0;
+            long fileSize = -1;
 
             while (resultSet.next()) {
-                file.setFileName(resultSet.getString("file_name"));
-                file.setIsObsolete(resultSet.getInt("is_obsolete"));
-                file.setSizeBytes(resultSet.getLong("size_bytes"));
+                fileName = resultSet.getString("file_name");
+                isObsolete = resultSet.getInt("is_obsolete");
+                fileSize = resultSet.getLong("size_bytes");
+                isFile = true;
                 break;
+            }
+
+            if(isFile){
+                BaseEntity entity = new BaseEntityDaoImpl().getBaseEntity(entityId);
+                file = new File(entity);
+                file.setFileName(fileName);
+                file.setIsObsolete(isObsolete);
+                file.setSizeBytes(fileSize);
             }
 
 
@@ -78,7 +91,12 @@ public class FileDaoImpl implements FileDao {
         PreparedStatement statement = null;
         try {
             connection = getConnection();
-            statement = connection.prepareStatement("INSERT INTO file (entity_id, file_name, size_bytes, version_num) values(?,?,?,?)");
+            statement = connection.prepareStatement("INSERT INTO file (entity_id, file_name, size_bytes, version_num) values(?,?,?,?)" +
+                    "ON DUPLICATE KEY UPDATE " +
+                    "file_name=?," +
+                    "size_bytes=?," +
+                    "version_num=?");
+
             statement.setString(1, file.getId());
             String fileName = file.getFileName();
             if(fileName==null)
@@ -93,6 +111,15 @@ public class FileDaoImpl implements FileDao {
             if(file.getVersionNum()!=null)
                 versionNum = file.getVersionNum();
             statement.setString(4,versionNum);
+
+            statement.setString(5, fileName);
+            if(file.getSizeBytes()==null)
+                statement.setLong(6,-1);
+            else
+                statement.setLong(6, file.getSizeBytes());
+
+            statement.setString(7,versionNum);
+
             statement.executeUpdate();
             statement.close();
             baseEntityDao.insertEntity(file);

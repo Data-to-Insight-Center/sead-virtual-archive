@@ -89,8 +89,9 @@ public class FixityDaoImpl implements FixityDao {
                 statement.setString(2, fixity.getId().getType());
                 statement.setString(3, fixity.getValuestr());
                 statement.executeUpdate();
+                statement.close();
             }
-            statement.close();
+
             log.debug("Done resetting unfinished raw notifications");
         } catch (SQLException sqle) {
             throw new RuntimeException(sqle);

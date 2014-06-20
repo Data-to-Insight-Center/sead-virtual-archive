@@ -158,6 +158,52 @@ public class RegistryLogicTest extends JerseyTest {
         assertEquals(200, response.getStatus());
     }
 
+    @Test
+    public void testGetFile() throws IOException {
+        WebResource webResource = resource();
+
+        MultivaluedMap<String, String> params = new MultivaluedMapImpl();
+
+        ClientResponse response = webResource.path("resource")
+                .path("file")
+                .path(
+                        URLEncoder.encode(
+                                "http://sead-test/944e89f2-5f91-4f6b-ac46-60f076fc3e25"
+                        )
+                )
+                .queryParams(params)
+                .get(ClientResponse.class);
+
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(response.getEntityInputStream(), writer);
+        System.out.print(writer.toString());
+        assertEquals(200, response.getStatus());
+    }
+
+
+    @Test
+    public void testGetAggregation() throws IOException {
+        WebResource webResource = resource();
+
+        MultivaluedMap<String, String> params = new MultivaluedMapImpl();
+
+        ClientResponse response = webResource.path("resource")
+                .path("aggregation")
+                .path(
+                        URLEncoder.encode(
+                                "test_1"
+                        )
+                )
+                .queryParams(params)
+                .get(ClientResponse.class);
+
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(response.getEntityInputStream(), writer);
+        System.out.print(writer.toString());
+        assertEquals(200, response.getStatus());
+    }
+
+
 
     @Test
     public void testGetMetadataType() throws IOException {

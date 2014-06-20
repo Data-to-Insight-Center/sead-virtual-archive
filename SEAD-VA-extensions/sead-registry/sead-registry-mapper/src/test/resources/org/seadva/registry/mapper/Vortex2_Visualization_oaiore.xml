@@ -33,6 +33,7 @@
     </dcterms:creator>
     <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2014-03-24T11:32:03-0400</dcterms:created>
     <dcterms:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://dx.doi.org/10.5072/FK2TQ6DQP</dcterms:identifier>
+    <dcterms:type rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CurationObject</dcterms:type>
     <ore:aggregates rdf:resource="http://seadva-test.d2i.indiana.edu/sead-wf/entity/166389"/>
     <ore:aggregates rdf:resource="http://seadva-test.d2i.indiana.edu/sead-wf/entity/166388"/>
     <ore:aggregates rdf:resource="http://seadva-test.d2i.indiana.edu/sead-wf/entity/166387"/>

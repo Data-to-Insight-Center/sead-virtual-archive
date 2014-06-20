@@ -59,11 +59,17 @@ public class RegistryClient {
      */
 
     public BaseEntity getEntity(String entityId, String type) throws IOException, ClassNotFoundException {
+        if(type.equalsIgnoreCase(Collection.class.getName()))
+            return  getCollection(entityId);
+        else if(type.equalsIgnoreCase(File.class.getName()))
+             return getFile(entityId);
+
         WebResource webResource = resource();
 
         MultivaluedMap<String, String> params = new MultivaluedMapImpl();
 
         ClientResponse response = webResource.path("resource")
+                .path("entity")
                 .path(
                         URLEncoder.encode(
                                 entityId

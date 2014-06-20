@@ -213,7 +213,7 @@ public class OreDBMapper {
             String[] metadataUri = predicateUri.split(splitChar);
             String metadataElement = metadataUri[metadataUri.length-1];
             metadataType = client.getMetadataByType(metadataElement); //eventually Map ORE element to DB element if they are going to be different
-            if(metadataType!=null&&metadataTriple.isLiteral()){
+            if(metadataType!=null&&metadataType.getMetadataElement()!=null&&metadataTriple.isLiteral()){
                 property = new Property();
                 property.setMetadata(metadataType);
 
@@ -309,7 +309,7 @@ public class OreDBMapper {
                 String[] metadataUri = predicateUri.split(splitChar);
                 String metadataElement = metadataUri[metadataUri.length-1];
                 metadataType = client.getMetadataByType(metadataElement); //eventually Map ORE element to DB element if they are going to be different
-                if(metadataType!=null){
+                if(metadataType!=null&&metadataType.getMetadataElement()!=null){
                     property = new Property();
                     property.setMetadata(metadataType);
                     int end = metadataTriple.getObjectLiteral().length()-1;

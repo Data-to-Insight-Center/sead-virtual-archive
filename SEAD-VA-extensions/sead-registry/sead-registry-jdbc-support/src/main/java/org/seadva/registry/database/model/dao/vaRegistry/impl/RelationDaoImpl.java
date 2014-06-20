@@ -89,7 +89,7 @@ public class RelationDaoImpl implements RelationDao {
     try {
         connection = getConnection();
 
-        statement = connection.prepareStatement("INSERT INTO fixity values(?,?,?)");
+        statement = connection.prepareStatement("INSERT IGNORE INTO relation values(?,?,?)");
         statement.setString(1, relation.getId().getCause().getId());
         statement.setString(2, relation.getId().getRelationType().getId());
         statement.setString(3, relation.getId().getEffect().getId());

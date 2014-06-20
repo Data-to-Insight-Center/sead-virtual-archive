@@ -9,6 +9,7 @@ import org.seadva.registry.database.model.dao.vaRegistry.StateDao;
 import org.seadva.registry.database.model.obj.vaRegistry.BaseEntity;
 import org.seadva.registry.database.model.obj.vaRegistry.Collection;
 import org.seadva.registry.database.model.obj.vaRegistry.CollectionWrapper;
+import org.seadva.registry.database.model.obj.vaRegistry.State;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
@@ -43,10 +44,11 @@ public class CollectionDaoImpl implements CollectionDao {
 
     @Override
     public Collection getCollection(String entityId) {
-        BaseEntity entity = baseEntityDao.getBaseEntity(entityId);
-        Collection collection = new Collection(entity);
+        Collection collection = null;
         Connection connection = null;
         PreparedStatement statement = null;
+        boolean isCollection = false;
+
 
         try {
             connection = getConnection();
@@ -55,14 +57,25 @@ public class CollectionDaoImpl implements CollectionDao {
             statement.setString(1, entityId);
             ResultSet resultSet = statement.executeQuery();
 
+            String name = null;
+            int isObsolete = 0;
+            State state = null;
 
             while (resultSet.next()) {
-                collection.setName(resultSet.getString("name"));
-                collection.setIsObsolete(resultSet.getInt("is_obsolete"));
-                collection.setState(stateDao.getStateById(resultSet.getString("state_id")));
+                name = resultSet.getString("name");
+                isObsolete = resultSet.getInt("is_obsolete");
+                state = stateDao.getStateById(resultSet.getString("state_id"));
+                isCollection = true;
                 break;
             }
 
+            if(isCollection){
+                BaseEntity entity = baseEntityDao.getBaseEntity(entityId);
+                collection = new Collection(entity);
+                collection.setName(name);
+                collection.setIsObsolete(isObsolete);
+                collection.setState(state);
+            }
 
         } catch (SQLException sqle) {
             throw new RuntimeException(sqle);
