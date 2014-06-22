@@ -4,6 +4,7 @@ package org.dataconservancy.dcs.ingest.services;
 //import org.dataconservancy.dcs.ingest.services.IngestServiceBase;
 
 import java.io.*;
+import java.security.MessageDigest;
 import java.util.*;
 
 import org.apache.commons.compress.utils.IOUtils;
@@ -11,33 +12,69 @@ import org.apache.commons.compress.archivers.ArchiveOutputStream;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
-import org.dataconservancy.dcs.id.api.IdMetadata;
-import org.dataconservancy.dcs.id.api.IdentifierNotFoundException;
 import org.dataconservancy.dcs.ingest.Events;
-import org.dataconservancy.model.builder.InvalidXmlException;
-import org.dataconservancy.model.dcs.DcsDeliverableUnit;
-//import org.dataconservancy.model.dcs.DcsResourceIdentifier;
-import org.dataconservancy.model.dcs.DcsEntityReference;
-import org.dataconservancy.model.dcs.DcsEvent;
-import org.dataconservancy.model.dcs.DcsResourceIdentifier;
+import org.dataconservancy.model.dcs.*;
 import org.seadva.model.SeadDataLocation;
 import org.seadva.model.SeadDeliverableUnit;
-import org.seadva.model.builder.xstream.SeadXstreamStaxModelBuilder;
 import org.seadva.model.pack.ResearchObject;
 
 public class TarUtilService extends IngestServiceBase implements IngestService {
     String dirPath;
     //String tarFileName = "dpntest.tar";
     String tarFilePath;
+    Writer bagInfo;
     public void execute(String sipRef) {
 
         System.out.println("SIP Ref in TarUtilService: "+sipRef);
-        String tarFileName = new String();
+        String tarFileName = "";
         long bagSize;
         ResearchObject sip = (ResearchObject)ingest.getSipStager().getSIP(sipRef);
 
 
         Collection<DcsDeliverableUnit> dus = sip.getDeliverableUnits();
+        Collection dusc = new ArrayList();
+
+        Map duMap = new HashMap();
+        Map fileMap = new HashMap();
+
+        for (DcsDeliverableUnit du : sip.getDeliverableUnits()) {
+            duMap.put(du.getId(), du);
+        }
+        for (DcsFile file : sip.getFiles()) {
+            fileMap.put(file.getId(), file);
+        }
+        for (DcsManifestation manifestation : sip.getManifestations()) {
+            if (duMap.containsKey(manifestation.getDeliverableUnit()))
+            {
+                DcsDeliverableUnit du = (DcsDeliverableUnit)duMap.get(manifestation.getDeliverableUnit());
+                int totalSize = 0;
+                int n = 0;
+                for (DcsManifestationFile manifestationFile : manifestation.getManifestationFiles()) {
+                    if (fileMap.containsKey(manifestationFile.getRef().getRef())) {
+                        DcsFile file = (DcsFile)fileMap.get(manifestationFile.getRef().getRef());
+                        System.out.println("SizeTarUtilService: "+file.getName());
+                        System.out.println("SizeTarUtilService-Size:"+file.getSizeBytes());
+                        totalSize = (int)(totalSize + file.getSizeBytes());
+                        System.out.println("SizeTarUtilService-Size-Total:"+totalSize);
+                        n++;
+                    }
+                }
+                ((SeadDeliverableUnit)du).setFileNo(n);
+                ((SeadDeliverableUnit)du).setSizeBytes(totalSize);
+                duMap.put(du.getId(), du);
+            }
+        }
+
+        long size = duMap.size();
+        Iterator iterator = duMap.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry pair = (Map.Entry)iterator.next();
+            dusc.add(pair.getValue());
+        }
+        if (size > 0) {
+            sip.setDeliverableUnits(dusc);
+        }
+
 
         for (DcsDeliverableUnit d : dus) {
             Collection<DcsResourceIdentifier> alternateIds = null;
@@ -60,6 +97,23 @@ public class TarUtilService extends IngestServiceBase implements IngestService {
                 bagSize = ((SeadDeliverableUnit)d).getSizeBytes();
                 System.out.println("bagSize is "+bagSize);
                 dirPath = dataLocation.getLocation();
+
+                File bagDirectory = new File(dirPath);
+                FileWriter bagInfoStream = null;
+                System.out.println(((SeadDeliverableUnit)d).getSizeBytes());
+                bagSize = ((SeadDeliverableUnit)d).getSizeBytes()+13414; // Add the size of the extra files
+                try {
+                    String bagInfoTxtFilePath = bagDirectory.toString() + "/bag-info.txt";
+                    bagInfoStream = new FileWriter(bagInfoTxtFilePath,true);
+                    bagInfo = new BufferedWriter(bagInfoStream);
+                    bagInfo.write("Bag-Size: "+bagSize+" Bytes");
+                    bagInfo.close();
+
+                } catch (IOException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+
+
                 File tarDirectory = new File(dirPath);
                 if(tarFileName.isEmpty()){
                       tarFileName = "dpntest.tar";
@@ -69,6 +123,7 @@ public class TarUtilService extends IngestServiceBase implements IngestService {
 
             }
         }
+
         System.out.println("TarFilePath in TarUtilService: "+tarFilePath);
 
         for(DcsDeliverableUnit du :sip.getDeliverableUnits())
@@ -78,6 +133,21 @@ public class TarUtilService extends IngestServiceBase implements IngestService {
             location.setName("filepath");
             location.setType("filepath");
             ((SeadDeliverableUnit) du).setPrimaryLocation(location);
+            try {
+                String SHA1Fixity = generateCheckSum(tarFilePath,"SHA1");
+                DcsResourceIdentifier dpnSHA1FixityValue = new DcsResourceIdentifier();
+                dpnSHA1FixityValue.setIdValue(SHA1Fixity);
+                dpnSHA1FixityValue.setTypeId("fixity-sha1");
+                du.addAlternateId(dpnSHA1FixityValue);
+                String MD5Fixity = generateCheckSum(tarFilePath,"MD5");
+                DcsResourceIdentifier dpnMD5FixityValue = new DcsResourceIdentifier();
+                dpnMD5FixityValue.setIdValue(MD5Fixity);
+                dpnMD5FixityValue.setTypeId("fixity-md5");
+                du.addAlternateId(dpnMD5FixityValue);
+            } catch (Exception e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+
         }
 
         ingest.getSipStager().updateSIP(sip,sipRef);
@@ -158,6 +228,26 @@ public class TarUtilService extends IngestServiceBase implements IngestService {
             if(file.isFile()) filesListInDir.add(file.getAbsolutePath());
             else getFilesList(file);
         }
+    }
+
+    private String generateCheckSum(String tarFilePath, String algorithm) throws Exception{
+        System.out.println("generateCheckSum");
+        MessageDigest messageDigest = MessageDigest.getInstance(algorithm);
+        FileInputStream fileInputStream = new FileInputStream(tarFilePath);
+        byte[] dataBytes = new byte[1024];
+        int bytesRead = 0;
+        while((bytesRead = fileInputStream.read(dataBytes)) != -1){
+            messageDigest.update(dataBytes,0,bytesRead);
+        }
+        byte[] digestBytes = messageDigest.digest();
+        StringBuffer sb = new StringBuffer("");
+        for (int i = 0; i < digestBytes.length; i++) {
+            sb.append(Integer.toString((digestBytes[i] & 0xff) + 0x100, 16).substring(1));
+        }
+        System.out.println(algorithm+" Checksum for the tar File: " + sb.toString());
+        fileInputStream.close();
+        return sb.toString();
+
     }
 
     private void addTarEvent(String sipRef) {
