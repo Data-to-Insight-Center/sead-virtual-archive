@@ -20,10 +20,8 @@ import org.seadva.bagit.model.PackageDescriptor;
 import org.seadva.bagit.event.api.Handler;
 import org.seadva.bagit.util.Constants;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
+import java.security.MessageDigest;
 import java.util.List;
 import java.util.Map;
 
@@ -43,11 +41,35 @@ public class TagManifestGenerationHandler implements Handler {
         typeProperty = packageDescriptor.getType();
 
         FileWriter manifestStream = null;
+        String bagPath = packageDescriptor.getUntarredBagPath();
+        String manifestFilePath = packageDescriptor.getUntarredBagPath() + "/tagmanifest-sha256.txt";
         try {
-            String manifestFilePath = packageDescriptor.getUntarredBagPath() + "/tagmanifest-sha256.txt";
             manifestStream = new FileWriter(manifestFilePath);
             manifest = new BufferedWriter(manifestStream);
-            generateManifestFile(packageDescriptor.getPackageId(), "/");
+            File dir = new File(bagPath);
+            File[] dirListing = dir.listFiles();
+            if(dirListing != null){
+                for(File child : dirListing){
+                    if (!child.isDirectory()) {
+                        String file = child.toString();
+                        int pos;
+                        pos = file.lastIndexOf('/');
+                        String fileName = file.substring(pos+1);
+                        System.out.println("TagFileName is :"+fileName);
+
+                        if (!fileName.equals("tagmanifest-sha256.txt")) {
+                            try{
+                                String fixity = generateCheckSum(file,"SHA1");
+                                manifest.write(fixity + "  " + fileName+"\n");
+                            }catch(Exception e){
+                                e.printStackTrace();
+                            }
+                        }
+                        System.out.println("File name is: " + child.toString());
+                    }
+                }
+            }
+            //generateManifestFile(packageDescriptor.getPackageId(), "/");
             manifest.close();
             packageDescriptor.setManifestFilePath(manifestFilePath);
         } catch (IOException e) {
@@ -56,28 +78,24 @@ public class TagManifestGenerationHandler implements Handler {
 
         return packageDescriptor;
     }
-    void generateManifestFile(String id, String path) throws IOException {
 
-        List<String> children = aggregation.get(id);
-
-        if(children!=null){
-            for(String child: children){
-                if(typeProperty.get(child)==AggregationType.COLLECTION){
-                    generateManifestFile(child, path+properties.get(child).get(Constants.titleTerm).get(0)+"/");
-                }
-                else{
-                    manifest.write("0000000000000000000" + "  " + path+properties.get(child).get(Constants.titleTerm).get(0)+"\n");
-                }
-            }
-        }else{
-            for(String child: children){
-                if (typeProperty.get(child) == AggregationType.COLLECTION) {
-                    generateManifestFile(child, path + properties.get(child).get(Constants.titleTerm).get(0) + "/");
-                } else {
-                    manifest.write("0000000000000000000" + "  " + path + properties.get(child).get(Constants.titleTerm).get(0) + "\n");
-                }
-            }
+    private String generateCheckSum(String filePath, String algorithm) throws Exception{
+        System.out.println("ManifestGenerateCheckSum:" + filePath);
+        MessageDigest messageDigest = MessageDigest.getInstance(algorithm);
+        FileInputStream fileInputStream = new FileInputStream( filePath);
+        byte[] dataBytes = new byte[1024];
+        int bytesRead = 0;
+        while((bytesRead = fileInputStream.read(dataBytes)) != -1){
+            messageDigest.update(dataBytes,0,bytesRead);
         }
+        byte[] digestBytes = messageDigest.digest();
+        StringBuffer sb = new StringBuffer("");
+        for (int i = 0; i < digestBytes.length; i++) {
+            sb.append(Integer.toString((digestBytes[i] & 0xff) + 0x100, 16).substring(1));
+        }
+        System.out.println(algorithm+" Checksum for the file: " + sb.toString());
+        fileInputStream.close();
+        return sb.toString();
 
     }
 }
