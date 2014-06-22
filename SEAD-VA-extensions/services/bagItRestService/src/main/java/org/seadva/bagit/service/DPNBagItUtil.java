@@ -110,7 +110,7 @@ public class DPNBagItUtil {
         //packageDescriptor = ConfigBootstrap.packageListener.execute(Event.GENERATE_MANIFEST, packageDescriptor);
         packageDescriptor = ConfigBootstrap.packageListener.execute(Event.GENERATE_BAGITTXT, packageDescriptor);
         packageDescriptor = ConfigBootstrap.packageListener.execute(Event.GENERATE_BAGINFO, packageDescriptor);
-        packageDescriptor = ConfigBootstrap.packageListener.execute(Event.GENERATE_TAGMANIFEST, packageDescriptor);
+        //packageDescriptor = ConfigBootstrap.packageListener.execute(Event.GENERATE_TAGMANIFEST, packageDescriptor);
         packageDescriptor = ConfigBootstrap.packageListener.execute(Event.GENERATE_DPNTAGFILE,packageDescriptor);
         packageDescriptor = ConfigBootstrap.packageListener.execute(Event.GENERATE_DPNSIP, packageDescriptor);
         //packageDescriptor = ConfigBootstrap.packageListener.execute(Event.TAR_BAG, packageDescriptor);
