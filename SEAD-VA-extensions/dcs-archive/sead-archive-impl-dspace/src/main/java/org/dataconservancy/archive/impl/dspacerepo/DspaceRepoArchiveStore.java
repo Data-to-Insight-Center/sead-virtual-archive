@@ -22,12 +22,10 @@ import org.dataconservancy.archive.api.EntityNotFoundException;
 import org.dataconservancy.archive.api.EntityType;
 import org.dataconservancy.archive.api.EntityTypeException;
 import org.dataconservancy.dcs.index.dcpsolr.SolrService;
-import org.dataconservancy.model.builder.DcsModelBuilder;
 import org.dataconservancy.model.builder.InvalidXmlException;
 import org.dataconservancy.model.dcs.*;
 import org.seadva.archive.SeadArchiveStore;
 import org.seadva.model.*;
-import org.seadva.model.builder.api.SeadModelBuilder;
 import org.seadva.model.builder.xstream.SeadXstreamStaxModelBuilder;
 import org.seadva.model.pack.ResearchObject;
 import org.springframework.beans.factory.annotation.Required;
@@ -118,10 +116,10 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
     public void putPackage(InputStream dcpStream) throws AIPFormatException {
     }
 
-
     @Override
     public ResearchObject putResearchPackage(InputStream dcpStream) throws AIPFormatException {
-
+        title = "default_title";
+        creator ="";
         ResearchObject pkg = null;
         try {
             pkg = model.buildSip(dcpStream);
@@ -147,7 +145,7 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
             seadCommunity =  institionalRepository.getUrl();
             repoName = institionalRepository.getName();
 
-            Credential  credential = repoCredentials.get((String)institionalRepository.getIrId());
+            Credential credential = repoCredentials.get((String)institionalRepository.getIrId());
             dspaceClient = new SeadDSpace(credential.getUsername(),credential.getPassword());
         }
 
@@ -163,8 +161,12 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
         //create a community for the project
         if(rootDu.getPrimaryLocation().getLocation()==null){
             projectCommunity = dspaceClient.createSubCommunity(seadCommunity,title,rootDu.getAbstrct());
-            projectCommunity.setHandle(projectCommunity.getHandle()
-            );
+            if(projectCommunity==null){
+                projectCommunity = new DSpaceCommunity();
+                projectCommunity.setId(seadCommunity);
+                projectCommunity.setHandle(seadCommunity);
+            }
+
         }
 
 
@@ -172,7 +174,7 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
 
         for(DcsDeliverableUnit du:dus){
             if(rootDu.getId().equals(du.getId()))  {
-                if(((SeadDeliverableUnit)du).getPrimaryLocation()==null){
+                if(((SeadDeliverableUnit)du).getPrimaryLocation().getLocation()==null){
                     ((SeadDeliverableUnit)du).getPrimaryLocation().setType("dspace");
                     String handle = projectCommunity.getHandle();
                     ((SeadDeliverableUnit)du).getPrimaryLocation().setLocation(handle);
@@ -242,13 +244,16 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
                     i++;
                 }
 
-                dspaceClient.descriptiveMetadata((String)pair.getKey(), "",creator+"(Submitted as part of SEAD project)",actualDoi,rootDu.getRights());
+                dspaceClient.descriptiveMetadata((String)pair.getKey(), "",
+                        creator+
+                                "(Submitted as part of SEAD project)",actualDoi,rootDu.getRights());
 
                 File targetDir = new File(System.getProperty("java.io.tmpdir"));
 
                 String zippedPackage = dspaceClient.createPackage(filepaths, "CUSTODIAN", "ORGANIZATION", "MyOrganization",filenames, targetDir);
 
                 Map<String,String> tUrl = dspaceClient.uploadPackage(dspaceCollection, true,zippedPackage);
+
 
                 for(SeadFile f:shpFile)   {
 
@@ -265,7 +270,11 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
                         }
                     }
                 }
-
+                try {
+                    Thread.sleep(5*1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 shpIt.remove();
             }
 

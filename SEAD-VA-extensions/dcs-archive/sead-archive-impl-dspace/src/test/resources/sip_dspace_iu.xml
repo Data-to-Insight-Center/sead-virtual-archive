@@ -21,10 +21,9 @@
     </Manifestation>
     </Manifestations>
     <Files>
-    <File id="test_file" src="tmp">
-        <fileName>Vortex Minig</fileName>
-        <extant>true</extant>
+        <File id="test_file" src="tmp">
+            <fileName>Vortex Minig</fileName>
+            <extant>true</extant>
         </File></Files>
-    <Repositories><Repository><irId>2</irId>
-    <url>http://seadtest.ideals.illinois.edu/sead/communities/2</url><type>dspace</type><name>Ideals</name></Repository></Repositories>
-</dcp>
+    <Repositories><Repository><irId>3</irId>
+    <url>http://poplar.dlib.indiana.edu:8250/sead/communities/202</url><type>dspace</type><name>IU Scholarworks</name></Repository></Repositories></dcp>

@@ -18,6 +18,7 @@ package org.dataconservancy.archive.impl.dspacerepo;
 
 import org.dataconservancy.archive.api.AIPFormatException;
 import org.dataconservancy.model.builder.InvalidXmlException;
+import org.dataconservancy.model.dcs.DcsFile;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.purl.eprint.epdcx.x20061116.*;
@@ -26,7 +27,10 @@ import org.seadva.model.builder.xstream.SeadXstreamStaxModelBuilder;
 import org.seadva.model.pack.ResearchObject;
 import org.xmlpull.v1.XmlPullParserException;
 
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Collection;
 import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
@@ -35,9 +39,9 @@ import static junit.framework.Assert.assertNotNull;
 /**
  * Test cases for DSpace deposit
  */
-public class SeadDSpaceTest{
+public class SeadDSpaceTest {
 
-    static Credential  credential = null;
+    static Credential credential = null;
     static String seadCommunity = null;
     @BeforeClass
     public static void init() throws IOException, InvalidXmlException, XmlPullParserException {
@@ -53,6 +57,8 @@ public class SeadDSpaceTest{
     @Test
     public void testCreateCommunity() throws IOException, XmlPullParserException, AIPFormatException, InvalidXmlException {
 
+//        seadCommunity = "http://poplar.dlib.indiana.edu:8250/sead/communities/202";   //IU
+        seadCommunity = "http://seadtest.ideals.illinois.edu/sead/communities/2";     //UIUC
         DSpaceCommunity comm = new SeadDSpace(credential.getUsername(),credential.getPassword()).createSubCommunity(seadCommunity,"Test sead community","test");
         assertNotNull(comm);
         assertNotNull(comm.getHandle());
@@ -62,6 +68,8 @@ public class SeadDSpaceTest{
     static String collection = null;
     @Test
     public void testCreateCollection() throws IOException, XmlPullParserException, AIPFormatException, InvalidXmlException {
+        seadCommunity = "http://poplar.dlib.indiana.edu:8250/sead/communities/202";   //IU
+        seadCommunity = "http://seadtest.ideals.illinois.edu/sead/communities/2";     //UIUC
         collection = new SeadDSpace(credential.getUsername(),credential.getPassword()).createCollection(seadCommunity,"Test sead collection");
         assertNotNull(collection);
     }
@@ -69,13 +77,17 @@ public class SeadDSpaceTest{
     @Test
     public void testSWORDUpload() throws IOException, AIPFormatException, XmlPullParserException, InvalidXmlException {
 
-        testCreateCollection();
+          collection = "http://seadtest.ideals.illinois.edu/sword/deposit/123456789/366";
+//        collection = "http://poplar.dlib.indiana.edu:8250/sword/deposit/2022/16306";
+        for(int i =0;i<1;i++){
         Map<String,String> result = new SeadDSpace(credential.getUsername(),credential.getPassword()).uploadPackage(
                 collection
                 , true
                 , SeadDSpaceTest.class.getResource("/example.zip").getPath()
         );
-        assertEquals(3,result.size());
+            assertEquals(5, result.size());
+        }
+
     }
 
     @Test
@@ -138,4 +150,29 @@ public class SeadDSpaceTest{
         assertEquals(expectedXml,descriptionSetDocument.xmlText());
     }
 
+
+    @Test
+    public void testSipUploadUIUC() throws FileNotFoundException, AIPFormatException, InvalidXmlException {
+        ResearchObject sip = new SeadXstreamStaxModelBuilder().buildSip(SeadDSpaceTest.class.getResourceAsStream("/sip_dspace.xml"));
+        Collection<DcsFile> files = sip.getFiles();
+        for(DcsFile file:files){
+            file.setSource("file://"+SeadDSpace.class.getResource("/vortex_mining.xlsx").getPath());
+        }
+        sip.setFiles(files);
+        new SeadXstreamStaxModelBuilder().buildSip(sip, new FileOutputStream(SeadDSpace.class.getResource("/sip_dspace.xml").getPath()));
+        new DspaceRepoArchiveStore().putResearchPackage(SeadDSpaceTest.class.getResourceAsStream("/sip_dspace.xml"));
+
+    }
+
+    @Test
+    public void testSipUploadIU() throws FileNotFoundException, AIPFormatException, InvalidXmlException {
+        ResearchObject sip = new SeadXstreamStaxModelBuilder().buildSip(SeadDSpaceTest.class.getResourceAsStream("/sip_dspace_iu.xml"));
+        Collection<DcsFile> files = sip.getFiles();
+        for(DcsFile file:files){
+            file.setSource("file://"+SeadDSpace.class.getResource("/vortex_mining.xlsx").getPath());
+        }
+        sip.setFiles(files);
+        new SeadXstreamStaxModelBuilder().buildSip(sip, new FileOutputStream(SeadDSpace.class.getResource("/sip_dspace_iu.xml").getPath()));
+        new DspaceRepoArchiveStore().putResearchPackage(SeadDSpaceTest.class.getResourceAsStream("/sip_dspace_iu.xml"));
+    }
 }

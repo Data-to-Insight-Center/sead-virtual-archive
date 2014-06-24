@@ -138,7 +138,9 @@ public class SeadDSpace {
 
 
             resp = client.postFile(message);
-            System.out.print(resp);
+//            System.out.print(resp);
+            if(!( client.getStatus().getCode()==200|| client.getStatus().getCode()==202|| client.getStatus().getCode()==201))
+                throw new RuntimeException("Error uploading package");
 
            // getItemHandle(resp.toString());
             linkList = getDspaceStreams(resp.toString())  ;
@@ -368,6 +370,8 @@ public class SeadDSpace {
             response = webResource.type("application/xml").post(ClientResponse.class,entry);
             client.destroy();
             System.out.println(response.toString());
+            if( response.getHeaders().get("Handle")==null)
+                throw new RuntimeException("Error creating DSpace Collection");
             collectionID = response.getHeaders().get("Handle").get(0);
 
 
@@ -419,15 +423,18 @@ public class SeadDSpace {
             System.out.println("Community ID" + response.getHeaders().get("Location"));
             System.out.println("Community Handle" + response.getHeaders().get("Handle"));
             System.out.println("Response text"+textEntity);
-            String communityID = response.getHeaders().get("Location").get(0);
 
+//            if(response.getHeaders().get("Location")==null)
+//                throw new RuntimeException("Error creating DSpace Community");
+
+            if(response.getHeaders().get("Location")==null)
+                return null;
+            String communityID = response.getHeaders().get("Location").get(0);
             community = new DSpaceCommunity();
             community.setId(communityID);
             System.out.println("communityID" +communityID+ response.toString());
             if(response.getHeaders().get("Handle")!=null)
                 community.setHandle(response.getHeaders().get("Handle").get(0));
-
-
 
         } catch (UniformInterfaceException e) {
             // TODO Auto-generated catch block
