@@ -1,5 +1,9 @@
 
 <dcp xmlns="http://dataconservancy.org/schemas/dcp/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://dataconservancy.org/schemas/dcp/1.0 http://dataconservancy.org/schemas/dcp/1.0"><DeliverableUnits><DeliverableUnit id="http://sead-test/0489a707-d428-4db4-8ce0-1ace548bc653"><title>Vortex2 Visualization</title>
+    <alternateIdentifier>
+        <typeId>dpnobjectid</typeId>
+        <idValue>IU-57fd89be-21dc-4063-877f-ceed5b3a5a12</idValue>
+    </alternateIdentifier>
     <type>CurationObject</type><rights>All the data and visualizations are available for download and re-use. Proper attribution to the authors is required.</rights><abstract>The Vortex2 project (http://www.vortex2.org/home/) supported 100 scientists using over 40 science support vehicles participated in a nomadic effort to understand tornados. </abstract><sizeBytes>0</sizeBytes>
     <fileNo>0</fileNo><metadata schemaURI="http://purl.org/dc/terms"><map xmlns="">
     <entry>

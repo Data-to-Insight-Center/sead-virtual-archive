@@ -12,5 +12,7 @@ import java.util.Set;
 public interface DataIdentifierDao  {
     List<DataIdentifier> getDataIdentifiers(String entityId);
     boolean putDataIdentifiers(String entityId, Set<DataIdentifier> dataIdentifierSet);
+
+    List<DataIdentifier> getDataIdentifiersByValue(String alternateId);
 }
 

@@ -217,5 +217,54 @@ public class CollectionDaoImpl implements CollectionDao {
         }
         return collectionsList;
     }
+
+    @Override
+    public List<Collection> queryByProperty(String key, String value){
+
+        List<Collection> collectionsList = new ArrayList<Collection>();
+
+        String queryStr = "Select * from collection C, property P, metadata_type M ";
+
+        queryStr+=" where C.entity_id=P.entity_id, P.metadata_id=M.metadata_id AND M.metadata_element='"+key+"' AND P.valueStr='"+value+"'";
+
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+        try {
+            connection = getConnection();
+
+            statement = connection.prepareStatement(queryStr);
+            ResultSet resultSet = statement.executeQuery();
+
+
+            List<CollectionWrapper> finalCollectionWrappers = new ArrayList<CollectionWrapper>();
+
+            while (resultSet.next()) {
+                String entityId = resultSet.getString("entity_id");
+                BaseEntity entity = new BaseEntityDaoImpl().getBaseEntity(entityId);
+                Collection collection = new Collection(entity);
+                collection.setName(resultSet.getString("name"));
+                collection.setIsObsolete(resultSet.getInt("is_obsolete"));
+
+                collectionsList.add(collection);
+            }
+
+
+        } catch (SQLException sqle) {
+            throw new RuntimeException(sqle);
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    //  log.warn("Unable to close statement", e);
+                }
+                statement = null;
+            }
+            connectionPool.releaseEntry(connection);
+
+        }
+        return collectionsList;
+    }
 }
 

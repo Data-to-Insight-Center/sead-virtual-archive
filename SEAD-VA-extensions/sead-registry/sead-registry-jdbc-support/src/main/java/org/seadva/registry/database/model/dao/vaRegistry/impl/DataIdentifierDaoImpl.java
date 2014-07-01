@@ -33,6 +33,52 @@ public class DataIdentifierDaoImpl implements DataIdentifierDao {
     }
 
     @Override
+    public List<DataIdentifier> getDataIdentifiersByValue(String alternateId) {
+        List<DataIdentifier> dataIdentifiers = new ArrayList<DataIdentifier>();
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement("Select * from data_identifier where data_identifier_value=?");
+            statement.setString(1, alternateId);
+            ResultSet resultSet = null;
+            resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                DataIdentifier dataIdentifier = new DataIdentifier();
+                DataIdentifierPK dataIdentifierPK = new DataIdentifierPK();
+                DataIdentifierType dataIdentifierType = new DataIdentifierType();
+                dataIdentifierType.setId(resultSet.getString("data_identifier_type_id"));
+                dataIdentifierPK.setDataIdentifierType(dataIdentifierType);
+                BaseEntity entity1 = new BaseEntity();
+                entity1.setId(resultSet.getString("entity_id"));
+                dataIdentifierPK.setEntity(entity1);
+                dataIdentifier.setId(dataIdentifierPK);
+                dataIdentifier.setDataIdentifierValue(resultSet.getString("data_identifier_value"));
+
+                dataIdentifiers.add(dataIdentifier);
+            }
+
+
+        } catch (SQLException sqle) {
+            throw new RuntimeException(sqle);
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    log.warn("Unable to close statement", e);
+                }
+                statement = null;
+            }
+            connectionPool.releaseEntry(connection);
+
+        }
+        return dataIdentifiers;
+    }
+
+    @Override
     public List<DataIdentifier> getDataIdentifiers(String entityId) {
         List<DataIdentifier> dataIdentifiers = new ArrayList<DataIdentifier>();
         Connection connection = null;

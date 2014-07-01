@@ -60,6 +60,7 @@ public class ResourceService {
     static FileDao fileDao;
     static MetadataTypeDao metadataTypeDao;
     static DataIdentifierTypeDao dataIdentifierTypeDao;
+    static DataIdentifierDao dataIdentifierDao;
     static RelationTypeDao relationTypeDao;
     static RoleTypeDao roleTypeDao;
     static RepositoryDao repositoryDao;
@@ -112,6 +113,7 @@ public class ResourceService {
         collectionEntityDao = new CollectionDaoImpl();
         metadataTypeDao = new MetadataTypeDaoImpl();
         dataIdentifierTypeDao = new DataIdentifierTypeDaoImpl();
+        dataIdentifierDao = new DataIdentifierDaoImpl();
         relationTypeDao = new RelationTypeDaoImpl();
         roleTypeDao = new RoleTypeDaoImpl();
         repositoryDao = new RepositoryDaoImpl();
@@ -298,7 +300,39 @@ public class ResourceService {
         }
 
 
-        @GET
+    @GET
+    @Path("/query")
+    @Produces("application/json")
+    public Response queryCollections(@QueryParam("key") String propertyKey,
+                                     @QueryParam("value") String propertyValue ) throws Exception {
+
+        List<Collection> collections = new ArrayList<Collection>();
+
+        if(propertyKey==null||propertyValue==null)
+            return Response.ok(gson.toJson(collections)).build();
+
+        collections = collectionEntityDao.queryByProperty(propertyKey, propertyValue);
+
+        return Response.ok(gson.toJson(collections)).build();
+    }
+
+    @GET
+    @Path("/altId")
+    @Produces("application/json")
+    public Response getByIdentifier(@QueryParam("alternateId") String alternateId) throws Exception {
+
+        List<DataIdentifier> identifiers = new ArrayList<DataIdentifier>();
+
+        if(alternateId==null)
+            return Response.ok(gson.toJson(identifiers)).build();
+
+        identifiers = dataIdentifierDao.getDataIdentifiersByValue(alternateId);
+
+        return Response.ok(gson.toJson(identifiers)).build();
+    }
+
+
+    @GET
         @Path("/fixity/{entityId}")
         @Produces("application/json")
         public Response getFixities( @PathParam("entityId") String entityId) throws Exception {

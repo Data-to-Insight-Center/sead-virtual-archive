@@ -1,8 +1,6 @@
 package org.seadva.registry.database.model.obj.vaRegistry;
 
 
-import java.io.Serializable;
-
 import com.google.gson.annotations.Expose;
 import org.seadva.registry.database.model.obj.vaRegistry.iface.IDataIdentifierPK;
 
@@ -26,6 +24,7 @@ public class DataIdentifierPK implements  IDataIdentifierPK {
 	private DataIdentifierType dataIdentifierType;
 
 	/** Field mapping. */
+    @Expose
 	private BaseEntity entity;
 
  
