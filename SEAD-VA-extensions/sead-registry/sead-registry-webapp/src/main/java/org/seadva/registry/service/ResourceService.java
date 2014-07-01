@@ -19,6 +19,7 @@ package org.seadva.registry.service;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import org.apache.commons.io.IOUtils;
 import org.seadva.registry.database.common.DBConnectionPool;
 import org.seadva.registry.database.model.dao.vaRegistry.*;
 import org.seadva.registry.database.model.dao.vaRegistry.impl.*;
@@ -32,6 +33,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -66,11 +69,39 @@ public class ResourceService {
     static AggregationDao aggregationDao;
     static RelationDao relationDao;
     static AgentDao agentDao;
+    static String databaseUrl;
+    static String databaseUser;
+    static String databasePassword;
 
     static {
 
+        InputStream inputStream =
+                ResourceService.class.getResourceAsStream("./Config.properties");
+
+        StringWriter writer = new StringWriter();
         try {
-            DBConnectionPool.init("jdbc:mysql://localhost:3306/va_registry","username","pwd",8,30,0);
+            IOUtils.copy(inputStream, writer);
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+        String result = writer.toString();
+        String[] pairs = result.trim().split(
+                "\n|\\=");
+
+
+        for (int i = 0; i + 1 < pairs.length;) {
+            String name = pairs[i++].trim();
+            String value = pairs[i++].trim();
+            if(name.equalsIgnoreCase("database.url"))
+                databaseUrl = value;
+            else if(name.equalsIgnoreCase("database.username"))
+                databaseUser = value;
+            else if(name.equalsIgnoreCase("database.password"))
+                databasePassword = value;
+        }
+        try {
+            DBConnectionPool.init(databaseUrl, databaseUser, databasePassword,8,30,0);
             DBConnectionPool.launch();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.

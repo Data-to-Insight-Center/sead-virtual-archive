@@ -90,6 +90,7 @@ public class FileDaoImpl implements FileDao {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
+            baseEntityDao.insertEntity(file);
             connection = getConnection();
             statement = connection.prepareStatement("INSERT INTO file (entity_id, file_name, size_bytes, version_num) values(?,?,?,?)" +
                     "ON DUPLICATE KEY UPDATE " +
@@ -122,7 +123,7 @@ public class FileDaoImpl implements FileDao {
 
             statement.executeUpdate();
             statement.close();
-            baseEntityDao.insertEntity(file);
+
             log.debug("Done resetting unfinished raw notifications");
         } catch (SQLException sqle) {
             throw new RuntimeException(sqle);

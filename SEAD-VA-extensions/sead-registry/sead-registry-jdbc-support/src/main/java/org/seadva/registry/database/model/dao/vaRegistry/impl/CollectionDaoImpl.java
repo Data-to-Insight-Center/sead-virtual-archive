@@ -100,6 +100,7 @@ public class CollectionDaoImpl implements CollectionDao {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
+            baseEntityDao.insertEntity(collection);
             connection = getConnection();
             statement = connection.prepareStatement("INSERT INTO collection (entity_id, state_id, is_obsolete, version_num, name) values(?,?,?,?,?) " +
                     "ON DUPLICATE KEY UPDATE " +
@@ -122,7 +123,7 @@ public class CollectionDaoImpl implements CollectionDao {
             statement.setString(9, collection.getName());
             statement.executeUpdate();
             statement.close();
-            baseEntityDao.insertEntity(collection);
+
             log.debug("Done resetting unfinished raw notifications");
         } catch (SQLException sqle) {
             throw new RuntimeException(sqle);
