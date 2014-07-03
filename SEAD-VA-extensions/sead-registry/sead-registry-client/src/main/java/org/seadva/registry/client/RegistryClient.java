@@ -355,7 +355,7 @@ public class RegistryClient {
     }
 
 
-    public BaseEntity queryByProperty(String key, String value) throws IOException {
+    public List<BaseEntity> queryByProperty(String key, String value) throws IOException {
         WebResource webResource = resource();
 
         ClientResponse response = webResource.path("resource")
@@ -368,7 +368,9 @@ public class RegistryClient {
             throw new HTTPException(response.getStatus());
         StringWriter writer = new StringWriter();
         IOUtils.copy(response.getEntityInputStream(), writer);
-        return (BaseEntity) gson.fromJson(writer.toString(), BaseEntity.class);
+        Type listType = new TypeToken<ArrayList<BaseEntity>>() {
+        }.getType();
+        return (List<BaseEntity>) gson.fromJson(writer.toString(), listType);
     }
 
     /**
