@@ -354,6 +354,23 @@ public class RegistryClient {
         return relationType;
     }
 
+
+    public BaseEntity queryByProperty(String key, String value) throws IOException {
+        WebResource webResource = resource();
+
+        ClientResponse response = webResource.path("resource")
+                .path("query")
+                .queryParam("key", key)
+                .queryParam("value", value)
+                .get(ClientResponse.class);
+
+        if(response.getStatus()!=200)
+            throw new HTTPException(response.getStatus());
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(response.getEntityInputStream(), writer);
+        return (BaseEntity) gson.fromJson(writer.toString(), BaseEntity.class);
+    }
+
     /**
      * POST (Create)  Test cases
      *

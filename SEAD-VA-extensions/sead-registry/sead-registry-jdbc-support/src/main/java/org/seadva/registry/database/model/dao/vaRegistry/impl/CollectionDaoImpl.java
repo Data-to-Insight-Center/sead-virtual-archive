@@ -225,7 +225,7 @@ public class CollectionDaoImpl implements CollectionDao {
 
         String queryStr = "Select * from collection C, property P, metadata_type M ";
 
-        queryStr+=" where C.entity_id=P.entity_id, P.metadata_id=M.metadata_id AND M.metadata_element='"+key+"' AND P.valueStr='"+value+"'";
+        queryStr+=" where C.entity_id=P.entity_id AND P.metadata_id=M.metadata_id AND M.metadata_element='"+key+"' AND P.valueStr='"+value+"'";
 
         Connection connection = null;
         PreparedStatement statement = null;
