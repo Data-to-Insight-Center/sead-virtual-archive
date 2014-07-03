@@ -131,10 +131,15 @@ public class DataIdentifierDaoImpl implements DataIdentifierDao {
         try {
             connection = getConnection();
             for(DataIdentifier dataIdentifier:dataIdentifiers){
-                statement = connection.prepareStatement("INSERT INTO data_identifier (entity_id, data_identifier_type_id, data_identifier_value) values(?,?,?)");
+                statement = connection.prepareStatement("INSERT INTO data_identifier" +
+                        " (entity_id, data_identifier_type_id, data_identifier_value) values(?,?,?)" +
+                        " ON DUPLICATE KEY UPDATE " +
+                                "data_identifier_value=?"
+                );
                 statement.setString(1, dataIdentifier.getId().getEntity().getId());
                 statement.setString(2, dataIdentifier.getId().getDataIdentifierType().getId());
                 statement.setString(3, dataIdentifier.getDataIdentifierValue());
+                statement.setString(4, dataIdentifier.getDataIdentifierValue());
                 statement.executeUpdate();
                 statement.close();
             }

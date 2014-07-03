@@ -24,7 +24,7 @@ public class DataIdentifierPK implements  IDataIdentifierPK {
 	private DataIdentifierType dataIdentifierType;
 
 	/** Field mapping. */
-    @Expose
+    //@Expose
 	private BaseEntity entity;
 
  
