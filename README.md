@@ -26,7 +26,7 @@ Build Pre-requisites:
 <li>Before building the code, please copy the settings.xml file from maven/conf folder in the git repository into your maven folder.
 
 <li>Setting up Database:
-Please follow instructions in dcs-access/sead-access-ui/README file
+Please follow instructions in SEAD-VA-extensions/dcs-access/sead-access-ui/README file
 </ul>
 
 <u><b>Build</b></u>
@@ -86,6 +86,11 @@ Install:
 <br/>
 The above maven commands will clean, compile and package the UI code. It will generate a war file which also needs to be copied to tomcat webapp (rename war to sead-access.war when copying).<Change snapshot files to release files>
 
+<br/>
+To open in gwt-dev mode in eclipse, install GWT plugin for eclipse. Import project as maven project. Right click->Properties->Google
+<br/>->Web Application -> check 'This project has a war directory' -> browse src/main/webapp
+<br/>->Web Toolkit -> check 'Use Google web toolkit'
+<br/>Click Ok
 </ol>
 
 <b>Setting up the configuration file</b>:
