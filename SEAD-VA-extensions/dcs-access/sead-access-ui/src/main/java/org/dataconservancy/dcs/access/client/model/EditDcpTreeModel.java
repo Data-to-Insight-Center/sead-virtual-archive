@@ -17,8 +17,11 @@
 package org.dataconservancy.dcs.access.client.model;
 
 import com.google.gwt.cell.client.AbstractCell;
+import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArrayString;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safecss.shared.SafeStyles;
 import com.google.gwt.safecss.shared.SafeStylesUtils;
@@ -30,11 +33,12 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.TreeViewModel;
 import org.dataconservancy.dcs.access.client.SeadState;
+import org.dataconservancy.dcs.access.client.ui.EditPopupPanel;
 import org.dataconservancy.dcs.access.client.ui.Icons;
 
 import java.util.*;
 
-public class DcpTreeModel2 implements TreeViewModel {
+public class EditDcpTreeModel implements TreeViewModel {
 	// entity id -> kids
 	// null -> collections
     interface Templates extends SafeHtmlTemplates {
@@ -64,7 +68,6 @@ public class DcpTreeModel2 implements TreeViewModel {
         AbstractImagePrototype proto = AbstractImagePrototype.create(resource);
         return proto.getSafeHtml();
     }
-
 	private final Map<String, List<JsEntity>> kidmap;
 
 	private void add_kid(JsEntity kid, JsArrayString parents) {
@@ -99,10 +102,14 @@ public class DcpTreeModel2 implements TreeViewModel {
 		}
 	}
 
+	JsDcp dcp;
 	HashMap<String, JsFile> filemap;
+	String sipPath;
 
-	public DcpTreeModel2(JsDcp dcp) {
+	public EditDcpTreeModel(JsDcp dcp, String sipPath) {
+		this.dcp = dcp;
 		this.kidmap = new HashMap<String, List<JsEntity>>();
+		this.sipPath = sipPath;
 
 		// File id -> file entity
 		filemap = new HashMap<String, JsFile>();
@@ -129,20 +136,20 @@ public class DcpTreeModel2 implements TreeViewModel {
 
 			add_kid(du, du.getCollections());
 			add_kid(du, du.getParents());
-	//		add_kid(du, du.getMetadataRefs());
+			add_kid(du, du.getMetadataRefs());
 
 			// TODO Hack for no collections
 			//if (dcp.getCollections().length() == 0) {
 				top.add(du);
 		//	}
 
-				//add_kids(filemap, du.getMetadataRefs(), du.getId());
+			add_kids(filemap, du.getMetadataRefs(), du.getId());
 		}
 
 		for (int i = 0; i < dcp.getFiles().length(); i++) {
 			JsFile file = dcp.getFiles().get(i);
 
-		//	add_kids(filemap, file.getMetadataRefs(), file.getId());
+			add_kids(filemap, file.getMetadataRefs(), file.getId());
 		}
 
 		// Put mans in parents and files in mans
@@ -151,7 +158,7 @@ public class DcpTreeModel2 implements TreeViewModel {
 
 //			add_kid(man, man.getDeliverableUnit());
 
-		//	add_kids(filemap, man.getMetadataRefs(), man.getId());
+			add_kids(filemap, man.getMetadataRefs(), man.getId());
 
 			for (int j = 0; j < man.getManifestationFiles().length(); j++) {
 				JsManifestationFile mf = man.getManifestationFiles().get(j);
@@ -196,11 +203,11 @@ public class DcpTreeModel2 implements TreeViewModel {
 			// root
 			ListDataProvider<JsEntity> ldp = new ListDataProvider<JsEntity>(
 					kidmap.get(null));
-			return new DefaultNodeInfo<JsEntity>(ldp, new JsEntityCell());
+			return new DefaultNodeInfo<JsEntity>(ldp, new JsEntityCell(this.dcp, this.sipPath));
 		} else if (value instanceof JsEntity) {
 			ListDataProvider<JsEntity> ldp = new ListDataProvider<JsEntity>(
 					kidmap.get(((JsEntity) value).getId()));
-			return new DefaultNodeInfo<JsEntity>(ldp, new JsEntityCell());
+			return new DefaultNodeInfo<JsEntity>(ldp, new JsEntityCell(this.dcp, this.sipPath));
 		}
 
 		return null;
@@ -239,8 +246,13 @@ public class DcpTreeModel2 implements TreeViewModel {
 	}
 
 	public static class JsEntityCell extends AbstractCell<JsEntity> {
-		public JsEntityCell(){
+
+		JsDcp dcp;
+		String sipath;
+		public JsEntityCell(JsDcp dcp, String sipath){
 			super("click", "keydown");
+			this.dcp = dcp;
+			this.sipath = sipath;
 		}
 		public void render(Context context,
 				JsEntity value, SafeHtmlBuilder sb) {
@@ -265,8 +277,16 @@ public class DcpTreeModel2 implements TreeViewModel {
 				summary = "unknown entity";
 			}
 
+			//sb.appendEscaped(typename + ": ");
+
 			String url = "#" + SeadState.ENTITY.toToken(value.getId());
-			String link = SafeHtmlUtils.htmlEscape(summary);
+			String link = //" <a href='" 
+//			+ URL.encode(url)
+			//+ "'>"
+//					+ 
+			SafeHtmlUtils.htmlEscape(summary)
+					//+ "</a>"
+			;
 			SafeStyles imgStyle = SafeStylesUtils
                     .fromTrustedString("float:left;cursor:hand;cursor:pointer;");
 			if(type.equals("deliverableUnit")){
@@ -276,11 +296,20 @@ public class DcpTreeModel2 implements TreeViewModel {
 			else if (type.equals("file")) {
 				SafeHtml rendered = templates.cell("ICON_FILE", imgStyle, ICON_FILE);
 	            sb.append(rendered);
-			}	
-            
+			}
+
 			sb.append(SafeHtmlUtils.fromTrustedString(link));
-			
 		}
-		 
+		 @Override
+         public void onBrowserEvent(Context context, Element parent, JsEntity value,
+             NativeEvent event, ValueUpdater<JsEntity> valueUpdater) {
+           super.onBrowserEvent(context, parent, value, event, valueUpdater);
+           
+           String type = value.getEntityType();
+           if ("click".equals(event.getType())) {
+    		   EditPopupPanel editPopupPanel = new EditPopupPanel(value, this, this.dcp, this.sipath, type);
+    		   editPopupPanel.show();
+           }
+         }
 	}
 }
