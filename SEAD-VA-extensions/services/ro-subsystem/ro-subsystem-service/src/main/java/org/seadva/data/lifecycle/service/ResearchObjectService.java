@@ -99,17 +99,17 @@ public class ResearchObjectService {
 
     private static final String RESOURCE_MAP_SERIALIZATION_FORMAT = "RDF/XML";
 
-     @GET
-     @Path("/ro/{entityId}")
-     public Response getResearchObject( @PathParam("entityId") String roIdentifier) throws Exception {
+    @GET
+    @Path("/ro/{entityId}")
+    public Response getResearchObject( @PathParam("entityId") String roIdentifier) throws Exception {
 
-         String resourceMapXml = "";
-         ORESerialiser serial = ORESerialiserFactory.getInstance(RESOURCE_MAP_SERIALIZATION_FORMAT);
-         ResourceMapDocument doc = serial.serialise(new OreDBMapper(registryServiceUrl).toORE(roIdentifier));
-         resourceMapXml = doc.toString();
-         return Response.ok(  resourceMapXml
-         ).build();
-     }
+        String resourceMapXml = "";
+        ORESerialiser serial = ORESerialiserFactory.getInstance(RESOURCE_MAP_SERIALIZATION_FORMAT);
+        ResourceMapDocument doc = serial.serialise(new OreDBMapper(registryServiceUrl).toORE(roIdentifier));
+        resourceMapXml = doc.toString();
+        return Response.ok(  resourceMapXml
+        ).build();
+    }
 
     @GET
     @Path("/agentGraph/{agentId}")
@@ -142,6 +142,41 @@ public class ResearchObjectService {
         }
     }
 
+    @GET
+    @Path("/entityGraph/{entityId}")
+    @Produces("application/json")
+    public Response getEntityGraph(@PathParam("entityId") String entityId,
+                                   @QueryParam("callback") String callback){
+        try {
+            GetEntityGraphRequestDocument entityGraphRequest = GetEntityGraphRequestDocument.Factory.newInstance();
+            GetEntityGraphRequestType entityRequestType = GetEntityGraphRequestType.Factory.newInstance();
+            entityRequestType.setInformationDetailLevel(DetailEnumType.FINE);
+            entityRequestType.setEntityURI(entityId);
+            entityRequestType.setEntityType(EntityEnumType.COLLECTION);
+            entityGraphRequest.setGetEntityGraphRequest(entityRequestType);
+            KomaduServiceStub serviceStub = new KomaduServiceStub(
+                    komaduServiceUrl
+            );
+
+            GetEntityGraphResponseDocument entityResponse = serviceStub.getEntityGraph(entityGraphRequest);
+            JSONObject xmlJSONObj = XML.toJSONObject(entityResponse.getGetEntityGraphResponse().getDocument().toString());
+            String jsonPrettyPrintString = xmlJSONObj.toString(4);
+
+            if(callback==null)
+                callback = "";
+
+            return Response.ok(
+                    callback+
+                            "("+
+                            jsonPrettyPrintString
+                            +")"
+            ).header("Content-Type", "application/javascript").build();
+        } catch (RemoteException e) {
+            return Response.serverError().entity(e.getMessage()).build();
+        } catch (JSONException e) {
+            return Response.serverError().entity(e.getMessage()).build();
+        }
+    }
 
     @GET
     @Path("/lineage/{entityId}")
@@ -162,21 +197,22 @@ public class ResearchObjectService {
 
         String graph = entityResponse.getGetEntityGraphResponse().getDocument().toString();
 
-        Util.pullParse(new ByteArrayInputStream(graph.getBytes(StandardCharsets.UTF_8)), "");
 
-        Iterator iterator = Util.getGenUsed().entrySet().iterator();
+        Util util = new Util();
+        util.pullParse(new ByteArrayInputStream(graph.getBytes(StandardCharsets.UTF_8)), "");
+        Iterator iterator = util.getGenUsed().entrySet().iterator();
         Map<String, List<String>> genUsedUrl = new HashMap<String, List<String>>();
         while (iterator.hasNext()){
             Map.Entry<String,String> pair = (Map.Entry<String, String>) iterator.next();
             List<String> tempList = new ArrayList<String>();
-            if(genUsedUrl.containsKey(Util.getEntityMap().get(pair.getValue()).getUrl())) //parent
-                tempList = genUsedUrl.get(Util.getEntityMap().get(pair.getValue()).getUrl());
+            if(genUsedUrl.containsKey(util.getIdEntityMap().get(pair.getValue()).getUrl())) //parent
+                tempList = genUsedUrl.get(util.getIdEntityMap().get(pair.getValue()).getUrl());
 
 
-            if(!tempList.contains(Util.getEntityMap().get(pair.getKey()).getUrl())) //child
-                tempList.add( Util.getEntityMap().get(pair.getKey()).getUrl());
+            if(!tempList.contains(util.getIdEntityMap().get(pair.getKey()).getUrl())) //child
+                tempList.add( util.getIdEntityMap().get(pair.getKey()).getUrl());
 
-            genUsedUrl.put(Util.getEntityMap().get(pair.getValue()).getUrl(),
+            genUsedUrl.put(util.getIdEntityMap().get(pair.getValue()).getUrl(),
                     tempList);
         }
 
@@ -184,35 +220,78 @@ public class ResearchObjectService {
         Iterator iterator2 = genUsedUrl.entrySet().iterator();
 
         List<Entity> newList = new ArrayList<Entity>();
+
+
         while(iterator2.hasNext()){
             Map.Entry<String, List<String>> pair = (Map.Entry<String, List<String>>) iterator2.next();
-            Entity entity = Util.getEntityUrlMap().get(pair.getKey());
+            Entity entity = util.getUrlEntityMap().get(pair.getKey());
+
             List<Entity> temp = new ArrayList<Entity>();
             for(String child:pair.getValue()){
-                if(Util.getEntityUrlMap().containsKey(child))
-                    temp.add(Util.getEntityUrlMap().get(child));
+                if(util.getUrlEntityMap().containsKey(child)){
+                    Entity childEntity = util.getUrlEntityMap().get(child);
+                    temp.add(childEntity);
+                }
             }
             entity.setChildren(temp);
+
+            //   if(contains){
+            //       newList = new ArrayList<Entity>();
             newList.add(entity);
+            //    }
+
             iterator2.remove();
         }
 
-        String json =  new GsonBuilder().create().toJson(newList);
+
+        int i =0;
+        int correctEntity = -1;
+        int maxSize = -1;
+        for(Entity entity:newList){
+            size =0;
+            contains = false;
+            addSize(entity, roIdentifier);
+            if(contains && size>maxSize){
+                correctEntity = i;
+                maxSize = size;
+            }
+            i++;
+        }
+
+        List<Entity> finalList = new ArrayList<Entity>();
+        if(correctEntity>-1)
+            finalList.add(newList.get(correctEntity));
+
+        String json =  new GsonBuilder().create().toJson(finalList);
         return Response.ok(
-               json
+                json
         ).build();
+    }
+
+    int size;
+    boolean contains;
+    void addSize(Entity entity, String roIdentifier){
+        if(entity.getUrl().equalsIgnoreCase(roIdentifier))
+            contains = true;
+        if(entity.getChildren()!=null&&entity.getChildren().size()>0){
+            size += entity.getChildren().size();
+            for(Entity childEntity:entity.getChildren()){
+                addSize(childEntity, roIdentifier);
+            }
+        }
     }
 
     @GET
     @Path("/listRO")
     public Response getResearchObjects(@QueryParam("type") String type,
                                        @QueryParam("submitterId") String submitterId, //Researcher who submitted Curation Object or Curator who submitted Published Object would be the submitters
+                                       @QueryParam("creatorId") String creatorId,//Researcher who uploaded/created the data
                                        @QueryParam("repository") String repository, //Repository Name to which CurationObject is to be submitted or to which Published Object was already Published
                                        @QueryParam("fromDate") String fromDate,
                                        @QueryParam("toDate") String toDate) throws IOException, URISyntaxException, OREException, ClassNotFoundException {
 
         List<ROMetadata> roList = new ArrayList<ROMetadata>();
-        List<CollectionWrapper> collections = new RegistryClient(registryServiceUrl).getCollectionList(type, repository, submitterId);
+        List<CollectionWrapper> collections = new RegistryClient(registryServiceUrl).getCollectionList(type, repository, submitterId, creatorId);
 
         for(CollectionWrapper collection:collections){
             ROMetadata ro = new ROMetadata();
@@ -261,7 +340,7 @@ public class ResearchObjectService {
 
 
         String directory =
-                        System.getProperty("java.io.tmpdir");
+                System.getProperty("java.io.tmpdir");
         String oreFilePath = directory+"/_"+ UUID.randomUUID().toString()+".xml";
         IOUtils.copy(resourceMapStream, new FileOutputStream(oreFilePath));
 
@@ -366,6 +445,21 @@ public class ResearchObjectService {
     }
 
     @POST
+    @Path("/trackRevision")
+    public Response trackRevision(@QueryParam("previous") String previousROId,
+                                  @QueryParam("next") String nextROId) throws Exception {
+
+        Entity previousRO = getCollection(previousROId);
+        Entity nextRO = getCollection(nextROId);
+
+
+        new KomaduIngester(komaduServiceUrl).trackRevision(previousRO,
+                nextRO
+        );
+        return Response.ok().build();
+    }
+
+    @POST
     @Path("/putEvent")
     public Response trackEvent(@QueryParam("event") String eventStr){
 
@@ -433,8 +527,8 @@ public class ResearchObjectService {
     @POST
     @Path("/obsolete/{entityId}")
     public Response deleteRO( @PathParam("entityId") String roIdentifier) throws Exception {
-       new RegistryClient(registryServiceUrl).makeObsolete(roIdentifier);
-       return Response.ok().build();
+        new RegistryClient(registryServiceUrl).makeObsolete(roIdentifier);
+        return Response.ok().build();
     }
 
 }

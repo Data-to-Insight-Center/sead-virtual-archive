@@ -30,38 +30,27 @@ import java.util.Map;
  * Utility methods
  */
 public class Util {
-    public static Map<String, Entity> getEntityMap() {
-        return entityMap;
+    public Map<String, Entity> getIdEntityMap() {
+        return idEntityMap;
     }
 
-    public static void setEntityMap(Map<String, Entity> entityMap) {
-        Util.entityMap = entityMap;
+    public Map<String, Entity> getUrlEntityMap() {
+        return urlEntityMap;
     }
 
-    public static Map<String, Entity> getEntityUrlMap() {
-        return entityUrlMap;
-    }
 
-    public static void setEntityUrlMap(Map<String, Entity> entityUrlMap) {
-        Util.entityUrlMap = entityUrlMap;
-    }
-
-    public static Map<String, String> getGenUsed() {
+    public Map<String, String> getGenUsed() {
         return genUsed;
     }
 
-    public static void setGenUsed(Map<String, String> genUsed) {
-        Util.genUsed = genUsed;
-    }
+    Map<String, Entity> idEntityMap;
+    Map<String, Entity> urlEntityMap;
+    Map<String, String> genUsed;
 
-    static Map<String, Entity> entityMap = new HashMap<String, Entity>();
-    static Map<String, Entity> entityUrlMap = new HashMap<String, Entity>();
-    static Map<String, String> genUsed = new HashMap<String, String>();
+    public int pullParse(InputStream input, String process) throws IOException {
 
-    public static int pullParse(InputStream input, String process) throws IOException {
-
-        entityMap = new HashMap<String, Entity>();
-        entityUrlMap = new HashMap<String, Entity>();
+        idEntityMap = new HashMap<String, Entity>();
+        urlEntityMap = new HashMap<String, Entity>();
 
         genUsed = new HashMap<String, String>();
 
@@ -187,8 +176,8 @@ public class Util {
                 }
                 else if(eventType == XmlPullParser.END_TAG) {
                     if(xpp.getName().contains("entity")&&entity1!=null){
-                        entityMap.put(entity1.getId(),entity1);
-                        entityUrlMap.put(entity1.getUrl(),entity1);
+                        idEntityMap.put(entity1.getId(),entity1);
+                        urlEntityMap.put(entity1.getUrl(),entity1);
                         entity1 =null;
                         ct = 0;
                     }
