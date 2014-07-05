@@ -60,6 +60,15 @@
             <type>jar</type>
             <optional>false</optional>
         </dependency>
+
+        <dependency>
+            <groupId>org.seadva.bagit</groupId>
+            <artifactId>bagit</artifactId>
+            <version>1.0.1-SNAPSHOT</version>
+            <type>jar</type>
+            <optional>false</optional>
+        </dependency>
+
         <dependency>
             <groupId>org.dataconservancy.query</groupId>
             <artifactId>dcs-query-dcs-datamodel-solr</artifactId>

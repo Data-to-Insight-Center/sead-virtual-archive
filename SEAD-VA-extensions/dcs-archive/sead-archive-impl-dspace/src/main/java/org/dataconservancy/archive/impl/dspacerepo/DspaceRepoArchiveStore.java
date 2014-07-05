@@ -25,6 +25,9 @@ import org.dataconservancy.dcs.index.dcpsolr.SolrService;
 import org.dataconservancy.model.builder.InvalidXmlException;
 import org.dataconservancy.model.dcs.*;
 import org.seadva.archive.SeadArchiveStore;
+import org.seadva.bagit.event.api.Event;
+import org.seadva.bagit.impl.ConfigBootstrap;
+import org.seadva.bagit.model.PackageDescriptor;
 import org.seadva.model.*;
 import org.seadva.model.builder.xstream.SeadXstreamStaxModelBuilder;
 import org.seadva.model.pack.ResearchObject;
@@ -316,10 +319,63 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
         }
         pkg.setFiles(files);
 
-        sipArchival(pkg,firstDspaceCollection);
-
+      //  sipArchival(pkg,firstDspaceCollection);
+        try {
+            oreArchival(pkg, firstDspaceCollection, dspaceClient, model);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
         return pkg;
     }
+
+
+    public void oreArchival(ResearchObject pkg, String dspaceCollection, SeadDSpace dspaceClient ,SeadXstreamStaxModelBuilder model) throws FileNotFoundException {
+        String sipFileName = "sip.xml";
+
+        File sipFile = new File(sipFileName);
+        model.buildSip(pkg, new FileOutputStream(sipFile));
+
+        String sipFilePath = sipFile.getAbsolutePath();
+        File targetDir = new File(System.getProperty("java.io.tmpdir"));
+        if (this.rootDu == null)
+        {
+            this.rootDu = new SeadDeliverableUnit();
+            this.rootDu.setTitle("test");
+        }
+
+        PackageDescriptor packageDescriptor = new PackageDescriptor(this.rootDu.getTitle(), null, targetDir.getAbsolutePath());
+        packageDescriptor.setSipPath(sipFilePath);
+        try
+        {
+            new ConfigBootstrap().load();
+            packageDescriptor = ConfigBootstrap.packageListener.execute(Event.PARSE_SIP, packageDescriptor);
+            packageDescriptor = ConfigBootstrap.packageListener.execute(Event.GENERATE_ORE, packageDescriptor);
+        }
+        catch (ClassNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+        catch (IllegalAccessException e)
+        {
+            e.printStackTrace();
+        }
+        catch (InstantiationException e)
+        {
+            e.printStackTrace();
+        }
+        dspaceClient.descriptiveMetadata("ore", "", "(Submitted as part of SEAD project)", "", "");
+
+        String[] filepaths = new String[1];
+        String[] filenames = new String[1];
+        filepaths[0] = packageDescriptor.getOreFilePath();
+        filenames[0] = "ore.xml";
+        if (this.rootDu != null) {
+            filenames[0] = (this.rootDu.getTitle() + "_" + filenames[0]);
+        }
+        String zippedPackage = dspaceClient.createPackage(filepaths, "CUSTODIAN", "ORGANIZATION", "MyOrganization", filenames, targetDir);
+        dspaceClient.uploadPackage(dspaceCollection, true, zippedPackage);
+    }
+
 
     public void sipArchival(ResearchObject pkg, String dspaceCollection){
         //SIP Archival
