@@ -42,7 +42,7 @@ public class RegistryClient {
     static String serviceUrl;
     static Gson gson;
     private static WebResource resource(){
-       return resource;
+        return resource;
     }
 
     public RegistryClient(String url){
@@ -53,7 +53,7 @@ public class RegistryClient {
                 .create();
     }
 
-    /**
+    /**                                            getEn
      * GET methods
      *
      */
@@ -150,11 +150,11 @@ public class RegistryClient {
         return gson.fromJson(writer.toString(), listType);
     }
 
-    public List<CollectionWrapper> getCollectionList(String type, String repository, String submitterId) throws IOException {
+    public List<CollectionWrapper> getCollectionList(String type, String repository, String submitterId, String creatorId) throws IOException {
         WebResource webResource = resource();
         webResource = webResource.path("resource")
-                    .path("listCollections")
-                    .path(type);
+                .path("listCollections")
+                .path(type);
 
         if(repository!=null)
             webResource = webResource.queryParam("repository", repository);
@@ -162,8 +162,12 @@ public class RegistryClient {
         if(submitterId!=null)
             webResource = webResource.queryParam("submitterId", submitterId);
 
+        if(creatorId!=null)
+            webResource = webResource.queryParam("creatorId", creatorId);
+
+
         ClientResponse response = webResource
-                                .get(ClientResponse.class);
+                .get(ClientResponse.class);
 
         if(response.getStatus()!=200)
             throw new HTTPException(response.getStatus());
@@ -299,16 +303,16 @@ public class RegistryClient {
         ClientResponse response = webResource.path("resource")
                 .path("metadataType")
                 .path(
-                      element
+                        element
                 )
                 .queryParams(params)
                 .get(ClientResponse.class);
 
         if(response.getStatus()!=200)
         {    if(response.getStatus()==404)
-                return null;
-            else
-                throw new HTTPException(response.getStatus());
+            return null;
+        else
+            throw new HTTPException(response.getStatus());
         }
 
         StringWriter writer = new StringWriter();
@@ -334,9 +338,9 @@ public class RegistryClient {
         if(response.getStatus()!=200)
         {
             if(response.getStatus()==404)
-            return null;
-        else
-            throw new HTTPException(response.getStatus());
+                return null;
+            else
+                throw new HTTPException(response.getStatus());
         }
 
         StringWriter writer = new StringWriter();
@@ -374,7 +378,7 @@ public class RegistryClient {
                 .post(ClientResponse.class);
 
         if(response.getStatus()!=200)
-               throw new HTTPException(response.getStatus());
+            throw new HTTPException(response.getStatus());
     }
 
 
@@ -478,7 +482,7 @@ public class RegistryClient {
         ClientResponse response = webResource.path("resource")
                 .path("state")
                 .path(
-                    stateName
+                        stateName
                 )
                 .queryParams(params)
                 .get(ClientResponse.class);
@@ -530,25 +534,25 @@ public class RegistryClient {
      * @throws java.io.IOException
      */
     public void postAggregation(List<AggregationWrapper> aggregationWrappers, String parentId) throws IOException {
-            WebResource webResource = resource();
+        WebResource webResource = resource();
 
-            MultivaluedMap<String, String> params = new MultivaluedMapImpl();
+        MultivaluedMap<String, String> params = new MultivaluedMapImpl();
 
-            List<String> values = new ArrayList<String>();
-            values.add(gson.toJson(aggregationWrappers));
-            params.put("aggList",values);
+        List<String> values = new ArrayList<String>();
+        values.add(gson.toJson(aggregationWrappers));
+        params.put("aggList",values);
 
-            ClientResponse response = webResource.path("resource")
-                    .path("aggregation")
-                    .path(
-                            URLEncoder.encode(
-                                    parentId
-                            )
-                    )
-                    .queryParams(params)
-                    .post(ClientResponse.class);
-            if(response.getStatus()!=200)
-                throw new HTTPException(response.getStatus());
+        ClientResponse response = webResource.path("resource")
+                .path("aggregation")
+                .path(
+                        URLEncoder.encode(
+                                parentId
+                        )
+                )
+                .queryParams(params)
+                .post(ClientResponse.class);
+        if(response.getStatus()!=200)
+            throw new HTTPException(response.getStatus());
     }
 
     public void postRelation(List<Relation> relationList) throws IOException {
@@ -567,6 +571,25 @@ public class RegistryClient {
         if(response.getStatus()!=200)
             throw new HTTPException(response.getStatus());
     }
+
+
+    public void deleteRelation(List<Relation> relationList) throws IOException {
+        WebResource webResource = resource();
+
+        MultivaluedMap<String, String> params = new MultivaluedMapImpl();
+
+        List<String> values = new ArrayList<String>();
+        values.add(gson.toJson(relationList));
+        params.put("relList",values);
+
+        ClientResponse response = webResource.path("resource")
+                .path("delrelation")
+                .queryParams(params)
+                .post(ClientResponse.class);
+        if(response.getStatus()!=200)
+            throw new HTTPException(response.getStatus());
+    }
+
 
     public void makeObsolete(String entityId) throws IOException {
         WebResource webResource = resource();
