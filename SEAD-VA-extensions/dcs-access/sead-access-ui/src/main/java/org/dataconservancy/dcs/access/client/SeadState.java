@@ -25,8 +25,8 @@ import java.util.List;
 
 public enum SeadState {
     HOME("home"), SEARCH("search"), ENTITY("entity"), BROWSE ("browse"), ADVANCED("advanced"), EDIT("edit"),ACRUPLOAD("acrPublish"),
-    RELATED("related"),GEOSEARCH("geosearch"),GEORESULT("georesult"),GEOENTITY("geoentity"),CURATOR("curator"),
-    LOGIN("login"),LOGOUT("logout"),REGISTER("register"),AUTH("auth"), ACTIVITY("activity"), PUBLISH("publish"),
+    RELATED("related"),GEOSEARCH("geosearch"),GEORESULT("georesult"),GEOENTITY("geoentity"),CURATOR("curator"),CURATIONOBJECT("co"),
+    LOGIN("login"),LOGOUT("logout"),REGISTER("register"),AUTH("auth"), ACTIVITY("activity"), PUBLISH("publish"), PROV("prov"),
     OAUTH("oauthcallback"),UPLOAD("upload"),FILE("file"), DELIVERABLE_UNIT("deliverableunit"),
     COLLECTION("collection"), SUBMIT("submit"),ADMIN("admin"),XMCFACETEDSEARCH("xmcfacetedsearch"),
     MEDICI("medici"), MONITOR("monitor");
@@ -39,7 +39,7 @@ public enum SeadState {
 
     /**
      * Build up a token with the given arguments. Null arguments are ignored.
-     * 
+     *
      * @param args
      * @return token
      */

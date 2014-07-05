@@ -30,20 +30,32 @@ public final class JsGenerated
     }
 
     public String getId(){
-    	return getString("prov:id");
+        return getString("prov:id");
     }
-    
+
     public String getActivityId() {
-        return ((JsRef)getObject("prov:activity")).getRef();
+        JsModel object = getObject("prov:activity");
+        if(object!=null)
+            return ((JsRef)object).getRef();
+        else
+            return null;
     }
-    
+
     public String getEntity(){
-    	return ((JsRef)getObject("prov:entity")).getRef();
+        JsModel object = getObject("prov:entity");
+        if(object!=null)
+            return ((JsRef)object).getRef();
+        else
+            return null;
     }
-    
-    
+
+
     public String getTimeString(){
-    	return ((JsUrl)getObject("kom:generation-time")).getContent();
+        JsModel generated = getObject("kom:generation-time");
+        if(generated!=null)
+            return ((JsUrl)generated).getContent();
+        else
+            return null;
     }
 
 }

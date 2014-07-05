@@ -16,38 +16,62 @@
 
 package org.dataconservancy.dcs.access.client.api;
 
-import java.util.List;
-
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.dataconservancy.dcs.access.shared.Person;
 import org.dataconservancy.dcs.access.shared.ROMetadata;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import java.util.List;
+import java.util.Map;
 
 
 
 public interface RegistryServiceAsync {
 
-	void registerAgents(List<Person> persons, String registryUrl, AsyncCallback<Boolean> callback);
+    void registerAgents(List<Person> persons, String registryUrl, AsyncCallback<Boolean> callback);
 
-	void getAllCOs(String repository, String agentId, String roUrl,
+    void getAllCOs(String repository, String agentId, String roUrl,
                    AsyncCallback<List<ROMetadata>> callback);
 
-	void getRO(String roId, String roUrl, AsyncCallback<String> callback);
+    void getAllROs(String repository, String agentId, String roUrl,
+                   AsyncCallback<List<ROMetadata>> callback);
 
-	void putRO(String sipPath, String roUrl, AsyncCallback<Void> callback);
+    void getRO(String roId, String roUrl, AsyncCallback<String> callback);
 
-	void trackEvent(String agentId, String entityId, String roUrl,
+    void putRO(String sipPath, String roUrl, AsyncCallback<Void> callback);
+
+    void trackEvent(String agentId, String entityId, String roUrl,
                     AsyncCallback<Boolean> callback);
 
-	void makeObsolete(String entityId, String roUrl, AsyncCallback<Boolean> callback);
+    void makeObsolete(String entityId, String roUrl, AsyncCallback<Boolean> callback);
 
-	void updateSip(String sipPath, String entityId, String key, String value,
+    void updateSip(String sipPath, String entityId, String key, String value,
+                   AsyncCallback<Void> callback);
+    void updateSip(String sipPath, String entityId, Map<String,String> changes,
                    AsyncCallback<Void> callback);
 
-	void getROAffiliation(String entityId, String registryUrl,
+    void getROAffiliation(String entityId, String registryUrl,
                           AsyncCallback<String> callback);
 
-	void assignToAgent(String entityId, String agentId, String registryUrl,
+    void assignToAgent(String entityId, String agentId, String registryUrl,
                        AsyncCallback<Boolean> callback);
+
+    void getSip(String roId, String roUrl, AsyncCallback<String> callback);
+
+    void unassignFromAgent(String entityId, String agentId, String registryUrl,
+                           AsyncCallback<Boolean> callback);
+
+    void assignToSubmitter(String entityId, String agentId, String registryUrl,
+                           AsyncCallback<Boolean> callback);
+
+    void getRelation(String causeId, String registryUrl, String relationType,
+                     AsyncCallback<String> callback);
+
+    void trackRevision(String previousROId, String nextROId, String roUrl,
+                       AsyncCallback<Boolean> callback);
+
+    void isObsolete(String entityId, String registryUrl,
+                    AsyncCallback<Boolean> callback);
+
+    void cleanSip(String sipPath, AsyncCallback<Void> callback);
 
 }

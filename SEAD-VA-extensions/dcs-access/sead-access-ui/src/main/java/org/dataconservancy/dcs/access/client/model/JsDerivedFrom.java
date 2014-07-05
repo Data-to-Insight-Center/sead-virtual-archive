@@ -21,39 +21,32 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import org.dataconservancy.dcs.access.ui.client.model.JsModel;
 
 /**
- * Models Data Association
+ * Models Data Contributor/Creator.
  */
-public final class JsAssociatedWith
+public final class JsDerivedFrom
         extends JsModel implements IsSerializable {
 
-    protected JsAssociatedWith() {
+    protected JsDerivedFrom() {
     }
 
     public String getId() {
         return getString("prov:id");
     }
-
-    public String getAgentId(){
-        JsModel generated = getObject("prov:agent");
-        if(generated!=null)
-            return ((JsRef)generated).getRef();
-        else
-            return null;
+    
+    public String getGeneratedEntity(){
+    	JsModel genEntity = getObject("prov:generatedEntity");
+    	if(genEntity!=null)
+    		return ((JsRef)genEntity).getRef();
+    	else
+    		return null;
     }
-
-    public String getActivityId(){
-        JsModel generated = getObject("prov:activity");
-        if(generated!=null)
-            return ((JsRef)generated).getRef();
-        else
-            return null;
+    
+    public String getUsedEntity(){
+    	JsModel usedEntity = getObject("prov:usedEntity");
+    	if(usedEntity!=null)
+    		return ((JsRef)usedEntity).getRef();
+    	else
+    		return null;
     }
-
-    public String getEventType(){
-        JsModel event = getObject("ext:event-type");
-        if(event!=null)
-            return ((JsEventType)event).getContent();
-        else
-            return null;
-    }
+    
 }

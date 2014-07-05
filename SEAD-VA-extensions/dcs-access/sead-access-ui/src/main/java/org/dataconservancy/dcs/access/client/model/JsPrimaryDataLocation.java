@@ -40,71 +40,71 @@ public final class JsPrimaryDataLocation
     public String getLocation() {
         return getString("location");
     }
-    
+
     public String getName() {
         return getString("name");
     }
-    
+
     public  String getType() {
         return getString("type");
     }
-    
- 
-   
+
+
+
     public Widget display() {
-        
-    	FlexTable smallTable = Util.createTable();
-      	Image image;
 
-    	if(getLocation()!=null){
-    		String location = getLocation().replace("jspui", "iuswdark");
-    		if(getType()!=null)
-    			if(getType().contains("dspace")&&getName().contains("Ideals"))
-    				location = location.replace("xmlui/", "");
-    		final String locationLink = location;
-    		Label locationLabel;
-    		if(!getName().contains("SDA")){
-    			locationLabel = Util.label(location,"Hyperlink");
-	    		locationLabel.addClickHandler(new ClickHandler() {
-					
-					@Override
-					public void onClick(ClickEvent event) {
-						Window.open(locationLink, "_blank", "");
-					}
-				});
-    		}
-    		else{
-    			 locationLabel = new Label();
-    			 locationLabel.setText(location);
-    		 }
+        FlexTable smallTable = Util.createTable();
+        Image image;
 
-        	
-        	smallTable.setWidget(0, 0, locationLabel);
-    	}
-    	
-    	if(getType()!=null){
-        	if(getType().contains("dspace")&&getName().contains("local"))
-    		{
-        		image= new Image("images/local_dspace.jpg");
-        		smallTable.setWidget(0, 1,image);
-    		}
-        	else if(getType().contains("dspace")&&getName().contains("IU"))
-    		{
-        		image= new Image("images/IU_Scholarworks.jpg");
-        		smallTable.setWidget(0, 1,image);
-    		}
-        	else if(getName().contains("SDA"))
-    		{
-        		image= new Image("images/hpss.jpg");
-        		smallTable.setWidget(0, 1,image);
-    		}
-        	else if(getType().contains("dspace")&&getName().contains("Ideals"))
-    		{
-        		image= new Image("images/Ideals.png");
-        		smallTable.setWidget(0, 1,image);
-    		}
+        if(getLocation()!=null){
+            String location = getLocation().replace("jspui", "iuswdark").replace("sword/deposit", "iuswdark/handle");
+            if(getType()!=null)
+                if(getType().contains("dspace")&&getName().contains("Ideals"))
+                    location = location.replace("xmlui/", "");
+            final String locationLink = location;
+            Label locationLabel;
+            if(!getName().contains("SDA")){
+                locationLabel = Util.label(location,"Hyperlink");
+                locationLabel.addClickHandler(new ClickHandler() {
+
+                    @Override
+                    public void onClick(ClickEvent event) {
+                        Window.open(locationLink, "_blank", "");
+                    }
+                });
+            }
+            else{
+                locationLabel = new Label();
+                locationLabel.setText(location);
+            }
+
+            if(!location.contains("communities"))
+                smallTable.setWidget(0, 0, locationLabel);
         }
 
-    	  return smallTable;
+        if(getType()!=null){
+            if(getType().contains("dspace")&&getName().contains("local"))
+            {
+                image= new Image("images/local_dspace.jpg");
+                smallTable.setWidget(0, 1,image);
+            }
+            else if(getType().contains("dspace")&&getName().contains("IU"))
+            {
+                image= new Image("images/IU_Scholarworks.jpg");
+                smallTable.setWidget(0, 1,image);
+            }
+            else if(getName().contains("SDA"))
+            {
+                image= new Image("images/hpss.jpg");
+                smallTable.setWidget(0, 1,image);
+            }
+            else if(getType().contains("dspace")&&getName().contains("Ideals"))
+            {
+                image= new Image("images/Ideals.png");
+                smallTable.setWidget(0, 1,image);
+            }
+        }
+
+        return smallTable;
     }
 }

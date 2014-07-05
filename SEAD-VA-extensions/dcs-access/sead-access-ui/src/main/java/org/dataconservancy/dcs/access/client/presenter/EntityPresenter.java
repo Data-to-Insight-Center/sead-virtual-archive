@@ -29,73 +29,73 @@ import org.dataconservancy.dcs.access.shared.Constants;
 
 public class EntityPresenter implements Presenter {
 
-	final Display display;
-	final Panel contentScrollPanel;
-	
-	public interface Display {
-			String getEntityId();
-		    Panel getContentPanel();
-		    Panel getContentScrollPanel();
-		  }
+    final Display display;
+    final Panel contentScrollPanel;
 
-	public EntityPresenter(Display view)
-	{
-		this.display = view;
-		this.contentScrollPanel = this.display.getContentScrollPanel();
-	}
-	@Override
-	public void bind() {
-		final String entityurl = this.display.getEntityId();
+    public interface Display {
+        String getEntityId();
+        Panel getContentPanel();
+        Panel getContentScrollPanel();
+    }
+
+    public EntityPresenter(Display view)
+    {
+        this.display = view;
+        this.contentScrollPanel = this.display.getContentScrollPanel();
+    }
+    @Override
+    public void bind() {
+        final String entityurl = this.display.getEntityId();
         final Panel content = this.display.getContentPanel();
         String query = Search.createLiteralQuery("id", entityurl);
-        String searchUrl  = searchURL(query, 
-	        		0, 
-	        		true, 
-	        		Constants.MAX_SEARCH_RESULTS);
+        String searchUrl  = searchURL(query,
+                0,
+                true,
+                Constants.MAX_SEARCH_RESULTS);
         JsonpRequestBuilder rb = new JsonpRequestBuilder();
         rb.requestObject(searchUrl, new AsyncCallback<JsSearchResult>() {
 
             public void onFailure(Throwable caught) {
 //                reportInternalError("Viewing entity", caught);
-            	new ErrorPopupPanel("Error getting entity: "+caught.getMessage()).show();
+                new ErrorPopupPanel("Error getting entity: "+caught.getMessage()).show();
             }
             public void onSuccess(JsSearchResult result) {
-            	JsMatch m = result.matches().get(0);
-        	  if (m.getEntityType().equalsIgnoreCase("file")) {
-        		content.add((( org.dataconservancy.dcs.access.client.model.JsFile)m.getEntity()).display());
-              }
-        	  if (m.getEntityType().equalsIgnoreCase("deliverableunit")) {
-          		content.add((( org.dataconservancy.dcs.access.client.model.JsDeliverableUnit)m.getEntity()).display(null));
+                JsMatch m = result.matches().get(0);
+                if (m.getEntityType().equalsIgnoreCase("file")) {
+                    content.add((( org.dataconservancy.dcs.access.client.model.JsFile)m.getEntity()).display());
                 }
-            	
+                if (m.getEntityType().equalsIgnoreCase("deliverableunit")) {
+                    content.add((( org.dataconservancy.dcs.access.client.model.JsDeliverableUnit)m.getEntity()).display(null, true));
+                }
+
             }
         });
-	}
+    }
 
-	@Override
-	public void display(final Panel mainContainer, Panel facetContent, Panel headerPanel, Panel logoutPanel, Panel notificationPanel) {
-		mainContainer.clear();
-		facetContent.clear();
-		bind();
-    	mainContainer.add(contentScrollPanel);
+    @Override
+    public void display(final Panel mainContainer, Panel facetContent, Panel headerPanel, Panel logoutPanel, Panel notificationPanel) {
+        mainContainer.clear();
+        facetContent.clear();
+        bind();
+        mainContainer.add(contentScrollPanel);
 
-	}
-	
-	 public static String searchURL(String query, int offset, boolean context,
-	            int max, String... params) {
-	      
-	        String s = 
-	        		SeadApp.accessurl+
-	        		SeadApp.queryPath+"?q=" + URL.encodeQueryString(query)
-	                + "&offset=" + offset + "&max=" + max;
+    }
 
-	        if (context) {
-	            s= s + "&_hl=true&_hl.requireFieldMatch=true&_hl.fl="
-	                    + URL.encodeQueryString("*");
-	        }
-	        for (int i = 0; i < params.length;i+=2) {
-	        		s=s+"&"+params[i]+"="+params[i+1];
-	        }
-	        return s;
-	    }
+    public static String searchURL(String query, int offset, boolean context,
+                                   int max, String... params) {
+
+        String s =
+                SeadApp.accessurl+
+                        SeadApp.queryPath+"?q=" + URL.encodeQueryString(query)
+                        + "&offset=" + offset + "&max=" + max;
+
+        if (context) {
+            s= s + "&_hl=true&_hl.requireFieldMatch=true&_hl.fl="
+                    + URL.encodeQueryString("*");
+        }
+        for (int i = 0; i < params.length;i+=2) {
+            s=s+"&"+params[i]+"="+params[i+1];
+        }
+        return s;
+    }
 }

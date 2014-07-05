@@ -27,7 +27,7 @@ public class SeadSimpleSearchWidget extends Composite {
 
     FlowPanel advancedPanel;
     public SeadSimpleSearchWidget(Search.UserField[] userfields,
-                                    String[] userqueries) {
+                                  String[] userqueries) {
 
         advancedPanel = new FlowPanel();
         initWidget(advancedPanel);
@@ -42,12 +42,12 @@ public class SeadSimpleSearchWidget extends Composite {
         lbl.setText("Search SEAD-VA data registry");
         lbl.setStylePrimaryName("SearchLabel");
         Button add = new Button("Add field");
-        
+
         if(SeadApp.isHome){
-        	advancedPanel.add(intro);
-        	advancedPanel.add(lbl);
+            advancedPanel.add(intro);
+            advancedPanel.add(lbl);
         }
-        
+
         advancedPanel.add(table);
 
         // Called to search filled in query
@@ -65,12 +65,12 @@ public class SeadSimpleSearchWidget extends Composite {
                     // ListBox lb = (ListBox) table.getWidget(i, 2);
                     TextBox tb = (TextBox) table.getWidget(i, 0);
 
-                   /* int sel = lb.getSelectedIndex();
+                    /* int sel = lb.getSelectedIndex();
 
-                    if (sel != -1) {*/
+                if (sel != -1) {*/
                     String userquery = tb.getText().trim();
-                      /*  String userfield = Search.UserField.values()[sel]
-                                .name();*/
+                    /*  String userfield = Search.UserField.values()[sel]
+                    .name();*/
                     String userfield = "ALL";
                     if (userquery.isEmpty()) {
                         userfield = null;
@@ -104,7 +104,7 @@ public class SeadSimpleSearchWidget extends Composite {
 
                 final TextBox tb = new TextBox();
                 tb.setStyleName("Pad");
-                tb.setValue("Type name,date or keyword");
+                tb.setValue("Type name, date or keyword");
                 table.setWidget(row, 0, tb);
                 //   table.setWidget(row, 1, new Label("in1"));
                 //   table.setWidget(row, 2 , createAdvancedSearchFieldSelector());
@@ -148,7 +148,7 @@ public class SeadSimpleSearchWidget extends Composite {
         }else {
             addlistener.onClick(null);
         }
-        
+
 
 
         Grid grid = new Grid(2, 2);

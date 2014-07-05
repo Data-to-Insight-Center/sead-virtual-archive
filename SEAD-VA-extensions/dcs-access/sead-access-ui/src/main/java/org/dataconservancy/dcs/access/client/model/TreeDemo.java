@@ -58,351 +58,352 @@ import org.dataconservancy.dcs.access.client.api.InputServiceAsync;
 /**
  * A demonstration of how to build a d3js tree from simple JSON data with
  * collapse functionality and transitions
- * 
+ *
  * @author <a href="mailto:evanshi09@gmail.com">Evan Shi </a>
- * 
+ *
+ * modified by Kavitha Chandrasekar (kavchand@indiana.edu)
  */
-public class TreeDemo 
-extends FlowPanel implements DemoCase {
+public class TreeDemo
+        extends FlowPanel implements DemoCase {
 
-	// constants of tree
-	final int width = 600;
-	final int height = 650;
-	final int duration = 750;
-	final MyResources css = Bundle.INSTANCE.css();
+    // constants of tree
+    final int width = 600;
+    final int height = 650;
+    final int duration = 750;
+    final MyResources css = Bundle.INSTANCE.css();
 
-	// global references for demo
-	static String id;
-	static int i = 0;
-	static TreeDemoNode root = null;
-	static Selection svg = null;
-	static Tree tree = null;
-	static Diagonal diagonal = null;
+    // global references for demo
+    static String id;
+    static int i = 0;
+    static TreeDemoNode root = null;
+    static Selection svg = null;
+    static Tree tree = null;
+    static Diagonal diagonal = null;
 
-	public static final InputServiceAsync inputService = GWT.create(InputService.class);
-    
-	public interface Bundle extends ClientBundle {
-		public static final Bundle INSTANCE = GWT.create(Bundle.class);
+    public static final InputServiceAsync inputService = GWT.create(InputService.class);
 
-		@Source("TreeDemoStyles.css")
-		public MyResources css();
-	}
+    public interface Bundle extends ClientBundle {
+        public static final Bundle INSTANCE = GWT.create(Bundle.class);
 
-	interface MyResources extends CssResource {
+        @Source("TreeDemoStyles.css")
+        public MyResources css();
+    }
 
-		String link();
+    interface MyResources extends CssResource {
 
-		String node();
+        String link();
 
-		String border();
-	}
+        String node();
 
-	public TreeDemo() {
-		super();
-		Bundle.INSTANCE.css().ensureInjected();
-	}
-	
-	public void setId(String id){
-		this.id = id;
-	}
+        String border();
+    }
+
+    public TreeDemo() {
+        super();
+        Bundle.INSTANCE.css().ensureInjected();
+    }
+
+    public void setId(String id){
+        this.id = id;
+    }
 
 
-	@Override
-	public void start() {
-		
-		final TreeDemo demo = this;
-		inputService.getLineageInput(this.id, SeadApp.roUrl, new AsyncCallback<String>(
-				) {
-			
-			@Override
-			public void onSuccess(String result) {
+    @Override
+    public void start() {
 
-				tree = D3.layout().tree().size(width, height);
-				// set the global way to draw paths
-				diagonal = D3.svg().diagonal()
-						.projection(new DatumFunction<Array<Double>>() {
-							@Override
-							public Array<Double> apply(Element context, Value d,
-									int index) {
-								TreeDemoNode data = d.<TreeDemoNode> as();
-								return Array.fromDoubles(data.x(), data.y());
-							}
-						});
+        final TreeDemo demo = this;
+        inputService.getLineageInput(this.id, SeadApp.roUrl, new AsyncCallback<String>(
+        ) {
 
-				// add the SVG
-				svg = D3.select(demo).append("svg").attr("width", width + 5)
-						.attr("height", height + 80).append("g")
-						.attr("transform", "translate(10, 140)");
+            @Override
+            public void onSuccess(String result) {
 
-				// get the root of the tree and initialize it
-				root = JSONParser.parseLenient(result).isObject().getJavaScriptObject()
-						.<TreeDemoNode> cast();
-				root.setAttr("x0", (width - 20) / 2);
-				root.setAttr("y0", 0);
+                tree = D3.layout().tree().size(width, height);
+                // set the global way to draw paths
+                diagonal = D3.svg().diagonal()
+                        .projection(new DatumFunction<Array<Double>>() {
+                            @Override
+                            public Array<Double> apply(Element context, Value d,
+                                                       int index) {
+                                TreeDemoNode data = d.<TreeDemoNode> as();
+                                return Array.fromDoubles(data.x(), data.y());
+                            }
+                        });
+
+                // add the SVG
+                svg = D3.select(demo).append("svg").attr("width", width + 5)
+                        .attr("height", height + 80).append("g")
+                        .attr("transform", "translate(10, 140)");
+
+                // get the root of the tree and initialize it
+                root = JSONParser.parseLenient(result).isObject().getJavaScriptObject()
+                        .<TreeDemoNode> cast();
+                root.setAttr("x0", (width - 20) / 2);
+                root.setAttr("y0", 0);
 //				root.setStringAttr("title", "x");
 //				root.setStringAttr("link", "y");
-				if (root.children() != null) {
-					root.children().forEach(new Collapse());
-				}
-				update(root);
-			}
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
-		
-	}
+                if (root.children() != null) {
+                    root.children().forEach(new Collapse());
+                }
+                update(root);
+            }
 
-	@Override
-	public void stop() {
-	}
+            @Override
+            public void onFailure(Throwable caught) {
+                // TODO Auto-generated method stub
 
-	static int index =0;
-	// follows d3 general update pattern for handling exiting and entering
-	// nodes/paths
-	private void update(final TreeDemoNode source) {
-		Array<Node> nodes = tree.nodes(root).reverse();
-		Array<Link> links = tree.links(nodes);
+            }
+        });
 
-		// normalize depth
-		nodes.forEach(new ForEachCallback<Void>() {
-			@Override
-			public Void forEach(Object thisArg, Value element, int index,
-					Array<?> array) {
-				TreeDemoNode datum = element.<TreeDemoNode> as();
-				datum.setAttr("y", datum.depth() * 180);
-				return null;
-			}
-		});
+    }
 
-	//	final java.util.Iterator<Entry<String, String>> iterator = titleLink.entrySet().iterator();
-		
-		
-		// assign ids to nodes
-		UpdateSelection node = svg.selectAll("g." + css.node()).data(nodes,
-				new KeyFunction<Integer>() {
-					@Override
-					public Integer map(Element context, Array<?> newDataArray,
-							Value datum, int index) {
-						TreeDemoNode d = datum.<TreeDemoNode> as();
-						return ((d.id() == -1) ? d.id(++i) : d.id());
-					}
-				});
+    @Override
+    public void stop() {
+    }
 
-		// add click function on node click
-		Selection nodeEnter = node
-				.enter()
-				.append("g")
-				.attr("class", css.node())
-				.attr("transform",
-						"translate(" + source.getNumAttr("x0") + ","
-								+ source.getNumAttr("y0") + ")")
-				.on("click", new Click());
+    static int index =0;
+    // follows d3 general update pattern for handling exiting and entering
+    // nodes/paths
+    private void update(final TreeDemoNode source) {
+        Array<Node> nodes = tree.nodes(root).reverse();
+        Array<Link> links = tree.links(nodes);
 
-		// add circles to all entering nodes
-		nodeEnter.append("circle").attr("r", 1e-6)
-				.attr("r", 1e-6)
-				.style("fill", new DatumFunction<String>() {
-					@Override
-					public String apply(Element context, Value d, int index) {
-						/*JavaScriptObject node = d.<TreeDemoNode> as()
-								.getObjAttr("_children");
-						return (node != null) ? "lightsteelblue" : "#fff";*/
-						TreeDemoNode node = d.<TreeDemoNode> as();
-						return (node.getStringAttr("url").equalsIgnoreCase(id)) ? "red" : "white";
-					}
-				});
-	
+        // normalize depth
+        nodes.forEach(new ForEachCallback<Void>() {
+            @Override
+            public Void forEach(Object thisArg, Value element, int index,
+                                Array<?> array) {
+                TreeDemoNode datum = element.<TreeDemoNode> as();
+                datum.setAttr("y", datum.depth() * 180);
+                return null;
+            }
+        });
 
-		nodeEnter.append("text")
-		.attr("x",20)
-		.attr("y",20)
-		.attr("font-family","sans-serif")
-		.attr("font-size","20px")
-		.text(new DatumFunction<String>() {
-			@Override
-			public String apply(Element context, Value d, int index) {
-				if(d.<TreeDemoNode> as()
-						.getStringAttr("name")==null)
-					return d.<TreeDemoNode> as()
-							.getStringAttr("url");
-				return d.<TreeDemoNode> as()
-						.getStringAttr("name");
-			}
-		})
-		//.text(source.getStringAttr("title"));
-		.on("click", new HyperLink());
-		
-		
+        //	final java.util.Iterator<Entry<String, String>> iterator = titleLink.entrySet().iterator();
 
 
-		// transition entering nodes
-		Transition nodeUpdate = node.transition().duration(duration)
-				.attr("transform", new DatumFunction<String>() {
-					@Override
-					public String apply(Element context, Value d, int index) {
-						TreeDemoNode data = d.<TreeDemoNode> as();
-						return "translate(" + data.x() + "," + data.y() + ")";
-					}
-				});
+        // assign ids to nodes
+        UpdateSelection node = svg.selectAll("g." + css.node()).data(nodes,
+                new KeyFunction<Integer>() {
+                    @Override
+                    public Integer map(Element context, Array<?> newDataArray,
+                                       Value datum, int index) {
+                        TreeDemoNode d = datum.<TreeDemoNode> as();
+                        return ((d.id() == -1) ? d.id(++i) : d.id());
+                    }
+                });
 
-		nodeUpdate.select("circle").attr("r", 4.5)
-				.style("fill", new DatumFunction<String>() {
-					@Override
-					public String apply(Element context, Value d, int index) {
-						JavaScriptObject object = d.<TreeDemoNode> as()
-								.getObjAttr("_children");
-						String url = d.<TreeDemoNode> as().getStringAttr("url");
-						if(url.equalsIgnoreCase(id))
-							return "#800000";
-						else if(object!=null)
-							return "lightsteelblue";
-						else
-							return "#fff";
-					}
-				});
+        // add click function on node click
+        Selection nodeEnter = node
+                .enter()
+                .append("g")
+                .attr("class", css.node())
+                .attr("transform",
+                        "translate(" + source.getNumAttr("x0") + ","
+                                + source.getNumAttr("y0") + ")")
+                .on("click", new Click());
 
-		// transition exiting nodes
-		Transition nodeExit = node.exit().transition().duration(duration)
-				.attr("transform", new DatumFunction<String>() {
-					@Override
-					public String apply(Element context, Value d, int index) {
-						return "translate(" + source.x() + "," + source.y()
-								+ ")";
-					}
-				}).remove();
+        // add circles to all entering nodes
+        nodeEnter.append("circle").attr("r", 1e-6)
+                .attr("r", 1e-6)
+                .style("fill", new DatumFunction<String>() {
+                    @Override
+                    public String apply(Element context, Value d, int index) {
+                        /*JavaScriptObject node = d.<TreeDemoNode> as()
+                                      .getObjAttr("_children");
+                              return (node != null) ? "lightsteelblue" : "#fff";*/
+                        TreeDemoNode node = d.<TreeDemoNode> as();
+                        return (node.getStringAttr("url").equalsIgnoreCase(id)) ? "red" : "white";
+                    }
+                });
 
-		nodeExit.select("circle").attr("r", 1e-6);
 
-		// update svg paths for new node locations
-		UpdateSelection link = svg.selectAll("path." + css.link()).data(links,
-				new KeyFunction<Integer>() {
-					@Override
-					public Integer map(Element context, Array<?> newDataArray,
-							Value datum, int index) {
-						return datum.<Link> as().target().<TreeDemoNode> cast()
-								.id();
-					}
-				});
+        nodeEnter.append("text")
+                .attr("x",20)
+                .attr("y",20)
+                .attr("font-family","sans-serif")
+                .attr("font-size","20px")
+                .text(new DatumFunction<String>() {
+                    @Override
+                    public String apply(Element context, Value d, int index) {
+                        if(d.<TreeDemoNode> as()
+                                .getStringAttr("name")==null)
+                            return d.<TreeDemoNode> as()
+                                    .getStringAttr("url");
+                        return d.<TreeDemoNode> as()
+                                .getStringAttr("name");
+                    }
+                })
+                        //.text(source.getStringAttr("title"));
+                .on("click", new HyperLink());
 
-		link.enter().insert("svg:path", "g").attr("class", css.link())
-				.attr("d", new DatumFunction<String>() {
-					@Override
-					public String apply(Element context, Value d, int index) {
-						Coords o = Coords.create(source.getNumAttr("x0"),
-								source.getNumAttr("y0"));
-						return diagonal.generate(Link.create(o, o));
-					}
-				});
-				
-	
-		link.transition().duration(duration).attr("d", diagonal);
-			
 
-		link.exit().transition().duration(duration)
-				.attr("d", new DatumFunction<String>() {
-					@Override
-					public String apply(Element context, Value d, int index) {
-						Coords o = Coords.create(source.x(), source.y());
-						return diagonal.generate(Link.create(o, o));
-					}
-				}).remove();
 
-		// update locations on node
-		nodes.forEach(new ForEachCallback<Void>() {
-			@Override
-			public Void forEach(Object thisArg, Value element, int index,
-					Array<?> array) {
-				TreeDemoNode data = element.<TreeDemoNode> as();
-				data.setAttr("x0", data.x());
-				data.setAttr("y0", data.y());
-				return null;
-			}
-		});
-	}
 
-	private class Collapse implements ForEachCallback<Void> {
-		@Override
-		public Void forEach(Object thisArg, Value element, int index,
-				Array<?> array) {
-			TreeDemoNode datum = element.<TreeDemoNode> as();
-			Array<Node> children = datum.children();
-			if (children != null) {
-				datum.setAttr("_children", children);
-				datum.getObjAttr("_children").<Array<Node>> cast()
-						.forEach(this);
-				datum.setAttr("children", null);
-			}
-			return null;
-		}
-	}
+        // transition entering nodes
+        Transition nodeUpdate = node.transition().duration(duration)
+                .attr("transform", new DatumFunction<String>() {
+                    @Override
+                    public String apply(Element context, Value d, int index) {
+                        TreeDemoNode data = d.<TreeDemoNode> as();
+                        return "translate(" + data.x() + "," + data.y() + ")";
+                    }
+                });
 
-	private class HyperLink implements DatumFunction<Void> {
-		@Override
-		public Void apply(Element context, Value d, int index) {
+        nodeUpdate.select("circle").attr("r", 4.5)
+                .style("fill", new DatumFunction<String>() {
+                    @Override
+                    public String apply(Element context, Value d, int index) {
+                        JavaScriptObject object = d.<TreeDemoNode> as()
+                                .getObjAttr("_children");
+                        String url = d.<TreeDemoNode> as().getStringAttr("url");
+                        if(url.equalsIgnoreCase(id))
+                            return "#800000";
+                        else if(object!=null)
+                            return "lightsteelblue";
+                        else
+                            return "#fff";
+                    }
+                });
+
+        // transition exiting nodes
+        Transition nodeExit = node.exit().transition().duration(duration)
+                .attr("transform", new DatumFunction<String>() {
+                    @Override
+                    public String apply(Element context, Value d, int index) {
+                        return "translate(" + source.x() + "," + source.y()
+                                + ")";
+                    }
+                }).remove();
+
+        nodeExit.select("circle").attr("r", 1e-6);
+
+        // update svg paths for new node locations
+        UpdateSelection link = svg.selectAll("path." + css.link()).data(links,
+                new KeyFunction<Integer>() {
+                    @Override
+                    public Integer map(Element context, Array<?> newDataArray,
+                                       Value datum, int index) {
+                        return datum.<Link> as().target().<TreeDemoNode> cast()
+                                .id();
+                    }
+                });
+
+        link.enter().insert("svg:path", "g").attr("class", css.link())
+                .attr("d", new DatumFunction<String>() {
+                    @Override
+                    public String apply(Element context, Value d, int index) {
+                        Coords o = Coords.create(source.getNumAttr("x0"),
+                                source.getNumAttr("y0"));
+                        return diagonal.generate(Link.create(o, o));
+                    }
+                });
+
+
+        link.transition().duration(duration).attr("d", diagonal);
+
+
+        link.exit().transition().duration(duration)
+                .attr("d", new DatumFunction<String>() {
+                    @Override
+                    public String apply(Element context, Value d, int index) {
+                        Coords o = Coords.create(source.x(), source.y());
+                        return diagonal.generate(Link.create(o, o));
+                    }
+                }).remove();
+
+        // update locations on node
+        nodes.forEach(new ForEachCallback<Void>() {
+            @Override
+            public Void forEach(Object thisArg, Value element, int index,
+                                Array<?> array) {
+                TreeDemoNode data = element.<TreeDemoNode> as();
+                data.setAttr("x0", data.x());
+                data.setAttr("y0", data.y());
+                return null;
+            }
+        });
+    }
+
+    private class Collapse implements ForEachCallback<Void> {
+        @Override
+        public Void forEach(Object thisArg, Value element, int index,
+                            Array<?> array) {
+            TreeDemoNode datum = element.<TreeDemoNode> as();
+            Array<Node> children = datum.children();
+            if (children != null) {
+                datum.setAttr("_children", children);
+                datum.getObjAttr("_children").<Array<Node>> cast()
+                        .forEach(this);
+                datum.setAttr("children", null);
+            }
+            return null;
+        }
+    }
+
+    private class HyperLink implements DatumFunction<Void> {
+        @Override
+        public Void apply(Element context, Value d, int index) {
 //			Window.open(d.<TreeDemoNode> as()
 //						.getStringAttr("link"), "_blank", "");
-			com.google.gwt.user.client.History.newItem(SeadState.ENTITY.toToken(d.<TreeDemoNode> as()
-					.getStringAttr("url")));
-			return null;
-		}
-	}
-	
-	private class Click implements DatumFunction<Void> {
-		@Override
-		public Void apply(Element context, Value d, int index) {
-			TreeDemoNode node = d.<TreeDemoNode> as();
-			if (node.children() != null) {
-				node.setAttr("_children", node.children());
-				node.setAttr("children", null);
-			} else {
-				node.setAttr("children", node.getObjAttr("_children"));
-				node.setAttr("_children", null);
-			}
-			update(node);
-			return null;
-		}
-	}
+            com.google.gwt.user.client.History.newItem(SeadState.ENTITY.toToken(d.<TreeDemoNode> as()
+                    .getStringAttr("url")));
+            return null;
+        }
+    }
 
-	// Perhaps a mutable JSO class would be a nice feature?
-	private static class TreeDemoNode extends Node {
-		protected TreeDemoNode() {
-			super();
-		}
+    private class Click implements DatumFunction<Void> {
+        @Override
+        public Void apply(Element context, Value d, int index) {
+            TreeDemoNode node = d.<TreeDemoNode> as();
+            if (node.children() != null) {
+                node.setAttr("_children", node.children());
+                node.setAttr("children", null);
+            } else {
+                node.setAttr("children", node.getObjAttr("_children"));
+                node.setAttr("_children", null);
+            }
+            update(node);
+            return null;
+        }
+    }
 
-		protected final native void setStringAttr(String name, String string) /*-{
+    // Perhaps a mutable JSO class would be a nice feature?
+    private static class TreeDemoNode extends Node {
+        protected TreeDemoNode() {
+            super();
+        }
+
+        protected final native void setStringAttr(String name, String string) /*-{
 		this[name] = value;
 		}-*/;
 
-		protected final native int id() /*-{
+        protected final native int id() /*-{
 			return this.id || -1;
 		}-*/;
 
-		protected final native int id(int id) /*-{
+        protected final native int id(int id) /*-{
 			return this.id = id;
 		}-*/;
 
-		protected final native void setAttr(String name, JavaScriptObject value) /*-{
+        protected final native void setAttr(String name, JavaScriptObject value) /*-{
 			this[name] = value;
 		}-*/;
 
-		protected final native double setAttr(String name, double value) /*-{
+        protected final native double setAttr(String name, double value) /*-{
 			return this[name] = value;
 		}-*/;
 
-		protected final native JavaScriptObject getObjAttr(String name) /*-{
+        protected final native JavaScriptObject getObjAttr(String name) /*-{
 			return this[name];
 		}-*/;
-		
-		protected final native String getStringAttr(String name) /*-{
+
+        protected final native String getStringAttr(String name) /*-{
 		return this[name];
 		}-*/;
 
-		protected final native double getNumAttr(String name) /*-{
+        protected final native double getNumAttr(String name) /*-{
 			return this[name];
 		}-*/;
-	}
+    }
 }

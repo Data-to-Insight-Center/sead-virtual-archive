@@ -29,29 +29,33 @@ public interface UserServiceAsync {
                       String name,
                       AsyncCallback<Authentication> cb);
 
-	void register(String firstName, String lastName, String email,
-                  String password, String confirmPwd, String[] admins, String vivoId,
+    void register(String firstName, String lastName, String email,
+                  String password, String[] admins, String vivoId,
                   AsyncCallback<String> callback);
 
-	void checkSession(String token, AsyncCallback<UserSession> callback);
+    void checkSession(String token, AsyncCallback<UserSession> callback);
 
-	void getAllUsers(AsyncCallback<List<Person>> callback);
+    void getAllUsers(AsyncCallback<List<Person>> callback);
 
-	void clearSession(AsyncCallback<Void> callback);
+    void clearSession(AsyncCallback<Void> callback);
 
-	void updateAllUsers(List<Person> userList, List<Person> sendEmailList,
+    void updateAllUsers(List<Person> userList, List<Person> sendEmailList,
                         String registryUrl, AsyncCallback<Void> callback);
 
-	void sendEmail(String[] toAddress, String subject, String messageStr,
+    void sendEmail(String[] toAddress, String subject, String messageStr,
                    AsyncCallback<Void> callback);
 
-	void setSession(String token, AsyncCallback<Void> callback);
+    void setSession(String token, AsyncCallback<Void> callback);
 
-	void authenticateOAuth(String token, OAuthType type, String[] admins,
+    void authenticateOAuth(String token, OAuthType type, String[] admins,
                            AsyncCallback<Authentication> callback);
 
-	void getAllRoles(AsyncCallback<List<Role>> callback);
+    void getAllRoles(AsyncCallback<List<Role>> callback);
 
-	void emailCurators(String affiliation, AsyncCallback<Boolean> callback);
+    void emailCurators(String affiliation, AsyncCallback<Boolean> callback);
+
+    void getUser(String registryId, AsyncCallback<Person> callback);
+
+    void emailResearcher(String agentId, String entityUrl, AsyncCallback<Boolean> callback);
 
 }

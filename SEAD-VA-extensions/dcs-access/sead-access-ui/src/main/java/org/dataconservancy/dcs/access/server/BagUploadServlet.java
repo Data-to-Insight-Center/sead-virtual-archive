@@ -48,6 +48,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Post a posted file to a the deposit file upload service. The return value is
@@ -64,7 +65,7 @@ public class BagUploadServlet
 
         if (!ServletFileUpload.isMultipartContent(req)) {
             resp.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE,
-                           "Error: Request type not supported.");
+                    "Error: Request type not supported.");
             return;
         }
 
@@ -79,55 +80,57 @@ public class BagUploadServlet
             for (FileItem item : items) {
                 if (item.getFieldName() != null
                         && item.getFieldName().equals("bagUrl")) {
-                	bagUrl = item.getString();
+                    bagUrl = item.getString();
                 }
             }
 
             if (bagUrl == null) {
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
-                               "Missing required paremeter: depositurl");
+                        "Missing required paremeter: depositurl");
                 return;
             }
-            
+
             for (FileItem item : items) {
                 String name = item.getName();
 
                 if (item.isFormField() || name == null || name.isEmpty()) {
                     continue;
                 }
-                
+
                 String property = "java.io.tmpdir";
 
 
                 String tempDir = System.getProperty(property);
 
                 File dir = new File(tempDir);
-                String path = dir.getAbsoluteFile()+"/"+item.getName();
+                String path = dir.getAbsoluteFile()+"/"+
+                        item.getName();
+
                 IOUtils.copy(item.getInputStream(), new FileOutputStream(path));
                 getSIPfile(bagUrl, path, resp);
             }
         } catch (IOException e) {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                           "Error: " + e.getMessage());
+                    "Error: " + e.getMessage());
             return;
         } catch (FileUploadException e) {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                           "Error: " + e.getMessage());
+                    "Error: " + e.getMessage());
             return;
         } catch (InvalidXmlException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     public void getSIPfile(String bagitEp,
-    						String filename,
-    						HttpServletResponse resp
-                            ) throws IOException, InvalidXmlException {
-    	Client client = Client.create();
-    	System.out.println(bagitEp);
+                           String filename,
+                           HttpServletResponse resp
+    ) throws IOException, InvalidXmlException {
+        Client client = Client.create();
+        System.out.println(bagitEp);
         WebResource webResource = client
-     		   .resource(bagitEp);
+                .resource(bagitEp);
 
         File file = new File(filename);
         FileDataBodyPart fdp = new FileDataBodyPart("file", file,
@@ -141,56 +144,86 @@ public class BagUploadServlet
                 .path("sip")
                 .type(MediaType.MULTIPART_FORM_DATA)
                 .post(ClientResponse.class, formDataMultiPart);
-       
-        String sipPath = filename.replace(".zip", "_sip_0.xml");
-        System.out.println(sipPath);
+
+        if(response.getStatus()==500){
+            StringWriter writer = new StringWriter();
+            IOUtils.copy(response.getEntityInputStream(), writer);
+            resp.getWriter().write(writer.toString());
+            resp.setStatus(500);
+            resp.flushBuffer();
+            return;
+        }
+        String sipPath = System.getProperty("java.io.tmpdir") + "/"+ UUID.randomUUID().toString() + "_sip_0.xml";// significance of 0 is limiting
+
         IOUtils.copy(response.getEntityInputStream(),new FileOutputStream(sipPath));
-        
         ResearchObject sip = new SeadXstreamStaxModelBuilder().buildSip(new FileInputStream(sipPath));
-        
+
         StringWriter tempWriter = new StringWriter();
         siptoJsonConverter().toXML(toQueryResult(sip),  tempWriter);
         tempWriter.append(";"+ sipPath);
         resp.getWriter().write(tempWriter.toString());
+        //  resp.setHeader("localSipPath", sipPath);
         resp.setStatus(200);
-
         resp.setContentType("application/json");
-       
         resp.flushBuffer();
-        
     }
-    
+
     public QueryResult<DcsEntity> toQueryResult(ResearchObject sip){
-    	long total =0;
-    
-    	QueryResult<DcsEntity> result = new QueryResult(0, total, "");
-    	List<QueryMatch<DcsEntity>> matches = new ArrayList<QueryMatch<DcsEntity>>();
-    	for(DcsDeliverableUnit du:sip.getDeliverableUnits()){
-    		total++;
-    		matches.add(new QueryMatch<DcsEntity>(du, ""));
-    	}
-    	
-    	for(DcsManifestation manifestation:sip.getManifestations()){
-    		total++;
-    		matches.add(new QueryMatch<DcsEntity>(manifestation,""));
-    	}
-    	
-    	for(DcsFile file:sip.getFiles()){
-    		total++;
-    		matches.add(new QueryMatch<DcsEntity>(file,""));
-    	}
-    	result.setMatches(matches);
-    	result.setTotal(total);
-    	return result;
-    	
+        long total =0;
+
+        QueryResult<DcsEntity> result = new QueryResult(0, total, "");
+        List<QueryMatch<DcsEntity>> matches = new ArrayList<QueryMatch<DcsEntity>>();
+        for(DcsDeliverableUnit du:sip.getDeliverableUnits()){
+            total++;
+            matches.add(new QueryMatch<DcsEntity>(du, ""));
+        }
+
+        for(DcsManifestation manifestation:sip.getManifestations()){
+            total++;
+            matches.add(new QueryMatch<DcsEntity>(manifestation,""));
+        }
+
+        for(DcsFile file:sip.getFiles()){
+            total++;
+            matches.add(new QueryMatch<DcsEntity>(file,""));
+        }
+        result.setMatches(matches);
+        result.setTotal(total);
+        return result;
+
     }
-	public XStream siptoJsonConverter(){
-		
-		XStream jsonbuilder = new XStream(new JsonHierarchicalStreamDriver() {
-	            public HierarchicalStreamWriter createWriter(Writer writer) {
-	                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
-	            }
-	        });
+
+    public QueryResult<DcsEntity> toQueryResultNoManifest(ResearchObject sip){
+        long total =0;
+
+        QueryResult<DcsEntity> result = new QueryResult(0, total, "");
+        List<QueryMatch<DcsEntity>> matches = new ArrayList<QueryMatch<DcsEntity>>();
+        for(DcsDeliverableUnit du:sip.getDeliverableUnits()){
+            total++;
+            matches.add(new QueryMatch<DcsEntity>(du, ""));
+        }
+
+        /*for(DcsManifestation manifestation:sip.getManifestations()){
+              total++;
+              matches.add(new QueryMatch<DcsEntity>(manifestation,""));
+          }*/
+
+        for(DcsFile file:sip.getFiles()){
+            total++;
+            matches.add(new QueryMatch<DcsEntity>(file,""));
+        }
+        result.setMatches(matches);
+        result.setTotal(total);
+        return result;
+
+    }
+    public XStream siptoJsonConverter(){
+
+        XStream jsonbuilder = new XStream(new JsonHierarchicalStreamDriver() {
+            public HierarchicalStreamWriter createWriter(Writer writer) {
+                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
+            }
+        });
 
         jsonbuilder.setMode(XStream.NO_REFERENCES);
         jsonbuilder.alias("dcp", ResearchObject.class);
@@ -211,19 +244,19 @@ public class BagUploadServlet
 
         return jsonbuilder;
     }
-	
-public XStream jsonToSipConverter(){
-		
-		XStream xmlbuilder = new XStream(new JettisonMappedXmlDriver());
 
-	//	xmlbuilder.setMode(XStream.NO_REFERENCES);
-		xmlbuilder.alias("queryResult", QueryResult.class);
-		xmlbuilder.alias("dcp", ResearchObject.class);
-		xmlbuilder.alias("deliverableUnit", SeadDeliverableUnit.class);
-		xmlbuilder.alias("deliverableUnitRef", DcsDeliverableUnitRef.class);
-		xmlbuilder.alias("collection", DcsCollection.class);
-		xmlbuilder.alias("file", SeadFile.class);
-		xmlbuilder.alias("manifestation", DcsManifestation.class);
+    public XStream jsonToSipConverter(){
+
+        XStream xmlbuilder = new XStream(new JettisonMappedXmlDriver());
+
+        //	xmlbuilder.setMode(XStream.NO_REFERENCES);
+        xmlbuilder.alias("queryResult", QueryResult.class);
+        xmlbuilder.alias("dcp", ResearchObject.class);
+        xmlbuilder.alias("deliverableUnit", SeadDeliverableUnit.class);
+        xmlbuilder.alias("deliverableUnitRef", DcsDeliverableUnitRef.class);
+        xmlbuilder.alias("collection", DcsCollection.class);
+        xmlbuilder.alias("file", SeadFile.class);
+        xmlbuilder.alias("manifestation", DcsManifestation.class);
         xmlbuilder.alias("event", SeadEvent.class);
         xmlbuilder.alias("metadata", DcsMetadata.class);
         xmlbuilder.alias("collectionRef", DcsCollectionRef.class);
@@ -234,7 +267,7 @@ public XStream jsonToSipConverter(){
         xmlbuilder.alias("metadataRef", DcsMetadataRef.class);
         xmlbuilder.alias("format", DcsFormat.class);
         xmlbuilder.alias("java.util.Collection", HashSet.class);
-		
+
         return xmlbuilder;
     }
 }

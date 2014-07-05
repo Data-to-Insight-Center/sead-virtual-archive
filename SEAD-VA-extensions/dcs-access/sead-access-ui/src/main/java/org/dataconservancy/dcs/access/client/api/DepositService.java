@@ -47,8 +47,9 @@ public interface DepositService
     boolean checkDownload(String url);
     String getLinks(String urlStr);
 	String getStatusDetails(String process, String statusUrl, int expectedCount);
-	Map<Date,List<Event>> statusUpdate(String statusUrl, Date latestDate);
+	Map<Date,List<Event>> statusUpdate(String statusUrl, Date latestDate, int count);
 	void loadDuIds(List<String> statusUrl);
 	boolean deleteCollection(String id, String endpoint);
 	String getResearchObjectId(String statusUrl) throws Exception;
+    boolean isSuccessful(String statusUrl);
 }

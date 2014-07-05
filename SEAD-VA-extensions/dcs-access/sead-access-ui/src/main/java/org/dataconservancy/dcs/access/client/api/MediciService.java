@@ -30,26 +30,27 @@ import java.util.Map;
  */
 @RemoteServiceRelativePath("sparql")
 public interface MediciService extends RemoteService {
-	
-	String getSipFromBag(String bagPath, String sipPath, String bagitEp);
-	public DatasetRelation getRelations();
-	public String generateWfInstanceId();
-	void toVAmodel(String id, String parent, MediciInstance sparqlEp,
+
+    String getSipFromBag(String bagPath, String sipPath, String bagitEp);
+    public DatasetRelation getRelations();
+    public String generateWfInstanceId();
+    void toVAmodel(String id, String parent, MediciInstance sparqlEp,
                    String tmpHome);
-	
-	int splitSip(String sipFilePath);
-	String submitMultipleSips(String sipEndpoint, String datasetId,
+
+    int splitSip(String sipFilePath);
+    String submitMultipleSips(String sipEndpoint, String datasetId,
                               MediciInstance sparqlInstance, String sipBasePath,
                               String wfInstanceId, List<String> perviousUrls, int startSipNum,
                               int numberOfSips, String username, String pass,
                               boolean restrictAccess, String baseUrl, String tmpHome,
-                              boolean submitMultipleSips);
-	int getFileNos();
+                              boolean submitMultipleSips, boolean rePub);
+    int getFileNos();
 
-	String getBag(String tagId, MediciInstance sparqlEndpoint, String bagitEp, String tmpHome);
-	void addMetadata(String fileSrc, String sipFilePath);
-	CheckPointDetail restartIngest(String datasetId, String tmpHome);
-	
-	Map<String, String> parseJson(String json);
-	List<MediciInstance> getAcrInstances();
+    String getBag(String tagId, MediciInstance sparqlEndpoint, String bagitEp, String tmpHome);
+    void addMetadata(String fileSrc, String sipFilePath);
+    CheckPointDetail restartIngest(String datasetId, String tmpHome);
+
+    Map<String, String> parseJson(String json);
+    List<MediciInstance> getAcrInstances();
+    String getSipJsonFromBag(String bagPath, String sipPath, String bagitEp);
 }

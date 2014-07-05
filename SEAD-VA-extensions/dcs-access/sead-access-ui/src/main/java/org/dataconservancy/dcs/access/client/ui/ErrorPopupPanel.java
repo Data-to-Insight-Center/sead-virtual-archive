@@ -24,41 +24,75 @@ import com.google.gwt.user.client.ui.*;
 
 public class ErrorPopupPanel extends PopupPanel {
 
-	public ErrorPopupPanel(String errorMessageStr) {
-		super(true);
-		this.setGlassEnabled(true);
-		this.show();
-		this.setStyleName("errorPopupContainer");
-		this.setPopupPosition((int)Math.ceil(Window.WINDOW_WIDTH/2.5), Window.WINDOW_HEIGHT/4);
-		VerticalPanel outerPanel = new VerticalPanel();
-		outerPanel.setSpacing(10);
-		outerPanel.setWidth("100%");
-		outerPanel.setHeight( Window.WINDOW_HEIGHT/5+"px");
-		outerPanel.setStyleName("errorPopupContainer");
-		setWidget(outerPanel);
-		outerPanel.setHorizontalAlignment(HorizontalPanel.ALIGN_CENTER);
+    public ErrorPopupPanel(String errorMessageStr) {
+        super(true);
+        this.setGlassEnabled(true);
+        this.show();
+        this.setStyleName("errorPopupContainer");
+        this.setPopupPosition((int)Math.ceil(Window.WINDOW_WIDTH/2.5), Window.WINDOW_HEIGHT/4);
+        VerticalPanel outerPanel = new VerticalPanel();
+        outerPanel.setSpacing(10);
+        outerPanel.setWidth("100%");
+        outerPanel.setHeight(Window.WINDOW_HEIGHT/5+"px");
+        outerPanel.setStyleName("errorPopupContainer");
+        setWidget(outerPanel);
+        outerPanel.setHorizontalAlignment(HorizontalPanel.ALIGN_CENTER);
 
-		
-		Label errorMessage = new Label();
-		errorMessage.setWidth("90%");
-		errorMessage.setStyleName("greenFont");
-		errorMessage.setText(errorMessageStr);
-		outerPanel.add(errorMessage);
-		Button closeButton = new Button("Close");
-		closeButton.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				hide();
-			}
-		});
-		
-		outerPanel.add(errorMessage);
-		
-		outerPanel.setVerticalAlignment(HorizontalPanel.ALIGN_BOTTOM);
-		outerPanel.add(closeButton);
-		
-	}
-	
+
+        Label errorMessage = new Label();
+        errorMessage.setWidth("90%");
+        errorMessage.setStyleName("greenFont");
+        errorMessage.setText(errorMessageStr);
+        outerPanel.add(errorMessage);
+        Button closeButton = new Button("Close");
+        closeButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                hide();
+            }
+        });
+
+        outerPanel.add(errorMessage);
+
+        outerPanel.setVerticalAlignment(HorizontalPanel.ALIGN_BOTTOM);
+        outerPanel.add(closeButton);
+
+    }
+    public ErrorPopupPanel(HTML errorMessage) {
+        super(true);
+        this.setGlassEnabled(true);
+        this.show();
+        this.setStyleName("errorPopupContainer");
+        this.setPopupPosition((int)Math.ceil(Window.WINDOW_WIDTH/2.5), Window.WINDOW_HEIGHT/4);
+        VerticalPanel outerPanel = new VerticalPanel();
+        outerPanel.setSpacing(10);
+        outerPanel.setWidth("100%");
+        outerPanel.setHeight( Window.WINDOW_HEIGHT/5+"px");
+        outerPanel.setStyleName("errorPopupContainer");
+        setWidget(outerPanel);
+        outerPanel.setHorizontalAlignment(HorizontalPanel.ALIGN_CENTER);
+
+
+        /*	Label errorMessage = new Label();
+          errorMessage.setWidth("90%");
+          errorMessage.setStyleName("greenFont");
+          errorMessage.setText(errorMessageStr);*/
+        outerPanel.add(errorMessage);
+        Button closeButton = new Button("Close");
+        closeButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                hide();
+            }
+        });
+
+        outerPanel.add(errorMessage);
+
+        outerPanel.setVerticalAlignment(HorizontalPanel.ALIGN_BOTTOM);
+        outerPanel.add(closeButton);
+
+    }
+
 
 }
 	

@@ -31,14 +31,22 @@ public final class JsProvEntity
     public String getEntityId() {
         return getString("prov:id");
     }
-    
+
     public String getEntityUrl(){
-    	return ((JsUrl)getObject("kom:url")).getContent();
+        JsModel object = getObject("kom:url");
+        if(object!=null)
+            return ((JsUrl)object).getContent();
+        else
+            return null;
     }
-    
+
     public String getEntityTitle(){
-    	return ((JsUrl)getObject("ext:title")).getContent();
+        JsModel object = getObject("ext:title");
+        if(object!=null)
+            return ((JsUrl)object).getContent();
+        else
+            return null;
     }
-    
-    
+
+
 }

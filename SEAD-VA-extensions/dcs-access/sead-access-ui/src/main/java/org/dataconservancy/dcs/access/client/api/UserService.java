@@ -28,25 +28,28 @@ public interface UserService
         extends RemoteService {
 
     Authentication authenticate(String url, String user, String pass) throws Exception;
-    
-	String register(String firstName, String lastName, String email, String password,
-                    String confirmPwd, String[] admins, String vivoId) throws Exception;
-	
-	boolean emailCurators(String affiliation) throws Exception;
 
-	UserSession checkSession(String token);
+    String register(String firstName, String lastName, String email, String password,
+                    String[] admins, String vivoId) throws Exception;
 
-	List<Person> getAllUsers() throws Exception;
-	List<Role> getAllRoles() throws Exception;
-	
-	void clearSession();
+    boolean emailCurators(String affiliation) throws Exception;
 
-	void updateAllUsers(List<Person> userList, List<Person> sendEmailList, String registryUrl) throws Exception;
-    
-	void sendEmail(String[] toAddress, String subject, String messageStr);
-	
-	void setSession(String token);
+    UserSession checkSession(String token);
 
-	Authentication authenticateOAuth(String token, OAuthType type, String[] admins);
+    List<Person> getAllUsers() throws Exception;
+    List<Role> getAllRoles() throws Exception;
+    Person getUser(String registryId) throws Exception;
+
+    void clearSession();
+
+    void updateAllUsers(List<Person> userList, List<Person> sendEmailList, String registryUrl) throws Exception;
+
+    void sendEmail(String[] toAddress, String subject, String messageStr);
+
+    void setSession(String token);
+
+    Authentication authenticateOAuth(String token, OAuthType type, String[] admins);
+
+    boolean emailResearcher(String agentId, String entityUrl) throws Exception;
 
 }

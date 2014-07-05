@@ -29,25 +29,25 @@ import org.dataconservancy.dcs.access.client.model.JsSearchResult;
 
 public class RelationsPresenter implements Presenter {
 
-	public interface Display {
-		
-	   
-		Panel getContent();
-		String getEntityId();
+    public interface Display {
 
-	  }
-	String id;
-	Display display;
-	Panel content;
-	
-	public RelationsPresenter(Display view){
-		this.display = view;
-	}
-	@Override
-	public void bind() {
-		content = this.display.getContent();
-		id=this.display.getEntityId();
-		String query = Search.createLiteralQuery("OR",
+
+        Panel getContent();
+        String getEntityId();
+
+    }
+    String id;
+    Display display;
+    Panel content;
+
+    public RelationsPresenter(Display view){
+        this.display = view;
+    }
+    @Override
+    public void bind() {
+        content = this.display.getContent();
+        id=this.display.getEntityId();
+        String query = Search.createLiteralQuery("OR",
                 SolrField.EntityField.IMM_ANCESTRY.solrName(), id,
 //				SolrField.EntityField.ANCESTRY.solrName(), id,
                 SolrField.EventField.TARGET.solrName(), id,
@@ -59,105 +59,105 @@ public class RelationsPresenter implements Presenter {
         collectSearchResults(query, 0, new AsyncCallback<JsDcp>() {
 
             public void onFailure(Throwable caught) {
-            	Util.reportInternalError("Doing related search", caught);
+                Util.reportInternalError("Doing related search", caught);
             }
 
             public void onSuccess(JsDcp result) {
-            	displayRelated(result, id);
+                displayRelated(result, id);
             }
         });
 
-	}
-	
-	  static void collectSearchResults(final String query, final int offset,
-	            final AsyncCallback<JsDcp> topcb) {
-	        collectSearchResults(query, offset, JsDcp.create(), topcb);
-	    }
+    }
 
-	    static void collectSearchResults(final String query, final int offset,
-	            final JsDcp dcp, final AsyncCallback<JsDcp> topcb) {
-	        String searchurl = searchURL(query, offset, false, 50);
-	        JsonpRequestBuilder rb = new JsonpRequestBuilder();
-	        rb.requestObject(searchurl, new AsyncCallback<JsSearchResult>() {
+    static void collectSearchResults(final String query, final int offset,
+                                     final AsyncCallback<JsDcp> topcb) {
+        collectSearchResults(query, offset, JsDcp.create(), topcb);
+    }
 
-	            public void onFailure(Throwable caught) {
-	                topcb.onFailure(caught);
-	            }
+    static void collectSearchResults(final String query, final int offset,
+                                     final JsDcp dcp, final AsyncCallback<JsDcp> topcb) {
+        String searchurl = searchURL(query, offset, false, 50);
+        JsonpRequestBuilder rb = new JsonpRequestBuilder();
+        rb.requestObject(searchurl, new AsyncCallback<JsSearchResult>() {
 
-	            public void onSuccess(JsSearchResult result) {
-	                for (int i = 0; i < result.matches().length(); i++) {
-	                    Util.add(dcp, result.matches().get(i));
-	                }
+            public void onFailure(Throwable caught) {
+                topcb.onFailure(caught);
+            }
 
-	                int nextoffset = offset + result.matches().length();
-
-	                if (nextoffset == result.total()) {
-	                    topcb.onSuccess(dcp);
-	                } else {
-	                    collectSearchResults(query, nextoffset, dcp, topcb);
-	                }
-	            }
-	        });
-	    }
-	    
-	    static String searchURL(String query, int offset, boolean context,
-	            int max, String... params) {
-	        String accessurl = 
-	    			SeadApp.accessurl;
-	        String s = accessurl + SeadApp.queryPath+"?q=" + URL.encodeQueryString(query)
-	                + "&offset=" + offset + "&max=" + max;
-
-	        if (context) {
-	            s= s + "&_hl=true&_hl.requireFieldMatch=true&_hl.fl="
-	                    + URL.encodeQueryString("*");
-	        }
-	        for (int i = 0; i < params.length;i+=2) {
-	            s=s+"&"+params[i]+"="+params[i+1];
-	        }
-	        return s;
-	    }
-
-
-	    public void displayRelated(JsDcp dcp, String id){
-			content.add(Util.label("Entity", "SectionHeader"));
-			
-
-	        TreeViewModel treemodel = new FileTree(dcp);
-	        
-
-	        CellTree tree = new CellTree(treemodel, null);
-
-	        tree.setStylePrimaryName("RelatedView");
-	        tree.setAnimationEnabled(true);
-	        tree.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.BOUND_TO_SELECTION);
-	        tree.setDefaultNodeSize(50);
-	       
-	        if (tree.getRootTreeNode().getChildCount() > 0) {
-	            tree.getRootTreeNode().setChildOpen(0, false);
-	        }
-
-	        int i = -1;//Util.find(dcp.getCollections(), id);
-
-	        if (i == -1) {
-	            i = Util.find(dcp.getDeliverableUnits(), id);
-
-	            if (i == -1) {
-	                // TODO other types...
-	            } else {
-	            	content.add(dcp.getDeliverableUnits().get(i).display(tree));
+            public void onSuccess(JsSearchResult result) {
+                for (int i = 0; i < result.matches().length(); i++) {
+                    Util.add(dcp, result.matches().get(i));
                 }
-	        } else {
-	        	content.add(dcp.getCollections().get(i).display());
-	        }
-		}
-		
-	@Override
-	public void display(Panel mainContainer, Panel facetContent, Panel headerPanel, Panel logoutPanel, Panel notificationPanel) {
-		mainContainer.clear();
-		facetContent.clear();
-		bind();
-		mainContainer.add(content);
 
-	}
+                int nextoffset = offset + result.matches().length();
+
+                if (nextoffset == result.total()) {
+                    topcb.onSuccess(dcp);
+                } else {
+                    collectSearchResults(query, nextoffset, dcp, topcb);
+                }
+            }
+        });
+    }
+
+    static String searchURL(String query, int offset, boolean context,
+                            int max, String... params) {
+        String accessurl =
+                SeadApp.accessurl;
+        String s = accessurl + SeadApp.queryPath+"?q=" + URL.encodeQueryString(query)
+                + "&offset=" + offset + "&max=" + max;
+
+        if (context) {
+            s= s + "&_hl=true&_hl.requireFieldMatch=true&_hl.fl="
+                    + URL.encodeQueryString("*");
+        }
+        for (int i = 0; i < params.length;i+=2) {
+            s=s+"&"+params[i]+"="+params[i+1];
+        }
+        return s;
+    }
+
+
+    public void displayRelated(JsDcp dcp, String id){
+        content.add(Util.label("Entity", "SectionHeader"));
+
+
+        TreeViewModel treemodel = new FileTree(dcp);
+
+
+        CellTree tree = new CellTree(treemodel, null);
+
+        tree.setStylePrimaryName("RelatedView");
+        tree.setAnimationEnabled(true);
+        tree.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.BOUND_TO_SELECTION);
+        tree.setDefaultNodeSize(50);
+
+        if (tree.getRootTreeNode().getChildCount() > 0) {
+            tree.getRootTreeNode().setChildOpen(0, false);
+        }
+
+        int i = -1;//Util.find(dcp.getCollections(), id);
+
+        if (i == -1) {
+            i = Util.find(dcp.getDeliverableUnits(), id);
+
+            if (i == -1) {
+                // TODO other types...
+            } else {
+                content.add(dcp.getDeliverableUnits().get(i).display(tree, true));
+            }
+        } else {
+            content.add(dcp.getCollections().get(i).display());
+        }
+    }
+
+    @Override
+    public void display(Panel mainContainer, Panel facetContent, Panel headerPanel, Panel logoutPanel, Panel notificationPanel) {
+        mainContainer.clear();
+        facetContent.clear();
+        bind();
+        mainContainer.add(content);
+
+    }
 
 }

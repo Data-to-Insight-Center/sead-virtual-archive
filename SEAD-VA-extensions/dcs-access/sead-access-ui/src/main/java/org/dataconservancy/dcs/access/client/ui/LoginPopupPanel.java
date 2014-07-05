@@ -25,241 +25,246 @@ import org.dataconservancy.dcs.access.client.SeadState;
 
 public class LoginPopupPanel extends PopupPanel implements org.dataconservancy.dcs.access.client.presenter.LoginPresenter.Display{
 
-	
-	private Button registerButton;
-	private Button loginButton;
-	private Button googleLogin;
-	//private TextBox userNameBox;
-	//private TextBox passwordBox;
-	private Label userLabel;
-	private Label passwordLabel;
-	private Label errorMessage;
-	
-	private Grid loginForm;
-	
-	
-	UserLoginDetails userLoginDetails;
-	UserRegisterDetails userRegisterDetails;
-	DisclosurePanel registerClosure;
-	SuggestBox suggestBox;
-	Grid registerForm;
-	
-	public class UserLoginDetails{
-		public TextBox user_tb;
-		public PasswordTextBox pass_tb;
-		
-	}
-	
-	public class UserRegisterDetails{
-		public TextBox firstName;
-		public TextBox lastName;
-		public TextBox email;
-		public PasswordTextBox password;
-		public PasswordTextBox confirmPassword;
-		public Label errorMessage;
-		public SuggestBox suggestBox;
-	}
-	
-	
-	
-	public LoginPopupPanel() {
-		super(true);
-		this.setGlassEnabled(true);
-		this.addCloseHandler(new CloseHandler<PopupPanel>() {
-			
-			@Override
-			public void onClose(CloseEvent<PopupPanel> event) {
-				History.newItem(SeadState.HOME.toToken());
-			}
-		});
-		this.show();
-		this.setStyleName("loginPopupContainer");
-		//setStyleName(getContainerElement(), "popupContent");
-		this.setPopupPosition(Window.WINDOW_WIDTH/3, Window.WINDOW_HEIGHT/4);
-		VerticalPanel outerPanel = new VerticalPanel();
-		//outerPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-		outerPanel.setSpacing(10);
-		outerPanel.setStyleName("loginPopupContainer");
-		setWidget(outerPanel);
-		outerPanel.setHorizontalAlignment(HorizontalPanel.ALIGN_LEFT);
 
-		userLoginDetails = new UserLoginDetails();
-		userRegisterDetails = new UserRegisterDetails();
-		Label loginLabel = new Label("Login");
-		loginLabel.setStyleName("loginLabelStyle");
-		
-		loginForm = new Grid(2,2);
-		loginForm.setCellPadding(8);
-		outerPanel.add(loginLabel);
-		errorMessage = new Label();
-		errorMessage.setStyleName("greenFont");
-		outerPanel.add(errorMessage);
-		outerPanel.add(loginForm);
-		
-		HorizontalPanel innerPanel = new HorizontalPanel();
-		innerPanel.setSpacing(10);
-		googleLogin = new Button(" Google Sign On");
-		googleLogin.setStyleName("popupLoginButton");
-		googleLogin.setWidth("150px");
-		googleLogin.setHeight("40px");
-		loginButton = new Button("Login");
-		loginButton.setStyleName("popupLoginButton");
-		loginButton.setWidth("100px");
-		loginButton.setHeight("40px");
-		
-		innerPanel.add(loginButton);
-		
-		innerPanel.add(googleLogin);
-		
-		outerPanel.add(innerPanel);
-		
-		registerForm = new Grid(8, 2);
-		registerForm.setCellPadding(6);
-		createRegisterForm();
-		registerClosure = new DisclosurePanel("SignUp");
-		registerClosure.setAnimationEnabled(true);
-		registerClosure.setContent(registerForm);
-		outerPanel.add(registerClosure);	
-		createLoginForm();
-	}
-	
+    private Button registerButton;
+    private Button loginButton;
+    private Button googleLogin;
+    //private TextBox userNameBox;
+    //private TextBox passwordBox;
+    private Label userLabel;
+    private Label passwordLabel;
+    private Label errorMessage;
 
-	private void createRegisterForm() {
-		userRegisterDetails.firstName = new TextBox();
-		userRegisterDetails.lastName = new TextBox();
-		userRegisterDetails.email = new TextBox();
-		userRegisterDetails.password = new PasswordTextBox();
-		userRegisterDetails.confirmPassword = new PasswordTextBox();
-		userRegisterDetails.errorMessage = new Label();
-
-		registerForm.setWidget(0, 0, new Label("First Name"));
-		registerForm.setWidget(0, 1, userRegisterDetails.firstName);
-		registerForm.setWidget(1, 0, new Label("Last Name"));
-		registerForm.setWidget(1, 1, userRegisterDetails.lastName);
-		registerForm.setWidget(2, 0, new Label("Email"));
-		registerForm.setWidget(2, 1, userRegisterDetails.email);
-		registerForm.setWidget(3, 0, new Label("Password"));
-		registerForm.setWidget(3, 1, userRegisterDetails.password);
-		registerForm.setWidget(4, 0, new Label("Confirm Password"));
-		registerForm.setWidget(4, 1, userRegisterDetails.confirmPassword);
-		registerForm.setWidget(5, 0, userRegisterDetails.errorMessage);
-		registerForm.setWidget(6, 0, new Label("VIVO ID"));
-	    
-		registerButton = new Button("Register");
-		registerButton.setWidth("100px");
-		registerButton.setHeight("40px");
-		registerButton.setStyleName("popupLoginButton");
-		registerForm.setWidget(7, 1, registerButton);
-		
-	}
+    private Grid loginForm;
 
 
-	private void createLoginForm() {
-		
-		userLabel = new Label("Username");
-		passwordLabel = new Label("Password");
-		/*userLabel.setStyleName("labelStyle");
-		passwordLabel.setStyleName("labelStyle");*/
-		userLoginDetails.user_tb = new TextBox();
-		userLoginDetails.pass_tb = new PasswordTextBox();
-		loginForm.setWidget(0, 0, userLabel);
-		loginForm.setWidget(0, 1, userLoginDetails.user_tb);
-		loginForm.setWidget(1, 0, passwordLabel);
-		loginForm.setWidget(1, 1, userLoginDetails.pass_tb);
-	}
+    UserLoginDetails userLoginDetails;
+    UserRegisterDetails userRegisterDetails;
+    DisclosurePanel registerClosure;
+    SuggestBox suggestBox;
+    Grid registerForm;
+
+    public class UserLoginDetails{
+        public TextBox user_tb;
+        public PasswordTextBox pass_tb;
+
+    }
+
+    public class UserRegisterDetails{
+        public TextBox firstName;
+        public TextBox lastName;
+        public TextBox email;
+        public PasswordTextBox password;
+        public PasswordTextBox confirmPassword;
+        public Label errorMessage;
+        public SuggestBox suggestBox;
+    }
 
 
-	public Button getRegisterButton() {
-		return registerButton;
-	}
-	public void setRegisterButton(Button registerButton) {
-		this.registerButton = registerButton;
-	}
-	public Button getLoginButton() {
-		return loginButton;
-	}
-	public void setLoginButton(Button loginButton) {
-		this.loginButton = loginButton;
-	}
-	public Button getGoogleLoginButton() {
-		return googleLogin;
-	}
-	public void setGoogleLoginButton(Button googleLoginButton) {
-		this.googleLogin = googleLoginButton;
-	}
-	public Label getUserLabel() {
-		return userLabel;
-	}
-	public void setUserLabel(Label userLabel) {
-		this.userLabel = userLabel;
-	}
-	public Label getPasswordLabel() {
-		return passwordLabel;
-	}
-	public void setPasswordLabel(Label passwordLabel) {
-		this.passwordLabel = passwordLabel;
-	}
-	public Grid getLoginForm() {
-		return loginForm;
-	}
-	public void setLoginForm(Grid loginForm) {
-		this.loginForm = loginForm;
-	}
+
+    public LoginPopupPanel() {
+        super(true);
+        this.setGlassEnabled(true);
+        this.addCloseHandler(new CloseHandler<PopupPanel>() {
+
+            @Override
+            public void onClose(CloseEvent<PopupPanel> event) {
+                History.newItem(SeadState.HOME.toToken());
+            }
+        });
+        this.show();
+        this.setStyleName("loginPopupContainer");
+
+        this.setPopupPosition(Window.WINDOW_WIDTH/3, Window.WINDOW_HEIGHT/4);
+
+        VerticalPanel outerPanel = new VerticalPanel();
+        //outerPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+        outerPanel.setSpacing(10);
+        outerPanel.setWidth("95%");
+
+        outerPanel.setStyleName("loginPopupContainer");
+
+        setWidget(outerPanel);
+
+        outerPanel.setHorizontalAlignment(HorizontalPanel.ALIGN_LEFT);
+
+        userLoginDetails = new UserLoginDetails();
+        userRegisterDetails = new UserRegisterDetails();
+        Label loginLabel = new Label("Login");
+        loginLabel.setStyleName("loginLabelStyle");
+
+        loginForm = new Grid(2,2);
+        loginForm.setCellPadding(8);
+        outerPanel.add(loginLabel);
+        errorMessage = new Label();
+        errorMessage.setStyleName("greenFont");
+        outerPanel.add(errorMessage);
+        outerPanel.add(loginForm);
+
+        HorizontalPanel innerPanel = new HorizontalPanel();
+        innerPanel.setSpacing(10);
+        googleLogin = new Button(" Google Sign On");
+        googleLogin.setStyleName("popupLoginButton");
+        googleLogin.setWidth("150px");
+        googleLogin.setHeight("40px");
+        loginButton = new Button("Login");
+        loginButton.setStyleName("popupLoginButton");
+        loginButton.setWidth("100px");
+        loginButton.setHeight("40px");
+
+        innerPanel.add(loginButton);
+
+        innerPanel.add(googleLogin);
+
+        outerPanel.add(innerPanel);
+
+        registerForm = new Grid(8, 2);
+        registerForm.setCellPadding(6);
+        createRegisterForm();
+        registerClosure = new DisclosurePanel("SignUp");
+        registerClosure.setAnimationEnabled(true);
+        registerClosure.setContent(registerForm);
+        outerPanel.add(registerClosure);
+        createLoginForm();
+    }
 
 
-	@Override
-	public TabPanel getLoginPanel() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    private void createRegisterForm() {
+        userRegisterDetails.firstName = new TextBox();
+        userRegisterDetails.lastName = new TextBox();
+        userRegisterDetails.email = new TextBox();
+        userRegisterDetails.password = new PasswordTextBox();
+        userRegisterDetails.confirmPassword = new PasswordTextBox();
+        userRegisterDetails.errorMessage = new Label();
+        userRegisterDetails.errorMessage.setStyleName("ErrorField");
+
+        registerForm.setWidget(0, 0, new Label("First Name"));
+        registerForm.setWidget(0, 1, userRegisterDetails.firstName);
+        registerForm.setWidget(1, 0, new Label("Last Name"));
+        registerForm.setWidget(1, 1, userRegisterDetails.lastName);
+        registerForm.setWidget(2, 0, new Label("Email"));
+        registerForm.setWidget(2, 1, userRegisterDetails.email);
+        registerForm.setWidget(3, 0, new Label("Password"));
+        registerForm.setWidget(3, 1, userRegisterDetails.password);
+        registerForm.setWidget(4, 0, new Label("Confirm Password"));
+        registerForm.setWidget(4, 1, userRegisterDetails.confirmPassword);
+        registerForm.setWidget(5, 0, new Label("VIVO ID"));
+        registerForm.setWidget(6, 1, userRegisterDetails.errorMessage);
+
+        registerButton = new Button("Register");
+        registerButton.setWidth("100px");
+        registerButton.setHeight("40px");
+        registerButton.setStyleName("popupLoginButton");
+        registerForm.setWidget(7, 1, registerButton);
+
+    }
 
 
-	@Override
-	public Panel getLoginTab() {
-		return null;
-	}
+    private void createLoginForm() {
+
+        userLabel = new Label("Username");
+        passwordLabel = new Label("Password");
+        userLoginDetails.user_tb = new TextBox();
+        userLoginDetails.pass_tb = new PasswordTextBox();
+        loginForm.setWidth("95%");
+        loginForm.setWidget(0, 0, userLabel);
+        loginForm.setWidget(0, 1, userLoginDetails.user_tb);
+        loginForm.setWidget(1, 0, passwordLabel);
+        loginForm.setWidget(1, 1, userLoginDetails.pass_tb);
+    }
 
 
-	@Override
-	public UserLoginDetails getUserLoginDetails() {
-		return userLoginDetails;
-	}
-	
-	@Override
-	public UserRegisterDetails getUserRegisterDetails() {
-		return userRegisterDetails;
-	}
+    public Button getRegisterButton() {
+        return registerButton;
+    }
+    public void setRegisterButton(Button registerButton) {
+        this.registerButton = registerButton;
+    }
+    public Button getLoginButton() {
+        return loginButton;
+    }
+    public void setLoginButton(Button loginButton) {
+        this.loginButton = loginButton;
+    }
+    public Button getGoogleLoginButton() {
+        return googleLogin;
+    }
+    public void setGoogleLoginButton(Button googleLoginButton) {
+        this.googleLogin = googleLoginButton;
+    }
+    public Label getUserLabel() {
+        return userLabel;
+    }
+    public void setUserLabel(Label userLabel) {
+        this.userLabel = userLabel;
+    }
+    public Label getPasswordLabel() {
+        return passwordLabel;
+    }
+    public void setPasswordLabel(Label passwordLabel) {
+        this.passwordLabel = passwordLabel;
+    }
+    public Grid getLoginForm() {
+        return loginForm;
+    }
+    public void setLoginForm(Grid loginForm) {
+        this.loginForm = loginForm;
+    }
 
 
-	@Override
-	public Label getError() {
-		return errorMessage;
-	}
+    @Override
+    public TabPanel getLoginPanel() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 
-	@Override
-	public Button getGoogleLogin() {
-		return googleLogin;
-	}
+    @Override
+    public Panel getLoginTab() {
+        return null;
+    }
 
-	@Override
-	public void hide1() {
-		this.hide();
-	}
-	
-	@Override
-	public SuggestBox getSuggestBox(){
-		return this.suggestBox;
-	}
-	
-	@Override
-	public DisclosurePanel getDisclosurePanel(){
-		return this.registerClosure;
-	}
-	@Override
-	public Grid getRegisterForm(){
-		return this.registerForm;
-	}
+
+    @Override
+    public UserLoginDetails getUserLoginDetails() {
+        return userLoginDetails;
+    }
+
+    @Override
+    public UserRegisterDetails getUserRegisterDetails() {
+        return userRegisterDetails;
+    }
+
+
+    @Override
+    public Label getError() {
+        return errorMessage;
+    }
+
+
+    @Override
+    public Button getGoogleLogin() {
+        return googleLogin;
+    }
+
+    @Override
+    public void hide1() {
+        this.hide();
+    }
+
+    @Override
+    public SuggestBox getSuggestBox(){
+        return this.suggestBox;
+    }
+
+    @Override
+    public DisclosurePanel getDisclosurePanel(){
+        return this.registerClosure;
+    }
+    @Override
+    public Grid getRegisterForm(){
+        return this.registerForm;
+    }
 }
 	
 

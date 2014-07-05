@@ -17,36 +17,26 @@
 
 package org.dataconservancy.dcs.access.client.model;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
 import org.dataconservancy.dcs.access.ui.client.model.JsModel;
 
+// TODO JSON seems to use metadataRefs and metadataRef...
+
 /**
- * Models Data Contributor/Creator.
+ * Models a Provenance graph
  */
-public final class JsAgent
-        extends JsModel implements IsSerializable {
-
-    protected JsAgent() {
+public final class JsProvGraph
+        extends JsEntity {
+	
+	
+    protected JsProvGraph() {
     }
 
-    public String getAgentId() {
-        return getString("prov:id");
+    public static JsProvGraph create(String jsonString) {
+        return (JsProvGraph) JsModel
+                .parseJSON(jsonString);
     }
-
-    public String getAgentUrl(){
-        JsModel url = getObject("kom:url");
-        if(url!=null)
-            return ((JsUrl)url).getContent();
-        else
-            return null;
+    
+	public JsProvDocument getDocument() {
+        return (JsProvDocument) getObject("prov:document");
     }
-
-    public String getAgentName(){
-        JsModel name = getObject("kom:name");
-        if(name!=null)
-            return ((JsUrl)name).getContent();
-        else
-            return null;
-    }
-
 }

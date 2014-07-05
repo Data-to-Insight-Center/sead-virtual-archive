@@ -252,7 +252,7 @@ public class DepositServiceImpl
 
 	
 	@Override
-	public Map<Date,List<Event>> statusUpdate(String statusUrl, Date latestDate){
+	public Map<Date,List<Event>> statusUpdate(String statusUrl, Date latestDate, int count){
 		
 		reader = new StatusReader();
 		Map<Date, List<Event>> events = null;
@@ -260,10 +260,38 @@ public class DepositServiceImpl
 			events = reader.getEvents(statusUrl, latestDate);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return events;
-	}
+			e.printStackTrace();try {
+                if(count<1){
+                    count++;
+                    Thread.sleep(3*1000);
+                    return statusUpdate(statusUrl, latestDate, count);
+                }
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+        return events;
+    }
+
+    @Override
+    public boolean isSuccessful(String statusUrl){
+
+        reader = new StatusReader();
+        try {
+            List<Event> events = reader.getAllEvents(statusUrl);
+            for(Event event:events){
+                if(event.getEventType().contains("ingest.fail"))
+                    return false;
+                else if(event.getEventType().contains("ingest.complete"))
+                    return true;
+            }
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return false;
+
+    }
 	
 
 	@Override

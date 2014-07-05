@@ -234,93 +234,174 @@ public class StatusReader {
 		return ROId;
 	}
 
-public Map<Date,List<Event>> getEvents(String statusUrl, Date latestDate) throws IOException{
-	
-		URL status = new URL(statusUrl);
-		InputStream input =
-			status.openStream();
-		Map<Date,List<Event>> events = new HashMap<Date,List<Event>>();
-		XmlPullParserFactory factory;
-		try {
-			factory = XmlPullParserFactory.newInstance();
-		
-		    factory.setNamespaceAware(true);
-		    XmlPullParser xpp = factory.newPullParser();
-	
-		    xpp.setInput (input,null);
-		    
-		    int eventType = xpp.getEventType();
-		    
-		    int dcsEventType=0;
-		    int eventDetail = 0;
-		    int eventDate = 0;
-		    
-		    Event event = null;
-		    while (eventType != XmlPullParser.END_DOCUMENT) {
-		    	 if(eventType == XmlPullParser.START_TAG) {
-		    		if(xpp.getName().equals("Event"))
-		    			event = new Event();
-		 	    	if(xpp.getName().equals("eventType"))
-		 	    		dcsEventType=1;
-		 	    	if(xpp.getName().equals("eventDate"))
-		 	    		eventDate=1;
-		 	    	if(xpp.getName().equals("eventDetail"))
-		 	    		eventDetail=1;
-		 	    	
-		 	    	
-		 	     }
-		 	     else if(eventType == XmlPullParser.TEXT) {
-			    	 	 if(dcsEventType==1){
-			    	 		 if(event==null)
-			    	 			event = new Event();
-			    	 		event.setEventType(xpp.getText());
-			    	 		dcsEventType=0;
-				    	 } 	
-			    	 	 
-		 	    	 	 if(eventDate==1) {
-		 	    	 		String s = xpp.getText().replace("-0500","Z");
-		 	    	 		
-		 	    	 		Date date = null;
-							try {
-								date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(s);
-							} catch (ParseException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-							 if(event==null)
-				    	 			event = new Event();
-		 	    	        event.setEventDate(
-		                			  date);
-		                	eventDate=0;
-		                 }
-		 	    	 	 if(eventDetail==1) {
-		 	    	 		 if(event==null)
-				    	 			event = new Event();
-		                	  event.setEventDetail(xpp.getText());
-		                	  eventDetail=0;
-		                 }
-		 	     }
-		    	 if(eventType == XmlPullParser.END_TAG) {
-			    		if(xpp.getName().equals("Event"))
-			    		{	
-			    			List<Event> eventList = events.get(event.getEventType());
-			    			if(eventList == null)
-			    				eventList = new ArrayList<Event>();
-			    			if(event.getEventDate().after(latestDate))
-			    			{
-			    				eventList.add(event);
-			    				events.put(event.getEventDate(), eventList);
-			    			}
-			    		}
-		    	 }
-		    	 eventType = xpp.next();
-		    }
-		}
-		catch (XmlPullParserException e) {
-			e.printStackTrace();
-		}
-		
-		return events;
-	}
+    public Map<Date,List<Event>> getEvents(String statusUrl, Date latestDate) throws IOException{
 
+        URL status = new URL(statusUrl);
+        InputStream input =
+                status.openStream();
+        Map<Date,List<Event>> events = new HashMap<Date,List<Event>>();
+        XmlPullParserFactory factory;
+        try {
+            factory = XmlPullParserFactory.newInstance();
+
+            factory.setNamespaceAware(true);
+            XmlPullParser xpp = factory.newPullParser();
+
+            xpp.setInput (input,null);
+
+            int eventType = xpp.getEventType();
+
+            int dcsEventType=0;
+            int eventDetail = 0;
+            int eventDate = 0;
+
+            Event event = null;
+            while (eventType != XmlPullParser.END_DOCUMENT) {
+                if(eventType == XmlPullParser.START_TAG) {
+                    if(xpp.getName().equals("Event"))
+                        event = new Event();
+                    if(xpp.getName().equals("eventType"))
+                        dcsEventType=1;
+                    if(xpp.getName().equals("eventDate"))
+                        eventDate=1;
+                    if(xpp.getName().equals("eventDetail"))
+                        eventDetail=1;
+
+
+                }
+                else if(eventType == XmlPullParser.TEXT) {
+                    if(dcsEventType==1){
+                        if(event==null)
+                            event = new Event();
+                        event.setEventType(xpp.getText());
+                        dcsEventType=0;
+                    }
+
+                    if(eventDate==1) {
+                        String s = xpp.getText().replace("-0500","Z");
+
+                        Date date = null;
+                        try {
+                            date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(s);
+                        } catch (ParseException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                        if(event==null)
+                            event = new Event();
+                        event.setEventDate(
+                                date);
+                        eventDate=0;
+                    }
+                    if(eventDetail==1) {
+                        if(event==null)
+                            event = new Event();
+                        event.setEventDetail(xpp.getText());
+                        eventDetail=0;
+                    }
+                }
+                if(eventType == XmlPullParser.END_TAG) {
+                    if(xpp.getName().equals("Event"))
+                    {
+                        List<Event> eventList = events.get(event.getEventDate());
+                        if(eventList == null)
+                            eventList = new ArrayList<Event>();
+                        if(event.getEventDate().after(latestDate))
+                        {
+                            eventList.add(event);
+                            events.put(event.getEventDate(), eventList);
+                        }
+                    }
+                }
+                eventType = xpp.next();
+            }
+        }
+        catch (XmlPullParserException e) {
+            e.printStackTrace();
+        }
+
+        return events;
+    }
+
+    public List<Event> getAllEvents(String statusUrl) throws IOException{
+
+        URL status = new URL(statusUrl);
+        InputStream input =
+                status.openStream();
+        List<Event> events = new ArrayList<Event>();
+        XmlPullParserFactory factory;
+        try {
+            factory = XmlPullParserFactory.newInstance();
+
+            factory.setNamespaceAware(true);
+            XmlPullParser xpp = factory.newPullParser();
+
+            xpp.setInput (input,null);
+
+            int eventType = xpp.getEventType();
+
+            int dcsEventType=0;
+            int eventDetail = 0;
+            int eventDate = 0;
+
+            Event event = null;
+            while (eventType != XmlPullParser.END_DOCUMENT) {
+                if(eventType == XmlPullParser.START_TAG) {
+                    if(xpp.getName().equals("Event"))
+                        event = new Event();
+                    if(xpp.getName().equals("eventType"))
+                        dcsEventType=1;
+                    if(xpp.getName().equals("eventDate"))
+                        eventDate=1;
+                    if(xpp.getName().equals("eventDetail"))
+                        eventDetail=1;
+
+
+                }
+                else if(eventType == XmlPullParser.TEXT) {
+                    if(dcsEventType==1){
+                        if(event==null)
+                            event = new Event();
+                        event.setEventType(xpp.getText());
+                        dcsEventType=0;
+                    }
+
+                    if(eventDate==1) {
+                        String s = xpp.getText().replace("-0500","Z");
+
+                        Date date = null;
+                        try {
+                            date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(s);
+                        } catch (ParseException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                        if(event==null)
+                            event = new Event();
+                        event.setEventDate(
+                                date);
+                        eventDate=0;
+                    }
+                    if(eventDetail==1) {
+                        if(event==null)
+                            event = new Event();
+                        event.setEventDetail(xpp.getText());
+                        eventDetail=0;
+                    }
+                }
+                if(eventType == XmlPullParser.END_TAG) {
+                    if(xpp.getName().equals("Event"))
+                    {
+                        events.add(event);
+                    }
+                }
+                eventType = xpp.next();
+            }
+        }
+        catch (XmlPullParserException e) {
+            e.printStackTrace();
+        }
+
+        return events;
+    }
 }

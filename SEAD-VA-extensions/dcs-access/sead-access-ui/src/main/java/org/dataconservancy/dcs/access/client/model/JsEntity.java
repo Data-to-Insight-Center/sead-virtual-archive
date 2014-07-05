@@ -23,13 +23,17 @@ import com.google.gwt.core.client.JsArray;
 public class JsEntity
         extends org.dataconservancy.dcs.access.ui.client.model.JsEntity{
 
-	protected JsEntity() {
-	}
-	 
+    protected JsEntity() {
+    }
+
     public final String getAbstract() {
         return getString("abstrct");
     }
-    
+
+    /* public void setAbstrct(String abstrct) {
+         set("abstrct", abstrct);
+    }*/
+
     public final String getPubdate() {
         return getString("pubdate");
     }
@@ -37,7 +41,7 @@ public class JsEntity
     public final JsArray<JsAlternateId> getAlternateIds() {
         return (JsArray<JsAlternateId>) getArray("alternateIds");
     }
-    
+
     @SuppressWarnings("unchecked")
     public final JsArray<JsDataLocation> getDataLocations() {
         return (JsArray<JsDataLocation>) getArray("dataLocations");

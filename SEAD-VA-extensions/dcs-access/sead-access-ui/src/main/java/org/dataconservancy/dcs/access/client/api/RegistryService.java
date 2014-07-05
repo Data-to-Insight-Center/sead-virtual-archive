@@ -16,31 +16,45 @@
 
 package org.dataconservancy.dcs.access.client.api;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-
-import org.dataconservancy.dcs.access.client.model.JsDcp;
-import org.dataconservancy.dcs.access.shared.Person;
-import org.dataconservancy.dcs.access.shared.ROMetadata;
-import org.dataconservancy.model.builder.InvalidXmlException;
-
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import org.dataconservancy.dcs.access.shared.Person;
+import org.dataconservancy.dcs.access.shared.ROMetadata;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 
 @RemoteServiceRelativePath("registry")
 public interface RegistryService
         extends RemoteService {
 
+    /* Registry calls */
+    /* Used to register agents in the registry */
     boolean registerAgents(List<Person> persons, String registryUrl);
-    List<ROMetadata> getAllCOs(String repository, String agentId, String roUrl) throws IOException;
+    String getRelation(String causeId, String registryUrl, String relationType) throws IOException;
+    boolean assignToSubmitter(String entityId, String agentId,
+                              String registryUrl) throws Exception;
+    String getROAffiliation(String entityId, String registryUrl) throws Exception;
+    boolean isObsolete(String entityId, String registryUrl) throws IOException;
+    boolean assignToAgent(String entityId, String agentId, String registryUrl) throws Exception;
+    boolean unassignFromAgent(String entityId, String agentId, String registryUrl) throws Exception;
+
+
+    /* RO Subsystem calls */
     String getRO(String roId, String roUrl) throws IOException;
     void putRO(String sipPath, String roUrl);
-	boolean trackEvent(String agentId, String entityId, String roUrl);
-	boolean makeObsolete(String entityId, String roUrl);
-	void updateSip(String sipPath, String entityId, String key, String value) throws Exception;
-	String getROAffiliation(String entityId, String registryUrl) throws Exception;
-	boolean assignToAgent(String entityId, String agentId, String registryUrl) throws Exception;
+    List<ROMetadata> getAllCOs(String repository, String agentId, String roUrl) throws IOException;
+    List<ROMetadata> getAllROs(String repository, String agentId, String roUrl) throws IOException;
+    boolean trackEvent(String agentId, String entityId, String roUrl);
+    boolean trackRevision(String previousROId, String nextROId, String roUrl); //this shouldn't be called from here
+    boolean makeObsolete(String entityId, String roUrl);
+    String getSip(String roId, String roUrl) throws IOException;
+
+
+    //Shouldn't be here
+    void updateSip(String sipPath, String entityId, String key, String value) throws Exception;
+    void updateSip(String sipPath, String entityId, Map<String, String> changes) throws Exception;
+    void cleanSip(String sipPath) throws Exception;
 }

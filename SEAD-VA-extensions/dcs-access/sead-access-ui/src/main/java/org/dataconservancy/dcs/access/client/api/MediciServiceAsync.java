@@ -27,31 +27,33 @@ import java.util.Map;
 
 
 public interface MediciServiceAsync {
-	public Map<String, List<String>> subCollectionMap = new HashMap<String, List<String>>();
-	public Map<String, List<String>> fileMap = new HashMap<String, List<String>>();
-	
-	void getRelations(AsyncCallback<DatasetRelation> callback);
-	void toVAmodel(String id, String parent, MediciInstance sparqlEp, String tmpHome,
+    public Map<String, List<String>> subCollectionMap = new HashMap<String, List<String>>();
+    public Map<String, List<String>> fileMap = new HashMap<String, List<String>>();
+
+    void getRelations(AsyncCallback<DatasetRelation> callback);
+    void toVAmodel(String id, String parent, MediciInstance sparqlEp, String tmpHome,
                    AsyncCallback<Void> callback);
-	void getBag(String tagId, MediciInstance sparqlEndpoint, String bagitEp,
+    void getBag(String tagId, MediciInstance sparqlEndpoint, String bagitEp,
                 String tmpHome, AsyncCallback<String> callback);
-	void getSipFromBag(String bagPath, String sipPath, String bagitEp,
+    void getSipFromBag(String bagPath, String sipPath, String bagitEp,
                        AsyncCallback<String> callback);
-	void addMetadata(String fileSrc, String sipFilePath,
+    void addMetadata(String fileSrc, String sipFilePath,
                      AsyncCallback<Void> callback);
-	void splitSip(String sip, AsyncCallback<Integer> callback);
-	void getFileNos(AsyncCallback<Integer> callback);
-	void restartIngest(String datasetId, String tmpHome,
+    void splitSip(String sip, AsyncCallback<Integer> callback);
+    void getFileNos(AsyncCallback<Integer> callback);
+    void restartIngest(String datasetId, String tmpHome,
                        AsyncCallback<CheckPointDetail> callback);
-	void submitMultipleSips(String sipEndpoint, String datasetId,
+    void submitMultipleSips(String sipEndpoint, String datasetId,
                             MediciInstance sparqlInstance, String sipBasePath,
                             String wfInstanceId, List<String> perviousUrls, int startSipNum,
                             int numberOfSips, String username, String pass,
                             boolean restrictAccess, String baseUrl, String tmpHome,
-                            boolean submitMultipleSips, AsyncCallback<String> callback);
-	void generateWfInstanceId(AsyncCallback<String> callback);
-	void parseJson(String json, AsyncCallback<Map<String, String>> callback);
-	void getAcrInstances(AsyncCallback<List<MediciInstance>> callback);
-	
-	
+                            boolean submitMultipleSips, boolean repub, AsyncCallback<String> callback);
+    void generateWfInstanceId(AsyncCallback<String> callback);
+    void parseJson(String json, AsyncCallback<Map<String, String>> callback);
+    void getAcrInstances(AsyncCallback<List<MediciInstance>> callback);
+    void getSipJsonFromBag(String bagPath, String sipPath, String bagitEp,
+                           AsyncCallback<String> callback);
+
+
 }

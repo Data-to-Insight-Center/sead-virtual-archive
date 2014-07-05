@@ -1,101 +1,112 @@
 package org.dataconservancy.dcs.access.client.view;
 
 import com.google.gwt.user.client.ui.*;
-import com.smartgwt.client.widgets.Button;
 
 public class AcrPublishDataView extends Composite implements org.dataconservancy.dcs.access.client.presenter.AcrPublishDataPresenter.Display{
 
-	VerticalPanel publishContainer;
-	CaptionPanel projectDesciptionPanel;
-	CaptionPanel researchObjectPanel;
-	CaptionPanel licensePanel;
+    VerticalPanel publishContainer;
+    CaptionPanel projectDesciptionPanel;
+    CaptionPanel researchObjectPanel;
+    CaptionPanel licensePanel;
+    Button previewButton;
 
-	ListBox projectList;
-	ListBox ROList;
-
-
-
-	public AcrPublishDataView() {
-		publishContainer =  new VerticalPanel();
-		projectDesciptionPanel = new CaptionPanel("Project Descritpion");
-		researchObjectPanel = new CaptionPanel("Research Object");
-		licensePanel = new CaptionPanel("License  ");
-
-		projectDesciptionPanel.setStyleName("CaptionPanelStyle");
-		researchObjectPanel.setStyleName("CaptionPanelStyle");
-		licensePanel.setStyleName("CaptionPanelStyle");
-
-		publishContainer.add(projectDesciptionPanel);
-		publishContainer.add(researchObjectPanel);
-		publishContainer.add(licensePanel);
-
-		Grid project = new Grid(2,2);
-		Label projectName = new Label("Project Name");
-		projectList = new ListBox(false);
-		Label projectDescription = new Label("Project Description");
-		TextArea descriptionArea = new TextArea();
-		project.setCellSpacing(3);
-		project.setCellPadding(3);
-		project.setWidget(0, 0, projectName);
-		project.setWidget(0, 1, projectList);
-		project.setWidget(1, 0, projectDescription);
-		project.setWidget(1, 1, descriptionArea);
-		projectDesciptionPanel.add(project);
+    ListBox projectList;
+    ListBox ROList;
+    HorizontalPanel previewButtonPanel;
 
 
 
+    public AcrPublishDataView() {
+        publishContainer =  new VerticalPanel();
+        projectDesciptionPanel = new CaptionPanel("Project Descritpion");
+        researchObjectPanel = new CaptionPanel("Research Object");
+        licensePanel = new CaptionPanel("License  ");
 
-		Grid ROGrid = new Grid(4,2);
-		Label ROLAbel = new Label("Research Object");
-		ROList = new ListBox();
-		//Label uploadLabel = new Label ("Upload Local Bag");
-		//Button browseButton = new Button("...");
-	//	HorizontalPanel browsePanel = new HorizontalPanel();
-		//browsePanel.add(uploadLabel);
-		//browsePanel.add(browseButton);
-	//	Button validateButton = new Button("Validate Bag");
-		ROGrid.setCellSpacing(3);
-		ROGrid.setCellPadding(3);
-		ROGrid.setWidget(0, 0, ROLAbel);
-		ROGrid.setWidget(0, 1, ROList);
-		//ROGrid.setWidget(1, 1, new HTML("Or"));
-		//ROGrid.setWidget(2, 1, browsePanel);
-	//	ROGrid.setWidget(3, 1, validateButton);
-		researchObjectPanel.add(ROGrid);
+        projectDesciptionPanel.setStyleName("CaptionPanelStyle");
+        researchObjectPanel.setStyleName("CaptionPanelStyle");
+        licensePanel.setStyleName("CaptionPanelStyle");
 
-		CheckBox licenseBox = new CheckBox("By clicking this checkbox, I certify that I agree to release my research data under the terms of the Creative Commons license");
-		licensePanel.add(licenseBox);
+        publishContainer.add(projectDesciptionPanel);
+        publishContainer.add(researchObjectPanel);
+        //publishContainer.add(licensePanel);
 
-		HorizontalPanel previewButtonPanel =  new HorizontalPanel();
-		previewButtonPanel.setWidth("600px");
-		Button previewButton = new Button("Preview");
-		previewButtonPanel.setHorizontalAlignment(HorizontalPanel.ALIGN_RIGHT);
-		previewButtonPanel.add(previewButton);
-		publishContainer.add(previewButtonPanel);
+        Grid project = new Grid(2,2);
+        Label projectName = new Label("Project Name");
+        projectList = new ListBox(false);
+        Label projectDescription = new Label("Project Description");
+        TextArea descriptionArea = new TextArea();
+        project.setCellSpacing(3);
+        project.setCellPadding(3);
+        project.setWidget(0, 0, projectName);
+        project.setWidget(0, 1, projectList);
+        project.setWidget(1, 0, projectDescription);
+        project.setWidget(1, 1, descriptionArea);
+        projectDesciptionPanel.add(project);
 
 
-	}
 
 
-	@Override
-	public VerticalPanel getPublishContainer() {
-		return publishContainer;
+        Grid ROGrid = new Grid(4,2);
+        Label ROLabel = new Label("Research Object");
 
-	}
+        ROList = new ListBox(); //contains names of datasets
+
+        ROGrid.setCellSpacing(3);
+        ROGrid.setCellPadding(3);
+        ROGrid.setWidget(0, 0, ROLabel);
+        ROGrid.setWidget(0, 1, ROList);
+
+        researchObjectPanel.add(ROGrid);
+
+        CheckBox licenseBox = new CheckBox("By clicking this checkbox, I certify that I agree to release my research data under the terms of the Creative Commons license");
+        //	licensePanel.add(licenseBox);
+
+        previewButtonPanel =  new HorizontalPanel();
+        previewButtonPanel.setWidth("600px");
+        previewButton = new Button("Preview");
+        previewButtonPanel.setHorizontalAlignment(HorizontalPanel.ALIGN_RIGHT);
+        previewButtonPanel.add(previewButton);
+        publishContainer.add(previewButtonPanel);
+    }
 
 
-	@Override
-	public ListBox getIr() {	//getIr in PresenterCode. mapping here accordingly
-		// TODO Auto-generated method stub
-		return projectList;
-	}
+    @Override
+    public VerticalPanel getPublishContainer() {
+        return publishContainer;
+
+    }
 
 
-	@Override
-	public ListBox getROList() {
-		// TODO Auto-generated method stub
-		return ROList;
-	}
+    @Override
+    public ListBox getProjectList() {	//getIr in PresenterCode. mapping here accordingly
+        return projectList;
+    }
+
+
+    @Override
+    public ListBox getROList() {
+        return ROList;
+    }
+
+
+    @Override
+    public Button getPreviewButton() {
+        return previewButton;
+    }
+
+
+
+    @Override
+    public CaptionPanel getROPanel() {
+        return researchObjectPanel;
+    }
+
+
+    @Override
+    public Panel getButtonPanel() {
+        return previewButtonPanel;
+    }
+
 
 
 

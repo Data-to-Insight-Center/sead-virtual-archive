@@ -43,7 +43,7 @@ public interface DepositServiceAsync {
 	void getStatusDetails(String process, String statusUrl, int expectedCount,
                           AsyncCallback<String> callback);
 
-	void statusUpdate(String statusUrl, Date latestDate,
+	void statusUpdate(String statusUrl, Date latestDate, int count,
                       AsyncCallback<Map<Date, List<Event>>> callback);
 
 	void loadDuIds(List<String> statusUrl, AsyncCallback<Void> callback);
@@ -53,5 +53,7 @@ public interface DepositServiceAsync {
 	void getLinks(String urlStr, AsyncCallback<String> callback);
 
 	void getResearchObjectId(String statusUrl, AsyncCallback<String> callback);
+
+	void isSuccessful(String statusUrl, AsyncCallback<Boolean> callback);
     
 }
