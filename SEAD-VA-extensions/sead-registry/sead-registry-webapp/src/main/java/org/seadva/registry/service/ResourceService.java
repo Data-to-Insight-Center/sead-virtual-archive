@@ -234,6 +234,7 @@ public class ResourceService {
     @Produces("application/json")
     public Response getAllCollections(@PathParam("type") String type,
                                       @QueryParam("submitterId") String submitterId, //Researcher who submitted Curation Object or Curator who submitted Published Object would be the submitters
+                                      @QueryParam("creatorId") String creatorId,//Researcher who uploaded/created the data
                                       @QueryParam("repository") String repository, //Repository Name to which CurationObject is to be submitted or to which Published Object was already Published
                                       @QueryParam("fromDate") String fromDate,
                                       @QueryParam("toDate") String toDate) throws Exception {
@@ -244,7 +245,7 @@ public class ResourceService {
             querySession.beginTransaction();
 
             String queryStr = "SELECT C from Collection C";
-            if(submitterId!=null)
+            if(submitterId!=null||creatorId!=null)
                 queryStr+=", Relation R";
             if(repository!=null)
                 queryStr+=", DataLocation D";
@@ -262,6 +263,12 @@ public class ResourceService {
                 queryStr += " R.id.cause.id=C.id AND R.id.relationType.id='rl:3' AND R.id.effect.id='"+submitterId+"'"; //querying for submitter/publisher.
             }
             // Todo query from RelationType table instead of providing rl:2 as identifier
+
+            if(creatorId!=null){
+                if(type!=null)
+                    queryStr+=" AND ";
+                queryStr += " R.id.cause.id=C.id AND R.id.relationType.id='rl:2' AND R.id.effect.id='"+creatorId+"'"; //querying for submitter/publisher.
+            }
 
             if(repository!=null) {
                 if(type!=null || submitterId!=null)
@@ -554,6 +561,22 @@ public class ResourceService {
         List<Relation> relationList = gson.fromJson(relationListJson, listType);
         for(Relation relation: relationList){
             dataLayerVaRegistry.merge(relation);
+        }
+        dataLayerVaRegistry.flushSession();
+        return Response.ok().build();
+    }
+
+    @POST
+    @Path("/delrelation")
+    @Consumes("application/json")
+    public Response deleteRelations( @QueryParam("relList") String relationListJson
+    ) throws IOException, ClassNotFoundException
+    {
+        Type listType = new TypeToken<ArrayList<Relation>>() {
+        }.getType();
+        List<Relation> relationList = gson.fromJson(relationListJson, listType);
+        for(Relation relation: relationList){
+            dataLayerVaRegistry.delete(relation);
         }
         dataLayerVaRegistry.flushSession();
         return Response.ok().build();

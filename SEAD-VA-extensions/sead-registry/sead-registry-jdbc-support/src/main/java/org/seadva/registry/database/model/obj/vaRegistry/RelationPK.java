@@ -1,17 +1,10 @@
 package org.seadva.registry.database.model.obj.vaRegistry;
 
-import com.felees.hbnpojogen.persistence.IPojoGenEntity;
-import java.io.Serializable;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Embeddable;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
-
 import com.google.gson.annotations.Expose;
 import org.seadva.registry.database.model.obj.vaRegistry.iface.IRelationPK;
+
+import javax.persistence.*;
+import java.io.Serializable;
 
 
 /** 
@@ -45,7 +38,7 @@ public class RelationPK implements Cloneable, Serializable,  IRelationPK {
 
 	/** Field mapping. */
     @Expose
-	@ManyToOne( cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY )
+	@ManyToOne( cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER )
 	@org.hibernate.annotations.Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
 	@Basic( optional = false )
 	@JoinColumn(name = "relation_type_id", nullable = false , insertable = false, updatable = false )
