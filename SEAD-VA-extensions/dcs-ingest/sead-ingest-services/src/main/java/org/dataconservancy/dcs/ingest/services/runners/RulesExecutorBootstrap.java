@@ -20,25 +20,20 @@
 
 package org.dataconservancy.dcs.ingest.services.runners;
 
-import com.google.gson.GsonBuilder;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 import org.dataconservancy.dcs.ingest.Bootstrap;
+import org.dataconservancy.dcs.ingest.IngestFramework;
+import org.dataconservancy.dcs.ingest.SipStager;
 import org.dataconservancy.dcs.ingest.services.IngestService;
 import org.dataconservancy.dcs.ingest.services.IngestServiceException;
 import org.dataconservancy.dcs.ingest.services.TimedServiceWrapper;
 import org.dataconservancy.dcs.ingest.services.runners.model.ServiceQueueModifier;
-import org.seadva.ingest.Events;
-import org.dataconservancy.dcs.ingest.IngestFramework;
-import org.dataconservancy.dcs.ingest.SipStager;
 import org.dataconservancy.model.builder.InvalidXmlException;
 import org.dataconservancy.model.dcp.Dcp;
 import org.dataconservancy.model.dcs.DcsEntity;
 import org.dataconservancy.model.dcs.DcsEntityReference;
 import org.dataconservancy.model.dcs.DcsEvent;
+import org.seadva.ingest.Events;
 import org.seadva.model.pack.ResearchObject;
-import org.seadva.data.lifecycle.support.model.Event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
@@ -46,7 +41,6 @@ import org.springframework.beans.factory.annotation.Required;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
-import java.text.ParseException;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -89,7 +83,8 @@ public class RulesExecutorBootstrap
 
     public void startIngest(String stagedSipID) {
         ServiceQueueModifier queueModifier = new ServiceQueueModifier(new ArrayBlockingQueue<IngestService>(10));
-        executor.execute(new RulesRunner(queueModifier, ingest.getSipStager(), stagedSipID));
+        Map<String, Integer> matchedRepositories  = new HashMap<String, Integer>();
+        executor.execute(new RulesRunner(queueModifier, ingest.getSipStager(), stagedSipID, matchedRepositories));
         executor.execute(new IngestRunner(queueModifier, stagedSipID));
     }
 
@@ -137,6 +132,7 @@ public class RulesExecutorBootstrap
                     log.debug("Ingest {}: Service {} execution: {} ms",
                             new Object[] { sipRef, svc.getClass().getName(), (wrapper.getEnd() - wrapper.getStart()) });
 
+                    Thread.sleep(1*1000); //To prevent reading SIP before it is entirely updated by an activity to include events (especially to be able to read failure events)
                     Dcp sip = ingest.getSipStager().getSIP(sipRef);
 
                     int doneFlag = 0;
@@ -243,30 +239,36 @@ public class RulesExecutorBootstrap
         ServiceQueueModifier queueModifier;
         SipStager sipStager;
         String sipId;
+        BlockingQueue<String> outputMessages;
+        Map<String, Integer> matchedRepositories;
 
-        RulesRunner(ServiceQueueModifier queueModifier, SipStager sipStager, String sipId){
+        RulesRunner(ServiceQueueModifier queueModifier, SipStager sipStager, String sipId, Map<String, Integer> matchedRepositories){
             this.queueModifier = queueModifier;
             this.sipStager = sipStager;
             this.sipId = sipId;
+            this.outputMessages = new ArrayBlockingQueue<String>(50);
+            this.matchedRepositories = matchedRepositories;
         }
 
         public void run() {
             System.out.print("Running Rules Runner");
             try {
-                new org.dataconservancy.dcs.ingest.services.rules.impl.Executor().executeRules(this.sipStager, this.sipId, this.queueModifier);
+                new org.dataconservancy.dcs.ingest.services.rules.impl.Executor(this.outputMessages).executeRules(this.sipStager, this.sipId, this.queueModifier, this.matchedRepositories);
 
                 while (true){
-                    if(org.dataconservancy.dcs.ingest.services.rules.impl.Executor.outputMessages.isEmpty()){
+                    if(this.outputMessages.isEmpty()){
                         Thread.sleep(2*1000);
                         continue;
                     }
-                    String message = org.dataconservancy.dcs.ingest.services.rules.impl.Executor.outputMessages.peek();
+                    String message = this.outputMessages.peek();
                     DcsEvent event = createEvent(this.sipId, message);
                     ResearchObject sip = (ResearchObject) this.sipStager.getSIP(this.sipId);
                     sip.addEvent(event);
 
-                    this.sipStager.updateSIP(sip, this.sipId);//This is could potentially cause consistency issues due to multiple thread updating the sip
-                    org.dataconservancy.dcs.ingest.services.rules.impl.Executor.outputMessages.remove();
+                    synchronized (this){
+                        this.sipStager.updateSIP(sip, this.sipId);//This is could potentially cause consistency issues due to multiple thread updating the sip
+                    }
+                    this.outputMessages.remove();
                     if(message.contains("workflow"))
                         break;
                 }

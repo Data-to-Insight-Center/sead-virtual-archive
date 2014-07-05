@@ -40,6 +40,7 @@ public final class VivoUtil {
     static Map<String,String> emailInstitutionMap = new HashMap<String, String>();
     static {
         emailInstitutionMap.put("illinois.edu","University of Illinois");
+        emailInstitutionMap.put("indiana.edu","Indiana University");
     }
     int first=0;
     HashMap<String, ArrayList<HashMap<String, HashMap<String, ArrayList<String>>>>> output = new HashMap<String, ArrayList<HashMap<String, HashMap<String, ArrayList<String>>>>>();

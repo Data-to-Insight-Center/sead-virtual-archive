@@ -101,7 +101,7 @@ public class DoiUpdationService extends IngestServiceBase
                             if(locationValue==null)
                                 locationValue = "http://seadva.d2i.indiana.edu:8181/sead-access/#entity;"+ d.getId();
 
-                            metadata.put(IdMetadata.Metadata.TARGET, locationValue);
+                            metadata.put(IdMetadata.Metadata.TARGET, locationValue.trim());
                             String[] tempShouler = doiShoulder.split(":");
                             int beginIndex = id.getIdValue().indexOf(tempShouler[tempShouler.length-1]);
                             String identifier = id.getIdValue().substring(beginIndex);

@@ -2,10 +2,8 @@ package org.dataconservancy.dcs.ingest.services;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.dataconservancy.archive.api.AIPFormatException;
-import org.dataconservancy.archive.api.ArchiveStore;
 import org.dataconservancy.dcs.ingest.Events;
 import org.dataconservancy.model.builder.DcsModelBuilder;
-import org.dataconservancy.model.builder.xstream.DcsXstreamStaxModelBuilder;
 import org.dataconservancy.model.dcp.Dcp;
 import org.dataconservancy.model.dcs.DcsDeliverableUnit;
 import org.dataconservancy.model.dcs.DcsEntity;
@@ -15,14 +13,11 @@ import org.seadva.archive.SeadArchiveStore;
 import org.seadva.model.SeadDataLocation;
 import org.seadva.model.SeadDeliverableUnit;
 import org.seadva.model.SeadRepository;
-import org.seadva.model.builder.api.SeadModelBuilder;
 import org.seadva.model.builder.xstream.SeadXstreamStaxModelBuilder;
 import org.seadva.model.pack.ResearchObject;
 import org.springframework.beans.factory.annotation.Required;
 
 import java.io.ByteArrayInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -90,22 +85,22 @@ public class SeadArchiver
                     break;
                 }
                 else{
-                 ((SeadDeliverableUnit)du).setPrimaryLocation(new SeadDataLocation());
+                    ((SeadDeliverableUnit)du).setPrimaryLocation(new SeadDataLocation());
                     SeadRepository repository = new SeadRepository();
                     repository.setType(this.type);
                     repository.setName(this.name);
                     repository.setIrId(this.id);
                     repository.setUrl(this.communityUrl);
                     dcp.addRepository(repository);
-                 }
-                 break;
+                }
+                break;
             }
         }
 
         dcp.setDeliverableUnits(dus);
         ingest.getSipStager().updateSIP(dcp, sipRef);
 
-        if(roType!=null&& roType.equalsIgnoreCase("PublishedObject")){
+        if(roType!=null&& (roType.equalsIgnoreCase("PublishedObject"))){
 
             ByteArrayOutputStream sink = new ByteArrayOutputStream();
             SeadXstreamStaxModelBuilder builder = new SeadXstreamStaxModelBuilder();

@@ -18,9 +18,15 @@
 package org.dataconservancy.dcs.ingest.services.rules.impl;
 
 import org.dataconservancy.dcs.ingest.SipStager;
+import org.dataconservancy.dcs.ingest.services.runners.model.RepositoryMatcher;
 import org.dataconservancy.dcs.ingest.services.runners.model.ServiceQueueModifier;
+import org.dataconservancy.dcs.ingest.services.util.Output;
 import org.dataconservancy.model.builder.InvalidXmlException;
 import org.dataconservancy.model.dcs.DcsDeliverableUnit;
+import org.drools.definition.rule.Rule;
+import org.drools.event.rule.AfterActivationFiredEvent;
+import org.drools.event.rule.BeforeActivationFiredEvent;
+import org.drools.event.rule.DefaultAgendaEventListener;
 import org.drools.runtime.StatelessKnowledgeSession;
 import org.seadva.model.SeadDeliverableUnit;
 import org.seadva.model.pack.ResearchObject;
@@ -30,9 +36,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.logging.Logger;
 
 import static com.google.common.collect.Lists.newArrayList;
 
@@ -41,20 +46,40 @@ import static com.google.common.collect.Lists.newArrayList;
  */
 public class Executor {
 
+    public Executor(BlockingQueue<String> outputMessages){
+        this.outputMessages = outputMessages;
+    }
     public static Map<String, Integer> mapPriorities = new HashMap<String, Integer>();
-    public static BlockingQueue<String> outputMessages = new ArrayBlockingQueue<String>(50);
+    BlockingQueue<String> outputMessages;// = new ArrayBlockingQueue<String>(50);
 
-    public Queue<String> executeRules(SipStager sipStager, String sipId, ServiceQueueModifier queueModifier) throws FileNotFoundException, InvalidXmlException {
+    public void executeRules(SipStager sipStager, String sipId, ServiceQueueModifier queueModifier, Map<String, Integer> matchedRepositories) throws FileNotFoundException, InvalidXmlException {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
         ResearchObject researchObject = (ResearchObject)sipStager.getSIP(sipId);
 
         DcsDeliverableUnit du = researchObject.getDeliverableUnits().iterator().next();
 
         String sessionKey = "ServiceSession";
-        StatelessKnowledgeSession statelessKnowledgeSessionForIdeals =
+        StatelessKnowledgeSession ksession =
                 (StatelessKnowledgeSession)applicationContext.getBean(sessionKey);
-        statelessKnowledgeSessionForIdeals.execute(newArrayList(((SeadDeliverableUnit)du)));
-        statelessKnowledgeSessionForIdeals.execute(newArrayList(queueModifier, ((SeadDeliverableUnit)du), researchObject));
-        return outputMessages;
+        //     statelessKnowledgeSessionForIdeals.execute(newArrayList(((SeadDeliverableUnit)du)));
+        ksession.addEventListener(new DefaultAgendaEventListener() {
+            @Override
+            public void beforeActivationFired(final BeforeActivationFiredEvent event) {
+                final Rule rule = event.getActivation().getRule();
+                final Logger log = Logger.getLogger(rule.getPackageName() + "." + rule.getName());
+                log.info(event.getClass().getSimpleName());
+                System.out.println(("Matchmaker matched and executed the rule "+ event.getActivation().getRule().getName()));
+                outputMessages.add("Matchmaker matched and executed the rule "+ event.getActivation().getRule().getName());
+            }
+
+            @Override
+            public void afterActivationFired(final AfterActivationFiredEvent event) {
+                if( event.getActivation().getRule().getName().contains("Decision"))
+                    outputMessages.add("Final matched repository based on priorities: "+ Output.repoName);
+            }
+        });
+
+        ksession.execute(newArrayList(queueModifier, ((SeadDeliverableUnit)du), researchObject, new RepositoryMatcher(matchedRepositories)));
+        // return outputMessages;
     }
 }
