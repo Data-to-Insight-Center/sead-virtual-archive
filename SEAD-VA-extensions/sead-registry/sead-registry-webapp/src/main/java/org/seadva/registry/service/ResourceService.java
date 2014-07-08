@@ -186,7 +186,7 @@ public class ResourceService {
     @Produces("application/json")
     public Response getRelationByType( @PathParam("element") String element) throws Exception {
 
-        RelationType relationType = relationTypeDao.getRelationType(element);
+        RelationType relationType = relationTypeDao.getRelationTypeByName(element);
         if(relationType == null)
             throw new NotFoundException("Relation type not found in relation type registry");
         return Response.ok(gson.toJson(relationType)).build();
@@ -291,7 +291,6 @@ public class ResourceService {
 
                     newRelationList.add(newRelation);
                 }
-
 
                 newCollectionWrapper.setRelations(newRelationList);
                 finalCollectionWrappers.add(newCollectionWrapper);
@@ -523,6 +522,22 @@ public class ResourceService {
             for(Relation relation: relationList){
                 relationDao.putRelation(relation);
             }
+            return Response.ok().build();
+        }
+
+        @POST
+        @Path("/delrelation")
+        @Consumes("application/json")
+        public Response deleteRelations( @QueryParam("relList") String relationListJson
+        ) throws IOException, ClassNotFoundException
+        {
+            Type listType = new TypeToken<ArrayList<Relation>>() {
+            }.getType();
+            List<Relation> relationList =  gson.fromJson(relationListJson, listType);
+            for(Relation relation: relationList){
+                relationDao.deleteRelation(relation);
+            }
+
             return Response.ok().build();
         }
 

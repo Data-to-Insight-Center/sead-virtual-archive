@@ -5,6 +5,7 @@ import org.seadva.registry.database.common.DBConnectionPool;
 import org.seadva.registry.database.common.ObjectPool;
 import org.seadva.registry.database.model.dao.vaRegistry.BaseEntityDao;
 import org.seadva.registry.database.model.dao.vaRegistry.CollectionDao;
+import org.seadva.registry.database.model.dao.vaRegistry.RelationDao;
 import org.seadva.registry.database.model.dao.vaRegistry.StateDao;
 import org.seadva.registry.database.model.obj.vaRegistry.BaseEntity;
 import org.seadva.registry.database.model.obj.vaRegistry.Collection;
@@ -152,9 +153,9 @@ public class CollectionDaoImpl implements CollectionDao {
         String queryStr = "Select * from collection C ";
 
         if(submitterId!=null)
-            queryStr+=", Relation R";
+            queryStr+=", relation R";
         if(repository!=null)
-            queryStr+=", DataLocation D, Repository P ";
+            queryStr+=", data_location D, repository P ";
         if(type!=null)
             queryStr+=", state S";
 
@@ -196,7 +197,8 @@ public class CollectionDaoImpl implements CollectionDao {
                 Collection collection = new Collection(entity);
                 collection.setName(resultSet.getString("name"));
                 collection.setIsObsolete(resultSet.getInt("is_obsolete"));
-
+                State state = stateDao.getStateById(resultSet.getString("state_id"));
+                collection.setState(state);
                 collectionsList.add(collection);
             }
 

@@ -595,6 +595,23 @@ public class RegistryClient {
             throw new HTTPException(response.getStatus());
     }
 
+    public void deleteRelation(List<Relation> relationList) throws IOException {
+        WebResource webResource = resource();
+
+        MultivaluedMap<String, String> params = new MultivaluedMapImpl();
+
+        List<String> values = new ArrayList<String>();
+        values.add(gson.toJson(relationList));
+        params.put("relList",values);
+
+        ClientResponse response = webResource.path("resource")
+                .path("delrelation")
+                .queryParams(params)
+                .post(ClientResponse.class);
+        if(response.getStatus()!=200)
+            throw new HTTPException(response.getStatus());
+    }
+
     public void makeObsolete(String entityId) throws IOException {
         WebResource webResource = resource();
 

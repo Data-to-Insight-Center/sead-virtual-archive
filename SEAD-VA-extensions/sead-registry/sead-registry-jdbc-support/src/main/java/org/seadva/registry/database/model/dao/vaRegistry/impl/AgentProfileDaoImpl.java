@@ -30,14 +30,14 @@ public class AgentProfileDaoImpl implements AgentProfileDao {
     protected ObjectPool<Connection> connectionPool = null;
 
     @Override
-    public boolean putAgentProfile(AgentProfile agentProfile) {
+    public boolean putAgentProfile(AgentProfile agentProfile, String agentId) {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
             connection = getConnection();
 
             statement = connection.prepareStatement("INSERT INTO agent_profile values(?,?,?)");
-            statement.setString(1, agentProfile.getId().getAgent().getId());
+            statement.setString(1, agentId);
             statement.setString(2, agentProfile.getId().getProfileType().getId());
             statement.setString(3, agentProfile.getProfileValue());
             statement.executeUpdate();

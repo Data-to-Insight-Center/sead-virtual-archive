@@ -6,6 +6,7 @@ import org.seadva.registry.database.common.ObjectPool;
 import org.seadva.registry.database.model.dao.vaRegistry.AgentDao;
 import org.seadva.registry.database.model.dao.vaRegistry.AgentProfileDao;
 import org.seadva.registry.database.model.dao.vaRegistry.AgentRoleDao;
+import org.seadva.registry.database.model.dao.vaRegistry.BaseEntityDao;
 import org.seadva.registry.database.model.obj.vaRegistry.*;
 
 import java.sql.Connection;
@@ -29,24 +30,27 @@ public class AgentDaoImpl implements AgentDao {
     protected ObjectPool<Connection> connectionPool = null;
     AgentRoleDao agentRoleDao;
     AgentProfileDao agentProfileDao;
+    BaseEntityDao baseEntityDao;
 
     public AgentDaoImpl(){
         connectionPool = DBConnectionPool.getInstance();
         agentRoleDao = new AgentRoleDaoImpl();
         agentProfileDao = new AgentProfileDaoImpl();
+        baseEntityDao = new BaseEntityDaoImpl();
     }
 
     @Override
     public boolean putAgent(Agent agent) {
 
         for(AgentRole role: agent.getAgentRoles()){
-            agentRoleDao.putAgentRole(role);
+            agentRoleDao.putAgentRole(role, agent.getId());
         }
 
         for(AgentProfile profile: agent.getAgentProfiles()){
-            agentProfileDao.putAgentProfile(profile);
+            agentProfileDao.putAgentProfile(profile, agent.getId());
         }
 
+        baseEntityDao.insertEntity(agent);
         Connection connection = null;
         PreparedStatement statement = null;
         try {
@@ -58,7 +62,7 @@ public class AgentDaoImpl implements AgentDao {
             statement.executeUpdate();
 
             statement.close();
-            log.debug("Done resetting unfinished raw notifications");
+            log.debug("Done inserting agent");
         } catch (SQLException sqle) {
             throw new RuntimeException(sqle);
         } finally {

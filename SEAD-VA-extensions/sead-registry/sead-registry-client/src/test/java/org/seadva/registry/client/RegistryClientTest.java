@@ -17,12 +17,20 @@
 package org.seadva.registry.client;
 
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.core.util.MultivaluedMapImpl;
 import com.sun.jersey.test.framework.JerseyTest;
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
-import org.seadva.registry.database.model.obj.vaRegistry.BaseEntity;
-import org.seadva.registry.database.model.obj.vaRegistry.Property;
+import org.seadva.registry.database.model.obj.vaRegistry.*;
 
+import javax.ws.rs.core.MultivaluedMap;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.*;
 
 import static junit.framework.Assert.assertTrue;
@@ -84,4 +92,18 @@ public class RegistryClientTest extends JerseyTest {
         entityList = client.queryByProperty("abstract", "new value");
         assertTrue(entityList.size() > 0);
     }
+
+    @Test
+    public void testPostAgent() throws IOException {
+        Agent agent = new Agent();
+        agent.setId(UUID.randomUUID().toString());
+        agent.setEntityName("test user");
+        agent.setEntityLastUpdatedTime(new Date());
+        agent.setEntityCreatedTime(new Date());
+        agent.setFirstName("test");
+        agent.setLastName("test");
+
+        client.postAgent(agent, "Curator");
+    }
+
 }

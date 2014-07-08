@@ -11,5 +11,6 @@ import java.util.List;
 public interface RelationDao {
     List<Relation> getRelations(String causeId);
     boolean putRelation(Relation relation);
+    boolean deleteRelation(Relation relation);
 }
 

@@ -84,10 +84,13 @@ public class FixityDaoImpl implements FixityDao {
         try {
             connection = getConnection();
             for(Fixity fixity:fixities){
-                statement = connection.prepareStatement("INSERT INTO fixity values(?,?,?)");
+                statement = connection.prepareStatement("INSERT INTO fixity values(?,?,?)" +
+                        "ON DUPLICATE KEY UPDATE " +
+                        "valueStr=?");
                 statement.setString(1, fixity.getId().getEntity().getId());
                 statement.setString(2, fixity.getId().getType());
                 statement.setString(3, fixity.getValuestr());
+                statement.setString(4, fixity.getValuestr());
                 statement.executeUpdate();
                 statement.close();
             }

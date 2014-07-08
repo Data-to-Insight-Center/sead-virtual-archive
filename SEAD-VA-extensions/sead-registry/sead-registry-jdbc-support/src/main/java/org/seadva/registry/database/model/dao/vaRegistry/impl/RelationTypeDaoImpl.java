@@ -29,7 +29,7 @@ public class RelationTypeDaoImpl implements RelationTypeDao {
     protected ObjectPool<Connection> connectionPool = null;
 
     @Override
-    public RelationType getRelationType(String relationName) {
+    public RelationType getRelationTypeByName(String relationName) {
         RelationType relationType = new RelationType();
         Connection connection = null;
         PreparedStatement statement = null;
@@ -39,6 +39,45 @@ public class RelationTypeDaoImpl implements RelationTypeDao {
 
             statement = connection.prepareStatement("Select * from relation_type where relation_element=?");
             statement.setString(1, relationName);
+            ResultSet resultSet = statement.executeQuery();
+
+
+            while (resultSet.next()) {
+                relationType.setId(resultSet.getString("relation_type_id"));
+                relationType.setRelationElement(resultSet.getString("relation_element"));
+                relationType.setRelationSchema(resultSet.getString("relation_schema"));
+                break;
+            }
+
+
+        } catch (SQLException sqle) {
+            throw new RuntimeException(sqle);
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    //  log.warn("Unable to close statement", e);
+                }
+                statement = null;
+            }
+            connectionPool.releaseEntry(connection);
+
+        }
+        return relationType;
+    }
+
+    @Override
+    public RelationType getRelationTypeById(String relationTypeId) {
+        RelationType relationType = new RelationType();
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+        try {
+            connection = getConnection();
+
+            statement = connection.prepareStatement("Select * from relation_type where relation_type_id=?");
+            statement.setString(1, relationTypeId);
             ResultSet resultSet = statement.executeQuery();
 
 
