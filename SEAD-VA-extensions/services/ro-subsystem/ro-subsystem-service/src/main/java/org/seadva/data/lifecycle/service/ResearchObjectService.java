@@ -291,7 +291,7 @@ public class ResearchObjectService {
                                        @QueryParam("toDate") String toDate) throws IOException, URISyntaxException, OREException, ClassNotFoundException {
 
         List<ROMetadata> roList = new ArrayList<ROMetadata>();
-        List<CollectionWrapper> collections = new RegistryClient(registryServiceUrl).getCollectionList(type, repository, submitterId, creatorId);
+        List<CollectionWrapper> collections = new RegistryClient(registryServiceUrl).getCollectionList(type, repository, submitterId);//, creatorId);
 
         for(CollectionWrapper collection:collections){
             ROMetadata ro = new ROMetadata();

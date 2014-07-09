@@ -32,7 +32,7 @@ public interface RegistryService
 
     /* Registry calls */
     /* Used to register agents in the registry */
-    boolean registerAgents(List<Person> persons, String registryUrl);
+    boolean registerAgents(List<Person> persons, String registryUrl) throws IOException;
     String getRelation(String causeId, String registryUrl, String relationType) throws IOException;
     boolean assignToSubmitter(String entityId, String agentId,
                               String registryUrl) throws Exception;

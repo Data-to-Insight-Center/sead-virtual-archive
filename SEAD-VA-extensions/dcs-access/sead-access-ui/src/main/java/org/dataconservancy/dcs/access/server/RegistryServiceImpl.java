@@ -61,7 +61,7 @@ public class RegistryServiceImpl extends RemoteServiceServlet
 {
 
     @Override
-    public boolean registerAgents(List<Person> persons, String registryUrl) {
+    public boolean registerAgents(List<Person> persons, String registryUrl) throws IOException {
         Gson gson = new GsonBuilder()
                 .excludeFieldsWithoutExposeAnnotation()
                 .create();
@@ -76,20 +76,6 @@ public class RegistryServiceImpl extends RemoteServiceServlet
             agent.setEntityCreatedTime(new Date());
             agent.setFirstName(person.getFirstName());
             agent.setLastName(person.getLastName());
-
-            AgentRole role = new AgentRole();
-            AgentRolePK agentRolePK = new AgentRolePK();
-
-            RoleType roleType;
-            try {
-                roleType = getRoleByName(person.getRole().getName(), gson, registryUrl);
-                agentRolePK.setRoleType(roleType);
-                role.setId(agentRolePK);
-                agent.addAgentRole(role);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
 
             if(person.getVivoId()!=null){
                 AgentProfile profile = new AgentProfile();
@@ -107,35 +93,10 @@ public class RegistryServiceImpl extends RemoteServiceServlet
                 profile.setId(profilePK);
                 agent.addAgentProfile(profile);
             }
-
-            MultivaluedMap<String, String> params = new MultivaluedMapImpl();
-            List<String> values = new ArrayList<String>();
-            values.add(gson.toJson(agent));
-            params.put("entity",values);
-
-            List<String> types = new ArrayList<String>();
-            types.add("org.seadva.registry.database.model.obj.vaRegistry.Agent");
-
-            params.put("type", types);
-            WebResource webResource = Client.create().resource(
-                    registryUrl
-            );
-            ClientResponse response = webResource.path("resource")
-                    .path("agent")
-                    .path(
-                            URLEncoder.encode(
-                                    agent.getId()
-                            )
-                    )
-                    .queryParams(params)
-                    .post(ClientResponse.class);
-
-            if(response.getStatus()!=200)
-                throw new HTTPException(response.getStatus());
+            new RegistryClient(registryUrl).postAgent(agent, person.getRole().getName());
         }
         return true;
     }
-
 
     private static RoleType getRoleByName(String role, Gson gson, String registryUrl) throws IOException {
         WebResource webResource = Client.create().resource(

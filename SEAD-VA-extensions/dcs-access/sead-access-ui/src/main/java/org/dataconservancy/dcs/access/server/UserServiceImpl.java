@@ -182,7 +182,7 @@ public class UserServiceImpl extends RemoteServiceServlet
     }
 
 
-    public void updateAllUsers(List<Person> userList, List<Person> sendEmailList, String registryUrl) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException
+    public void updateAllUsers(List<Person> userList, List<Person> sendEmailList, String registryUrl) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, IOException
     {
 
         List<String> newUsers = new ArrayList<String>();

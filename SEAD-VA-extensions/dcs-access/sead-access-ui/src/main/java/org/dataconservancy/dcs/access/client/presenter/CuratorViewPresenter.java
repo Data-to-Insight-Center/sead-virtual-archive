@@ -412,7 +412,7 @@ public class CuratorViewPresenter implements Presenter {
     private void submitSip(final String datasetId, final Button publish, final Button edit, final int index, final boolean repub,final Grid curatorData, final Button unAssign){
         final NotificationPopupPanel startupPanel = new NotificationPopupPanel("Retrieving Research Object from registry", false);
         startupPanel.show();
-        /* registryService.getRO(datasetId, SeadApp.roUrl,
+         registryService.getRO(datasetId, SeadApp.roUrl,
                   new AsyncCallback<String>() {
 
                       @Override
@@ -578,6 +578,6 @@ public class CuratorViewPresenter implements Presenter {
                               }
                           });
                       }
-              });*/
+              });
     }
 }
