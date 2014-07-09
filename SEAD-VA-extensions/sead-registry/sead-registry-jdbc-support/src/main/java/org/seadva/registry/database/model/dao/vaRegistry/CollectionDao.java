@@ -13,5 +13,6 @@ public interface CollectionDao {
     Collection getCollection(String entityId);
     boolean insertCollection(Collection collection);
     List<Collection> listCollections(String submitterId, String repository, String type);
+    public List<Collection> queryByProperty(String key, String value);
 }
 

@@ -35,7 +35,7 @@ public class StateDaoImpl implements StateDao {
         try {
             connection = getConnection();
 
-            statement = connection.prepareStatement("Select * from state where state_name=?");
+            statement = connection.prepareStatement("Select * from state where state_type=?");
             statement.setString(1, stateName);
             ResultSet resultSet = statement.executeQuery();
 

@@ -4,6 +4,8 @@ import org.apache.log4j.Logger;
 import org.seadva.registry.database.common.DBConnectionPool;
 import org.seadva.registry.database.common.ObjectPool;
 import org.seadva.registry.database.model.dao.vaRegistry.AggregationDao;
+import org.seadva.registry.database.model.dao.vaRegistry.CollectionDao;
+import org.seadva.registry.database.model.dao.vaRegistry.FileDao;
 import org.seadva.registry.database.model.obj.vaRegistry.*;
 import org.springframework.stereotype.Repository;
 
@@ -27,8 +29,12 @@ public class AggregationDaoImpl implements AggregationDao {
     }
     public AggregationDaoImpl(){
         connectionPool = DBConnectionPool.getInstance();
+        collectionEntityDao = new CollectionDaoImpl();
+        fileDao = new FileDaoImpl();
     }
 
+    CollectionDao collectionEntityDao;
+    FileDao fileDao;
 
     protected ObjectPool<Connection> connectionPool = null;
 
@@ -39,7 +45,7 @@ public class AggregationDaoImpl implements AggregationDao {
         List<AggregationWrapper> aggregationList = new ArrayList<AggregationWrapper>();
         try {
             connection = getConnection();
-            statement = connection.prepareStatement("SELECT * from Aggregation A where A.parent_id='?");
+            statement = connection.prepareStatement("SELECT * from aggregation where parent_id=?");
             statement.setString(1, parentId);
             ResultSet resultSet = null;
             resultSet = statement.executeQuery();
@@ -47,14 +53,31 @@ public class AggregationDaoImpl implements AggregationDao {
 
             while (resultSet.next()) {
                 AggregationWrapper aggregationWrapper = new AggregationWrapper();
+                String childId = resultSet.getString("child_id");
+
+
+
+                if(collectionEntityDao.getCollection(childId)!=null)
+                    aggregationWrapper.setChildType(Collection.class.getName());
+                else if(fileDao.getFile(childId)!=null)
+                    aggregationWrapper.setChildType(File.class.getName());
+                else
+                    aggregationWrapper.setChildType(BaseEntity.class.getName());
+
+
+                if(collectionEntityDao.getCollection(parentId)!=null)
+                    aggregationWrapper.setParentType(Collection.class.getName());
+                else if(fileDao.getFile(parentId)!=null)
+                    aggregationWrapper.setParentType(File.class.getName());
+                else
+                    aggregationWrapper.setParentType(BaseEntity.class.getName());
+
                 BaseEntity child = new BaseEntity();
-                child.setId(resultSet.getString("child_id"));
+                child.setId(childId);
                 BaseEntity parent = new BaseEntity();
-                parent.setId(resultSet.getString("parent_id"));
+                parent.setId(parentId);
                 aggregationWrapper.setChild(child);
                 aggregationWrapper.setParent(parent);
-                aggregationWrapper.setChildType(child.getClassType().getName());  //Null?
-                aggregationWrapper.setParentType(parent.getClassType().getName());//Null?
                 aggregationList.add(aggregationWrapper);
             }
 
@@ -82,7 +105,7 @@ public class AggregationDaoImpl implements AggregationDao {
         try {
             connection = getConnection();
 
-            statement = connection.prepareStatement("INSERT INTO aggregation values(?,?)");
+            statement = connection.prepareStatement("INSERT IGNORE INTO aggregation values(?,?)");
             statement.setString(1, aggregation.getId().getParent().getId());
             statement.setString(2, aggregation.getId().getChild().getId());
             statement.executeUpdate();

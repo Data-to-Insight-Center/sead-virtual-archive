@@ -4,7 +4,10 @@ import org.apache.log4j.Logger;
 import org.seadva.registry.database.common.DBConnectionPool;
 import org.seadva.registry.database.common.ObjectPool;
 import org.seadva.registry.database.model.dao.vaRegistry.DataIdentifierDao;
-import org.seadva.registry.database.model.obj.vaRegistry.*;
+import org.seadva.registry.database.model.obj.vaRegistry.BaseEntity;
+import org.seadva.registry.database.model.obj.vaRegistry.DataIdentifier;
+import org.seadva.registry.database.model.obj.vaRegistry.DataIdentifierPK;
+import org.seadva.registry.database.model.obj.vaRegistry.DataIdentifierType;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -30,6 +33,52 @@ public class DataIdentifierDaoImpl implements DataIdentifierDao {
 
     public DataIdentifierDaoImpl(){
         connectionPool = DBConnectionPool.getInstance();
+    }
+
+    @Override
+    public List<DataIdentifier> getDataIdentifiersByValue(String alternateId) {
+        List<DataIdentifier> dataIdentifiers = new ArrayList<DataIdentifier>();
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement("Select * from data_identifier where data_identifier_value=?");
+            statement.setString(1, alternateId);
+            ResultSet resultSet = null;
+            resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                DataIdentifier dataIdentifier = new DataIdentifier();
+                DataIdentifierPK dataIdentifierPK = new DataIdentifierPK();
+                DataIdentifierType dataIdentifierType = new DataIdentifierType();
+                dataIdentifierType.setId(resultSet.getString("data_identifier_type_id"));
+                dataIdentifierPK.setDataIdentifierType(dataIdentifierType);
+                BaseEntity entity1 = new BaseEntity();
+                entity1.setId(resultSet.getString("entity_id"));
+                dataIdentifierPK.setEntity(entity1);
+                dataIdentifier.setId(dataIdentifierPK);
+                dataIdentifier.setDataIdentifierValue(resultSet.getString("data_identifier_value"));
+
+                dataIdentifiers.add(dataIdentifier);
+            }
+
+
+        } catch (SQLException sqle) {
+            throw new RuntimeException(sqle);
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    log.warn("Unable to close statement", e);
+                }
+                statement = null;
+            }
+            connectionPool.releaseEntry(connection);
+
+        }
+        return dataIdentifiers;
     }
 
     @Override
@@ -85,10 +134,15 @@ public class DataIdentifierDaoImpl implements DataIdentifierDao {
         try {
             connection = getConnection();
             for(DataIdentifier dataIdentifier:dataIdentifiers){
-                statement = connection.prepareStatement("INSERT INTO data_identifier (entity_id, data_identifier_type_id, data_identifier_value) values(?,?,?)");
+                statement = connection.prepareStatement("INSERT INTO data_identifier" +
+                        " (entity_id, data_identifier_type_id, data_identifier_value) values(?,?,?)" +
+                        " ON DUPLICATE KEY UPDATE " +
+                                "data_identifier_value=?"
+                );
                 statement.setString(1, dataIdentifier.getId().getEntity().getId());
                 statement.setString(2, dataIdentifier.getId().getDataIdentifierType().getId());
                 statement.setString(3, dataIdentifier.getDataIdentifierValue());
+                statement.setString(4, dataIdentifier.getDataIdentifierValue());
                 statement.executeUpdate();
                 statement.close();
             }

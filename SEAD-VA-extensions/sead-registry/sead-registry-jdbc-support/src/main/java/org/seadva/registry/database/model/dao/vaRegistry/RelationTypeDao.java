@@ -8,6 +8,7 @@ import org.seadva.registry.database.model.obj.vaRegistry.RelationType;
  */
 public interface RelationTypeDao {
 	// constructor only
-    RelationType getRelationType(String relationName);
+    RelationType getRelationTypeByName(String relationName);
+    RelationType getRelationTypeById(String relationTypeId);
 }
 

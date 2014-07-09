@@ -4,7 +4,11 @@ import org.apache.log4j.Logger;
 import org.seadva.registry.database.common.DBConnectionPool;
 import org.seadva.registry.database.common.ObjectPool;
 import org.seadva.registry.database.model.dao.vaRegistry.RelationDao;
-import org.seadva.registry.database.model.obj.vaRegistry.*;
+import org.seadva.registry.database.model.dao.vaRegistry.RelationTypeDao;
+import org.seadva.registry.database.model.obj.vaRegistry.BaseEntity;
+import org.seadva.registry.database.model.obj.vaRegistry.Relation;
+import org.seadva.registry.database.model.obj.vaRegistry.RelationPK;
+import org.seadva.registry.database.model.obj.vaRegistry.RelationType;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -26,8 +30,11 @@ public class RelationDaoImpl implements RelationDao {
     }
     public RelationDaoImpl(){
         connectionPool = DBConnectionPool.getInstance();
+        relationTypeDao = new RelationTypeDaoImpl();
     }
 
+
+    RelationTypeDao relationTypeDao;
 
     protected ObjectPool<Connection> connectionPool = null;
 
@@ -56,8 +63,7 @@ public class RelationDaoImpl implements RelationDao {
                 RelationPK relationPk = new RelationPK();
                 relationPk.setCause(cause);
                 relationPk.setEffect(effect);
-                RelationType relationType = new RelationType();
-                relationType.setId(resultSet.getString("relation_type_id"));
+                RelationType relationType = relationTypeDao.getRelationTypeById(resultSet.getString("relation_type_id"));
                 relationPk.setRelationType(relationType);
                 relation.setId(relationPk);
 
@@ -89,7 +95,7 @@ public class RelationDaoImpl implements RelationDao {
     try {
         connection = getConnection();
 
-        statement = connection.prepareStatement("INSERT INTO fixity values(?,?,?)");
+        statement = connection.prepareStatement("INSERT IGNORE INTO relation values(?,?,?)");
         statement.setString(1, relation.getId().getCause().getId());
         statement.setString(2, relation.getId().getRelationType().getId());
         statement.setString(3, relation.getId().getEffect().getId());
@@ -112,6 +118,41 @@ public class RelationDaoImpl implements RelationDao {
     }
 
     return true;
+    }
+
+    @Override
+    public boolean deleteRelation(Relation relation){
+        Connection connection = null;
+        PreparedStatement statement = null;
+        try {
+            connection = getConnection();
+
+            statement = connection.prepareStatement("DELETE FROM relation where " +
+                    " cause_id=?" +
+                    " AND relation_type_id=?"+
+                    " AND effect_id=?");
+            statement.setString(1, relation.getId().getCause().getId());
+            statement.setString(2, relation.getId().getRelationType().getId());
+            statement.setString(3, relation.getId().getEffect().getId());
+            statement.executeUpdate();
+            statement.close();
+            log.debug("Done resetting unfinished raw notifications");
+        } catch (SQLException sqle) {
+            throw new RuntimeException(sqle);
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    log.warn("Unable to close statement", e);
+                }
+                statement = null;
+            }
+            connectionPool.releaseEntry(connection);
+
+        }
+
+        return true;
     }
 }
 

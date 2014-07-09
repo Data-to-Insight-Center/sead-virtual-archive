@@ -29,14 +29,14 @@ public class AgentRoleDaoImpl implements AgentRoleDao {
     protected ObjectPool<Connection> connectionPool = null;
 
     @Override
-    public boolean putAgentRole(AgentRole agentRole) {
+    public boolean putAgentRole(AgentRole agentRole, String agentId) {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
             connection = getConnection();
 
             statement = connection.prepareStatement("INSERT INTO agent_role values(?,?)");
-            statement.setString(1, agentRole.getId().getAgent().getId());
+            statement.setString(1, agentId);
             statement.setString(2, agentRole.getId().getRoleType().getId());
             statement.executeUpdate();
             statement.close();

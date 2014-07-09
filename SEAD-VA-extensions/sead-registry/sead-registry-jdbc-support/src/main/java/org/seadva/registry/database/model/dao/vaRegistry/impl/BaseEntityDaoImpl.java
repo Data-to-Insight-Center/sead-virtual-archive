@@ -7,7 +7,10 @@ import org.seadva.registry.database.model.dao.vaRegistry.BaseEntityDao;
 import org.seadva.registry.database.model.dao.vaRegistry.DataIdentifierDao;
 import org.seadva.registry.database.model.dao.vaRegistry.DataLocationDao;
 import org.seadva.registry.database.model.dao.vaRegistry.PropertyDao;
-import org.seadva.registry.database.model.obj.vaRegistry.*;
+import org.seadva.registry.database.model.obj.vaRegistry.BaseEntity;
+import org.seadva.registry.database.model.obj.vaRegistry.DataIdentifier;
+import org.seadva.registry.database.model.obj.vaRegistry.DataLocation;
+import org.seadva.registry.database.model.obj.vaRegistry.Property;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

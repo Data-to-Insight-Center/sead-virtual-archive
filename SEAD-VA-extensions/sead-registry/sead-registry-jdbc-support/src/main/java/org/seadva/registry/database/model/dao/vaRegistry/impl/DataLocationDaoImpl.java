@@ -4,7 +4,10 @@ import org.apache.log4j.Logger;
 import org.seadva.registry.database.common.DBConnectionPool;
 import org.seadva.registry.database.common.ObjectPool;
 import org.seadva.registry.database.model.dao.vaRegistry.DataLocationDao;
-import org.seadva.registry.database.model.obj.vaRegistry.*;
+import org.seadva.registry.database.model.obj.vaRegistry.BaseEntity;
+import org.seadva.registry.database.model.obj.vaRegistry.DataLocation;
+import org.seadva.registry.database.model.obj.vaRegistry.DataLocationPK;
+import org.seadva.registry.database.model.obj.vaRegistry.Repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -86,11 +89,18 @@ public class DataLocationDaoImpl implements DataLocationDao {
         try {
             connection = getConnection();
             for(DataLocation dataLocation:dataLocations){
-                statement = connection.prepareStatement("INSERT INTO data_location (entity_id, location_type_id, location_value, is_master_copy) values(?,?,?,?)");
+                statement = connection.prepareStatement("INSERT INTO data_location " +
+                        "(entity_id, location_type_id, location_value, is_master_copy) values(?,?,?,?) "+
+                        "ON DUPLICATE KEY UPDATE " +
+                        "location_value=?," +
+                        "is_master_copy=?"
+                );
                 statement.setString(1, dataLocation.getId().getEntity().getId());
                 statement.setString(2, dataLocation.getId().getLocationType().getId());
                 statement.setString(3, dataLocation.getLocationValue());
                 statement.setInt(4, dataLocation.getIsMasterCopy());
+                statement.setString(5, dataLocation.getLocationValue());
+                statement.setInt(6, dataLocation.getIsMasterCopy());
                 statement.executeUpdate();
                 statement.close();
             }

@@ -40,7 +40,7 @@ public class ProfileTypeDaoImpl implements ProfileTypeDao {
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                profile_type.setId(resultSet.getString("state_id"));
+                profile_type.setId(resultSet.getString("profile_type_id"));
                 profile_type.setProfileTypeName(resultSet.getString("profile_type_name"));
                 profile_type.setProfileTypeSchema(resultSet.getString("profile_type_schema"));
                 break;
