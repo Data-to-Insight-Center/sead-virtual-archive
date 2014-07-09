@@ -41,7 +41,7 @@ Support will be developed soon to build/deploy some of these module in a single 
 <br/>mvn clean install -DskipTests
 <br/>Then copy ro-subsystem-service/target/ro-x.x.x.war into tomcat/webapps/ro.war
 <li>Building BagIt Service:
-<br/>Copy acrInstances.xml[http://seadva-test.d2i.indiana.edu:8081/artifactory/ext-snapshot-local/acrInstances.xml] into resources folder [src/main/resources/org/seadva/bagit/util/acrInstance.xml]
+<br/>Copy acrInstances.xml[http://seadva-test.d2i.indiana.edu:8081/artifactory/ext-snapshot-local/acrInstances.xml] into resources folder [src/main/resources/org/seadva/bagit/util/acrInstances.xml]
 <br/>mvn clean package -DskipTests
 <br/>Then copy bagItRestService/target/bagit-x.x.x.war into tomcat/webapps/bagit.war
 <li>Building backend workflow: See below
