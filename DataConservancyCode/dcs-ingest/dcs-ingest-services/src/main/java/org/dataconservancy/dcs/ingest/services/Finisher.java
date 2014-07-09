@@ -37,6 +37,7 @@ import org.dataconservancy.model.dcp.Dcp;
 import org.dataconservancy.model.dcs.DcsEntity;
 import org.dataconservancy.model.dcs.DcsEntityReference;
 import org.dataconservancy.model.dcs.DcsEvent;
+import org.seadva.model.pack.ResearchObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
@@ -149,9 +150,9 @@ public class Finisher
 
     public void execute(String sipRef) {
         if (isDisabled()) return;
-        Dcp dcp = ingest.getSipStager().getSIP(sipRef);
+        ResearchObject dcp = (ResearchObject)ingest.getSipStager().getSIP(sipRef);
 
-        if (verifyArchiveEntities) {
+       /* if (verifyArchiveEntities) {
             checkArchive(dcp);
         }
 
@@ -162,10 +163,10 @@ public class Finisher
             }
             checkIndex(dcp);
         }
-
+*/
         addSuccessEvent(sipRef, dcp);
 
-        dcp = ingest.getSipStager().getSIP(sipRef);
+        dcp = (ResearchObject)ingest.getSipStager().getSIP(sipRef);
 
         for (DcsEvent e : dcp.getEvents()) {
             if (Events.INGEST_SUCCESS.equals(e.getEventType())) {
@@ -244,7 +245,7 @@ public class Finisher
     }
 
     private void archiveEvent(DcsEvent e) {
-        Dcp dcp = new Dcp();
+        ResearchObject dcp = new ResearchObject();
         dcp.addEvent(e);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();

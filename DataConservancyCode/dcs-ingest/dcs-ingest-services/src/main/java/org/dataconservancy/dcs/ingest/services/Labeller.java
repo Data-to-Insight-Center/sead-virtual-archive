@@ -44,6 +44,8 @@ import org.dataconservancy.model.dcs.DcsManifestation;
 import org.dataconservancy.model.dcs.DcsManifestationFile;
 import org.dataconservancy.model.dcs.DcsMetadataRef;
 import org.dataconservancy.model.dcs.DcsRelation;
+import org.seadva.model.SeadDeliverableUnit;
+import org.seadva.model.pack.ResearchObject;
 import org.springframework.beans.factory.annotation.Required;
 
 /**
@@ -137,7 +139,7 @@ public class Labeller
 
         /* Update internal references, and save */
         sip = updateReferences(ingest.getSipStager().getSIP(sipRef), idMap);
-        ingest.getSipStager().updateSIP(sip, sipRef);
+        ingest.getSipStager().updateSIP((ResearchObject)sip, sipRef);
 
     }
 

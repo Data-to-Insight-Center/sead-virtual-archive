@@ -67,7 +67,7 @@ public class CachedSipStager
 
     public void retire(String id) {
         if (cache.containsKey(id)) {
-            delegate.updateSIP((Dcp) cache.get(id), id);
+            delegate.updateSIP(cache.get(id), id);
             cache.remove(id);
         }
         delegate.retire(id);
@@ -114,7 +114,7 @@ public class CachedSipStager
 
         @Override
         protected boolean removeLRU(LinkEntry entry) {
-            delegate.updateSIP((Dcp) entry.getValue(), (String) entry.getKey());
+            delegate.updateSIP((Dcp)entry.getValue(), (String) entry.getKey());
             return true;
         }
     }

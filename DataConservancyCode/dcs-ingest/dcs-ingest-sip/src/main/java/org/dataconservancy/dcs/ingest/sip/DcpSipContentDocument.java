@@ -24,6 +24,7 @@ import org.dataconservancy.model.builder.DcsModelBuilder;
 import org.dataconservancy.model.builder.xstream.DcsXstreamStaxModelBuilder;
 import org.dataconservancy.model.dcp.Dcp;
 import org.dataconservancy.model.dcs.DcsEvent;
+import org.seadva.model.builder.xstream.SeadXstreamStaxModelBuilder;
 
 /**
  * Creates a dcp document containing the full ingest SIP, plus any additional
@@ -32,7 +33,7 @@ import org.dataconservancy.model.dcs.DcsEvent;
 public class DcpSipContentDocument
         extends AbstractDepositDocument {
 
-    private final DcsModelBuilder builder = new DcsXstreamStaxModelBuilder();
+    private final SeadXstreamStaxModelBuilder builder = new SeadXstreamStaxModelBuilder();
 
     private final Dcp sip;
 

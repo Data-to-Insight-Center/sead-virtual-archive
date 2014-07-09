@@ -21,6 +21,7 @@
   <packaging>jar</packaging>
   <name>SIP ingest utilities</name>
   <description>Tools and utilities for processing SIP packages</description>
+    <version>1.1.1-SEAD-SNAPSHOT</version>
 
   <parent>
     <artifactId>dcs-ingest</artifactId>
@@ -29,9 +30,7 @@
   </parent>
   
   <build>
-    
     <plugins>
-      
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
@@ -68,7 +67,17 @@
       <groupId>org.dataconservancy.deposit</groupId>
       <artifactId>dc-deposit-core</artifactId>
     </dependency>
+      <dependency>
+          <groupId>org.seadva.model</groupId>
+          <artifactId>sead-model</artifactId>
+          <version>1.1.0-SNAPSHOT</version>
+      </dependency>
 
+      <dependency>
+          <groupId>org.seadva.model</groupId>
+          <artifactId>sead-model-builder-xstream</artifactId>
+          <version>1.1.0-SNAPSHOT</version>
+      </dependency>
     <dependency>
       <groupId>org.dataconservancy.model</groupId>
       <artifactId>dcs-model</artifactId>
@@ -133,6 +142,12 @@
       <version>1.1.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
+
+      <dependency>
+          <groupId>org.dataconservancy.index</groupId>
+          <artifactId>dcs-index-solr-support</artifactId>
+          <version>1.1.0-SNAPSHOT</version>
+      </dependency>
 
     <dependency>
       <groupId>org.dataconservancy.dcs</groupId>

@@ -36,6 +36,7 @@ import org.dataconservancy.dcs.util.FilePathAlgorithm;
 import org.dataconservancy.dcs.util.FilePathSource;
 import org.dataconservancy.model.dcp.Dcp;
 import org.dataconservancy.model.dcs.DcsFile;
+import org.seadva.model.pack.ResearchObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
@@ -263,8 +264,8 @@ public class FileSystemContentStager
     }
 
     private String createSip(String key) {
-        Dcp sip = new Dcp();
-        String id = sipStager.addSIP(new Dcp());
+        ResearchObject sip = new ResearchObject();
+        String id = sipStager.addSIP(new ResearchObject());
 
         DcsFile file = new DcsFile();
         file.setId(referenceBaseURI + key);

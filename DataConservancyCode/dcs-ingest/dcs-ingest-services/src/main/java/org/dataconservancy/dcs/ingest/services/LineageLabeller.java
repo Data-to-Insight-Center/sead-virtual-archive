@@ -33,6 +33,7 @@ import org.dataconservancy.model.dcs.DcsEntityReference;
 import org.dataconservancy.model.dcs.DcsEvent;
 import org.dataconservancy.model.dcs.DcsRelation;
 import org.dataconservancy.model.dcs.DcsRelationship;
+import org.seadva.model.pack.ResearchObject;
 import org.springframework.beans.factory.annotation.Required;
 
 /**

@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import java.net.URLConnection;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -45,8 +46,10 @@ import org.dataconservancy.model.dcs.DcsEntityReference;
 import org.dataconservancy.model.dcs.DcsEvent;
 import org.dataconservancy.model.dcs.DcsFile;
 import org.dataconservancy.model.dcs.DcsFixity;
+import org.seadva.model.pack.ResearchObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Required;
 
 /**
  * Retrieves and stages extant content included by reference.
@@ -76,9 +79,23 @@ public class ExternalContentStager
             LoggerFactory.getLogger(ExternalContentStager.class);
 
     private String[] calculateFixity;
+    private String acrUser;
+    private String acrPassword;
 
     public void setAlwaysCalculateFixityFor(String... algorithms) {
         calculateFixity = algorithms;
+    }
+
+    @Required
+    public void setAcrUser(String user)
+    {
+        this.acrUser = user;
+    }
+
+    @Required
+    public void setAcrPassword(String pwd)
+    {
+        this.acrPassword = pwd;
     }
 
     public void execute(String sipRef) throws IngestServiceException {
@@ -98,7 +115,7 @@ public class ExternalContentStager
 
         if (modified) {
             sip.setFiles(files);
-            ingest.getSipStager().updateSIP(sip, sipRef);
+            ingest.getSipStager().updateSIP((ResearchObject)sip, sipRef);
         }
     }
 
@@ -125,7 +142,20 @@ public class ExternalContentStager
         InputStream stream = null;
         StagedFile staged = null;
         try {
-            stream = fixityFilter(fileUrl.openStream(), metadata, eventsToAdd);
+            InputStream src = null;
+            if(file.getSource().contains("file:"))
+                src = fileUrl.openStream();
+            else if (file.getSource().contains("http:"))
+            {
+                String loginPassword = this.acrUser + ":" + this.acrPassword;
+                String encoded = new sun.misc.BASE64Encoder().encode (loginPassword.getBytes());
+                URLConnection conn = fileUrl.openConnection();
+                conn.setConnectTimeout(15*1000);
+                conn.setReadTimeout(15*1000);
+                conn.setRequestProperty ("Authorization", "Basic " + encoded);
+                src = conn.getInputStream();
+            }
+            stream = fixityFilter(src, metadata, eventsToAdd);
             staged = ingest.getFileContentStager().add(stream, metadata);
             file.setSource(staged.getReferenceURI());
         } catch (IOException e) {
@@ -177,7 +207,7 @@ public class ExternalContentStager
             fixity.setValue(outcome[1]);
             fileEntity.addFixity(fixity);
         }
-        ingest.getSipStager().updateSIP(stagedSip, sipRef);
+        ingest.getSipStager().updateSIP((ResearchObject)stagedSip, sipRef);
 
         /*
          * Set the staged content file as the target for all events, and add
@@ -232,7 +262,7 @@ public class ExternalContentStager
             });
         } catch (NoSuchAlgorithmException e) {
             log.warn("Provider does not support algorithm %s, skipping check",
-                     algorithm);
+                    algorithm);
             return filtered;
         }
     }
