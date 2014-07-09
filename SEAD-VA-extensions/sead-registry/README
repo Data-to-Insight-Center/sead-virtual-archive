@@ -15,9 +15,7 @@ mysql -u username -p va_registry < ./sql/va_registry_v2.0.sql
 mysql -u username -p va_registry < ./sql/type_registry_insert.sql
 
 2.
-In sead-registry-webapp/src/main/resources/applicationContext.xml, in mainDataSource bean, please set your database username and pwd for MySql
-Also in sead-registry-webapp/src/test/resources/applicationContext.xml
-
+In sead-registry-webapp/src/main/resources/org/seadva/registry/service, in mainDataSource bean, please set your database username and pwd for MySql
 
 3.
 On top level sead-registry directory, run:
