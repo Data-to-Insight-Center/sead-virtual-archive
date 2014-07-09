@@ -1,5 +1,4 @@
 package org.seadva.registry.database.model.obj.vaRegistry.iface;
-import javax.persistence.Basic;
 import org.seadva.registry.database.model.obj.vaRegistry.BaseEntity;
 
 

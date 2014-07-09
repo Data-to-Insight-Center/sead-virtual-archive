@@ -54,8 +54,15 @@ public class File extends BaseEntity implements  IFile {
 	/** Field mapping. */
     @Expose
 	private String versionNum;
- 
 
+    public File(){}
+    public File(BaseEntity entity){
+        this.setId(entity.getId());
+        this.setEntityName(entity.getEntityName());
+        this.setEntityCreatedTime(entity.getEntityCreatedTime());
+        this.setEntityLastUpdatedTime(entity.getEntityLastUpdatedTime());
+        this.setProperties(entity.getProperties());
+    }
 	/**
  	 * Return an enum of the type of this subclass. This is useful to be able to use switch/case in your code.
  	 *
