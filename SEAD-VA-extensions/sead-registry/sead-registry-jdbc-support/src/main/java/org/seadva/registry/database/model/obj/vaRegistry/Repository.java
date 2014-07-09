@@ -1,26 +1,12 @@
 package org.seadva.registry.database.model.obj.vaRegistry;
 
-import com.felees.hbnpojogen.persistence.IPojoGenEntity;
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.WeakHashMap;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
 import com.google.gson.annotations.Expose;
 import org.hibernate.proxy.HibernateProxy;
-import org.seadva.registry.database.model.obj.vaRegistry.DataLocation;
 import org.seadva.registry.database.model.obj.vaRegistry.iface.IRepository;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.*;
 
 
 /** 
@@ -30,7 +16,7 @@ import org.seadva.registry.database.model.obj.vaRegistry.iface.IRepository;
 
 @Entity
 @Table(name = "repository", catalog = "va_registry")
-public class Repository implements Cloneable, Serializable, IPojoGenEntity, IRepository {
+public class Repository implements IRepository {
 
 	/** Serial Version UID. */
 	private static final long serialVersionUID = -559002622L;

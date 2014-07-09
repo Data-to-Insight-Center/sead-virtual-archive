@@ -19,18 +19,14 @@ package org.seadva.registry.service;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import org.hibernate.Query;
-import org.hibernate.Session;
+import org.seadva.registry.database.common.DBConnectionPool;
+import org.seadva.registry.database.model.dao.vaRegistry.*;
+import org.seadva.registry.database.model.dao.vaRegistry.impl.*;
 import org.seadva.registry.database.model.obj.vaRegistry.*;
-import org.seadva.registry.database.model.obj.vaRegistry.Collection;
-import org.seadva.registry.database.services.data.ApplicationContextHolder;
-import org.seadva.registry.database.services.data.DataLayerVaRegistry;
-import org.seadva.registry.database.services.data.DataLayerVaRegistryImpl;
 import org.seadva.registry.service.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Component;
 import org.springframework.test.context.transaction.TransactionConfiguration;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -55,36 +51,79 @@ import java.util.Set;
 public class ResourceService {
 
     static Gson gson;
+<<<<<<< HEAD
     static DataLayerVaRegistry dataLayerVaRegistry;
     static final Session querySession;
+=======
+  //  static DataLayerVaRegistry dataLayerVaRegistry;
+    static BaseEntityDao baseEntityDao;
+    static CollectionDao collectionEntityDao;
+    static FileDao fileDao;
+    static MetadataTypeDao metadataTypeDao;
+    static DataIdentifierTypeDao dataIdentifierTypeDao;
+    static RelationTypeDao relationTypeDao;
+    static RoleTypeDao roleTypeDao;
+    static RepositoryDao repositoryDao;
+    static ProfileTypeDao profileTypeDao;
+    static StateDao stateDao;
+    static FixityDao fixityDao;
+    static AggregationDao aggregationDao;
+    static RelationDao relationDao;
+    static AgentDao agentDao;
+
+>>>>>>> d443df5... Registry using direct JDBC calls instead of  using hibernate calls.
     static {
-        new DataLayerVaRegistryImpl().setApplicationContext(ApplicationContextHolder.getContext());
+
+        try {
+            DBConnectionPool.init("jdbc:mysql://localhost:3306/va_registry","username","pwd",8,30,0);
+            DBConnectionPool.launch();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
         gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        dataLayerVaRegistry = DataLayerVaRegistryImpl.getInstance();
-        querySession  = dataLayerVaRegistry.createNewSession();
+        baseEntityDao = new BaseEntityDaoImpl();
+        collectionEntityDao = new CollectionDaoImpl();
+        metadataTypeDao = new MetadataTypeDaoImpl();
+        dataIdentifierTypeDao = new DataIdentifierTypeDaoImpl();
+        relationTypeDao = new RelationTypeDaoImpl();
+        roleTypeDao = new RoleTypeDaoImpl();
+        repositoryDao = new RepositoryDaoImpl();
+        profileTypeDao = new ProfileTypeDaoImpl();
+        stateDao = new StateDaoImpl();
+        fixityDao = new FixityDaoImpl();
+        aggregationDao = new AggregationDaoImpl();
+        relationDao = new RelationDaoImpl();
+        fileDao = new FileDaoImpl();
+        agentDao = new AgentDaoImpl();
     }
 
      @GET
-     @Path("/{entityId}")
+     @Path("/collection/{entityId}")
      @Produces("application/json")
      public Response getEntity( @PathParam("entityId") String entityId) throws Exception {
 
-         BaseEntity baseEntity = dataLayerVaRegistry.getBaseEntity(entityId);
-         return Response.ok(gson.toJson(baseEntity)).build();
+         Collection entity = collectionEntityDao.getCollection(entityId);
+         String json = gson.toJson(entity);
+         return Response.ok(json).build();
      }
 
     @GET
-    @Path("/metadata/{typeId}")
+    @Path("/file/{entityId}")
     @Produces("application/json")
-    public Response getType( @PathParam("typeId") String typeId) throws Exception {
-        MetadataType metadataType = dataLayerVaRegistry.getMetadataType(typeId);
+    public Response getFile( @PathParam("entityId") String entityId) throws Exception {
 
-        return Response.ok(gson.toJson(metadataType)).build();
+        Collection entity = collectionEntityDao.getCollection(entityId);
+        String json = gson.toJson(entity);
+        return Response.ok(json).build();
     }
 
+
+
     @GET
-    @Path("/metadataType/{element}")
+    @Path("/metadataType/{typeId}")
     @Produces("application/json")
+<<<<<<< HEAD
     public Response getByType( @PathParam("element") String element) throws Exception {
         MetadataType metadataType;
         synchronized (querySession) {
@@ -96,13 +135,22 @@ public class ResourceService {
             metadataType = (MetadataType) query.list().get(0);
             querySession.getTransaction().commit();
         }
+=======
+    public Response getType( @PathParam("typeId") String typeId) throws Exception {
+        MetadataType metadataType = metadataTypeDao.getMetadataType(typeId);
+        if(metadataType==null)
+            throw new NotFoundException("Role type not found in role type registry");
+>>>>>>> d443df5... Registry using direct JDBC calls instead of  using hibernate calls.
         return Response.ok(gson.toJson(metadataType)).build();
     }
+
+
 
     @GET
     @Path("/identifiertype/{typename}")
     @Produces("application/json")
     public Response getIdentifierType( @PathParam("typename") String typeName) throws Exception {
+<<<<<<< HEAD
         DataIdentifierType dataIdentifierType;
         synchronized (querySession) {
             querySession.clear();
@@ -113,6 +161,11 @@ public class ResourceService {
             dataIdentifierType = (DataIdentifierType) query.list().get(0);
             querySession.getTransaction().commit();
         }
+=======
+        DataIdentifierType dataIdentifierType = dataIdentifierTypeDao.getDataIdentifierType(typeName);
+        if(dataIdentifierType==null)
+            throw new NotFoundException("DataIdentifer type not found in DataIdentifer type registry");
+>>>>>>> d443df5... Registry using direct JDBC calls instead of  using hibernate calls.
         return Response.ok(gson.toJson(dataIdentifierType)).build();
     }
 
@@ -121,6 +174,7 @@ public class ResourceService {
     @Path("/relationType/{element}")
     @Produces("application/json")
     public Response getRelationByType( @PathParam("element") String element) throws Exception {
+<<<<<<< HEAD
         RelationType relationType;
         synchronized (querySession) {
             querySession.clear();
@@ -131,6 +185,12 @@ public class ResourceService {
             relationType = (RelationType) query.list().get(0);
             querySession.getTransaction().commit();
         }
+=======
+
+        RelationType relationType = relationTypeDao.getRelationType(element);
+        if(relationType == null)
+            throw new NotFoundException("Relation type not found in relation type registry");
+>>>>>>> d443df5... Registry using direct JDBC calls instead of  using hibernate calls.
         return Response.ok(gson.toJson(relationType)).build();
     }
 
@@ -138,6 +198,7 @@ public class ResourceService {
     @Path("/roleType/{element}")
     @Produces("application/json")
     public Response getRoleByType( @PathParam("element") String element) throws Exception {
+<<<<<<< HEAD
         RoleType roleType;
         synchronized (querySession) {
             querySession.clear();
@@ -251,12 +312,56 @@ public class ResourceService {
                 queryStr+=", DataLocation D";
 
             queryStr+=" where ";
+=======
 
+        RoleType roleType = roleTypeDao.getRoleType(element);
+        if(roleType == null)
+            throw new NotFoundException("Role type not found in role type registry");
+        return Response.ok(gson.toJson(roleType)).build();
+    }
 
+        @GET
+        @Path("/profileType/{element}")
+        @Produces("application/json")
+        public Response getProfileByType( @PathParam("element") String element) throws Exception {
+            ProfileType profileType = profileTypeDao.getProfileType(element);
+            if(profileType==null)
+                throw new NotFoundException("Profile type not found in role type registry");
+            return Response.ok(gson.toJson(profileType)).build();
+        }
+>>>>>>> d443df5... Registry using direct JDBC calls instead of  using hibernate calls.
+
+        @GET
+        @Path("/repository/{name}")
+        @Produces("application/json")
+        public Response getRepositoryByName( @PathParam("name") String repoName) throws Exception {
+            Repository repository = repositoryDao.getRepository(repoName);
+            if(repository==null)
+                throw new NotFoundException("No repository found matching the given name "+repoName+" in registry");
+            return Response.ok(gson.toJson(repository)).build();
+        }
+
+<<<<<<< HEAD
             if(type!=null)
                 queryStr += " C.state.stateType='"+type+"' ";
+=======
+        @GET
+        @Path("/state/{name}")
+        @Produces("application/json")
+        public Response getStateByName( @PathParam("name") String stateName) throws Exception {
+            State state = stateDao.getState(stateName);
+            if(state == null)
+                throw new NotFoundException("No state found matching the given name "+stateName+" in registry");
+            return Response.ok(gson.toJson(state)).build();
+        }
+>>>>>>> d443df5... Registry using direct JDBC calls instead of  using hibernate calls.
 
+        @GET
+        @Path("/aggregation/{entityId}")
+        @Produces("application/json")
+        public Response getAggregations( @PathParam("entityId") String entityId) throws Exception {
 
+<<<<<<< HEAD
             if(submitterId!=null){
                 if(type!=null)
                     queryStr+=" AND ";
@@ -327,8 +432,84 @@ public class ResourceService {
         }
         return Response.ok(gson.toJson(finalCollectionWrappers)).build();
     }
+=======
+            List<AggregationWrapper> aggregationList = aggregationDao.getAggregations(entityId);
+            return Response.ok(gson.toJson(aggregationList)).build();
+        }
+
+        @GET
+        @Path("/listCollections/{type}")
+        @Produces("application/json")
+        public Response getAllCollections(@PathParam("type") String type,
+                                          @QueryParam("submitterId") String submitterId, //Researcher who submitted Curation Object or Curator who submitted Published Object would be the submitters
+                                          @QueryParam("repository") String repository, //Repository Name to which CurationObject is to be submitted or to which Published Object was already Published
+                                          @QueryParam("fromDate") String fromDate,
+                                          @QueryParam("toDate") String toDate) throws Exception {
+
+            List<CollectionWrapper> finalCollectionWrappers = new ArrayList<CollectionWrapper>();
+            List<Collection> collections = collectionEntityDao.listCollections(submitterId, repository, type);
+            for(Collection collection:collections){
+
+                List<Relation> relationList =  relationDao.getRelations(collection.getId());
+                Set<Relation> newRelationList = new HashSet<Relation>();
+                CollectionWrapper newCollectionWrapper = new CollectionWrapper(collection);
+                newCollectionWrapper.setRelations(new HashSet<Relation>());
+
+                for(Relation relation:relationList){
+                    Relation newRelation = new Relation();
+                    RelationPK newRelationPK = new RelationPK();
+
+                    RelationPK relationPK = relation.getId();
+
+                    RelationType relationType = new RelationType();
+                    relationType.setId(relationPK.getRelationType().getId());
+                    relationType.setRelationSchema(relationPK.getRelationType().getRelationSchema());
+                    relationType.setRelationElement(relationPK.getRelationType().getRelationElement());
+                    newRelationPK.setRelationType(relationType);
+
+                    BaseEntity effectEntity = new BaseEntity();
+                    effectEntity.setId(relationPK.getEffect().getId());
+                    effectEntity.setEntityName(relationPK.getEffect().getEntityName());
+                    effectEntity.setEntityCreatedTime(relationPK.getEffect().getEntityCreatedTime());
+                    effectEntity.setEntityLastUpdatedTime(relationPK.getEffect().getEntityLastUpdatedTime());
+                    newRelationPK.setEffect(effectEntity);
+
+                    BaseEntity causeEntity = new BaseEntity();
+                    causeEntity.setId(relationPK.getCause().getId());
+                    causeEntity.setEntityName(relationPK.getCause().getEntityName());
+                    causeEntity.setEntityCreatedTime(relationPK.getCause().getEntityCreatedTime());
+                    causeEntity.setEntityLastUpdatedTime(relationPK.getCause().getEntityLastUpdatedTime());
+                    newRelationPK.setCause(causeEntity);
+                    RelationType rlType = relationPK.getRelationType();
+                    newRelationPK.setRelationType(new RelationType(rlType.getId(), rlType.getRelationElement(), rlType.getRelationSchema()));
+                    newRelation.setId(newRelationPK);
+
+                    newRelationList.add(newRelation);
+                }
 
 
+                newCollectionWrapper.setRelations(newRelationList);
+                finalCollectionWrappers.add(newCollectionWrapper);
+            }
+            return Response.ok(gson.toJson(finalCollectionWrappers)).build();
+        }
+
+>>>>>>> d443df5... Registry using direct JDBC calls instead of  using hibernate calls.
+
+        @GET
+        @Path("/fixity/{entityId}")
+        @Produces("application/json")
+        public Response getFixities( @PathParam("entityId") String entityId) throws Exception {
+            List<Fixity> fixityList = fixityDao.getFixities(entityId);
+            return Response.ok(gson.toJson(fixityList)).build();
+        }
+
+        @GET
+        @Path("/relation/{entityId}")
+        @Produces("application/json")
+        public Response getRelations( @PathParam("entityId") String entityId) throws Exception {
+
+<<<<<<< HEAD
     @GET
     @Path("/fixity/{entityId}")
     @Produces("application/json")
@@ -354,6 +535,10 @@ public class ResourceService {
             Query query =  querySession.createQuery("SELECT R from Relation R where R.id.cause.id='"+entityId+"'");
             List<Relation> relationList = (List<Relation>)query.list();
             newRelationList = new ArrayList<Relation>();
+=======
+            List<Relation> relationList =  relationDao.getRelations(entityId);
+            Set<Relation> newRelationList = new HashSet<Relation>();
+>>>>>>> d443df5... Registry using direct JDBC calls instead of  using hibernate calls.
 
             for(Relation relation:relationList){
                 Relation newRelation = new Relation();
@@ -385,187 +570,162 @@ public class ResourceService {
 
                 newRelationList.add(newRelation);
             }
+<<<<<<< HEAD
             querySession.getTransaction().commit();
         }
         String json = gson.toJson(newRelationList);
         return Response.ok(json).build();
     }
+=======
 
-
-    @POST
-    @Path("/{entityId}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response putResource(
-            @QueryParam("entity") String entityJson,
-            @QueryParam("type") String type
-    ) throws IOException, ClassNotFoundException
-
-    {
-       BaseEntity baseEntity = (BaseEntity) gson.fromJson(entityJson, Class.forName(type));
-
-        Set<Property> tempProperties =  new HashSet<Property>(baseEntity.getProperties());
-        baseEntity.setProperties(new HashSet<Property>());
-        Set<Property> newProperties =  new HashSet<Property>();
-
-        for(Property property: tempProperties){
-            property.setEntity(baseEntity);
-            newProperties.add(property);
+            String json = gson.toJson(newRelationList);
+            return Response.ok(json).build();
         }
-
-        BaseEntity existingEntity = dataLayerVaRegistry.getBaseEntity(baseEntity.getId());
-        if(existingEntity!=null)
-            baseEntity.setProperties(existingEntity.getProperties(), newProperties);
-        else
-            baseEntity.setProperties(newProperties);
-
-        Set<DataLocation> tempDataLocations =  new HashSet<DataLocation>(baseEntity.getDataLocations());
-        baseEntity.setDataLocations(new HashSet<DataLocation>());
-        Set<DataLocation> newDataLocations =  new HashSet<DataLocation>();
-
-        for(DataLocation dataLocation: tempDataLocations){
-            DataLocationPK dataLocationPK = dataLocation.getId();
-            dataLocationPK.setEntity(baseEntity);
-            dataLocation.setId(dataLocationPK);
-            newDataLocations.add(dataLocation);
-        }
-        baseEntity.setDataLocations(newDataLocations);
-
-        Set<DataIdentifier> tempDataIdentifiers =  new HashSet<DataIdentifier>(baseEntity.getDataIdentifiers());
-        baseEntity.setDataIdentifiers(new HashSet<DataIdentifier>());
-        Set<DataIdentifier> newDataIdentifiers =  new HashSet<DataIdentifier>();
-
-        for(DataIdentifier dataIdentifier: tempDataIdentifiers){
-            DataIdentifierPK dataIdentifierPK = dataIdentifier.getId();
-            dataIdentifierPK.setEntity(baseEntity);
-            dataIdentifier.setId(dataIdentifierPK);
-            newDataIdentifiers.add(dataIdentifier);
-        }
-        baseEntity.setDataIdentifiers(newDataIdentifiers);
+>>>>>>> d443df5... Registry using direct JDBC calls instead of  using hibernate calls.
 
 
+        @POST
+        @Path("/{entityId}")
+        @Consumes(MediaType.APPLICATION_JSON)
+        public Response putResource(
+                @QueryParam("entity") String entityJson,
+                @QueryParam("type") String type
+        ) throws IOException, ClassNotFoundException
 
-        if(baseEntity instanceof File){
-            Set<Format> tempFormats =  new HashSet<Format>(((File) baseEntity).getFormats());
-            ((File) baseEntity).setFormats(new HashSet<Format>());
-            Set<Format> newFormats =  new HashSet<Format>();
+        {
+           BaseEntity baseEntity = (BaseEntity) gson.fromJson(entityJson, Class.forName(type));
 
-            for(Format format: tempFormats){
-                format.setEntity((File) baseEntity);
-                newFormats.add(format);
+            Set<Property> tempProperties =  new HashSet<Property>(baseEntity.getProperties());
+            baseEntity.setProperties(new HashSet<Property>());
+            Set<Property> newProperties =  new HashSet<Property>();
+
+            for(Property property: tempProperties){
+                property.setEntity(baseEntity);
+                newProperties.add(property);
             }
-            ((File) baseEntity).setFormats(newFormats);
+
+            BaseEntity existingEntity = baseEntityDao.getBaseEntity(baseEntity.getId());
+            if(existingEntity!=null)
+                baseEntity.setProperties(existingEntity.getProperties(), newProperties);
+            else
+                baseEntity.setProperties(newProperties);
+
+            Set<DataLocation> tempDataLocations =  new HashSet<DataLocation>(baseEntity.getDataLocations());
+            baseEntity.setDataLocations(new HashSet<DataLocation>());
+            Set<DataLocation> newDataLocations =  new HashSet<DataLocation>();
+
+            for(DataLocation dataLocation: tempDataLocations){
+                DataLocationPK dataLocationPK = dataLocation.getId();
+                dataLocationPK.setEntity(baseEntity);
+                dataLocation.setId(dataLocationPK);
+                newDataLocations.add(dataLocation);
+            }
+            baseEntity.setDataLocations(newDataLocations);
+
+            Set<DataIdentifier> tempDataIdentifiers =  new HashSet<DataIdentifier>(baseEntity.getDataIdentifiers());
+            baseEntity.setDataIdentifiers(new HashSet<DataIdentifier>());
+            Set<DataIdentifier> newDataIdentifiers =  new HashSet<DataIdentifier>();
+
+            for(DataIdentifier dataIdentifier: tempDataIdentifiers){
+                DataIdentifierPK dataIdentifierPK = dataIdentifier.getId();
+                dataIdentifierPK.setEntity(baseEntity);
+                dataIdentifier.setId(dataIdentifierPK);
+                newDataIdentifiers.add(dataIdentifier);
+            }
+            baseEntity.setDataIdentifiers(newDataIdentifiers);
+
+
+
+            //Todo
+            if(baseEntity instanceof File){
+                Set<Format> tempFormats =  new HashSet<Format>(((File) baseEntity).getFormats());
+                ((File) baseEntity).setFormats(new HashSet<Format>());
+                Set<Format> newFormats =  new HashSet<Format>();
+
+                for(Format format: tempFormats){
+                    format.setEntity((File) baseEntity);
+                    newFormats.add(format);
+                }
+                ((File) baseEntity).setFormats(newFormats);
+            }
+            if(baseEntity instanceof Collection)
+                collectionEntityDao.insertCollection((Collection)baseEntity);
+            else if(baseEntity instanceof File)
+                fileDao.insertFile((File)baseEntity);
+            else
+                baseEntityDao.insertEntity(baseEntity);
+
+            return Response.ok().build();
         }
 
 
-//        if(baseEntity instanceof CollectionWrapper)
-//            ((CollectionWrapper)baseEntity).setState(dataLayerVaRegistry.getState("state:1"));
-        dataLayerVaRegistry.merge(baseEntity);      //solve this issue of trying to write again
+        @POST
+        @Path("/agent/{agentId}")
+        @Consumes(MediaType.APPLICATION_JSON)
+        public Response putAgent(
+                @QueryParam("entity") String entityJson
+        ) throws IOException, ClassNotFoundException
 
-        dataLayerVaRegistry.flushSession();
-
-        return Response.ok().build();
-    }
-
-
-    @POST
-    @Path("/agent/{agentId}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response putAgent(
-            @QueryParam("entity") String entityJson
-    ) throws IOException, ClassNotFoundException
-
-    {
-        Agent agent = gson.fromJson(entityJson, Agent.class);
-
-        Set<AgentRole> roles =  new HashSet<AgentRole>(agent.getAgentRoles());
-        agent.setAgentRoles(new HashSet<AgentRole>());
-        Set<AgentRole> newRoles =  new HashSet<AgentRole>();
-        for(AgentRole role: roles){
-            AgentRolePK agentRolePK = role.getId();
-            agentRolePK.setAgent(agent);
-            role.setId(agentRolePK);
-            newRoles.add(role);
+        {
+            Agent agent = gson.fromJson(entityJson, Agent.class);
+            agentDao.putAgent(agent);
+            return Response.ok().build();
         }
 
-        Set<AgentProfile> profiles =  new HashSet<AgentProfile>(agent.getAgentProfiles());
-        agent.setAgentProfiles(new HashSet<AgentProfile>());
-        Set<AgentProfile> newProfiles =  new HashSet<AgentProfile>();
-        for(AgentProfile profile: profiles){
-            AgentProfilePK agentProfilePK = profile.getId();
-            agentProfilePK.setAgent(agent);
-            profile.setId(agentProfilePK);
-            newProfiles.add(profile);
+        @POST
+        @Path("/aggregation/{entityId}")
+        @Consumes("application/json")
+        public Response postAggregations( @QueryParam("aggList") String aggregationJson
+        ) throws IOException, ClassNotFoundException
+
+        {
+            Type listType = new TypeToken<ArrayList<AggregationWrapper>>() {
+                        }.getType();
+            List<AggregationWrapper> aggregationWrapperList = gson.fromJson(aggregationJson, listType);
+            for(AggregationWrapper aggregationWrapper: aggregationWrapperList){
+                Aggregation aggregation = new Aggregation();
+                AggregationPK aggregationPK = new AggregationPK();
+                aggregationPK.setParent(aggregationWrapper.getParent());
+                aggregationPK.setChild(aggregationWrapper.getChild());
+                aggregation.setId(aggregationPK);
+                aggregationDao.putAggregation(aggregation);
+            }
+
+            return Response.ok().build();
         }
 
-        agent.setAgentRoles(newRoles);
-        agent.setAgentProfiles(newProfiles);
 
-        dataLayerVaRegistry.merge(agent);
-        dataLayerVaRegistry.flushSession();
+        @POST
+        @Path("/fixity")
+        @Consumes("application/json")
+        public Response postFixity( @QueryParam("fixityList") String fixityJson
+        ) throws IOException, ClassNotFoundException
 
-        return Response.ok().build();
-    }
-
-    @POST
-    @Path("/aggregation/{entityId}")
-    @Consumes("application/json")
-    @Transactional
-    public Response postAggregations( @QueryParam("aggList") String aggregationJson
-    ) throws IOException, ClassNotFoundException
-
-    {
-        Type listType = new TypeToken<ArrayList<AggregationWrapper>>() {
-                    }.getType();
-        List<AggregationWrapper> aggregationWrapperList = gson.fromJson(aggregationJson, listType);
-        for(AggregationWrapper aggregationWrapper: aggregationWrapperList){
-            Aggregation aggregation = new Aggregation();
-            AggregationPK aggregationPK = new AggregationPK();
-            aggregationPK.setParent(aggregationWrapper.getParent());
-            aggregationPK.setChild(aggregationWrapper.getChild());
-            aggregation.setId(aggregationPK);
-            dataLayerVaRegistry.merge(aggregation);
-            dataLayerVaRegistry.flushSession();
+        {
+            Type listType = new TypeToken<ArrayList<Fixity>>() {
+            }.getType();
+            List<Fixity> fixityList = gson.fromJson(fixityJson, listType);
+            fixityDao.putFixities(fixityList);
+            return Response.ok().build();
         }
 
-        return Response.ok().build();
-    }
+        @POST
+        @Path("/relation")
+        @Consumes("application/json")
+        public Response postRelations( @QueryParam("relList") String relationListJson
+        ) throws IOException, ClassNotFoundException
 
-
-    @POST
-    @Path("/fixity")
-    @Consumes("application/json")
-    public Response postFixity( @QueryParam("fixityList") String fixityJson
-    ) throws IOException, ClassNotFoundException
-
-    {
-        Type listType = new TypeToken<ArrayList<Fixity>>() {
-        }.getType();
-        List<Fixity> fixityList = gson.fromJson(fixityJson, listType);
-        for(Fixity fixity: fixityList){
-            dataLayerVaRegistry.merge(fixity);
-            dataLayerVaRegistry.flushSession(); //seems like doesn't close session, so read is not working okay
+        {
+            Type listType = new TypeToken<ArrayList<Relation>>() {
+            }.getType();
+            List<Relation> relationList =  gson.fromJson(relationListJson, listType);
+            for(Relation relation: relationList){
+                relationDao.putRelation(relation);
+            }
+            return Response.ok().build();
         }
 
-        return Response.ok().build();
-    }
-
-    @POST
-    @Path("/relation")
-    @Consumes("application/json")
-    public Response postRelations( @QueryParam("relList") String relationListJson
-    ) throws IOException, ClassNotFoundException
-
-    {
-        Type listType = new TypeToken<ArrayList<Relation>>() {
-        }.getType();
-        List<Relation> relationList = gson.fromJson(relationListJson, listType);
-        for(Relation relation: relationList){
-            dataLayerVaRegistry.merge(relation);
-        }
-        dataLayerVaRegistry.flushSession();
-        return Response.ok().build();
-    }
-
+<<<<<<< HEAD
     @POST
     @Path("/delrelation")
     @Consumes("application/json")
@@ -586,15 +746,14 @@ public class ResourceService {
     @Path("/obsolete/{entityId}")
     public Response makeObsolete( @PathParam("entityId") String obsoleteId
     ) throws IOException, ClassNotFoundException
+=======
+        @POST
+        @Path("/obsolete/{entityId}")
+        public Response makeObsolete( @PathParam("entityId") String entityId) throws IOException, ClassNotFoundException
+>>>>>>> d443df5... Registry using direct JDBC calls instead of  using hibernate calls.
 
-    {
-        BaseEntity baseEntity = dataLayerVaRegistry.getBaseEntity(obsoleteId);
-       if(baseEntity instanceof Collection)
         {
-            ((Collection)baseEntity).setIsObsolete(1);
-            dataLayerVaRegistry.update(baseEntity);
-            dataLayerVaRegistry.flushSession();
+            baseEntityDao.updateEntity(entityId, 1);
+            return Response.ok().build();
         }
-        return Response.ok().build();
     }
-}

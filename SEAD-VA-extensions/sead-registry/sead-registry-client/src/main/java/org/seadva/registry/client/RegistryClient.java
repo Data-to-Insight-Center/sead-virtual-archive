@@ -86,6 +86,7 @@ public class RegistryClient {
         MultivaluedMap<String, String> params = new MultivaluedMapImpl();
 
         ClientResponse response = webResource.path("resource")
+                .path("collection")
                 .path(
                         URLEncoder.encode(
                                 collectionId
@@ -109,6 +110,7 @@ public class RegistryClient {
         MultivaluedMap<String, String> params = new MultivaluedMapImpl();
 
         ClientResponse response = webResource.path("resource")
+                .path("file")
                 .path(
                         URLEncoder.encode(
                                 fileId
