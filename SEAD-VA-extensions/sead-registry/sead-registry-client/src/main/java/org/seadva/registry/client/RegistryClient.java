@@ -53,17 +53,23 @@ public class RegistryClient {
                 .create();
     }
 
-    /**                                            getEn
+    /**
      * GET methods
      *
      */
 
     public BaseEntity getEntity(String entityId, String type) throws IOException, ClassNotFoundException {
+        if(type.equalsIgnoreCase(Collection.class.getName()))
+            return  getCollection(entityId);
+        else if(type.equalsIgnoreCase(File.class.getName()))
+            return getFile(entityId);
+
         WebResource webResource = resource();
 
         MultivaluedMap<String, String> params = new MultivaluedMapImpl();
 
         ClientResponse response = webResource.path("resource")
+                .path("entity")
                 .path(
                         URLEncoder.encode(
                                 entityId
@@ -152,7 +158,7 @@ public class RegistryClient {
         return gson.fromJson(writer.toString(), listType);
     }
 
-    public List<CollectionWrapper> getCollectionList(String type, String repository, String submitterId, String creatorId) throws IOException {
+    public List<CollectionWrapper> getCollectionList(String type, String repository, String submitterId) throws IOException {
         WebResource webResource = resource();
         webResource = webResource.path("resource")
                 .path("listCollections")
@@ -163,10 +169,6 @@ public class RegistryClient {
 
         if(submitterId!=null)
             webResource = webResource.queryParam("submitterId", submitterId);
-
-        if(creatorId!=null)
-            webResource = webResource.queryParam("creatorId", creatorId);
-
 
         ClientResponse response = webResource
                 .get(ClientResponse.class);
@@ -350,6 +352,25 @@ public class RegistryClient {
         RelationType relationType = (RelationType) gson.fromJson(writer.toString(), RelationType.class);
 
         return relationType;
+    }
+
+
+    public List<BaseEntity> queryByProperty(String key, String value) throws IOException {
+        WebResource webResource = resource();
+
+        ClientResponse response = webResource.path("resource")
+                .path("query")
+                .queryParam("key", key)
+                .queryParam("value", value)
+                .get(ClientResponse.class);
+
+        if(response.getStatus()!=200)
+            throw new HTTPException(response.getStatus());
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(response.getEntityInputStream(), writer);
+        Type listType = new TypeToken<ArrayList<BaseEntity>>() {
+        }.getType();
+        return (List<BaseEntity>) gson.fromJson(writer.toString(), listType);
     }
 
     /**
@@ -574,7 +595,6 @@ public class RegistryClient {
             throw new HTTPException(response.getStatus());
     }
 
-
     public void deleteRelation(List<Relation> relationList) throws IOException {
         WebResource webResource = resource();
 
@@ -591,7 +611,6 @@ public class RegistryClient {
         if(response.getStatus()!=200)
             throw new HTTPException(response.getStatus());
     }
-
 
     public void makeObsolete(String entityId) throws IOException {
         WebResource webResource = resource();
