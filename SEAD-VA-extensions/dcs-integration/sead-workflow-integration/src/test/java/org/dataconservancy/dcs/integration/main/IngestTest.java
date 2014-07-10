@@ -73,7 +73,7 @@ public class IngestTest {
                 new UsernamePasswordCredentials(
                         "seadva@gmail.com",hashPassword("password")
                 ));
-        int code = doDeposit(new File(IngestTest.class.getResource("/" + "sampleSip.xml").getPath()));
+        int code = doDeposit(new File(IngestTest.class.getResource("/" + "sampleSip_2.xml").getPath()));
         assertEquals(code,202);
     }
 
