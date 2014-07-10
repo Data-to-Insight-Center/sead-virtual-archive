@@ -31,16 +31,21 @@ import javax.servlet.http.HttpServletResponse;
 import com.thoughtworks.xstream.XStream;
 
 import org.apache.commons.io.output.CountingOutputStream;
+import org.dataconservancy.dcs.access.http.util.SeadUtil;
 import org.dataconservancy.dcs.query.api.QueryMatch;
 import org.dataconservancy.dcs.query.api.QueryResult;
 import org.dataconservancy.dcs.query.api.QueryServiceException;
-import org.dataconservancy.dcs.query.endpoint.utils.dcpsolr.Config;
+import org.dataconservancy.dcs.query.dcpsolr.SeadConfig;
 import org.dataconservancy.dcs.query.endpoint.utils.dcpsolr.ResultFormat;
 import org.dataconservancy.model.builder.DcsModelBuilder;
 import org.dataconservancy.model.builder.xstream.DcsXstreamStaxModelBuilder;
 import org.dataconservancy.model.dcp.Dcp;
 import org.dataconservancy.model.dcs.DcsEntity;
 import org.dataconservancy.model.dcs.DcsFile;
+import org.seadva.model.builder.xstream.SeadXstreamStaxModelBuilder;
+import org.seadva.model.pack.ResearchObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 // TODO Could set last mod by using most recent last mod of results
 
@@ -57,14 +62,14 @@ public class QueryServlet
 
     private XStream jsonbuilder;
 
-    private Config config;
+    private SeadConfig config;
+
 
     public void init(ServletConfig cfg) throws ServletException {
         super.init(cfg);
-
-        this.dcpbuilder = new DcsXstreamStaxModelBuilder();
-        this.config = Config.instance(getServletContext());
-        this.jsonbuilder = DcpUtil.toJSONConverter();
+        this.config = SeadConfig.instance(getServletContext());
+        this.dcpbuilder = new SeadXstreamStaxModelBuilder();//this.config.modelBuilder();//new DcsXstreamStaxModelBuilder();
+        this.jsonbuilder = new SeadUtil().toJSONConverter();// this.config.util().toJSONConverter();//DcpUtil.toJSONConverter();
     }
 
     @SuppressWarnings("unchecked")
@@ -171,7 +176,7 @@ public class QueryServlet
             }
         }
 
-        if (fmt == ResultFormat.JSON || fmt == ResultFormat.JAVASCRIPT) {
+       if (fmt == ResultFormat.JSON || fmt == ResultFormat.JAVASCRIPT) {
             String jsoncallback = req.getParameter("callback");
 
             if (jsoncallback != null) {
@@ -185,10 +190,10 @@ public class QueryServlet
                 os.write(')');
             }
         } else if (fmt == ResultFormat.DCP) {
-            Dcp dcp = new Dcp();
+            ResearchObject dcp = new ResearchObject();
 
             for (QueryMatch<DcsEntity> match : result.getMatches()) {
-                DcpUtil.add(dcp, match.getObject());
+                dcp = new SeadUtil().add(dcp, match.getObject());
             }
 
             dcpbuilder.buildSip(dcp, os);

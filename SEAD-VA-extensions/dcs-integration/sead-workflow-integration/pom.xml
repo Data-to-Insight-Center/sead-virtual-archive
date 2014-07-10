@@ -775,7 +775,7 @@
         <dependency>
             <groupId>org.dataconservancy.access</groupId>
             <artifactId>dcs-access-http</artifactId>
-            <version>1.1.1-SNAPSHOT</version>
+            <version>1.1.1-SEAD-SNAPSHOT</version>
         </dependency>
 
         <dependency>

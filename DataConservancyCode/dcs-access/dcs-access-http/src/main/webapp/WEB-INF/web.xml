@@ -29,6 +29,14 @@
     <param-name>datastream.url</param-name>
     <param-value>${datastream.url}</param-value>
     <description>Public url to the datastream servlet</description>
+
+      <param-name>modelbuilder.impl</param-name>
+      <param-value>${modelbuilder.impl}</param-value>
+      <description>Instance of model builder</description>
+
+      <param-name>sead.converter.util</param-name>
+      <param-value>${sead.converter.util}</param-value>
+      <description>SEAD Converter</description>
   </context-param>
 
   <servlet>
