@@ -45,6 +45,8 @@ public class SeadConfig {
     private static String sdauser;
     private static String sdapwd;
     private static String sdamount;
+     private static String tmpPath;
+    private static String queryUrl;
 
     private final QueryService<DcsEntity> query_service;
     private final String ds_url;
@@ -145,6 +147,8 @@ public class SeadConfig {
         sdauser = get_param(context, "sdauser");
         sdapwd = get_param(context, "sdapwd");
         sdamount = get_param(context, "sdamount");
+        tmpPath = get_param(context, "tmp.path");
+        queryUrl = get_param(context, "query.url");
     }
 
     public QueryService<DcsEntity> dcpQueryService() {
@@ -161,5 +165,15 @@ public class SeadConfig {
 
     public String publicDatastreamUrl() {
         return ds_url;
+    }
+    
+        public String getTmpPath()
+    {
+        return tmpPath;
+    }
+
+    public String getQueryUrl()
+    {
+        return queryUrl;
     }
 }
