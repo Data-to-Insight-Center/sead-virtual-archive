@@ -656,6 +656,8 @@ method call. Invoking thread continues once task is completed. -->
             <map>
                 <entry key="dcpquery.instance" value-ref="org.dataconservancy.dcs.query.dcpsolr.SeadDataModelQueryService" />
                 <entry key="datastream.url" value="${dcs.access.datastream.url}" />
+                <entry key="tmp.path" value="${dcs.home}" />
+                <entry key="query.url" value="${query.url}" />
                 <entry key="sdahost" value="${sda.host}" />
                 <entry key="sdauser" value="${sda.user}" />
                 <entry key="sdapwd" value="${sda.pwd}" />
