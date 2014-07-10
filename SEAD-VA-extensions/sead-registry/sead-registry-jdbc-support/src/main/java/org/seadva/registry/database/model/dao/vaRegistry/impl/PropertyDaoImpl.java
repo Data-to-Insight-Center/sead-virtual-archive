@@ -86,10 +86,19 @@ public class PropertyDaoImpl implements PropertyDao {
         try {
             connection = getConnection();
             for(Property property:properties){
-                statement = connection.prepareStatement("INSERT INTO property (entity_id, metadata_id, valueStr) values(?,?,?)");
+                String insertStatement = "INSERT INTO property (entity_id, metadata_id, valueStr) values(?,?,?)";
+
+                long propertyId = -1;
+                if(property.getId()!=null&&property.getId()!=0)
+                   propertyId =  property.getId();
+                if(propertyId!=-1)
+                    insertStatement = "UPDATE property SET entity_id = ?, metadata_id =?, valueStr=? WHERE property_id = ?";
+                statement = connection.prepareStatement(insertStatement);
                 statement.setString(1, property.getEntity().getId());
                 statement.setString(2, property.getMetadata().getId());
                 statement.setString(3, property.getValuestr());
+                if(propertyId!=-1)
+                    statement.setLong(4, propertyId);
                 statement.executeUpdate();
                 statement.close();
             }
