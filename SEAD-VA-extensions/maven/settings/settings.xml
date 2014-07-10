@@ -76,7 +76,7 @@
         <activeByDefault>true</activeByDefault>
       </activation>
       <repositories>
-        <repository>
+       <!-- <repository>
           <id>dc.maven.releases</id>
           <name>Data Conservancy Public Maven 2 Repository (releases)</name>
           <layout>default</layout>
@@ -127,7 +127,7 @@
             <enabled>true</enabled>
           </snapshots>
         </repository>
-        
+        -->
         <repository>
           <id>seadva-release</id>
           <name>seadva-releases</name>
