@@ -23,6 +23,10 @@
        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd">
     <context:annotation-config />
 
+    <import resource="classpath:drools-context.xml"/>
+
+    <context:component-scan base-package="org.dataconservancy.dcs.ingest" />
+
     <bean
             class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="ignoreUnresolvablePlaceholders" value="true" />
@@ -178,7 +182,7 @@
           class="org.seadva.model.builder.xstream.SeadXstreamStaxModelBuilder"
           scope="singleton" />
 
-   <bean id="seadutil"
+    <bean id="seadutil"
           class="org.dataconservancy.dcs.access.http.util.SeadUtil"
           scope="singleton" />
     <!-- Ingest pipeline -->
@@ -282,8 +286,8 @@
                 <value>MD5</value>
             </list>
         </property>
-	<property name="acrUser" value="${acr.username}" />
-	<property name="acrPassword" value="${acr.password}" />
+        <property name="acrUser" value="${acr.username}" />
+        <property name="acrPassword" value="${acr.password}" />
     </bean>
 
     <bean id="org.dataconservancy.dcs.ingest.services.StagedContentResolver"
@@ -407,7 +411,7 @@
                 <ref bean="org.dataconservancy.dcs.ingest.services.TarUtilService"/>
                 <ref bean="org.dataconservancy.dcs.ingest.services.Archiver.SDA" />
                 <ref
-          bean="org.dataconservancy.dcs.ingest.services.DoiUpdationService" />
+                        bean="org.dataconservancy.dcs.ingest.services.DoiUpdationService" />
                 <ref bean="org.dataconservancy.dcs.ingest.services.BasicFeatureExtraction.AFTER" />
                 <ref bean="org.dataconservancy.dcs.ingest.services.RegistryIngester" />
                 <ref bean="org.dataconservancy.dcs.ingest.services.Finisher" />
@@ -423,6 +427,7 @@
             lazy-init="true">
         <property name="ingestFramework" ref="ingestFramework" />
         <property name="executor" ref="${ingest.bootstrap.executor}" />
+        <property name="KSession" ref="ServiceSession" />
         <property name="serviceMap">
             <map>
                 <entry><key><value>doi-creation</value></key><ref bean="org.dataconservancy.dcs.ingest.services.DoiCreationService" /></entry>
@@ -503,7 +508,7 @@
         <property name="ingestFramework" ref="ingestFramework" />
         <property name="modelBuilder" ref="seadModelBuilder" />
         <property name="type" value="cloud" />
-	    <property name="name" value="IU SDA" />
+        <property name="name" value="IU SDA" />
         <property name="id" value="5" />
         <property name="communityUrl" value="https://www.sdarchive.iu.edu/" />
         <property name="disabled" value="false" />
@@ -622,7 +627,7 @@
         <property name="mountPath" value="${sda.mount}" />
         <property name="solrService" ref="solrService" />
     </bean>
-        <!-- Limited number of executing threads, but unbounded queue. Invoking
+    <!-- Limited number of executing threads, but unbounded queue. Invoking
 thread drops off a task into this queue, which is then executed asynchronously
 at some point in the future. -->
     <bean id="basicThreadPoolExecutor" class="java.util.concurrent.Executors"
@@ -658,8 +663,8 @@ method call. Invoking thread continues once task is completed. -->
                 <entry key="dcpindex.instance" value-ref="org.dataconservancy.dcs.index.dcpsolr.DcpIndexService" />
                 <entry key="dcpindex.impl" value-ref="org.dataconservancy.dcs.index.dcpsolr.DcpIndexService" />
                 <entry key="eventManager" value-ref="ingestEventManager" />
-		<entry key="modelbuilder.impl" value-ref="seadModelBuilder" />
-		<entry key="sead.converter.util" value-ref="seadutil" />
+                <entry key="modelbuilder.impl" value-ref="seadModelBuilder" />
+                <entry key="sead.converter.util" value-ref="seadutil" />
             </map>
         </property>
     </bean>

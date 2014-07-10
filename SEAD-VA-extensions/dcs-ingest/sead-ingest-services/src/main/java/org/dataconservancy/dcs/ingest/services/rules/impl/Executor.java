@@ -30,8 +30,6 @@ import org.drools.event.rule.DefaultAgendaEventListener;
 import org.drools.runtime.StatelessKnowledgeSession;
 import org.seadva.model.SeadDeliverableUnit;
 import org.seadva.model.pack.ResearchObject;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.FileNotFoundException;
 import java.util.HashMap;
@@ -46,21 +44,23 @@ import static com.google.common.collect.Lists.newArrayList;
  */
 public class Executor {
 
-    public Executor(BlockingQueue<String> outputMessages){
+    public Executor(StatelessKnowledgeSession ksession, BlockingQueue<String> outputMessages){
         this.outputMessages = outputMessages;
+        this.ksession = ksession;
     }
     public static Map<String, Integer> mapPriorities = new HashMap<String, Integer>();
     BlockingQueue<String> outputMessages;// = new ArrayBlockingQueue<String>(50);
+    StatelessKnowledgeSession ksession;
 
     public void executeRules(SipStager sipStager, String sipId, ServiceQueueModifier queueModifier, Map<String, Integer> matchedRepositories) throws FileNotFoundException, InvalidXmlException {
-        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
+      //  ApplicationContext applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
         ResearchObject researchObject = (ResearchObject)sipStager.getSIP(sipId);
 
         DcsDeliverableUnit du = researchObject.getDeliverableUnits().iterator().next();
 
-        String sessionKey = "ServiceSession";
-        StatelessKnowledgeSession ksession =
-                (StatelessKnowledgeSession)applicationContext.getBean(sessionKey);
+//        String sessionKey = "ServiceSession";
+//        StatelessKnowledgeSession ksession =
+//                (StatelessKnowledgeSession)applicationContext.getBean(sessionKey);
         //     statelessKnowledgeSessionForIdeals.execute(newArrayList(((SeadDeliverableUnit)du)));
         ksession.addEventListener(new DefaultAgendaEventListener() {
             @Override

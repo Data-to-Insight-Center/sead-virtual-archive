@@ -32,6 +32,7 @@ import org.dataconservancy.model.dcp.Dcp;
 import org.dataconservancy.model.dcs.DcsEntity;
 import org.dataconservancy.model.dcs.DcsEntityReference;
 import org.dataconservancy.model.dcs.DcsEvent;
+import org.drools.runtime.StatelessKnowledgeSession;
 import org.seadva.ingest.Events;
 import org.seadva.model.pack.ResearchObject;
 import org.slf4j.Logger;
@@ -61,6 +62,8 @@ public class RulesExecutorBootstrap
 
     public static Map<String,IngestService> serviceMap;
 
+    StatelessKnowledgeSession ksession;
+
     static {
         serviceMap = new HashMap<String, IngestService>();
     }
@@ -78,6 +81,11 @@ public class RulesExecutorBootstrap
     @Required
     public void setExecutor(Executor exe) {
         executor = exe;
+    }
+
+    @Required
+    public void setKSession(StatelessKnowledgeSession session) {
+        ksession = session;
     }
 
 
@@ -253,7 +261,7 @@ public class RulesExecutorBootstrap
         public void run() {
             System.out.print("Running Rules Runner");
             try {
-                new org.dataconservancy.dcs.ingest.services.rules.impl.Executor(this.outputMessages).executeRules(this.sipStager, this.sipId, this.queueModifier, this.matchedRepositories);
+                new org.dataconservancy.dcs.ingest.services.rules.impl.Executor(ksession, this.outputMessages).executeRules(this.sipStager, this.sipId, this.queueModifier, this.matchedRepositories);
 
                 while (true){
                     if(this.outputMessages.isEmpty()){
