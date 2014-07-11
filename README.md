@@ -17,6 +17,12 @@ Once tomcat is setup, please copy Hibernate jar[http://seadva-test.d2i.indiana.e
 -Dorg.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH=true
 -Dorg.apache.catalina.connector.CoyoteAdapter.ALLOW_BACKSLASH=true"```
 
+In tomcat/conf/server.xml, in Connector set maxHttpHeaderSize to 65536. This allows for large registry requests, needed for POST calls for insert or updates on entities with large number of properties. 
+ ```<Connector port="8080" protocol="HTTP/1.1"
+                maxHttpHeaderSize="65536"
+               connectionTimeout="20000"
+               redirectPort="8443" />```
+
 
 <b>Build Code </b><br/>
 
