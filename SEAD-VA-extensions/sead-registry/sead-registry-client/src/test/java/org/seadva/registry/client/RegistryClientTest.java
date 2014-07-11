@@ -26,6 +26,7 @@ import org.seadva.registry.database.model.obj.vaRegistry.Property;
 import java.io.IOException;
 import java.util.*;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
 public class RegistryClientTest extends JerseyTest {
@@ -53,12 +54,12 @@ public class RegistryClientTest extends JerseyTest {
 
         Property property = new Property();
         property.setMetadata(client.getMetadataByType("abstract"));
-        property.setValuestr("test");
+        property.setValuestr("value_1.0");
         collection.addProperty(property);
 
         client.postCollection(collection);
 
-        List<BaseEntity> entityList = client.queryByProperty("abstract", "test");
+        List<BaseEntity> entityList = client.queryByProperty("abstract", "value_1.0");
         assertTrue(entityList.size() > 0);
     }
 
@@ -66,7 +67,7 @@ public class RegistryClientTest extends JerseyTest {
     @Test
     public void testUpdateProperty() throws IOException {
 
-        List<BaseEntity> entityList = client.queryByProperty("abstract", "test");
+        List<BaseEntity> entityList = client.queryByProperty("abstract", "value_1.0");
         for(BaseEntity entity:entityList){
 
             Iterator props = entity.getProperties().iterator();
@@ -74,7 +75,7 @@ public class RegistryClientTest extends JerseyTest {
             while (props.hasNext()){
                 Property property = (Property) props.next();
                 if(property.getMetadata().getMetadataElement().contains("abstract"))
-                    property.setValuestr("new value");
+                    property.setValuestr("value_2.0");
                 updatesProperties.add(property);
                 props.remove();
             }
@@ -82,8 +83,8 @@ public class RegistryClientTest extends JerseyTest {
             entity.setProperties(updatesProperties);
             client.postEntity(entity);
         }
-        entityList = client.queryByProperty("abstract", "new value");
-        assertTrue(entityList.size() > 0);
+        List<BaseEntity> entityList2 = client.queryByProperty("abstract", "value_2.0");
+        assertEquals(entityList.size(), entityList2.size());
     }
 
     @Test
