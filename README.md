@@ -1,6 +1,6 @@
 <b>SEAD Virtual Archive code</b>
 
-The code includes extensions to Data Conservancy Services code base.<br/>
+The code works with and substantially extends the Data Conservancy Services code base.<br/>
 <b>Pre-requisites:</b>
 Before setting up the Virtual Archive service, please complete the following tasks:
 <ul>
