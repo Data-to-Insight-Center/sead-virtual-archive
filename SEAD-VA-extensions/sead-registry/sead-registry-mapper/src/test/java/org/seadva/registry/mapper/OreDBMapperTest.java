@@ -46,9 +46,9 @@ public class OreDBMapperTest extends JerseyTest {
 
         oreDBMapper.mapfromOre(rem);
         ResourceMap returnedRem = oreDBMapper.toORE(
-                "http://seadva-test.d2i.indiana.edu/sead-wf/entity/166380"
+                "http://sead-test/0489a707-d428-4db4-8ce0-1ace548bc653"
         );
-        FileWriter oreStream = new FileWriter("output_oaiore.xml");
+        FileWriter oreStream = new FileWriter("/tmp/output_oaiore.xml");
         BufferedWriter ore = new BufferedWriter(oreStream);
 
         String resourceMapXml = "";
