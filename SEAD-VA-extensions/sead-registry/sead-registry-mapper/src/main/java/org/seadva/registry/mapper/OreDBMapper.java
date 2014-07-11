@@ -9,7 +9,6 @@ import org.seadva.registry.mapper.util.Constants;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
@@ -213,6 +212,8 @@ public class OreDBMapper {
             String[] metadataUri = predicateUri.split(splitChar);
             String metadataElement = metadataUri[metadataUri.length-1];
             metadataType = client.getMetadataByType(metadataElement); //eventually Map ORE element to DB element if they are going to be different
+            if(metadataType.getId()==null)
+                continue;
             if(metadataType!=null&&metadataTriple.isLiteral()){
                 property = new Property();
                 property.setMetadata(metadataType);
@@ -226,8 +227,12 @@ public class OreDBMapper {
             }
 
         }
+        Set<Property> propertiesSet = new HashSet<Property>();
+
         for(Property property1:properties)
-            collection.addProperty(property1);
+                propertiesSet.add(property1);
+
+        collection.setProperties(propertiesSet);
         client.postCollection(collection);
 
         Relation relation = new Relation();
@@ -309,6 +314,8 @@ public class OreDBMapper {
                 String[] metadataUri = predicateUri.split(splitChar);
                 String metadataElement = metadataUri[metadataUri.length-1];
                 metadataType = client.getMetadataByType(metadataElement); //eventually Map ORE element to DB element if they are going to be different
+                if(metadataType.getId()==null)
+                    continue;
                 if(metadataType!=null){
                     property = new Property();
                     property.setMetadata(metadataType);
@@ -384,8 +391,13 @@ public class OreDBMapper {
 
 
         for(BaseEntity baseEntity: baseEntities){
-            if(baseEntity instanceof Collection)
-                resourceMap.setAggregation(getAggregation((Collection)baseEntity));//Add aggregation metadata
+            if(baseEntity instanceof Collection) {
+                if(baseEntity.getId().equalsIgnoreCase(collectionId))
+                    resourceMap.setAggregation(getAggregation((Collection)baseEntity));//Add aggregation metadata
+                else{
+                    resourceMap.getAggregation().addAggregatedResource(getAggregatedResource((Collection)baseEntity));//Add aggregated resource metadata
+                }
+            }
             else if(baseEntity instanceof File)
             {
                 resourceMap.getAggregation().addAggregatedResource(getAggregatedResource((File)baseEntity));//Add aggregated resource metadata
@@ -400,7 +412,8 @@ public class OreDBMapper {
         List<AggregationWrapper> aggregationWrappers = client.getAggregation(entityId);
         if(aggregationWrappers!=null)
             for(AggregationWrapper aggregationWrapper: aggregationWrappers){
-                populateCollection(aggregationWrapper.getChild().getId(), aggregationWrapper.getChildType());
+//                populateCollection(aggregationWrapper.getChild().getId(), aggregationWrapper.getChildType());
+                baseEntities.add(client.getEntity(aggregationWrapper.getChild().getId(), aggregationWrapper.getChildType()));
             }
         if(aggregationWrappers!=null&&aggregationWrappers.size()>0)
             aggregationMap.put(entityId, aggregationWrappers);
@@ -476,5 +489,19 @@ public class OreDBMapper {
         return aggregatedResource;
     }
 
+    public AggregatedResource getAggregatedResource(Collection collection) throws URISyntaxException, OREException {
+
+        AggregatedResource aggregatedResource = OREFactory.createAggregatedResource(new URI(collection.getId()));
+
+        Triple resourceMapId = new TripleJena();
+        resourceMapId.initialise(aggregatedResource);
+        resourceMapId.relate(DC_TERMS_IDENTIFIER,
+                collection.getId());
+
+        aggregatedResource.addTriple(resourceMapId);
+        aggregatedResource.addType(new URI("http://www.openarchives.org/ore/terms/Aggregation"));
+
+        return aggregatedResource;
+    }
 
 }

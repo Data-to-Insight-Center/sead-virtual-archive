@@ -360,7 +360,7 @@ public class BaseEntity implements IBaseEntity {
 	 * @param property item to add
 	 */
 	public void addProperty(Property property) {
-		property.setEntity(this);
+		/*property.setEntity(this);
 
         //Prevent multiple records for singleValued metadata types
 
@@ -387,7 +387,10 @@ public class BaseEntity implements IBaseEntity {
         if(!thisSingleValuedExists)
 		    this.properties.add(property);
         else
-            this.properties = existingProperties;
+            this.properties = existingProperties;*/
+        if(this.properties==null)
+            this.properties = new HashSet<Property>();
+        this.properties.add(property);
 	}
 
   
