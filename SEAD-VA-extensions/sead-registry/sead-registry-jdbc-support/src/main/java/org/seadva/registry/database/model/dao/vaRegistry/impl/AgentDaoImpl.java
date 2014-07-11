@@ -44,14 +44,6 @@ public class AgentDaoImpl implements AgentDao {
     @Override
     public boolean putAgent(Agent agent) {
 
-        for(AgentRole role: agent.getAgentRoles()){
-            agentRoleDao.putAgentRole(role, agent.getId());
-        }
-
-        for(AgentProfile profile: agent.getAgentProfiles()){
-            agentProfileDao.putAgentProfile(profile, agent.getId());
-        }
-
         baseEntityDao.insertEntity(agent);
         Connection connection = null;
         PreparedStatement statement = null;
@@ -78,6 +70,14 @@ public class AgentDaoImpl implements AgentDao {
             }
             connectionPool.releaseEntry(connection);
 
+        }
+
+        for(AgentRole role: agent.getAgentRoles()){
+            agentRoleDao.putAgentRole(role, agent.getId());
+        }
+
+        for(AgentProfile profile: agent.getAgentProfiles()){
+            agentProfileDao.putAgentProfile(profile, agent.getId());
         }
 
         return true;
