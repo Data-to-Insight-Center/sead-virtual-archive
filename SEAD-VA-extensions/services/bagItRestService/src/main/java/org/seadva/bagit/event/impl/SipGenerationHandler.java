@@ -24,6 +24,7 @@ import org.seadva.bagit.event.api.Handler;
 import org.seadva.bagit.model.MediciInstance;
 import org.seadva.bagit.model.PackageDescriptor;
 import org.seadva.bagit.util.Constants;
+import org.seadva.model.SeadDataLocation;
 import org.seadva.model.SeadDeliverableUnit;
 import org.seadva.model.SeadFile;
 import org.seadva.model.SeadPerson;
@@ -236,20 +237,20 @@ public class SipGenerationHandler implements Handler {
 
             if(idTriples.size()>0){
                 for(Triple triple:idTriples){
-                     if(triple.getObjectLiteral().contains("doi")){
+                    if(triple.getObjectLiteral().contains("doi")){
                         DcsResourceIdentifier alternateId = new DcsResourceIdentifier();
                         alternateId.setIdValue(triple.getObjectLiteral());
                         alternateId.setTypeId("doi");
                         du.addAlternateId(alternateId);
                     }
-                     else if(triple.getObjectLiteral().contains("medici")){
-                         DcsResourceIdentifier alternateId = new DcsResourceIdentifier();
-                         alternateId.setIdValue(triple.getObjectLiteral());
-                         alternateId.setTypeId("medici");
-                         du.addAlternateId(alternateId);
-                     }else{
-                         duId = triple.getObjectLiteral().replace("_Aggregation", "");
-                     }
+                    else if(triple.getObjectLiteral().contains("medici")){
+                        DcsResourceIdentifier alternateId = new DcsResourceIdentifier();
+                        alternateId.setIdValue(triple.getObjectLiteral());
+                        alternateId.setTypeId("medici");
+                        du.addAlternateId(alternateId);
+                    }else{
+                        duId = triple.getObjectLiteral().replace("_Aggregation", "");
+                    }
                 }
             }
 
@@ -287,6 +288,24 @@ public class SipGenerationHandler implements Handler {
                 }
             }
 
+            TripleSelector sourceselector = new TripleSelector();
+            sourceselector.setSubjectURI(rem.getAggregation().getURI());
+            sourceselector.setPredicate(METS_LOCATION);
+            List<Triple> sourcetriples = rem.getAggregation().listAllTriples(sourceselector);
+
+            if(sourcetriples.size()>0)
+            {
+                if(sourcetriples.get(0).getObjectLiteral().contains(";")){
+                    String[] locArr = sourcetriples.get(0).getObjectLiteral().split(";");
+                    if(locArr.length==3){
+                        SeadDataLocation dataLocation = new SeadDataLocation();
+                        dataLocation.setName(locArr[0]);
+                        dataLocation.setType(locArr[1]);
+                        dataLocation.setLocation(locArr[2]);
+                        du.setPrimaryLocation(dataLocation);
+                    }
+                }
+            }
             //get any metadata file associated
             TripleSelector tripleSelector = new TripleSelector();
             tripleSelector.setSubjectURI(rem.getAggregation().getURI());
@@ -451,14 +470,24 @@ public class SipGenerationHandler implements Handler {
                     if(triples.size()>0)
                         file.setName(triples.get(0).getObjectLiteral());
 
-                    TripleSelector sourceselector = new TripleSelector();
+                    sourceselector = new TripleSelector();
                     sourceselector.setSubjectURI(aggregatedResource.getURI());
                     sourceselector.setPredicate(METS_LOCATION);
-                    List<Triple> sourcetriples = aggregatedResource.listAllTriples(sourceselector);
+                    sourcetriples = aggregatedResource.listAllTriples(sourceselector);
 
                     if(sourcetriples.size()>0)
                     {
-                        if (sourcetriples.get(0).getObjectLiteral().contains("datastream"))
+                        if(sourcetriples.get(0).getObjectLiteral().contains(";")){
+                            String[] locArr = sourcetriples.get(0).getObjectLiteral().split(";");
+                            if(locArr.length==3){
+                                SeadDataLocation dataLocation = new SeadDataLocation();
+                                dataLocation.setName(locArr[0]);
+                                dataLocation.setType(locArr[1]);
+                                dataLocation.setLocation(locArr[2]);
+                                file.setPrimaryLocation(dataLocation);
+                            }
+                        }
+                        else if (sourcetriples.get(0).getObjectLiteral().contains("datastream"))
                             file.setSource("file://"+unzippedDir+"data/"+file.getName());
                         else if(sourcetriples.get(0).getObjectLiteral().startsWith("http")||sourcetriples.get(0).getObjectLiteral().startsWith("file:"))
                             file.setSource(sourcetriples.get(0).getObjectLiteral());

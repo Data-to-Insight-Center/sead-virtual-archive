@@ -73,7 +73,9 @@ public class Constants {
         Map<String, String> metadataPredicateMap = new HashMap<String, String>();
 
         InputStream inputStream =
-                Constants.class.getResourceAsStream("./ACR_to_ORE_MappingConfig.properties");
+                Constants.class.getResourceAsStream(
+                        "./" +
+                                "ACR_to_ORE_MappingConfig.properties");
 
         StringWriter writer = new StringWriter();
         IOUtils.copy(inputStream, writer);
@@ -95,7 +97,9 @@ public class Constants {
         List<MediciInstance> instances = new ArrayList<MediciInstance>();
 
         InputStream inputStream =
-                Constants.class.getResourceAsStream("./acrInstances.xml");
+                Constants.class.getResourceAsStream(
+                        "./" +
+                                "acrInstances.xml");
         StringWriter writer = new StringWriter();
         IOUtils.copy(inputStream, writer);
 

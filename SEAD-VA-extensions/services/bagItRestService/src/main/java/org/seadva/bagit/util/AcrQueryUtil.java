@@ -28,21 +28,21 @@ import java.util.List;
 
 public class AcrQueryUtil{
 
-	String query;
-       public String getJsonResponse(MediciInstance t_instance,String predicate, String tagId) throws IOException, JSONException {
-           query ="SELECT ?object WHERE { "+
-                   "<"+tagId+"> <"+predicate+"> ?object ."+
-                   " }";
-           return getProxy(t_instance).getSparqlJSONResponse("query="+query);
-        }
+    String query;
+    public String getJsonResponse(MediciInstance t_instance,String predicate, String tagId) throws IOException, JSONException {
+        query ="SELECT ?object WHERE { "+
+                "<"+tagId+"> <"+predicate+"> ?object ."+
+                " }";
+        return getProxy(t_instance).getSparqlJSONResponse("query="+query);
+    }
 
-		protected MediciProxy getProxy(MediciInstance t_instance){
-			MediciProxy _mp = new MediciProxy();
-			_mp. setCredentials(t_instance.getUser(), t_instance.getPassword(),
-                    t_instance.getUrl(),
-                    t_instance.getRemoteAPI());
-	    	return _mp;
-		}
+    protected MediciProxy getProxy(MediciInstance t_instance){
+        MediciProxy _mp = new MediciProxy();
+        _mp. setCredentials(t_instance.getUser(), t_instance.getPassword(),
+                t_instance.getUrl(),
+                t_instance.getRemoteAPI());
+        return _mp;
+    }
 
     public List<String> parseJsonAttribute(String json, String attribute) {
 
@@ -99,6 +99,10 @@ public class AcrQueryUtil{
                         if(binding.get("literal") instanceof String)
                             title = (String)binding.get("literal");
                         else{
+                            if(binding.get("literal") instanceof  Boolean){
+                                result.add(String.valueOf((Boolean)binding.get("literal")));
+                                continue;
+                            }
                             JSONObject temp = (JSONObject)binding.get("literal");
                             title = temp.get("content").toString();
                         }
