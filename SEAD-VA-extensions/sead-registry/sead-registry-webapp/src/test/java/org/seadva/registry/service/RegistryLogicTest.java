@@ -17,7 +17,6 @@
 package org.seadva.registry.service;
 
 
-import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
@@ -111,7 +110,7 @@ public class RegistryLogicTest extends JerseyTest {
     @Test
     public void testPostAggregation() throws IOException, ClassNotFoundException {
         String aggregationJson =
-                "[{\"child\":{\"id\":\"http://sead-test/fakeUri/844e89f2-5f91-4f6b-ac46-60f076fc3e25\",\"properties\":[]},\"parent\":{\"id\":\"test_1\",\"properties\":[]},\"childType\":\"org.seadva.registry.database.model.obj.vaRegistry.File\",\"parentType\":\"org.seadva.registry.database.model.obj.vaRegistry.Collection\"}]";
+                "[{\"child\":{\"id\":\"http://seadva-test.d2i.indiana.edu:5667/sead-wf/entity/27925\",\"properties\":[]},\"parent\":{\"id\":\"test_1\",\"properties\":[]},\"childType\":\"org.seadva.registry.database.model.obj.vaRegistry.File\",\"parentType\":\"org.seadva.registry.database.model.obj.vaRegistry.Collection\"}]";
 
         WebResource webResource = resource();
 

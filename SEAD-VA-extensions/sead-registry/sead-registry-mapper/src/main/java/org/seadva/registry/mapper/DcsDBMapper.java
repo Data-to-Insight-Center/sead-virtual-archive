@@ -1,6 +1,5 @@
 package org.seadva.registry.mapper;
 
-import com.google.gson.GsonBuilder;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.dataconservancy.model.dcs.*;
@@ -82,6 +81,8 @@ public class DcsDBMapper {
                     String[] arr = pair.getKey().split("/");
                     String element = arr[arr.length-1];
                     metadataType = client.getMetadataByType(element);
+                    if(metadataType.getId()==null)
+                        continue;
                     if(metadataType!=null){
                         property = new Property();
                         property.setMetadata(metadataType);
@@ -206,6 +207,8 @@ public class DcsDBMapper {
                     String[] arr = pair.getKey().split("/");
                     String element = arr[arr.length-1];
                     MetadataType metadataType = client.getMetadataByType(element);
+                    if(metadataType.getId()==null)
+                        continue;
                     if(metadataType!=null){
                         Property property = new Property();
                         property.setMetadata(metadataType);
