@@ -65,7 +65,7 @@ public class SeadApp implements EntryPoint {
     public static String bagIturl;
     public static String deposit_endpoint;
     public static String registryUrl;
-    public static String roUrl;
+    public static String roUrl; 
     public static String tmpHome;
     public static boolean isHome;
 
@@ -287,9 +287,9 @@ public class SeadApp implements EntryPoint {
         middlePanel.setStyleName("Menu");
 
         optionsHorz = new HorizontalPanel();
-        dataSearch =Util.label("Data Search", "Option");
+        dataSearch = Util.label("Data Search", "Option");
         // OptionsHorz.add(dataSearch);
-        uploadData =Util.label("Upload Data", "Option");
+        uploadData = Util.label("Upload Data", "Option");
         //  OptionsHorz.add(uploadData);
 
         home = Util.label("Home", "Option");
@@ -346,7 +346,7 @@ public class SeadApp implements EntryPoint {
 
         uploadData.addClickHandler(goUploadData);
 
-        adminPage =Util.label("Administration", "Option");
+        adminPage = Util.label("Administration", "Option");
 
         ClickHandler goAdminPage = new ClickHandler() {
             public void onClick(ClickEvent event) {
@@ -357,7 +357,7 @@ public class SeadApp implements EntryPoint {
 
         adminPage.addClickHandler(goAdminPage);
 
-        curatorPage =Util.label("Curate", "Option");
+        curatorPage = Util.label("Curate", "Option");
 
         ClickHandler goCuratorPage = new ClickHandler() {
             public void onClick(ClickEvent event) {
@@ -368,7 +368,7 @@ public class SeadApp implements EntryPoint {
 
         curatorPage.addClickHandler(goCuratorPage);
 
-        activityPage =Util.label("Activity", "Option");
+        activityPage = Util.label("Activity", "Option");
 
         ClickHandler goActivityPage = new ClickHandler() {
             public void onClick(ClickEvent event) {
@@ -516,7 +516,7 @@ public class SeadApp implements EntryPoint {
         } else */{
             // load config
 
-            String temp = GWT.getModuleBaseURL() + "Config.properties";
+          
             HttpGet.request(GWT.getModuleBaseURL() + "Config.properties",
                     new HttpGet.Callback<String>() {
 
@@ -529,7 +529,7 @@ public class SeadApp implements EntryPoint {
                                     //"\\w*(\n|\\=)\\w*");
                                     "\\w*\n|\\=\\w*");
 
-                            for (int i = 0; i + 1 < pairs.length;) {
+                            for (int i = 0; i + 1 < pairs.length; ) {
                                 String name = pairs[i++].trim();
                                 String value = pairs[i++].trim();
 
@@ -537,7 +537,7 @@ public class SeadApp implements EntryPoint {
                                     accessurl = value;
                                     updateAccessServiceUrl();
                                     deposit_endpoint =
-                                            accessurl+"deposit/";
+                                            accessurl + "deposit/";
                                 }
                                 if (name.equals("datastreamServletUrl")) {
                                     datastreamUrl = value;
@@ -565,10 +565,38 @@ public class SeadApp implements EntryPoint {
                                     admins = adminStr.split(";");
                                 }
                             }
-                            userService.checkSession(null,cb);
+                            userService.checkSession(null, cb);
                             History.fireCurrentHistoryState();
                         }
                     });
+            
+            if(Constants.predicateViewMap==null){
+            	Constants.predicateViewMap = new HashMap<String, String>();
+            	Constants.viewPredicateMap = new HashMap<String, String>();
+            	HttpGet.request(GWT.getModuleBaseURL() + "CuratorDisplayConfig.properties",
+                        new HttpGet.Callback<String>() {
+
+                            public void failure(String error) {
+                                new ErrorPopupPanel("Failed to load config: " + error).show();
+                            }
+
+                            public void success(String result) {
+                                String[] pairs = result.trim().split(
+                                        //"\\w*(\n|\\=)\\w*");
+                                        "\n|\\=");
+
+                                for (int i = 0; i + 1 < pairs.length; ) {
+                                    String name = pairs[i++].trim();
+                                    String value = pairs[i++].trim();
+
+                                    Constants.predicateViewMap.put(name, value);
+                                    Constants.viewPredicateMap.put(value, name);
+                                }
+                            }
+                        });
+            }
+            
+            //Init DB
         }
 
     }

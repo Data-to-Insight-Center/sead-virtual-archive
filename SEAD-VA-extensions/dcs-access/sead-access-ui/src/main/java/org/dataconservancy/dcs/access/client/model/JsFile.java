@@ -15,6 +15,7 @@
  */
 package org.dataconservancy.dcs.access.client.model;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -87,6 +88,23 @@ public final class JsFile
     public JsArray<JsMetadata> getMetadata() {
         return (JsArray<JsMetadata>) getArray("metadata");
     }
+    
+    public void setMetadata(JsArray<JsMetadata> metadata) {
+    	JsArray<JsMetadata> copy = JavaScriptObject.createArray().cast();
+    	
+    	for(int i=0;i< metadata.length();i++){
+    		System.out.println("setting:"+metadata.get(i).getMetadata());
+    		copy.set(i, metadata.get(i));
+    	}
+    	this.getMetadata().setLength(0);// = JavaScriptObject.createArray().cast();
+    	this.getMetadata().setLength(metadata.length());
+    	for(int i=0;i< copy.length();i++){
+    		copy.set(i, copy.get(i));
+    		this.getMetadata().push(copy.get(i));
+    	}
+
+    }
+
 
     public JsArrayString getMetadataRefs() {
         return getRefs("metadataRef");

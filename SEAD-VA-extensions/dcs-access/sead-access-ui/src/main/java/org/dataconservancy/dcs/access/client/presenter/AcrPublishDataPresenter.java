@@ -302,12 +302,10 @@ public class AcrPublishDataPresenter implements Presenter {
         mainContainer.clear();
         facetContent.clear();
         bind();
-        //nPanel = notificationPanel;
         mainContainer.setWidth("100%");
         mainContainer.setHeight("100%");
         mainContainer.setStyleName("Border");
-        //mainContainer.add(content);
-
+        
         mainContainer.add(this.display.getPublishContainer());
 
     }
@@ -329,7 +327,7 @@ public class AcrPublishDataPresenter implements Presenter {
                             public void onSuccess(String bagPath) {
                                 mediciService.getSipJsonFromBag(bagPath,
                                         bagPath.replace(".zip", "")
-                                        , "http://seadva-test.d2i.indiana.edu:8080/bagit/acrToBag/"
+                                        , SeadApp.bagIturl
                                         , new AsyncCallback<String>() {
                                     @Override
                                     public void onSuccess(String resultStr) {
@@ -414,7 +412,6 @@ public class AcrPublishDataPresenter implements Presenter {
 
                             @Override
                             public void onSuccess(String statusUrl) {
-//									Window.alert("Done:" + result);
                                 popupPanel.hide();
                                 MessagePopupPanel donePanel = new MessagePopupPanel(statusUrl, "done", true);
                                 donePanel.show();

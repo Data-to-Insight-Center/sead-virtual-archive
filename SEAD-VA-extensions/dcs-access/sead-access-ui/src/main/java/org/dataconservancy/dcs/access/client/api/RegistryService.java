@@ -55,6 +55,7 @@ public interface RegistryService
 
     //Shouldn't be here
     void updateSip(String sipPath, String entityId, String key, String value) throws Exception;
-    void updateSip(String sipPath, String entityId, Map<String, String> changes) throws Exception;
+    void updateSip(String sipPath, String entityId,
+                   Map<String, List<String>> changes, Map<String, String> predicateViewMap) throws Exception;
     void cleanSip(String sipPath) throws Exception;
 }

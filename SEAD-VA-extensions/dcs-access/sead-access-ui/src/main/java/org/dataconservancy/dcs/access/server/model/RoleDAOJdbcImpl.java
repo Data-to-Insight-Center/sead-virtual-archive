@@ -16,6 +16,8 @@
 
 package org.dataconservancy.dcs.access.server.model;
 
+import org.dataconservancy.dcs.access.server.database.DBConnectionPool;
+import org.dataconservancy.dcs.access.server.database.ObjectPool;
 import org.dataconservancy.dcs.access.shared.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,16 +28,17 @@ import java.util.List;
 
 public class RoleDAOJdbcImpl  implements RoleDAO {
 
-	private static Statement stmt = null;
-   
-	DatabaseSingleton dbInstance;
-	
-    
+	 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 	private static final String ROLE_TBL = "roles";
 	
+	protected ObjectPool<Connection> connectionPool = null;
+	protected Connection getConnection() throws SQLException {
+	     return connectionPool.getEntry();
+	}
 	public RoleDAOJdbcImpl(String configPath) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
-		dbInstance = DatabaseSingleton.getInstance(configPath);
+		//dbInstance = DatabaseSingleton.getInstance(configPath);
+		connectionPool = DBConnectionPool.getInstance();
 	}
 	
 
@@ -46,11 +49,12 @@ public class RoleDAOJdbcImpl  implements RoleDAO {
 
 		List<Role> roles = new ArrayList<Role>();
 		 
-		try{
-		  //Get a connection
-	      Connection conn = dbInstance.getConnection();
-	      
-	      stmt = conn.createStatement();
+		Connection conn = null;
+		 PreparedStatement pst = null;
+		 try{
+	 	
+			conn = getConnection();
+		  Statement stmt = conn.createStatement();
 	         
          ResultSet results = stmt.executeQuery(query);
          
@@ -73,11 +77,12 @@ public class RoleDAOJdbcImpl  implements RoleDAO {
 				+ " WHERE ROLEID = ?";
 		
 		Role role = Role.ROLE_NONSEADUSER;
-		try{
-		  //Get a connection
-	      Connection conn = dbInstance.getConnection();
-	      
-	      PreparedStatement pst = conn.prepareStatement(query);
+		Connection conn = null;
+		 PreparedStatement pst = null;
+		 try{
+	 	
+			conn = getConnection();
+			pst = conn.prepareStatement(query);
 	        
 	      pst.setInt(1,role_id);
 	         
@@ -98,11 +103,12 @@ public class RoleDAOJdbcImpl  implements RoleDAO {
 				+ " WHERE ROLE = ?";
 		
 		int roleId  =0;
-		try{
-		  //Get a connection
-	      Connection conn = dbInstance.getConnection();
-	      
-	      PreparedStatement pst = conn.prepareStatement(query);
+		Connection conn = null;
+		PreparedStatement pst = null;
+		 try{
+	 	
+			conn = getConnection();
+			pst = conn.prepareStatement(query);
 	        
 	      pst.setString(1, roleName);
 	         

@@ -16,6 +16,8 @@
 
 package org.dataconservancy.dcs.access.server.model;
 
+import org.dataconservancy.dcs.access.server.database.DBConnectionPool;
+import org.dataconservancy.dcs.access.server.database.ObjectPool;
 import org.dataconservancy.dcs.access.server.util.ServerConstants;
 import org.dataconservancy.dcs.access.server.util.StatusReader.Status;
 import org.dataconservancy.dcs.access.shared.Event;
@@ -32,28 +34,35 @@ import java.util.Map;
 
 public class ProvenanceDAOJdbcImpl  implements ProvenanceDAO {
 
-	DatabaseSingleton dbInstance;
-	
 	
     
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 	private static final String PROVENANCE_TBL = "PROVENANCE";
 	private static final String EVENT_TBL = "EVENT";
 	
+	protected ObjectPool<Connection> connectionPool = null;
+	protected Connection getConnection() throws SQLException {
+	     return connectionPool.getEntry();
+	}
+	
 	public ProvenanceDAOJdbcImpl(String configPath) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
-		dbInstance = DatabaseSingleton.getInstance(configPath);
+		//dbInstance = DatabaseSingleton.getInstance(configPath);
+		connectionPool = DBConnectionPool.getInstance();
 	}
 
 	@Override
 	public void insertProvenanceRecord(ProvenanceRecord provenanceRecord) {
 		//check if prov record exists, if not create a new one or update the old one in both the tables as needed
 		
-        try
-        {
-        	Connection conn = dbInstance.getConnection(); 
+		Connection conn = null;
+		PreparedStatement pst = null;
+		try{
+	 	
+			conn = getConnection();
+			
         	String query = "SELECT STATUS FROM " + PROVENANCE_TBL
       				+ " WHERE SIPID = ?";
-        	PreparedStatement pst = conn.prepareStatement(query);
+        	pst = conn.prepareStatement(query);
       		  
         	pst.setString(1, provenanceRecord.getSipId());
            
@@ -217,9 +226,12 @@ public class ProvenanceDAOJdbcImpl  implements ProvenanceDAO {
 		String wfInstanceId = null;
 		String datasetTitle = null;
 	
-		try{    
-			Connection conn = dbInstance.getConnection();
-			PreparedStatement pst = conn.prepareStatement(query);
+		Connection conn = null;
+		PreparedStatement pst = null;
+		try{
+	 	
+			conn = getConnection();
+			pst = conn.prepareStatement(query);
 	        
 	         pst.setString(1,submitterId);
 	     
@@ -319,9 +331,12 @@ public class ProvenanceDAOJdbcImpl  implements ProvenanceDAO {
 		String datasetTitle = null;
 
 		
+		Connection conn = null;
+		PreparedStatement pst = null;
 		try{
-		 Connection conn = dbInstance.getConnection();
-	     PreparedStatement pst = conn.prepareStatement(query);
+	 	
+			conn = getConnection();
+			pst = conn.prepareStatement(query);
 	        
          pst.setString(1,submitterId);
          pst.setString(2,wfInstanceId);
@@ -466,23 +481,24 @@ public class ProvenanceDAOJdbcImpl  implements ProvenanceDAO {
 	 public void executeQuery(String query) {
 			
 			
-			Connection conn;
-			try {
-				conn = dbInstance.getConnection();
-				PreparedStatement pst = conn.prepareStatement(query);
-		        
-		        
-		         ResultSet results = pst.executeQuery();
-		         
-		         String previousDatasetId = "";
-		         String previousWfInstanceId = "";
-		          		
-		         
-		         ProvenaceDataset provDataset = new ProvenaceDataset();
-		         while(results.next())
-		         {
-		        	 System.out.println(results.getString("id"));
-		         }
+		 Connection conn = null;
+		 PreparedStatement pst = null;
+		 try{
+	 	
+			conn = getConnection();
+			pst = conn.prepareStatement(query);
+	        
+	         ResultSet results = pst.executeQuery();
+	         
+	         String previousDatasetId = "";
+	         String previousWfInstanceId = "";
+	          		
+	         
+	         ProvenaceDataset provDataset = new ProvenaceDataset();
+	         while(results.next())
+	         {
+	        	 System.out.println(results.getString("id"));
+	         }
 		
 			} catch (Exception e) {
 				// TODO Auto-generated catch block

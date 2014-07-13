@@ -69,15 +69,9 @@ public class ActivityPresenter implements Presenter {
             public void onSuccess(UserSession result) {
                 final String agentUrl =
                         result.getRegistryId();
-//						"agent:f8477el5d-922f-41fb-9496h-ba39ffu218264";
-//						"agent:7dd76828-d615-4c76-9f95-427a1dcdf5f4";
-//						"agent:e4b2ea67-e775-498d-af9e-fcb1a0235f01";
-//						"agent:4f1e3f38-6fc4-47f8-8e15-4358f80b0986v";
-//				 "agent:fb9c6de1-322b-467b-8a88-f6475c6fa0f1";
                 String queryUrl=
                         SeadApp.roUrl+"resource/agentGraph/"
                                 +agentUrl;
-//				queryUrl = "http://seadva-test.d2i.indiana.edu/ro/resource/agentGraph/agent:fb9c6de1-322b-467b-8a88-f6475c6fa0f1";
 
                 JsonpRequestBuilder rb = new JsonpRequestBuilder();
                 rb.setTimeout(100000);
@@ -99,11 +93,11 @@ public class ActivityPresenter implements Presenter {
                             String agentId = document.getAgentId(agentUrl);
 
                             JsArray<JsAssociatedWith> activities = document.getActivities(agentId);
-//							  Window.alert("activity"+activities.length());
+
                             JsArray<JsGenerated> generatedBys = document.getSafeGeneratedBys();
-//							  Window.alert("generatedBys"+generatedBys.length());
+
                             JsArray<JsProvEntity> entities = document.getSafeEntities();
-//							  Window.alert("entities"+entities.length());
+
                             TreeMap<Date, List<HTML>> htmlMap = new TreeMap<Date,  List<HTML>>(Collections.reverseOrder());
 
                             for(int i =0; i<activities.length(); i++){

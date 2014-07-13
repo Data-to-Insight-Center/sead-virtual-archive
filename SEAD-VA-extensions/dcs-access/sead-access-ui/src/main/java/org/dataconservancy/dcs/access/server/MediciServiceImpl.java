@@ -996,8 +996,6 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
         WebResource webResource = client
                 .resource(
                         bagitEp + "bag/"
-                     //   "http://seadva-test.d2i.indiana.edu:8080/bagit/acrToBag/bag/" //change
-
                 );
 
         MultivaluedMap<String, String> params = new MultivaluedMapImpl();
@@ -1017,10 +1015,8 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
         try {
             IOUtils.copy(response.getEntityInputStream(),new FileOutputStream(tmpHome+guid+".zip"));
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return tmpHome+guid+".zip";
@@ -1109,6 +1105,17 @@ public class MediciServiceImpl extends RemoteServiceServlet implements
             e.printStackTrace();
         }
 
+        return tempWriter.toString();
+    }
+
+    @Override
+    public String getJsonSip(String sipPath) throws InvalidXmlException, FileNotFoundException{
+        ResearchObject sip = new SeadXstreamStaxModelBuilder().buildSip(new FileInputStream(sipPath));
+
+        StringWriter tempWriter = new StringWriter();
+        BagUploadServlet utilServlet = new BagUploadServlet();
+        utilServlet.siptoJsonConverter().toXML(utilServlet.toQueryResult(sip),  tempWriter);
+        tempWriter.append(";"+ sipPath);
         return tempWriter.toString();
     }
 

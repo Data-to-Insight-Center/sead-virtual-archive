@@ -67,6 +67,10 @@ public final class JsDeliverableUnit
     public JsArray<JsMetadata> getMetadata() {
         return (JsArray<JsMetadata>) getArray("metadata");
     }
+    
+    public void setMetadata(JsArray<JsMetadata> metadata) {
+    	 set("metadata", metadata.toString());
+    }
 
     public JsArrayString getMetadataRefs() {
         return getRefs("metadataRefs");
@@ -232,8 +236,6 @@ public final class JsDeliverableUnit
                     @Override
                     public void onClick(ClickEvent event) {
                         Window.open(finalLink, "_blank", "");
-//						MetadataPopupPanel statusPopupPanel = new MetadataPopupPanel(); 
-//						statusPopupPanel.show();
                     }
                 });
 
@@ -315,11 +317,11 @@ public final class JsDeliverableUnit
             JsRelation.display(panel, getRelations());
         }
 
-        TreeDemo demo = new TreeDemo();
+/*        TreeDemo demo = new TreeDemo();
         demo.setId(getId());
         demo.start();
         table.setWidget(9, 1, demo);
-
+*/
         return panel;
     }
 

@@ -58,4 +58,7 @@ public interface UserServiceAsync {
 
     void emailResearcher(String agentId, String entityUrl, AsyncCallback<Boolean> callback);
 
+	void getOAuthDetails(String token, OAuthType type,
+                         AsyncCallback<Person> callback);
+
 }

@@ -48,7 +48,6 @@ import org.seadva.registry.database.model.obj.vaRegistry.Collection;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
-import javax.xml.ws.http.HTTPException;
 import java.io.*;
 import java.lang.reflect.Type;
 import java.net.URLEncoder;
@@ -323,7 +322,7 @@ public class RegistryServiceImpl extends RemoteServiceServlet
                 Iterator iterator = map.entrySet().iterator();
 
                 while(iterator.hasNext()){
-                    Map.Entry<String, String> pair = (Map.Entry<String, String>) iterator.next();
+                    Entry<String, String> pair = (Entry<String, String>) iterator.next();
                     if(pair.getKey().contains("prov"))
                         continue;
                     else
@@ -345,21 +344,28 @@ public class RegistryServiceImpl extends RemoteServiceServlet
 
 
     @Override
-    public void updateSip(String sipPath, String entityId, Map<String,String> changes) throws InvalidXmlException, FileNotFoundException{
+    public void updateSip(String sipPath, String entityId, Map<String, List<String>> changes, Map<String, String> predicateViewMap) throws InvalidXmlException, FileNotFoundException{
         ResearchObject sip = new SeadXstreamStaxModelBuilder().buildSip(new FileInputStream(sipPath));
 
         int changed = 0;
+        List<DcsMetadata> newMetadataList = new ArrayList<DcsMetadata>();
         java.util.Collection<DcsDeliverableUnit> deliverableUnits = sip.getDeliverableUnits();
         for(DcsDeliverableUnit entity: deliverableUnits)
             if(entity.getId().equals(entityId)){
                 Iterator iterator = changes.entrySet().iterator();
                 while(iterator.hasNext()){
-                    Map.Entry<String,String> pair = (Entry<String, String>) iterator.next();
-                    if(pair.getKey().equals("title"))
-                        entity.setTitle(pair.getValue());
-                    else if(pair.getKey().equals("abstract"))
-                        ((SeadDeliverableUnit)entity).setAbstrct(pair.getValue());
+                    Entry<String, List<String>> pair = (Entry<String, List<String>>) iterator.next();
+                    if(pair.getKey().equals("title")){
+                        if(pair.getValue()!=null&&pair.getValue().size()>0)
+                        	entity.setTitle(pair.getValue().get(0));
+                    }
+                    else if(pair.getKey().equals("abstract")){
+                    	if(pair.getValue()!=null&&pair.getValue().size()>0)
+                    		 ((SeadDeliverableUnit)entity).setAbstrct(pair.getValue().get(0));
+                    }
                     else{
+                    	//Add all metadata only from Curator display config file
+
                         DcsMetadata dcsMetadata = new DcsMetadata();
 
                         String splitChar = "/";
@@ -368,16 +374,30 @@ public class RegistryServiceImpl extends RemoteServiceServlet
                         String ns = pair.getKey().substring(0, pair.getKey().lastIndexOf(splitChar));
                         dcsMetadata.setSchemaUri(ns);
                         Map<String,Object> map = new HashMap<String,Object>();
-                        map.put(pair.getKey(), pair.getValue());
-                        XStream xStream = new XStream(new DomDriver());
-                        xStream.alias("map", Map.class);
-                        String metadata = xStream.toXML(map);
-                        dcsMetadata.setMetadata(metadata);
-                        entity.addMetadata(dcsMetadata);
+                        for(String value: pair.getValue()){
+	                        map.put(pair.getKey(), value);
+	                        XStream xStream = new XStream(new DomDriver());
+	                        xStream.alias("map", Map.class);
+	                        String metadata = xStream.toXML(map);
+	                        dcsMetadata.setMetadata(metadata);
+	                        newMetadataList.add(dcsMetadata);
+                        }
                     }
                     changed = 1;
                     iterator.remove();
                 }
+                for(DcsMetadata oldMetadata: entity.getMetadata()){
+
+                	XStream xStream = new XStream(new DomDriver());
+                    xStream.alias("map",Map.class);
+                    Map<String,String> map = (Map<String, String>) xStream.fromXML(oldMetadata.getMetadata());
+                    Entry<String, String> pair = map.entrySet().iterator().next();
+
+                	if(predicateViewMap!=null&&predicateViewMap.containsKey(pair.getKey().trim()))
+                		continue;
+                	newMetadataList.add(oldMetadata);
+                }
+                entity.setMetadata(newMetadataList);
 
             }
 
@@ -392,29 +412,46 @@ public class RegistryServiceImpl extends RemoteServiceServlet
             if(entity.getId().equals(entityId)){
                 Iterator iterator = changes.entrySet().iterator();
                 while(iterator.hasNext()){
-                    Map.Entry<String,String> pair = (Entry<String, String>) iterator.next();
-                    if(pair.getKey().equals("title"))
-                        entity.setName(pair.getValue());
+                    Entry<String, List<String>> pair = (Entry<String, List<String>>) iterator.next();
+                    if(pair.getKey().equals("title")){
+                    	if(pair.getValue()!=null&&pair.getValue().size()>0)
+                        	entity.setName(pair.getValue().get(0));
+                    }
                     else{
-                        DcsMetadata dcsMetadata = new DcsMetadata();
 
-                        String splitChar = "/";
-                        if(pair.getKey().contains("#"))
-                            splitChar="#";
-                        String ns = pair.getKey().substring(0, pair.getKey().lastIndexOf(splitChar));
-                        dcsMetadata.setSchemaUri(ns);
-                        Map<String,Object> map = new HashMap<String,Object>();
-                        map.put(pair.getKey(), pair.getValue());
-                        XStream xStream = new XStream(new DomDriver());
-                        xStream.alias("map", Map.class);
-                        String metadata = xStream.toXML(map);
-                        dcsMetadata.setMetadata(metadata);
-                        entity.addMetadata(dcsMetadata);
+                        for(String value: pair.getValue()){
+                        	 DcsMetadata dcsMetadata = new DcsMetadata();
+
+                             String splitChar = "/";
+                             if(pair.getKey().contains("#"))
+                                 splitChar="#";
+                             String ns = pair.getKey().substring(0, pair.getKey().lastIndexOf(splitChar));
+                             dcsMetadata.setSchemaUri(ns);
+                             Map<String,Object> map = new HashMap<String,Object>();
+	                        map.put(pair.getKey(), value);
+	                        XStream xStream = new XStream(new DomDriver());
+	                        xStream.alias("map", Map.class);
+	                        String metadata = xStream.toXML(map);
+	                        dcsMetadata.setMetadata(metadata);
+	                        newMetadataList.add(dcsMetadata);
+                        }
                     }
 
                     changed = 1;
                     iterator.remove();
                 }
+
+                for(DcsMetadata oldMetadata: entity.getMetadata()){
+                	XStream xStream = new XStream(new DomDriver());
+                    xStream.alias("map",Map.class);
+                    Map<String,String> map = (Map<String, String>) xStream.fromXML(oldMetadata.getMetadata());
+                    Entry<String, String> pair = map.entrySet().iterator().next();
+
+                    if(predicateViewMap!=null&&predicateViewMap.containsKey(pair.getKey().trim()))
+                		continue;
+                	newMetadataList.add(oldMetadata);
+                }
+                entity.setMetadata(newMetadataList);
             }
         }
 
@@ -430,10 +467,8 @@ public class RegistryServiceImpl extends RemoteServiceServlet
         try {
             new SeadXstreamStaxModelBuilder().buildSip(sip, new FileOutputStream(sipPath));
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
     }
 
     @Override
@@ -594,8 +629,8 @@ public class RegistryServiceImpl extends RemoteServiceServlet
 
         String affiliation = null;
 
-        org.seadva.registry.database.model.obj.vaRegistry.Collection collection
-                =(org.seadva.registry.database.model.obj.vaRegistry.Collection) new RegistryClient(registryUrl).getEntity(entityId, org.seadva.registry.database.model.obj.vaRegistry.Collection.class.getName());
+        Collection collection
+                =(Collection) new RegistryClient(registryUrl).getEntity(entityId, Collection.class.getName());
         for(DataLocation location: collection.getDataLocations()){
             if(location.getId()!=null){
                 if(location.getId().getLocationType()!=null){
@@ -620,14 +655,14 @@ public class RegistryServiceImpl extends RemoteServiceServlet
 //		id.setEffect(new RegistryClient(registryUrl).getAgent(agentId));
         id.setEffect(new RegistryClient(registryUrl).getEntity(agentId, Agent.class.getName()));
         id.setRelationType(
-//				new RegistryClient(registryUrl).getRelationByType("curatedBy") //This query causes issues - todo
-                gson.fromJson( "{\"id\":\"rl:3\",\"relationElement\":\"curatedBy\",\"relationSchema\":\"http://purl.org/pav/\"}",RelationType.class)
+				new RegistryClient(registryUrl).getRelationByType("curatedBy") 
+              //  gson.fromJson( "{\"id\":\"rl:3\",\"relationElement\":\"curatedBy\",\"relationSchema\":\"http://purl.org/pav/\"}",RelationType.class)
         );
 
         relation.setId(id);
         List<Relation> relationList = new ArrayList<Relation>();
         relationList.add(relation);
-        //System.out.println(gson.toJson(relationList));
+        
         new RegistryClient(registryUrl).postRelation(relationList);
         return true;
     }
@@ -646,8 +681,8 @@ public class RegistryServiceImpl extends RemoteServiceServlet
 //		id.setEffect(new RegistryClient(registryUrl).getAgent(agentId));
         id.setEffect(new RegistryClient(registryUrl).getEntity(agentId, Agent.class.getName()));
         id.setRelationType(
-//				new RegistryClient(registryUrl).getRelationByType("curatedBy") //This query causes issues - todo
-                gson.fromJson( "{\"id\":\"rl:2\",\"relationElement\":\"publisher\",\"relationSchema\":\"http://purl.org/dc/terms/\"}",RelationType.class)
+				new RegistryClient(registryUrl).getRelationByType("publisher") 
+//                gson.fromJson( "{\"id\":\"rl:2\",\"relationElement\":\"publisher\",\"relationSchema\":\"http://purl.org/dc/terms/\"}",RelationType.class)
         );
 
         relation.setId(id);

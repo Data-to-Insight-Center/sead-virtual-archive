@@ -53,4 +53,5 @@ public interface MediciService extends RemoteService {
     Map<String, String> parseJson(String json);
     List<MediciInstance> getAcrInstances();
     String getSipJsonFromBag(String bagPath, String sipPath, String bagitEp);
+	String getJsonSip(String sipPath) throws Exception;
 }

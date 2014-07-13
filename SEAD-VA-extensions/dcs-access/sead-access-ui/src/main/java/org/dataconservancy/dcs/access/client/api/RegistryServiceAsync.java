@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 
-
 public interface RegistryServiceAsync {
 
     void registerAgents(List<Person> persons, String registryUrl, AsyncCallback<Boolean> callback);
@@ -46,7 +45,7 @@ public interface RegistryServiceAsync {
 
     void updateSip(String sipPath, String entityId, String key, String value,
                    AsyncCallback<Void> callback);
-    void updateSip(String sipPath, String entityId, Map<String,String> changes,
+    void updateSip(String sipPath, String entityId, Map<String, List<String>> changes, Map<String, String> predicateViewMap,
                    AsyncCallback<Void> callback);
 
     void getROAffiliation(String entityId, String registryUrl,

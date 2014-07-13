@@ -329,6 +329,20 @@ public class UserServiceImpl extends RemoteServiceServlet
     }
 
     @Override
+    public Person getOAuthDetails(String token, OAuthType type) throws IOException {
+    	Person oAuthUser = new Person();
+
+        if(type == OAuthType.GOOGLE){
+            Userinfo userinfo = new GoogleAuthHelper().getUserInfo(token);
+            oAuthUser.setFirstName(userinfo.getGivenName());
+            oAuthUser.setLastName(userinfo.getFamilyName());
+            oAuthUser.setFirstName(userinfo.getEmail());
+        }
+        
+        return oAuthUser;
+        
+    }
+    @Override
     public Authentication authenticateOAuth(String token, OAuthType type, String[] admins) {
         Authentication authentication = null;
 
@@ -363,9 +377,8 @@ public class UserServiceImpl extends RemoteServiceServlet
                     }
                 }
                 else{
-                    register(firstName, lastName, email, "what are the odds this would be a password", admins,null);
                     authentication = new Authentication(false);
-                    authentication.setErrorMessage("You have requested an account using your "+ OAuthType.GOOGLE.getName()+" id. Your request is yet to be approved by an admin.");
+                    authentication.setErrorMessage("Account does not exist");
                 }
             } catch (InstantiationException e) {
                 e.printStackTrace();

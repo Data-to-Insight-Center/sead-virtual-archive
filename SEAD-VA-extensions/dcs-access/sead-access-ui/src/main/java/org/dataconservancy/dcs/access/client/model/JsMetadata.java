@@ -15,11 +15,6 @@
  */
 package org.dataconservancy.dcs.access.client.model;
 
-import org.dataconservancy.dcs.access.client.api.TransformerService;
-import org.dataconservancy.dcs.access.client.api.TransformerServiceAsync;
-import org.dataconservancy.dcs.access.client.model.SchemaType.Name;
-import org.dataconservancy.dcs.access.ui.client.model.JsModel;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Document;
@@ -28,11 +23,11 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.DisclosurePanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
+import org.dataconservancy.dcs.access.client.api.TransformerService;
+import org.dataconservancy.dcs.access.client.api.TransformerServiceAsync;
+import org.dataconservancy.dcs.access.client.model.SchemaType.Name;
+import org.dataconservancy.dcs.access.ui.client.model.JsModel;
 
 /**
  * Models a Data Conservancy metadata blob
@@ -54,6 +49,17 @@ public final class JsMetadata
 
     public String getMetadata() {
         return getString("metadata");
+    }
+    
+    public void setMetadata(String metadata) {
+        set("metadata", metadata);
+    }
+    
+    public String getString(){
+    	return "{"
+    			+ "\"schemaUri\":\""+getSchemaUri()+"\","
+    			+ "\"metadata\":\""+getMetadata()+"\""
+    			+ "}";
     }
 
     public Widget display() {
@@ -117,7 +123,7 @@ public final class JsMetadata
 			}
 		};
         
-        AsyncCallback<SchemaType.Name> validateCb = new AsyncCallback<SchemaType.Name>() {
+        AsyncCallback<Name> validateCb = new AsyncCallback<Name>() {
 
 			@Override
 			public void onFailure(Throwable caught) {

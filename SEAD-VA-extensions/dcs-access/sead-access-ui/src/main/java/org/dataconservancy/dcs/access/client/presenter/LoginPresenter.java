@@ -20,11 +20,7 @@ import com.google.api.gwt.oauth2.client.Auth;
 import com.google.api.gwt.oauth2.client.AuthRequest;
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.user.client.History;
@@ -52,10 +48,7 @@ public class LoginPresenter implements Presenter {
     Label userNameLbl;
     Label logoutLbl;
     Panel lPanel;
-    //   static final DepositService deposit =
-    //         GWT.create(DepositService.class);
-
-
+ 
     static final UserServiceAsync user =
             GWT.create(UserService.class);
     static final GoogleHelperAsync googleHelper =
@@ -142,6 +135,10 @@ public class LoginPresenter implements Presenter {
         ClickHandler register =  new ClickHandler() {
             public void onClick(ClickEvent event) {
 
+            	if(userRegisterDetails.suggestBox.getText()==null||userRegisterDetails.suggestBox.getText().length()==0){
+            		userRegisterDetails.errorMessage.setText("Error: VIVO ID cannot be empty.");
+            		return;
+            	}
 
                 AsyncCallback<String> cb =
                         new AsyncCallback<String>() {
@@ -225,8 +222,57 @@ public class LoginPresenter implements Presenter {
 
                         }
                         else{
-                            errorLabel.setText(result.getErrorMessage());
-                            errorLabel.setStyleName("ErrorField");
+                        	if(result.getErrorMessage().equalsIgnoreCase("Account does not exist")){
+                        		  AsyncCallback<GoogleDetails> clientDetailsCB =
+                                          new AsyncCallback<GoogleDetails>() {
+
+                                              @Override
+                                              public void onFailure(Throwable caught) {
+                                                  new ErrorPopupPanel("Unable to retrieve client id:"+caught.getMessage()).show();
+                                              }
+
+                                              @Override
+                                              public void onSuccess(GoogleDetails details) {
+                                                  final AuthRequest req = new AuthRequest(details.getGoogleAuthUrl(), details.getClientId())
+                                                          .withScopes(GOOGLE_SCOPE);
+
+                                                  AUTH.login(req, new Callback<String, Throwable>() {
+                                                      @Override
+                                                      public void onSuccess(String token) {
+                                                    	  user.getOAuthDetails(token, OAuthType.GOOGLE, new AsyncCallback<Person>(){
+
+                          									@Override
+                          									public void onFailure(Throwable caught) {
+                          										new ErrorPopupPanel("Error:"+caught.getMessage()).show();
+                          									}
+
+                          									@Override
+                          									public void onSuccess(Person user) {
+                          										if(!display.getDisclosurePanel().isOpen())
+                         		                        			 display.getDisclosurePanel().setOpen(true);
+                          										userRegisterDetails.firstName.setText(user.getFirstName());
+                          										userRegisterDetails.lastName.setText(user.getLastName());
+                          										userRegisterDetails.email.setText(user.getEmailAddress());                          										
+                          									}                                                  			 
+                                                  		 });
+
+                                                      }
+
+                                                      @Override
+                                                      public void onFailure(Throwable caught) {
+                                                          new ErrorPopupPanel("Error:" + caught.getMessage()).show();
+                                                      }
+
+                                                  });
+                                              }
+                                          };
+                                  googleHelper.getClientId(clientDetailsCB);
+                        		
+                        	}
+                        	else{
+                        		errorLabel.setText(result.getErrorMessage());
+                        		errorLabel.setStyleName("ErrorField");
+                        	}
                         }
                     }
 
@@ -297,6 +343,7 @@ public class LoginPresenter implements Presenter {
                                 AUTH.login(req, new Callback<String, Throwable>() {
                                     @Override
                                     public void onSuccess(String token) {
+                                    	
                                         user.authenticateOAuth(token, OAuthType.GOOGLE, SeadApp.admins, authenticateCB);
 
                                     }

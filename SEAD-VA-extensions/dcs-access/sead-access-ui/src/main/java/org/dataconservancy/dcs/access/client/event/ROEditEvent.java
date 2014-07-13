@@ -19,7 +19,6 @@ package org.dataconservancy.dcs.access.client.event;
 import com.google.web.bindery.event.shared.Event;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.HandlerRegistration;
-import org.dataconservancy.dcs.access.client.model.JsDcp;
 
 public class ROEditEvent extends Event<ROEditEvent.Handler> {
 
@@ -39,12 +38,12 @@ public class ROEditEvent extends Event<ROEditEvent.Handler> {
       return eventBus.addHandler(TYPE, handler);
     }
 
-    private final JsDcp dcp;
+   // private final JsDcp dcp;
     private final  boolean setOpen;
     private final String sipPath;
 
-    public ROEditEvent(JsDcp dcp, boolean setOpen, String sipPath) {
-        this.dcp = dcp;
+    public ROEditEvent(/*JsDcp dcp,*/ boolean setOpen, String sipPath) {
+      /*  this.dcp = dcp;*/
         this.setOpen = setOpen;
         this.sipPath = sipPath;
     }
@@ -54,9 +53,9 @@ public class ROEditEvent extends Event<ROEditEvent.Handler> {
         return TYPE;
     }
 
-    public JsDcp getDcp() {
+    /*public JsDcp getDcp() {
         return dcp;
-    }
+    }*/
 
     @Override
     protected void dispatch(Handler handler) {

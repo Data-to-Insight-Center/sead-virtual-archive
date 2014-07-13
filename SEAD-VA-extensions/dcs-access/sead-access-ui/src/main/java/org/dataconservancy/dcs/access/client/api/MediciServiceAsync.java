@@ -54,6 +54,7 @@ public interface MediciServiceAsync {
     void getAcrInstances(AsyncCallback<List<MediciInstance>> callback);
     void getSipJsonFromBag(String bagPath, String sipPath, String bagitEp,
                            AsyncCallback<String> callback);
+	void getJsonSip(String sipPath, AsyncCallback<String> callback);
 
 
 }

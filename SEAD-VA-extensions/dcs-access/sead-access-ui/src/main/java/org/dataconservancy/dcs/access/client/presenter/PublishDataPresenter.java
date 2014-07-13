@@ -31,8 +31,6 @@ import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 import com.google.gwt.view.client.TreeViewModel;
-
-import org.dataconservancy.dcs.access.client.model.DcpTree;
 import org.dataconservancy.dcs.access.client.SeadApp;
 import org.dataconservancy.dcs.access.client.SeadState;
 import org.dataconservancy.dcs.access.client.Util;
@@ -47,6 +45,7 @@ import org.dataconservancy.dcs.access.shared.MediciInstance;
 import org.dataconservancy.dcs.access.shared.Role;
 import org.dataconservancy.dcs.access.shared.UserSession;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -322,15 +321,24 @@ public class PublishDataPresenter implements Presenter {
                                         @Override
                                         public void onSuccess(Void result) {
                                             if(!originalTitle.equalsIgnoreCase(projectNameTB.getText())||!originalAbstract.equalsIgnoreCase(abstractTB.getText())||provenanceType!=null){
-                                                Map<String, String> changes = new HashMap<String,String>();
-                                                if(provenanceType!=null)
-                                                    changes.put(provenanceType.getText(), roId.getText());
-                                                if(!originalTitle.equalsIgnoreCase(projectNameTB.getText()))
-                                                    changes.put("title",projectNameTB.getText());
-                                                if(!originalAbstract.equalsIgnoreCase(abstractTB.getText()))
-                                                    changes.put("abstract",abstractTB.getText());
+                                                Map<String, List<String>> changes = new HashMap<String, List<String>>();
+                                                if(provenanceType!=null){
+                                                	List<String> idList = new ArrayList<String>();
+                                                	idList.add(roId.getText());
+                                                    changes.put(provenanceType.getText(), idList);
+                                                }
+                                                if(!originalTitle.equalsIgnoreCase(projectNameTB.getText())){
+                                                	List<String> titleList = new ArrayList<String>();
+                                                	titleList.add(projectNameTB.getText());
+                                                    changes.put("title", titleList);
+                                                }
+                                                if(!originalAbstract.equalsIgnoreCase(abstractTB.getText())){
+                                                	List<String> abstractList = new ArrayList<String>();
+                                                	abstractList.add(abstractTB.getText());
+                                                    changes.put("abstract", abstractList);
+                                                }
 
-                                                registryService.updateSip(editEvent.getSipPath(), topDuId, changes, new AsyncCallback<Void>() {
+                                                registryService.updateSip(editEvent.getSipPath(), topDuId, changes, null, new AsyncCallback<Void>() {
 
                                                     @Override
                                                     public void onSuccess(Void result) {

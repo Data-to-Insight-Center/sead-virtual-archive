@@ -17,6 +17,8 @@
 package org.dataconservancy.dcs.access.server;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.apache.commons.io.IOUtils;
 import org.dataconservancy.dcs.access.client.api.TransformerService;
 import org.dataconservancy.dcs.access.client.model.SchemaType;
@@ -40,6 +42,7 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.util.Date;
+import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -223,5 +226,19 @@ String homeDir = "/home/kavchand/tmp/";
 		return null;
 	}
 
-	
+	@Override
+	public Map<String, String> parseEntityMetadata(String metadataXml) {
+		
+		XStream xStream = new XStream(new DomDriver());
+         xStream.alias("map",Map.class);
+         Map<String,String> map = (Map<String, String>) xStream.fromXML(metadataXml);
+         return map;
+	}
+
+	@Override
+	public String getMetadata(Map<String, String>  metadata) {
+		 XStream xStream = new XStream(new DomDriver());
+         xStream.alias("map",Map.class);
+         return xStream.toXML(metadata);
+	}
 }

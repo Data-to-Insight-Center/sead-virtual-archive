@@ -28,15 +28,12 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.TreeViewModel;
-import org.dataconservancy.dcs.access.client.model.EditDcpTreeModel;
 import org.dataconservancy.dcs.access.client.SeadApp;
 import org.dataconservancy.dcs.access.client.SeadState;
 import org.dataconservancy.dcs.access.client.Util;
-import org.dataconservancy.dcs.access.client.api.RegistryService;
-import org.dataconservancy.dcs.access.client.api.RegistryServiceAsync;
-import org.dataconservancy.dcs.access.client.api.UserService;
-import org.dataconservancy.dcs.access.client.api.UserServiceAsync;
+import org.dataconservancy.dcs.access.client.api.*;
 import org.dataconservancy.dcs.access.client.event.ROEditEvent;
+import org.dataconservancy.dcs.access.client.model.EditDcpTreeModel;
 import org.dataconservancy.dcs.access.client.model.JsDcp;
 import org.dataconservancy.dcs.access.client.model.JsDeliverableUnit;
 import org.dataconservancy.dcs.access.client.model.JsSearchResult;
@@ -55,7 +52,7 @@ public class EditPresenter implements Presenter {
     ListBox ir;	//projectList in PublishDataView
     ListBox ROList;
 
-
+    public static final MediciServiceAsync mediciService = GWT.create(MediciService.class);
     public static final RegistryServiceAsync registryService = GWT.create(RegistryService.class);
     static final UserServiceAsync user = GWT.create(UserService.class);
 
@@ -157,7 +154,7 @@ public class EditPresenter implements Presenter {
                             }
                         }
 
-                        EditPresenter.EVENT_BUS.fireEvent(new ROEditEvent(dcp, true, sipPath));
+                        EditPresenter.EVENT_BUS.fireEvent(new ROEditEvent(/*dcp,*/ true, sipPath));
                     }
 
                     @Override
@@ -175,14 +172,11 @@ public class EditPresenter implements Presenter {
         mainContainer.clear();
         facetContent.clear();
         bind();
-        //nPanel = notificationPanel;
+        
         mainContainer.setWidth("100%");
         mainContainer.setHeight("100%");
         mainContainer.setStyleName("Border");
-        //mainContainer.add(content);
-
         mainContainer.add(this.display.getPublishContainer());
-
     }
 
     //RO final save
@@ -190,44 +184,66 @@ public class EditPresenter implements Presenter {
         final ROEditEvent.Handler editHandler = new ROEditEvent.Handler() {
             @Override
             public void onMessageReceived(final ROEditEvent editEvent) {
-                TreeViewModel treemodel = new EditDcpTreeModel(editEvent.getDcp(), editEvent.getSipPath());
+            	mediciService.getJsonSip(editEvent.getSipPath(), new AsyncCallback<String>() {
+        			
+        			@Override
+        			public void onSuccess(String resultStr) {
+        				 String[] tempString = resultStr.split(";");
+                         sipPath = tempString[tempString.length-1].split("<")[0];
+                         resultStr = resultStr.substring(resultStr.indexOf('{'), resultStr.lastIndexOf('}')+1);
 
-                CellTree tree = new CellTree(treemodel, null);
+                         JsDcp dcp = JsDcp.create();
+                         JsSearchResult result = JsSearchResult.create(resultStr);
+                         int count = result.matches().length();
+                         for (int i = 0; i < count; i++) {
+                             Util.add(dcp, result.matches().get(i));
+                         }
+                         TreeViewModel treemodel = new EditDcpTreeModel(dcp, editEvent.getSipPath());
 
-                //     tree.setStylePrimaryName("RelatedView");
-                tree.setHeight("90%");
-                tree.setAnimationEnabled(true);
-                tree.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.BOUND_TO_SELECTION);
-                tree.setDefaultNodeSize(50);
+                         CellTree tree = new CellTree(treemodel, null);
 
-                if (tree.getRootTreeNode().getChildCount() > 0) {
-                    tree.getRootTreeNode().setChildOpen(0, editEvent.isSetOpen());
-                }
+                         tree.setHeight("90%");
+                         tree.setAnimationEnabled(true);
+                         tree.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.BOUND_TO_SELECTION);
+                         tree.setDefaultNodeSize(50);
 
-                ScrollPanel previewPanel = new ScrollPanel();
-                previewPanel.setWidth("95%");
-                previewPanel.setHeight("100%");
-                previewPanel.add(tree);
+                         if (tree.getRootTreeNode().getChildCount() > 0) {
+                             tree.getRootTreeNode().setChildOpen(0, editEvent.isSetOpen());
+                         }
 
-                display.getContentPanel().clear();
-                display.getContentPanel().add(previewPanel);
+                         ScrollPanel previewPanel = new ScrollPanel();
+                         previewPanel.setWidth("95%");
+                         previewPanel.setHeight("100%");
+                         previewPanel.add(tree);
 
-                int currentHeight = display.getContentPanel().getOffsetHeight();
-                int windowBasedHeight = (int) (Window.getClientHeight()/3);
+                         display.getContentPanel().clear();
+                         display.getContentPanel().add(previewPanel);
 
-                int height = (currentHeight>windowBasedHeight) ? currentHeight : windowBasedHeight;
+                         int currentHeight = display.getContentPanel().getOffsetHeight();
+                         int windowBasedHeight = (int) (Window.getClientHeight()/3);
 
-                display.getContentPanel().setHeight(height+"px");
+                         int height = (currentHeight>windowBasedHeight) ? currentHeight : windowBasedHeight;
 
-                if(editEvent.getDcp().getDeliverableUnits().length()>0){
-                    for(int i =0;i<editEvent.getDcp().getDeliverableUnits().length();i++){
-                        title = editEvent.getDcp().getDeliverableUnits().get(i).getCoreMd().getTitle();
-                        abstrct = editEvent.getDcp().getDeliverableUnits().get(i).getAbstract();
-                    }
-                }
-                display.getName().setText(title);
-                display.getAbstract().setText(abstrct);
-                sipPath = editEvent.getSipPath();
+                         display.getContentPanel().setHeight(height+"px");
+                         if(dcp.getDeliverableUnits().length()>0){
+                             for(int i =0;i<dcp.getDeliverableUnits().length();i++){
+                                 title = dcp.getDeliverableUnits().get(i).getCoreMd().getTitle();
+                                 abstrct = dcp.getDeliverableUnits().get(i).getAbstract();
+                             }
+                         }
+                         display.getName().setText(title);
+                         display.getAbstract().setText(abstrct);
+                         sipPath = editEvent.getSipPath();
+        			}
+
+					@Override
+					public void onFailure(Throwable caught) {
+						// TODO Auto-generated method stub
+						
+					}
+            	});
+               
+                
             }
         };
         ROEditEvent.register(EditPresenter.EVENT_BUS, editHandler);

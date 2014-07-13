@@ -16,6 +16,8 @@
 
 package org.dataconservancy.dcs.access.server.model;
 
+import org.dataconservancy.dcs.access.server.database.DBConnectionPool;
+import org.dataconservancy.dcs.access.server.database.ObjectPool;
 import org.dataconservancy.dcs.access.shared.Person;
 import org.dataconservancy.dcs.access.shared.RegistrationStatus;
 import org.slf4j.Logger;
@@ -29,9 +31,9 @@ import java.util.List;
 
 public class PersonDAOJdbcImpl  implements PersonDAO {
 
-	private static Statement stmt = null;
+	
    
-	DatabaseSingleton dbInstance;
+//	DatabaseSingleton dbInstance;
 	
     
     private final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -39,8 +41,14 @@ public class PersonDAOJdbcImpl  implements PersonDAO {
 	
 	RoleDAO roleDAO;
 	
+	protected ObjectPool<Connection> connectionPool = null;
+	protected Connection getConnection() throws SQLException {
+	     return connectionPool.getEntry();
+	}
+	
 	public PersonDAOJdbcImpl(String configPath) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
-		dbInstance = DatabaseSingleton.getInstance(configPath);
+		connectionPool = DBConnectionPool.getInstance();
+	//	dbInstance = DatabaseSingleton.getInstance(configPath);
 		roleDAO = new RoleDAOJdbcImpl(configPath);
 	}
 	
@@ -49,12 +57,17 @@ public class PersonDAOJdbcImpl  implements PersonDAO {
 		log.debug("Selecting person with email address of {}", emailAddress);
 		String query = "SELECT * FROM " + PERSON_TBL
 				+ " WHERE EMAILADDRESS = ?";
-
+		
 		Person person =null;
+		
+		Connection conn = null;
+		PreparedStatement pst = null;
 		try{
 	 	
-		 Connection conn = dbInstance.getConnection();
-	     PreparedStatement pst = conn.prepareStatement(query);
+			conn = getConnection();
+			pst = conn.prepareStatement(query);
+		// Connection conn = dbInstance.getConnection();
+	    // PreparedStatement pst = conn.prepareStatement(query);
 	        
          pst.setString(1,emailAddress);
      
@@ -96,14 +109,14 @@ public class PersonDAOJdbcImpl  implements PersonDAO {
         if (person.getRegistrationStatus() == null) {
             throw new RuntimeException("Person " + person + " must have a non-null registration status.");
         }
-        try
-        {
-   	           //Get a connection
-	        Connection conn = dbInstance.getConnection(); 
-	        
-	        //stmt = conn.createStatement();
-	        PreparedStatement pst = conn.prepareStatement(query);
-        
+
+		Connection conn = null;
+		PreparedStatement pst = null;
+		try{
+	 	
+			conn = getConnection();
+			pst = conn.prepareStatement(query);
+			
             pst.setString(1,person.getFirstName());
             pst.setString(2,person.getLastName());
             pst.setString(3,person.getEmailAddress());
@@ -139,12 +152,14 @@ public class PersonDAOJdbcImpl  implements PersonDAO {
 
 		List<Person> people = new ArrayList<Person>();
 		 
+
+		Connection conn = null;
+		PreparedStatement pst = null;
 		try{
-		  //Get a connection
-	      Connection conn = dbInstance.getConnection();
-	      
-	      stmt = conn.createStatement();
-	         
+	 	
+		 conn = getConnection();
+   		 Statement stmt = conn.createStatement();
+         
          ResultSet results = stmt.executeQuery(query);
          
         
@@ -190,19 +205,17 @@ public class PersonDAOJdbcImpl  implements PersonDAO {
 		log.debug("Updating person {}", person);
 		
 		
-        try
-        {
-        	
-
-   	 
-	        Connection conn = dbInstance.getConnection();
-
+		Connection conn = null;
+		PreparedStatement pst = null;
+		try{
 			String query = "UPDATE " + PERSON_TBL + " SET "
 					+ " REGSTATUS = ? , REGISTRYID = ?, ROLEID = ?" + " WHERE EMAILADDRESS = ? ";
 				
-	        //stmt = conn.createStatement();
-	        PreparedStatement pst = conn.prepareStatement(query);
-          
+	 	
+			conn = getConnection();
+			pst = conn.prepareStatement(query);
+
+			
            
             //Updating Role and Registration Status, provided the email address (id in user database)
             pst.setString(1,person.getRegistrationStatus().getPrefix());

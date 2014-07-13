@@ -20,6 +20,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.dataconservancy.dcs.access.client.model.SchemaType.Name;
 
 import java.util.Date;
+import java.util.Map;
 
 public interface TransformerServiceAsync {
 
@@ -34,5 +35,11 @@ public interface TransformerServiceAsync {
 	void dateToString(Date date, AsyncCallback<String> callback);
 
 	void readFile(String filePath, AsyncCallback<String> callback);
+
+	void parseEntityMetadata(String metadataXml,
+                             AsyncCallback<Map<String, String>> callback);
+
+	void getMetadata(Map<String, String> metadata,
+                     AsyncCallback<String> callback);
 
 }

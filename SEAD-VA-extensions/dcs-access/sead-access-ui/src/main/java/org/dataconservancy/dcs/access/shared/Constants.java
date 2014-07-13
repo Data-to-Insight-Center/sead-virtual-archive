@@ -40,6 +40,8 @@ public class Constants
 	public static Map<String,String> eventMessages = new HashMap<String,String>();
 	public static List<String> multiEventMessages = new ArrayList<String>();
 	public static Map<String,Integer> multiEventCheck = new HashMap<String,Integer>(); 
+	public static Map<String, String> predicateViewMap;
+	public static Map<String, String> viewPredicateMap;
 
 	public Constants()
 	{

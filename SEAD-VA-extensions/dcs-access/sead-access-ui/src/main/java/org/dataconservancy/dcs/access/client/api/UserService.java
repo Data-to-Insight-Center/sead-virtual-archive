@@ -20,6 +20,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import org.dataconservancy.dcs.access.shared.*;
 
+import java.io.IOException;
 import java.util.List;
 
 
@@ -51,5 +52,7 @@ public interface UserService
     Authentication authenticateOAuth(String token, OAuthType type, String[] admins);
 
     boolean emailResearcher(String agentId, String entityUrl) throws Exception;
+
+    Person getOAuthDetails(String token, OAuthType type) throws IOException;
 
 }

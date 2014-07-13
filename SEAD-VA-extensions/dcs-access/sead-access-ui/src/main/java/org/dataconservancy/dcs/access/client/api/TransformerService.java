@@ -21,6 +21,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import org.dataconservancy.dcs.access.client.model.SchemaType;
 
 import java.util.Date;
+import java.util.Map;
 
 
 @RemoteServiceRelativePath("transform")
@@ -34,5 +35,9 @@ public interface TransformerService
 
 	String dateToString(Date date);
 	String readFile(String filePath);
+	
+	Map<String, String> parseEntityMetadata(String metadataXml);
+
+	String getMetadata(Map<String, String> metadata);
 	
 }
