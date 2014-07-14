@@ -35,7 +35,7 @@
         </Manifestation>
     </Manifestations>
     <Files>
-        <File id="testFile" src="file:///home/kavchand/test.txt">
+        <File id="testFile" src="http://github.com/Data-to-Insight-Center/sead-virtual-archive/blob/master/SEAD-VA-extensions/dcs-integration/sead-workflow-integration/src/test/resources/sample.txt">
             <fileName>Test File</fileName>
             <extant>true</extant>
         </File>
