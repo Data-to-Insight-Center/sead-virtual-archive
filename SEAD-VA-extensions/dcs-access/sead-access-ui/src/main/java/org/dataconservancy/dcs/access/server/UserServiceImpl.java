@@ -45,7 +45,7 @@ import java.util.UUID;
 @SuppressWarnings("serial")
 public class UserServiceImpl extends RemoteServiceServlet
         implements UserService
-{
+{ 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     final static Email emailSender = new Email("iu", "seadva", ServerConstants.emailPassword);
     PersonDAOJdbcImpl getPersonJdbc() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
@@ -367,6 +367,8 @@ public class UserServiceImpl extends RemoteServiceServlet
                         getSession().setAttribute("role", person.getRole());
                         getSession().setAttribute("fName", firstName);
                         getSession().setAttribute("lName", lastName);
+                        getSession().setAttribute("vivoId", person.getVivoId());
+                        getSession().setAttribute("registryId", person.getRegistryId());
                         getSession().setAttribute("sessionType", "oauth");
                         authentication = new Authentication(true);
                     }

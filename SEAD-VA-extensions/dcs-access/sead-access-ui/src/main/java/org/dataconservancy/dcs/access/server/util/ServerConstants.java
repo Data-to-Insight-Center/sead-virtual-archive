@@ -17,6 +17,7 @@
 package org.dataconservancy.dcs.access.server.util;
 
 import org.apache.commons.io.IOUtils;
+import org.dataconservancy.dcs.access.server.database.DBConnectionPool;
 import org.dataconservancy.dcs.access.shared.MediciInstance;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -29,23 +30,30 @@ import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class ServerConstants{
+public class ServerConstants {
+	static String databaseUrl;
+	static String databaseUser;
+	static String databasePassword;
+	
 	static{
 		try {
-			
-			Map<String,String> passwords = new ServerConstants().loadPasswords();
+			ServerConstants serverConstants = new ServerConstants();
+			Map<String,String> passwords = serverConstants.loadPasswords();
 			Iterator pwds = passwords.entrySet().iterator();
 			while(pwds.hasNext()){
 				Map.Entry<String, String> pwd = (Map.Entry<String, String> )pwds.next();
 				if(pwd.getKey().equals("email-sender"))
 					emailPassword = pwd.getValue();
 			}
-			acrInstances = new ServerConstants().loadAcrInstances();
+			acrInstances = serverConstants.loadAcrInstances();
+			serverConstants.loadDBConfig();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}	
 
 	}
+	
+	
 
 	public static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 	public static String FORMAT_IANA_SCHEME = "http://www.iana.org/assignments/media-types/";
@@ -53,12 +61,49 @@ public class ServerConstants{
 	public static String emailPassword;
 	public static List<MediciInstance> acrInstances;
 
-	private Map<String,String> loadPasswords() throws IOException{
-		Map<String,String> passwords = new HashMap<String,String>();
-//		System.out.println(getClass().getResource("../../../../../../passwords.xml").getPath());
+	
+	private void loadDBConfig() throws IOException{
 		InputStream inputStream = 
 				getClass().getResourceAsStream(
-				"../../../../../../passwords.xml"
+				"../../../../../../" +
+				"DBConfig.properties"
+				);			
+        StringWriter writer = new StringWriter();
+        try {
+            IOUtils.copy(inputStream, writer);
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+        String result = writer.toString();
+        String[] pairs = result.trim().split(
+                "\n|\\=");
+
+
+        for (int i = 0; i + 1 < pairs.length;) {
+            String name = pairs[i++].trim();
+            String value = pairs[i++].trim();
+            if(name.equalsIgnoreCase("database.url"))
+                databaseUrl = value;
+            else if(name.equalsIgnoreCase("database.username"))
+                databaseUser = value;
+            else if(name.equalsIgnoreCase("database.password"))
+                databasePassword = value;
+        }
+        try {
+            DBConnectionPool.init(databaseUrl, databaseUser, databasePassword, 8, 30, 0);
+            DBConnectionPool.launch();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+	}
+	private Map<String,String> loadPasswords() throws IOException{
+		Map<String,String> passwords = new HashMap<String,String>();
+		InputStream inputStream =
+				getClass().getResourceAsStream(
+				"../../../../../../" +
+				"passwords.xml"
 				);
 				
 		StringWriter writer = new StringWriter();

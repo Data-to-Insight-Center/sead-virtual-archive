@@ -89,10 +89,20 @@ public class PersonDAOJdbcImpl  implements PersonDAO {
         		 person.setRegistrationStatus(RegistrationStatus.APPROVED);
         	 person.setRole(roleDAO.getRole(role_id));
          }
-         
-         conn.close();
+
+         pst.close();
+		} catch(Exception e){e.printStackTrace();}
+		finally {
+	         if (pst != null) {
+	             try {
+	            	 pst.close();
+	             } catch (SQLException e) {
+	                 log.warn("Unable to close statement", e);
+	             }
+	             pst = null;
+	         }
+	         connectionPool.releaseEntry(conn);
 		}
-		catch(Exception e){e.printStackTrace();}
          
 		return person;
 
@@ -129,13 +139,19 @@ public class PersonDAOJdbcImpl  implements PersonDAO {
             pst.setString(7, person.getVivoId()); 
             int result = pst.executeUpdate();
             
-            pst.close();       
-            conn.close();
-        }
-        catch(Exception e)
-        {
-        	e.printStackTrace();
-        }
+            pst.close();
+		} catch(Exception e){e.printStackTrace();}
+		finally {
+	         if (pst != null) {
+	             try {
+	            	 pst.close();
+	             } catch (SQLException e) {
+	                 log.warn("Unable to close statement", e);
+	             }
+	             pst = null;
+	         }
+	         connectionPool.releaseEntry(conn);
+		}
 	}
 
 	@Override
@@ -154,13 +170,13 @@ public class PersonDAOJdbcImpl  implements PersonDAO {
 		 
 
 		Connection conn = null;
-		PreparedStatement pst = null;
+		Statement pst = null;
 		try{
 	 	
 		 conn = getConnection();
-   		 Statement stmt = conn.createStatement();
+		 pst = conn.createStatement();
          
-         ResultSet results = stmt.executeQuery(query);
+         ResultSet results = pst.executeQuery(query);
          
         
          
@@ -178,10 +194,19 @@ public class PersonDAOJdbcImpl  implements PersonDAO {
         	 
         	 people.add(person);
          }
-         conn.close();
+         pst.close();
+		} catch(Exception e){e.printStackTrace();}
+		finally {
+	         if (pst != null) {
+	             try {
+	            	 pst.close();
+	             } catch (SQLException e) {
+	                 log.warn("Unable to close statement", e);
+	             }
+	             pst = null;
+	         }
+	         connectionPool.releaseEntry(conn);
 		}
-		catch(Exception e){e.printStackTrace();}
-         
 		return people;
 	
 	}
@@ -226,14 +251,19 @@ public class PersonDAOJdbcImpl  implements PersonDAO {
             int result = pst.executeUpdate();
           
           
-            //stmt.close();
             pst.close();
-            conn.close();
-        }
-        catch(Exception e)
-        {
-        	e.printStackTrace();
-        }
+		} catch(Exception e){e.printStackTrace();}
+		finally {
+	         if (pst != null) {
+	             try {
+	            	 pst.close();
+	             } catch (SQLException e) {
+	                 log.warn("Unable to close statement", e);
+	             }
+	             pst = null;
+	         }
+	         connectionPool.releaseEntry(conn);
+		}
 
 	}
 

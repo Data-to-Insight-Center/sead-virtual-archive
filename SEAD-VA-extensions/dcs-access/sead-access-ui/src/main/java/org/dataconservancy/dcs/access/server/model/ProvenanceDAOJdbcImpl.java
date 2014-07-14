@@ -156,12 +156,18 @@ public class ProvenanceDAOJdbcImpl  implements ProvenanceDAO {
     		}
     		
     		pst.close();
-    		conn.close();
-        }
-        catch(Exception e)
-        {
-        	e.printStackTrace();
-        }
+		} catch(Exception e){e.printStackTrace();}
+		finally {
+	         if (pst != null) {
+	             try {
+	            	 pst.close();
+	             } catch (SQLException e) {
+	                 log.warn("Unable to close statement", e);
+	             }
+	             pst = null;
+	         }
+	         connectionPool.releaseEntry(conn);
+		}
 	}
 
 	private void insertEvent(Connection conn, String sipId, Event event) throws SQLException{
@@ -189,10 +195,9 @@ public class ProvenanceDAOJdbcImpl  implements ProvenanceDAO {
 	private void insertSip(Connection conn, ProvenanceRecord provenanceRecord) throws SQLException{
 		String insertStmt = "INSERT INTO " + PROVENANCE_TBL +
 				" (datasetId, submitterId, sipId, status,date, wfInstanceId,datasetTitle) VALUES(?,?,?,?,?,?,?)";
-
-
+		
 		PreparedStatement pst = conn.prepareStatement(insertStmt);
-	
+		try{
 		pst.setString(1, provenanceRecord.getDatasetId());
 		pst.setString(2, provenanceRecord.getSubmitterId());
 		pst.setString(3, provenanceRecord.getSipId());
@@ -210,6 +215,20 @@ public class ProvenanceDAOJdbcImpl  implements ProvenanceDAO {
 		pst.setString(7, provenanceRecord.getDatasetTitle());
 
 		pst.executeUpdate();
+		
+		pst.close();
+		} catch(Exception e){e.printStackTrace();}
+		finally {
+	         if (pst != null) {
+	             try {
+	            	 pst.close();
+	             } catch (SQLException e) {
+	                 log.warn("Unable to close statement", e);
+	             }
+	             pst = null;
+	         }
+	         connectionPool.releaseEntry(conn);
+		}
 	}
 	
 	
@@ -309,13 +328,19 @@ public class ProvenanceDAOJdbcImpl  implements ProvenanceDAO {
 		         }
 	         }
 	         
-	         conn.close();
+	         pst.close();
+		} catch(Exception e){e.printStackTrace();}
+		finally {
+	         if (pst != null) {
+	             try {
+	            	 pst.close();
+	             } catch (SQLException e) {
+	                 log.warn("Unable to close statement", e);
+	             }
+	             pst = null;
+	         }
+	         connectionPool.releaseEntry(conn);
 		}
-		catch(Exception e){
-			e.printStackTrace();
-			
-			throw new RuntimeException(e);
-			}
          
 		return provDatasets;
 	}
@@ -415,11 +440,19 @@ public class ProvenanceDAOJdbcImpl  implements ProvenanceDAO {
         	 provDataset.provRecordbyWf.put(wfInstanceId,provenance);
         	 provDatasets.add(provDataset);
          }
-         conn.close();
+         pst.close();
+		} catch(Exception e){e.printStackTrace();}
+		finally {
+	         if (pst != null) {
+	             try {
+	            	 pst.close();
+	             } catch (SQLException e) {
+	                 log.warn("Unable to close statement", e);
+	             }
+	             pst = null;
+	         }
+	         connectionPool.releaseEntry(conn);
 		}
-		catch(Exception e){
-			e.printStackTrace();
-			}
          
 		return provDatasets;
 	}

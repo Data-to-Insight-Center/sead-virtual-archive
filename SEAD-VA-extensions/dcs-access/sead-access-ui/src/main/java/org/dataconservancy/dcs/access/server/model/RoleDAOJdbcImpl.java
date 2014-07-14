@@ -50,23 +50,32 @@ public class RoleDAOJdbcImpl  implements RoleDAO {
 		List<Role> roles = new ArrayList<Role>();
 		 
 		Connection conn = null;
-		 PreparedStatement pst = null;
+		Statement pst = null;
+		
 		 try{
 	 	
-			conn = getConnection();
-		  Statement stmt = conn.createStatement();
-	         
-         ResultSet results = stmt.executeQuery(query);
+			 conn = getConnection();
+			 pst  = conn.createStatement();
+         ResultSet results = pst.executeQuery(query);
          
         
          
          while(results.next())
         	 roles.add(Role.fromString(results.getString("ROLE")));
 
-         conn.close();
-		}
-		catch(Exception e){e.printStackTrace();}
-         
+         pst.close();
+			} catch(Exception e){e.printStackTrace();}
+			finally {
+		         if (pst != null) {
+		             try {
+		            	 pst.close();
+		             } catch (SQLException e) {
+		                 log.warn("Unable to close statement", e);
+		             }
+		             pst = null;
+		         }
+		         connectionPool.releaseEntry(conn);
+			}
 		return roles;
 	}
 
@@ -90,9 +99,19 @@ public class RoleDAOJdbcImpl  implements RoleDAO {
          while(results.next())
         	 role = Role.fromString(results.getString("ROLE"));
 
-         conn.close();
-		}
-		catch(Exception e){e.printStackTrace();}
+         pst.close();
+			} catch(Exception e){e.printStackTrace();}
+			finally {
+		         if (pst != null) {
+		             try {
+		            	 pst.close();
+		             } catch (SQLException e) {
+		                 log.warn("Unable to close statement", e);
+		             }
+		             pst = null;
+		         }
+		         connectionPool.releaseEntry(conn);
+			}
          
 		return role;
 	}
@@ -116,9 +135,19 @@ public class RoleDAOJdbcImpl  implements RoleDAO {
           while(results.next())
         	 roleId = results.getInt("ROLEID");
 
-         conn.close();
-		}
-		catch(Exception e){e.printStackTrace();}
+          pst.close();
+			} catch(Exception e){e.printStackTrace();}
+			finally {
+		         if (pst != null) {
+		             try {
+		            	 pst.close();
+		             } catch (SQLException e) {
+		                 log.warn("Unable to close statement", e);
+		             }
+		             pst = null;
+		         }
+		         connectionPool.releaseEntry(conn);
+			}
          
 		return roleId;
 	}
