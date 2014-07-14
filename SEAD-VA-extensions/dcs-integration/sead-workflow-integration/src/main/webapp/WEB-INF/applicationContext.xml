@@ -449,7 +449,7 @@
                 <entry><key><value>uiuc</value></key><ref bean="org.dataconservancy.dcs.ingest.services.Archiver.UIUC" /></entry>
                 <!--entry><key><value>icpsr</value></key><ref bean="org.dataconservancy.dcs.ingest.services.Archiver.SDA" /></entry-->
                 <entry><key><value>iu</value></key><ref bean="org.dataconservancy.dcs.ingest.services.Archiver.IUSW" /></entry>
-                <!--<entry><key><value>doi-updation</value></key><ref bean="org.dataconservancy.dcs.ingest.services.DoiUpdationService" /></entry>-->
+                <entry><key><value>doi-updation</value></key><ref bean="org.dataconservancy.dcs.ingest.services.DoiUpdationService" /></entry>
                 <entry><key><value>after-index</value></key><ref bean="org.dataconservancy.dcs.ingest.services.BasicFeatureExtraction.AFTER" /></entry>
                 <entry><key><value>ro-ingest</value></key><ref bean="org.dataconservancy.dcs.ingest.services.SeadROIngester" /></entry>
                 <entry><key><value>finisher</value></key><ref bean="org.dataconservancy.dcs.ingest.services.Finisher" /></entry>
