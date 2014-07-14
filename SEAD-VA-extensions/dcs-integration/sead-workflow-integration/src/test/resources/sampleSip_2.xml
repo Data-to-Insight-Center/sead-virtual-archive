@@ -27,4 +27,17 @@
             <primaryDataLocationValue>https://scholarworks.iu.edu/iuswdark/</primaryDataLocationValue>
         </DeliverableUnit>
     </DeliverableUnits>
+
+    <Manifestations>
+        <Manifestation id="testMan">
+            <deliverableUnit ref="xyz"/>
+            <manifestationFile ref="testFile"/>
+        </Manifestation>
+    </Manifestations>
+    <Files>
+        <File id="testFile" src="file:///home/kavchand/test.txt">
+            <fileName>Test File</fileName>
+            <extant>true</extant>
+        </File>
+    </Files>
 </dcp>

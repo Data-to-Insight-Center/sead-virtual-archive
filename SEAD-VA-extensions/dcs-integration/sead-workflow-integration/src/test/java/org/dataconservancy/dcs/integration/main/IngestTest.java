@@ -25,17 +25,25 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.FileEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.dataconservancy.dcs.util.HttpHeaderUtil;
+import org.dataconservancy.model.dcs.DcsDeliverableUnit;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.seadva.model.SeadDeliverableUnit;
+import org.seadva.model.SeadPerson;
+import org.seadva.model.builder.xstream.SeadXstreamStaxModelBuilder;
+import org.seadva.model.pack.ResearchObject;
+import org.seadva.registry.client.RegistryClient;
+import org.seadva.registry.database.model.obj.vaRegistry.Agent;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.math.BigInteger;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collection;
+import java.util.Date;
 import java.util.Properties;
+import java.util.UUID;
 
 import static org.dataconservancy.dcs.integration.support.Interpolator.interpolate;
 import static org.junit.Assert.*;
@@ -46,6 +54,7 @@ import static org.junit.Assert.*;
 public class IngestTest {
 
     private final String baseUrl = interpolate(new StringBuilder("${dcs.baseurl}/"), 0, props).toString();
+    private final String registryUrl = interpolate(new StringBuilder("${registry.url}"), 0, props).toString();
 
     private String sipPostUrl = baseUrl + "deposit/sip";
     private static DefaultHttpClient client;
@@ -73,7 +82,37 @@ public class IngestTest {
                 new UsernamePasswordCredentials(
                         "seadva@gmail.com",hashPassword("password")
                 ));
-        int code = doDeposit(new File(IngestTest.class.getResource("/" + "sampleSip_2.xml").getPath()));
+        String agentId =  "agent:"+ UUID.randomUUID().toString();
+        Agent agent = new Agent();
+        agent.setFirstName("Kavitha");
+        agent.setLastName("Chandrasekar");
+        agent.setId(agentId);
+        agent.setEntityName(agent.getLastName());
+        agent.setEntityCreatedTime(new Date());
+        agent.setEntityLastUpdatedTime(new Date());
+
+        new RegistryClient(registryUrl).postAgent(agent, "Curator");
+
+        File sipFile = new File(IngestTest.class.getResource("/" + "sampleSip_2.xml").getPath());
+
+        ResearchObject sip = new SeadXstreamStaxModelBuilder().buildSip(new FileInputStream(sipFile.getAbsolutePath()));
+
+        Collection<DcsDeliverableUnit> dus = sip.getDeliverableUnits();
+        for(DcsDeliverableUnit du: dus){
+            if(du.getParents()==null||du.getParents().size()==0)
+            {
+                SeadPerson submitter = new SeadPerson();
+                submitter.setName(agent.getFirstName()+" "+agent.getLastName());
+                submitter.setId(agentId);
+                submitter.setIdType("registryId");
+                ((SeadDeliverableUnit)du).setSubmitter(submitter);
+            }
+        }
+        sip.setDeliverableUnits(dus);
+
+        new SeadXstreamStaxModelBuilder().buildSip(sip, new FileOutputStream(sipFile.getAbsolutePath()));
+
+        int code = doDeposit(sipFile);
         assertEquals(code,202);
     }
 
