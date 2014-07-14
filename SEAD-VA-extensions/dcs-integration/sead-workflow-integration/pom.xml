@@ -546,6 +546,12 @@
             <groupId>com.hp.hpl.jena</groupId>
             <artifactId>arq</artifactId>
             <version>2.8.8</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.lucene</groupId>
+                    <artifactId>lucene-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
