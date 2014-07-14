@@ -19,8 +19,6 @@ In sead-registry-webapp/src/main/resources/org/seadva/registry/service, in mainD
 
 3.
 On top level sead-registry directory, run:
-Download hbnpojogen-persistence-1.4.4.jar from here [http://seadva-test.d2i.indiana.edu:8081/artifactory/ext-snapshot-local/com/felees/hbnpojogen-persistence/1.4.4/hbnpojogen-persistence-1.4.4.jar]
-mvn install:install-file -Dfile=hbnpojogen-persistence-1.4.4.jar -DgroupId=com.felees -DartifactId=hbnpojogen-persistence -Dversion=1.4.4 -Dpackaging=jar
 mvn clean
 mvn package -DskipTests
 
