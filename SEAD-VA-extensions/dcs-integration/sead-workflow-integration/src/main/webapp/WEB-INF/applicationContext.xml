@@ -569,7 +569,7 @@
         <property name="type" value="dspace" />
         <property name="name" value="Ideals" />
         <property name="id" value="1" />
-        <property name="communityUrl" value="http://poplar.dlib.indiana.edu:8250/sead/communities/202" />
+        <property name="communityUrl" value="http://seadtest.ideals.illinois.edu/sead/communities/2" />
         <property name="modelBuilder" ref="seadModelBuilder" />
         <property name="disabled" value="false" />
     </bean>
