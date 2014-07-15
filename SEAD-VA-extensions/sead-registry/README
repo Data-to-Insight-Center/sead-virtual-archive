@@ -27,7 +27,7 @@ Running on tomcat
 
 export JAVA_OPTS="-Xms512m -Xmx1024m -XX:MaxPermSize=1024m -Dorg.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH=true -Dorg.apache.catalina.connector.CoyoteAdapter.ALLOW_BACKSLASH=true"
 
-copy sead-registry-webapp/target/registry.war into tomcat webapps
+copy sead-registry-webapp/target/sead-registry-webapp-x.x.x-SNAPSHOT.war into tomcat webapps/registry.war
 
 start tomcat
 
