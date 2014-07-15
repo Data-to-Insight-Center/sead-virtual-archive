@@ -25,6 +25,7 @@ import org.seadva.registry.database.model.dao.vaRegistry.*;
 import org.seadva.registry.database.model.dao.vaRegistry.impl.*;
 import org.seadva.registry.database.model.obj.vaRegistry.*;
 import org.seadva.registry.service.exception.NotFoundException;
+import org.seadva.registry.service.util.QueryAttributeType;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Component;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -126,37 +127,7 @@ public class ResourceService {
         agentDao = new AgentDaoImpl();
     }
 
-    @GET
-    @Path("/entity/{entityId}")
-    @Produces("application/json")
-    public Response getEntity( @PathParam("entityId") String entityId) throws Exception {
-
-        BaseEntity entity = baseEntityDao.getBaseEntity(entityId);
-        String json = gson.toJson(entity);
-        return Response.ok(json).build();
-    }
-
-    @GET
-    @Path("/collection/{entityId}")
-    @Produces("application/json")
-    public Response getCollection( @PathParam("entityId") String entityId) throws Exception {
-
-        Collection entity = collectionEntityDao.getCollection(entityId);
-        String json = gson.toJson(entity);
-        return Response.ok(json).build();
-    }
-
-    @GET
-    @Path("/file/{entityId}")
-    @Produces("application/json")
-    public Response getFile( @PathParam("entityId") String entityId) throws Exception {
-
-        File entity = fileDao.getFile(entityId);
-        String json = gson.toJson(entity);
-        return Response.ok(json).build();
-    }
-
-
+    /* GET types */
 
     @GET
     @Path("/metadataType/{typeId}")
@@ -233,6 +204,38 @@ public class ResourceService {
         return Response.ok(gson.toJson(state)).build();
     }
 
+    /* GET by ID methods */
+
+    @GET
+    @Path("/entity/{entityId}")
+    @Produces("application/json")
+    public Response getEntity( @PathParam("entityId") String entityId) throws Exception {
+
+        BaseEntity entity = baseEntityDao.getBaseEntity(entityId);
+        String json = gson.toJson(entity);
+        return Response.ok(json).build();
+    }
+
+    @GET
+    @Path("/collection/{entityId}")
+    @Produces("application/json")
+    public Response getCollection( @PathParam("entityId") String entityId) throws Exception {
+
+        Collection entity = collectionEntityDao.getCollection(entityId);
+        String json = gson.toJson(entity);
+        return Response.ok(json).build();
+    }
+
+    @GET
+    @Path("/file/{entityId}")
+    @Produces("application/json")
+    public Response getFile( @PathParam("entityId") String entityId) throws Exception {
+
+        File entity = fileDao.getFile(entityId);
+        String json = gson.toJson(entity);
+        return Response.ok(json).build();
+    }
+
     @GET
     @Path("/aggregation/{entityId}")
     @Produces("application/json")
@@ -242,78 +245,6 @@ public class ResourceService {
         return Response.ok(gson.toJson(aggregationList)).build();
     }
 
-    @GET
-    @Path("/listCollections/{type}")
-    @Produces("application/json")
-    public Response getAllCollections(@PathParam("type") String type,
-                                      @QueryParam("submitterId") String submitterId, //Researcher who submitted Curation Object or Curator who submitted Published Object would be the submitters
-                                      @QueryParam("repository") String repository, //Repository Name to which CurationObject is to be submitted or to which Published Object was already Published
-                                      @QueryParam("fromDate") String fromDate,
-                                      @QueryParam("toDate") String toDate) throws Exception {
-
-        List<CollectionWrapper> finalCollectionWrappers = new ArrayList<CollectionWrapper>();
-        List<Collection> collections = collectionEntityDao.listCollections(submitterId, repository, type);
-        for(Collection collection:collections){
-
-            List<Relation> relationList =  relationDao.getRelations(collection.getId());
-            Set<Relation> newRelationList = new HashSet<Relation>();
-            CollectionWrapper newCollectionWrapper = new CollectionWrapper(collection);
-            newCollectionWrapper.setRelations(new HashSet<Relation>());
-
-            for(Relation relation:relationList){
-                Relation newRelation = new Relation();
-                RelationPK newRelationPK = new RelationPK();
-
-                RelationPK relationPK = relation.getId();
-
-                RelationType relationType = new RelationType();
-                relationType.setId(relationPK.getRelationType().getId());
-                relationType.setRelationSchema(relationPK.getRelationType().getRelationSchema());
-                relationType.setRelationElement(relationPK.getRelationType().getRelationElement());
-                newRelationPK.setRelationType(relationType);
-
-                BaseEntity effectEntity = new BaseEntity();
-                effectEntity.setId(relationPK.getEffect().getId());
-                effectEntity.setEntityName(relationPK.getEffect().getEntityName());
-                effectEntity.setEntityCreatedTime(relationPK.getEffect().getEntityCreatedTime());
-                effectEntity.setEntityLastUpdatedTime(relationPK.getEffect().getEntityLastUpdatedTime());
-                newRelationPK.setEffect(effectEntity);
-
-                BaseEntity causeEntity = new BaseEntity();
-                causeEntity.setId(relationPK.getCause().getId());
-                causeEntity.setEntityName(relationPK.getCause().getEntityName());
-                causeEntity.setEntityCreatedTime(relationPK.getCause().getEntityCreatedTime());
-                causeEntity.setEntityLastUpdatedTime(relationPK.getCause().getEntityLastUpdatedTime());
-                newRelationPK.setCause(causeEntity);
-                RelationType rlType = relationPK.getRelationType();
-                newRelationPK.setRelationType(new RelationType(rlType.getId(), rlType.getRelationElement(), rlType.getRelationSchema()));
-                newRelation.setId(newRelationPK);
-
-                newRelationList.add(newRelation);
-            }
-
-            newCollectionWrapper.setRelations(newRelationList);
-            finalCollectionWrappers.add(newCollectionWrapper);
-        }
-        return Response.ok(gson.toJson(finalCollectionWrappers)).build();
-    }
-
-
-    @GET
-    @Path("/query")
-    @Produces("application/json")
-    public Response queryCollections(@QueryParam("key") String propertyKey,
-                                     @QueryParam("value") String propertyValue ) throws Exception {
-
-        List<Collection> collections = new ArrayList<Collection>();
-
-        if(propertyKey==null||propertyValue==null)
-            return Response.ok(gson.toJson(collections)).build();
-
-        collections = collectionEntityDao.queryByProperty(propertyKey, propertyValue);
-
-        return Response.ok(gson.toJson(collections)).build();
-    }
 
     @GET
     @Path("/altId")
@@ -383,6 +314,102 @@ public class ResourceService {
         return Response.ok(json).build();
     }
 
+     /* GET methods - for querying by properties */
+
+    @GET
+    @Path("/listCollections/{type}")
+    @Produces("application/json")
+    public Response getAllCollections(@PathParam("type") String type,
+                                      @QueryParam("submitterId") String submitterId, //Researcher who submitted Curation Object or Curator who submitted Published Object would be the submitters
+                                      @QueryParam("repository") String repository, //Repository Name to which CurationObject is to be submitted or to which Published Object was already Published
+                                      @QueryParam("fromDate") String fromDate,
+                                      @QueryParam("toDate") String toDate) throws Exception {
+
+        List<CollectionWrapper> finalCollectionWrappers = new ArrayList<CollectionWrapper>();
+        List<Collection> collections = collectionEntityDao.listCollections(submitterId, repository, type);
+        for(Collection collection:collections){
+
+            List<Relation> relationList =  relationDao.getRelations(collection.getId());
+            Set<Relation> newRelationList = new HashSet<Relation>();
+            CollectionWrapper newCollectionWrapper = new CollectionWrapper(collection);
+            newCollectionWrapper.setRelations(new HashSet<Relation>());
+
+            for(Relation relation:relationList){
+                Relation newRelation = new Relation();
+                RelationPK newRelationPK = new RelationPK();
+
+                RelationPK relationPK = relation.getId();
+
+                RelationType relationType = new RelationType();
+                relationType.setId(relationPK.getRelationType().getId());
+                relationType.setRelationSchema(relationPK.getRelationType().getRelationSchema());
+                relationType.setRelationElement(relationPK.getRelationType().getRelationElement());
+                newRelationPK.setRelationType(relationType);
+
+                BaseEntity effectEntity = new BaseEntity();
+                effectEntity.setId(relationPK.getEffect().getId());
+                effectEntity.setEntityName(relationPK.getEffect().getEntityName());
+                effectEntity.setEntityCreatedTime(relationPK.getEffect().getEntityCreatedTime());
+                effectEntity.setEntityLastUpdatedTime(relationPK.getEffect().getEntityLastUpdatedTime());
+                newRelationPK.setEffect(effectEntity);
+
+                BaseEntity causeEntity = new BaseEntity();
+                causeEntity.setId(relationPK.getCause().getId());
+                causeEntity.setEntityName(relationPK.getCause().getEntityName());
+                causeEntity.setEntityCreatedTime(relationPK.getCause().getEntityCreatedTime());
+                causeEntity.setEntityLastUpdatedTime(relationPK.getCause().getEntityLastUpdatedTime());
+                newRelationPK.setCause(causeEntity);
+                RelationType rlType = relationPK.getRelationType();
+                newRelationPK.setRelationType(new RelationType(rlType.getId(), rlType.getRelationElement(), rlType.getRelationSchema()));
+                newRelation.setId(newRelationPK);
+
+                newRelationList.add(newRelation);
+            }
+
+            newCollectionWrapper.setRelations(newRelationList);
+            finalCollectionWrappers.add(newCollectionWrapper);
+        }
+        return Response.ok(gson.toJson(finalCollectionWrappers)).build();
+    }
+
+
+    @GET
+    @Path("/query")
+    @Produces("application/json")
+    public Response queryCollections(@QueryParam("key") String propertyKey,
+                                     @QueryParam("value") String propertyValue,
+                                     @QueryParam("type") String type) throws Exception {
+
+
+        List<Collection> collections = new ArrayList<Collection>();
+
+        if(type==null||propertyValue==null)
+            return Response.ok(gson.toJson(collections)).build();
+
+        QueryAttributeType queryAttributeType = QueryAttributeType.fromString(type);
+
+        if(queryAttributeType ==null)
+            return Response.ok(gson.toJson(collections)).build();
+
+        if(queryAttributeType == QueryAttributeType.PROPERTY){
+            if(propertyKey==null)
+                return Response.ok(gson.toJson(collections)).build();
+            collections = collectionEntityDao.queryByProperty(propertyKey, propertyValue);
+        }
+        else if(queryAttributeType == QueryAttributeType.DATA_IDENTIFIER){
+            List<DataIdentifier> dataIdentifiers = dataIdentifierDao.getDataIdentifiersByValue(propertyValue);
+            for(DataIdentifier identifier: dataIdentifiers){
+                collections.add(collectionEntityDao.getCollection(identifier.getId().getEntity().getId()));
+            }
+        }  //Todo for Data Location
+
+        return Response.ok(gson.toJson(collections)).build();
+    }
+
+
+
+
+    /*POST methods */
 
     @POST
     @Path("/{entityId}")

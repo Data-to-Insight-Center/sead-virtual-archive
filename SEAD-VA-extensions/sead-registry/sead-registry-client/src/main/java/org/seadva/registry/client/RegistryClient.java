@@ -26,6 +26,7 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
 import org.apache.commons.io.IOUtils;
 import org.seadva.registry.database.model.obj.vaRegistry.*;
 import org.seadva.registry.database.model.obj.vaRegistry.CollectionWrapper;
+import org.seadva.registry.service.util.QueryAttributeType;
 
 import javax.ws.rs.core.MultivaluedMap;
 import javax.xml.ws.http.HTTPException;
@@ -355,14 +356,19 @@ public class RegistryClient {
     }
 
 
-    public List<BaseEntity> queryByProperty(String key, String value) throws IOException {
+    public List<BaseEntity> queryByProperty(String key, String value, QueryAttributeType attributeType) throws IOException {
         WebResource webResource = resource();
 
-        ClientResponse response = webResource.path("resource")
+         webResource = webResource.path("resource")
                 .path("query")
-                .queryParam("key", key)
                 .queryParam("value", value)
-                .get(ClientResponse.class);
+                .queryParam("type", attributeType.getName());
+
+        if(key!=null)
+                webResource = webResource.queryParam("key", key);
+
+
+        ClientResponse response  = webResource.get(ClientResponse.class);
 
         if(response.getStatus()!=200)
             throw new HTTPException(response.getStatus());

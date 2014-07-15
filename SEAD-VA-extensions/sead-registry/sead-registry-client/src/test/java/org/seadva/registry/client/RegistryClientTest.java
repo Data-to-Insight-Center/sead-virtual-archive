@@ -19,9 +19,8 @@ package org.seadva.registry.client;
 
 import com.sun.jersey.test.framework.JerseyTest;
 import org.junit.Test;
-import org.seadva.registry.database.model.obj.vaRegistry.Agent;
-import org.seadva.registry.database.model.obj.vaRegistry.BaseEntity;
-import org.seadva.registry.database.model.obj.vaRegistry.Property;
+import org.seadva.registry.database.model.obj.vaRegistry.*;
+import org.seadva.registry.service.util.QueryAttributeType;
 
 import java.io.IOException;
 import java.util.*;
@@ -59,7 +58,7 @@ public class RegistryClientTest extends JerseyTest {
 
         client.postCollection(collection);
 
-        List<BaseEntity> entityList = client.queryByProperty("abstract", "value_1.0");
+        List<BaseEntity> entityList = client.queryByProperty("abstract", "value_1.0", QueryAttributeType.PROPERTY);
         assertTrue(entityList.size() > 0);
     }
 
@@ -67,7 +66,7 @@ public class RegistryClientTest extends JerseyTest {
     @Test
     public void testUpdateProperty() throws IOException {
 
-        List<BaseEntity> entityList = client.queryByProperty("abstract", "value_1.0");
+        List<BaseEntity> entityList = client.queryByProperty("abstract", "value_1.0", QueryAttributeType.PROPERTY);
         for(BaseEntity entity:entityList){
 
             Iterator props = entity.getProperties().iterator();
@@ -83,8 +82,35 @@ public class RegistryClientTest extends JerseyTest {
             entity.setProperties(updatesProperties);
             client.postEntity(entity);
         }
-        List<BaseEntity> entityList2 = client.queryByProperty("abstract", "value_2.0");
+        List<BaseEntity> entityList2 = client.queryByProperty("abstract", "value_2.0", QueryAttributeType.PROPERTY);
         assertTrue(entityList2.size()>0);
+    }
+
+    @Test
+    public void testQueryByDataIdentifier() throws IOException, ClassNotFoundException {
+
+        org.seadva.registry.database.model.obj.vaRegistry.Collection collection = new org.seadva.registry.database.model.obj.vaRegistry.Collection();
+        String altId = "fakedoi:"+UUID.randomUUID().toString();
+        collection.setId(UUID.randomUUID().toString());
+        collection.setName("test");
+        collection.setVersionNum("1");
+        collection.setIsObsolete(0);
+        collection.setEntityName("test");
+        collection.setEntityCreatedTime(new Date());
+        collection.setEntityLastUpdatedTime(new Date());
+        collection.setState(client.getStateByName("PublishedObject"));
+
+        DataIdentifier dataIdentifier = new DataIdentifier();
+        DataIdentifierPK dataIdentifierPK = new DataIdentifierPK();
+        dataIdentifierPK.setDataIdentifierType(client.getDataIdentifierType("doi"));
+        dataIdentifier.setId(dataIdentifierPK);
+        dataIdentifier.setDataIdentifierValue(altId);
+        collection.addDataIdentifier(dataIdentifier);
+
+        client.postCollection(collection);
+
+        List<BaseEntity> entityList = client.queryByProperty(null, altId, QueryAttributeType.DATA_IDENTIFIER);
+        assertTrue(entityList.size() > 0);
     }
 
     @Test

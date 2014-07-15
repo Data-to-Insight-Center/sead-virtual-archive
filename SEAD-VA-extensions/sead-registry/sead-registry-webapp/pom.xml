@@ -31,7 +31,7 @@
     </parent>
 
     <build>
-        <finalName>registry</finalName>
+       <!-- <finalName>registry</finalName>-->
         <plugins>
 
             <plugin>
@@ -146,11 +146,11 @@
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
-        <dependency>
+    <!--    <dependency>
             <groupId>org.seadva.registry</groupId>
             <artifactId>sead-registry-mapper</artifactId>
             <version>1.0.0-SNAPSHOT</version>
-        </dependency>
+        </dependency>-->
 
         <!--dependency>
             <groupId>org.springframework</groupId>
