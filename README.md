@@ -46,9 +46,12 @@ Support will be developed soon to build/deploy some of these module in a single 
 <br/>Please ensure port numbers are right in ro-subsystem-service/src/main/resources/org/seadva/data/lifecycle/service/Config.properties
 <br/>mvn clean install -DskipTests
 <br/>Then copy ro-subsystem-service/target/ro-x.x.x.war into tomcat/webapps/ro.war
+<br/>Then run: mvn test
+
 <li>Building BagIt Service:
 <br/>Copy acrInstances.xml[http://seadva-test.d2i.indiana.edu:8081/artifactory/ext-snapshot-local/acrInstances.xml] into resources folder [src/main/resources/org/seadva/bagit/util/acrInstances.xml]
 <br/>mvn clean package -DskipTests
+<br/>Then run: mvn test (Please note that some test cases that depend on ACR credentials will not succeed if ACR credentials are not set correctly)
 <br/>Then copy bagItRestService/target/bagit-x.x.x.war into tomcat/webapps/bagit.war
 <li>Building backend workflow: See below
 
@@ -60,21 +63,22 @@ To clean and build code run:
 <br/>
 mvn clean
 <br/>
-mvn package (preferred mvn package -DskipTests, in case any tests fail at this point)
+mvn package -DskipTests
 <br/>
 The above maven build generates a .war file in target folder.
 
 Install: <br/>Please deploy this war in a servlet container. If you are using tomcat, please copy to webapp folder. When copying, please rename to sead-wf.war, since this is the value that is set as 'prefix' in WEB-INF/classes/default.properties file in the war. Please also change any values you want to change in default.properties file as needed. 
 <br/>
+Then run: mvn test
+<br/>
 The endpoints enabled would include
 <br/>
-SIP Deposit Servlet at http://localhost:8080/sead-wf/deposit/sip
+SIP Deposit Servlet at http://localhost:8080/sead-wf/deposit/sip  (POST method)
 <br/>
-Query Servlet at http://localhost:8080/sead-wf/deposit/squery
+Query Servlet at http://localhost:8080/sead-wf/deposit/squery?q=title:eel (sample query)
 <br/>
-Data stream Servlet at http://localhost:8080/sead-wf/deposit/datastream
+Data stream Servlet at http://localhost:8080/sead-wf/deposit/datastream/<entity-id>
 <br/>
-Delete Servlet at http://localhost:8080/sead-wf/deposit/del
 <br/>
 <br/>
 
