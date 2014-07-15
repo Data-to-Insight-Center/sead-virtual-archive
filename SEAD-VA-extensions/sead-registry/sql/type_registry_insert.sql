@@ -45,6 +45,15 @@ insert into metadata_type values('md:14',
 insert into relation_type values('rl:1',
 'http://www.openarchives.org/ore/terms/','describes'
 );
+
+insert into relation_type values('rl:2',
+'http://purl.org/dc/terms/','publisher'
+);
+
+insert into relation_type values('rl:3',
+'http://purl.org/pav/','curatedBy'
+);
+
 insert into base_entity values('state:1', 'PO',
 '2014-01-01 00:00:00', '2014-01-01 00:00:00');
 
