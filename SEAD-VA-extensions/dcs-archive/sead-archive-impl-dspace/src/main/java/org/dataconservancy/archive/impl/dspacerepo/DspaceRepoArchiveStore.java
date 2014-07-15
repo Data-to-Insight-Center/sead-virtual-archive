@@ -55,6 +55,13 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
 
     private SolrService solrService;
 
+    private String repositoryCredentialsFilePath;
+
+    @Required
+    public void setRepositoryCredentialsFilePath(String filePath){
+        repositoryCredentialsFilePath = filePath;
+    }
+
     @Required
     public void setSolrService(SolrService sService) {
         solrService = sService;
@@ -121,6 +128,7 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
 
     @Override
     public ResearchObject putResearchPackage(InputStream dcpStream) throws AIPFormatException {
+
         title = "default_title";
         creator ="";
         ResearchObject pkg = null;
@@ -138,7 +146,12 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
 
         Map<String,Credential> repoCredentials = null;
         try {
-            repoCredentials = Util.loadCredentials(this.getClass().getResource("/RepositoryCredentials.xml").openStream());
+            repoCredentials = Util.loadCredentials(
+//                    this.getClass().getResource("/RepositoryCredentials.xml").openStream()
+                    new FileInputStream(
+                            repositoryCredentialsFilePath
+                    )
+            );
         } catch (Exception e) {
             e.printStackTrace();
         }
