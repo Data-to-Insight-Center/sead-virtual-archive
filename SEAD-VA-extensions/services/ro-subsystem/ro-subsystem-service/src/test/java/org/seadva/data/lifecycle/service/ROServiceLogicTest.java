@@ -41,6 +41,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 
@@ -85,7 +86,7 @@ public class ROServiceLogicTest extends JerseyTest {
     @Test
     public void testTrackEvent() throws Exception {
 
-        String agentId =  "testagent1";
+        String agentId = "agent:" + UUID.randomUUID().toString();
         Agent agent = new Agent();
         agent.setFirstName("Kavitha");
         agent.setLastName("Chandrasekar");
@@ -165,11 +166,13 @@ public class ROServiceLogicTest extends JerseyTest {
 
 
         ClientResponse response = webResource.path("resource")
-                .path("listCO")
+                .path("listRO")
+                .queryParam("type", "CurationObject")
                 .get(ClientResponse.class);
 
         StringWriter writer = new StringWriter();
         IOUtils.copy(response.getEntityInputStream(), writer);
+        System.out.print(writer.toString());
         assertEquals(200, response.getStatus());
     }
 
