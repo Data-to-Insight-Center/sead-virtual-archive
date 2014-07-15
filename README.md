@@ -67,7 +67,9 @@ mvn package -DskipTests
 <br/>
 The above maven build generates a .war file in target folder.
 
-Install: <br/>Please deploy this war in a servlet container. If you are using tomcat, please copy to webapp folder. When copying, please rename to sead-wf.war, since this is the value that is set as 'prefix' in WEB-INF/classes/default.properties file in the war. Please also change any values you want to change in default.properties file as needed. 
+Install: <br/>Please deploy this war in a servlet container. If you are using tomcat, please copy to webapp folder. When copying, please rename to sead-wf.war, since this is the value that is set as 'prefix' in sead-wf/WEB-INF/classes/default.properties file in the war. Please also change any values you want to change in default.properties file as needed. 
+<br/>
+sead-wf/WEB-INF/classes/RepositoryCredentials.xml also needs to be set with repository credentials.
 <br/>
 Then run: mvn test
 <br/>
