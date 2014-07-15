@@ -143,7 +143,11 @@ insert into role_type values(
     'Represents IR, but not necessarily a Curator'
 );
 
-
+insert into profile_type values(
+    'profile:1',
+    'vivo',
+    'http://sead-data.net/'
+);
 
 
 --Accpetable ACR metadata
