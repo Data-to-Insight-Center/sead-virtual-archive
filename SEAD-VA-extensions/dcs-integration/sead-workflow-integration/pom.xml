@@ -417,8 +417,14 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-annotations</artifactId>
             <version>3.5.2-Final</version>
+          <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-annotations</artifactId>
+            <version>3.3.1.GA</version>
+        </dependency>
 
         <dependency>
             <groupId>org.dataconservancy.index</groupId>
