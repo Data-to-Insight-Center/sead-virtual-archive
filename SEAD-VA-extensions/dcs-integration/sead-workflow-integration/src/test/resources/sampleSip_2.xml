@@ -22,9 +22,9 @@
             <fileNo>0</fileNo>
             <contact>Sead dev</contact>
             <type>PublishedObject</type>
-            <primaryDataLocationName>IU Scholarworks</primaryDataLocationName>
+            <primaryDataLocationName>Ideals</primaryDataLocationName>
             <primaryDataLocationType>dspace</primaryDataLocationType>
-            <primaryDataLocationValue>https://scholarworks.iu.edu/iuswdark/</primaryDataLocationValue>
+            <primaryDataLocationValue>http://seadtest.ideals.illinois.edu/</primaryDataLocationValue>
         </DeliverableUnit>
     </DeliverableUnits>
 

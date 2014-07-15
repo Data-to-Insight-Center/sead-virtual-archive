@@ -568,7 +568,7 @@
         <property name="ingestFramework" ref="ingestFramework" />
         <property name="type" value="dspace" />
         <property name="name" value="Ideals" />
-        <property name="id" value="1" />
+        <property name="id" value="2" />
         <property name="communityUrl" value="http://seadtest.ideals.illinois.edu/sead/communities/2" />
         <property name="modelBuilder" ref="seadModelBuilder" />
         <property name="disabled" value="false" />
@@ -578,6 +578,7 @@
     <bean id="org.dataconservancy.archive.impl.dspacerepo.DspaceRepoArchiveStore"
           class="org.dataconservancy.archive.impl.dspacerepo.DspaceRepoArchiveStore">
         <property name="solrService" ref="solrService" />
+        <property name="repositoryCredentialsFilePath" value="${repository.credentials}"/>
     </bean>
 
     <!--bean id="org.dataconservancy.dcs.ingest.services.Archiver.CLOUD"
