@@ -105,7 +105,9 @@ During the installation process, sead-access.war file must have been copied into
 
 1) tomcat/webapps/sead-access/sead_access/Config.properties.
 <br/>
-2) tomcat/webapps/sead-access/WEB-INF/classes/acrInstances.xml 
+2) tomcat/webapps/sead-access/WEB-INF/classes/DBConfig.properties​
+<br/>
+3) tomcat/webapps/sead-access/WEB-INF/classes/acrInstances.xml 
 
 <b>Running the service</b>:
 Once installation is complete, you can access the UI at http://localhost:8080/sead-access
