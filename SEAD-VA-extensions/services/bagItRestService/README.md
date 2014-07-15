@@ -7,4 +7,6 @@ Steps:
 <li> Use test cases to generate SIP from Bag. The SIP can then be used with the ingest workflow.
 <br/>
 In order to add metadata predicates to be queried from ACR, please use ACR_to_ORE_MappingConfig.properties in the resources folder in the code.
+
+In test cases querying ACR, ACR credentials need to populated in src/main/resources/org/seadva/bagit/util/acrInstances.xml for the tests to succeed.
 </ol>
