@@ -276,8 +276,8 @@ public final class VivoUtil {
     	vivoVAInstiutionMap.put("University of Illinois", "Ideals");
         vivoVAInstiutionMap.put(
         		"Indiana University",
-        		"IU SDA"
-        		//"IU Scholarworks"
+        		//"IU SDA"
+        		"IU Scholarworks"
         		);
     }
     
