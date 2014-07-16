@@ -75,6 +75,10 @@ Then run: mvn test
 <br/>
 The endpoints enabled would include
 <br/>
+Status Servlet http://localhost:8080/sead-wf/content/sipDeposit/{sipId}
+<br/>
+The sipId in the above URL is returned in the Location header in the http response on SIP deposit in above test cases
+<br/>
 SIP Deposit Servlet at http://localhost:8080/sead-wf/deposit/sip  (POST method)
 <br/>
 Query Servlet at http://localhost:8080/sead-wf/deposit/squery?q=title:eel (sample query)
