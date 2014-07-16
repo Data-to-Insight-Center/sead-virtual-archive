@@ -21,6 +21,7 @@ public class DataIdentifierTypeDaoImpl implements DataIdentifierTypeDao {
     protected Connection getConnection() throws SQLException {
         return connectionPool.getEntry();
     }
+
     public DataIdentifierTypeDaoImpl(){
         connectionPool = DBConnectionPool.getInstance();
     }
@@ -39,6 +40,44 @@ public class DataIdentifierTypeDaoImpl implements DataIdentifierTypeDao {
 
             statement = connection.prepareStatement("Select * from data_identifier_type where data_identifier_type_name=?");
             statement.setString(1, dataIdentifierTypeName);
+            ResultSet resultSet = statement.executeQuery();
+
+
+            while (resultSet.next()) {
+                dataIdentifierType.setId(resultSet.getString("data_identifier_type_id"));
+                dataIdentifierType.setDataIdentifierTypeName(resultSet.getString("data_identifier_type_name"));
+                dataIdentifierType.setSchemaUri(resultSet.getString("schema_uri"));
+                break;
+            }
+
+        } catch (SQLException sqle) {
+            throw new RuntimeException(sqle);
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    //  log.warn("Unable to close statement", e);
+                }
+                statement = null;
+            }
+            connectionPool.releaseEntry(connection);
+
+        }
+        return dataIdentifierType;
+    }
+
+    @Override
+    public DataIdentifierType getDataIdentifierTypeById(String dataIdentifierTypeId) {
+        DataIdentifierType dataIdentifierType = new DataIdentifierType();
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+        try {
+            connection = getConnection();
+
+            statement = connection.prepareStatement("Select * from data_identifier_type where data_identifier_type_id=?");
+            statement.setString(1, dataIdentifierTypeId);
             ResultSet resultSet = statement.executeQuery();
 
 

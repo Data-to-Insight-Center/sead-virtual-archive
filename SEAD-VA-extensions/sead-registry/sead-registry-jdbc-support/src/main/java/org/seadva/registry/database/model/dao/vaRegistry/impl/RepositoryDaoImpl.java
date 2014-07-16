@@ -64,5 +64,44 @@ public class RepositoryDaoImpl implements RepositoryDao {
         }
         return repository;
     }
+
+    @Override
+    public org.seadva.registry.database.model.obj.vaRegistry.Repository getRepositoryById(String repositoryId) {
+        org.seadva.registry.database.model.obj.vaRegistry.Repository repository = new  org.seadva.registry.database.model.obj.vaRegistry.Repository();
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+        try {
+            connection = getConnection();
+
+            statement = connection.prepareStatement("Select * from repository where repository_id=?");
+            statement.setString(1, repositoryId);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                repository.setId(resultSet.getString("repository_id"));
+                repository.setRepositoryName(resultSet.getString("repository_name"));
+                repository.setSoftwareType(resultSet.getString("software_type"));
+                repository.setAffiliation(resultSet.getString("affiliation"));
+                break;
+            }
+
+
+        } catch (SQLException sqle) {
+            throw new RuntimeException(sqle);
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    //  log.warn("Unable to close statement", e);
+                }
+                statement = null;
+            }
+            connectionPool.releaseEntry(connection);
+
+        }
+        return repository;
+    }
 	}
 

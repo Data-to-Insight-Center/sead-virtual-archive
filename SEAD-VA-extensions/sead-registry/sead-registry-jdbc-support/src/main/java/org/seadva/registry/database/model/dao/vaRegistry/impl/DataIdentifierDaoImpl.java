@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import org.seadva.registry.database.common.DBConnectionPool;
 import org.seadva.registry.database.common.ObjectPool;
 import org.seadva.registry.database.model.dao.vaRegistry.DataIdentifierDao;
+import org.seadva.registry.database.model.dao.vaRegistry.DataIdentifierTypeDao;
 import org.seadva.registry.database.model.obj.vaRegistry.BaseEntity;
 import org.seadva.registry.database.model.obj.vaRegistry.DataIdentifier;
 import org.seadva.registry.database.model.obj.vaRegistry.DataIdentifierPK;
@@ -24,6 +25,7 @@ import java.util.Set;
 
 public class DataIdentifierDaoImpl implements DataIdentifierDao {
     private static Logger log = Logger.getLogger(DataIdentifierDaoImpl.class);
+    static DataIdentifierTypeDao dataIdentifierTypeDao;
 
     protected Connection getConnection() throws SQLException {
         return connectionPool.getEntry();
@@ -33,6 +35,7 @@ public class DataIdentifierDaoImpl implements DataIdentifierDao {
 
     public DataIdentifierDaoImpl(){
         connectionPool = DBConnectionPool.getInstance();
+        dataIdentifierTypeDao = new DataIdentifierTypeDaoImpl();
     }
 
     @Override
@@ -51,8 +54,7 @@ public class DataIdentifierDaoImpl implements DataIdentifierDao {
             while (resultSet.next()) {
                 DataIdentifier dataIdentifier = new DataIdentifier();
                 DataIdentifierPK dataIdentifierPK = new DataIdentifierPK();
-                DataIdentifierType dataIdentifierType = new DataIdentifierType();
-                dataIdentifierType.setId(resultSet.getString("data_identifier_type_id"));
+                DataIdentifierType dataIdentifierType = dataIdentifierTypeDao.getDataIdentifierTypeById(resultSet.getString("data_identifier_type_id"));
                 dataIdentifierPK.setDataIdentifierType(dataIdentifierType);
                 BaseEntity entity1 = new BaseEntity();
                 entity1.setId(resultSet.getString("entity_id"));
@@ -97,8 +99,7 @@ public class DataIdentifierDaoImpl implements DataIdentifierDao {
             while (resultSet.next()) {
                 DataIdentifier dataIdentifier = new DataIdentifier();
                 DataIdentifierPK dataIdentifierPK = new DataIdentifierPK();
-                DataIdentifierType dataIdentifierType = new DataIdentifierType();
-                dataIdentifierType.setId(resultSet.getString("data_identifier_type_id"));
+                DataIdentifierType dataIdentifierType = dataIdentifierTypeDao.getDataIdentifierTypeById(resultSet.getString("data_identifier_type_id"));
                 dataIdentifierPK.setDataIdentifierType(dataIdentifierType);
                 BaseEntity entity1 = new BaseEntity();
                 entity1.setId(resultSet.getString("entity_id"));

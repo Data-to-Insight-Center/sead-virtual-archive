@@ -8,6 +8,7 @@ import org.seadva.registry.database.model.obj.vaRegistry.DataIdentifierType;
  */
 public interface DataIdentifierTypeDao {
 	// constructor only
-    DataIdentifierType getDataIdentifierType(String metadataName);
+    DataIdentifierType getDataIdentifierType(String idTypeName);
+    DataIdentifierType getDataIdentifierTypeById(String typeId);
 }
 
