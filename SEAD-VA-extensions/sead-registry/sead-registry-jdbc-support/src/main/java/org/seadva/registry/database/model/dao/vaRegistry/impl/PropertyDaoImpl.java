@@ -120,5 +120,36 @@ public class PropertyDaoImpl implements PropertyDao {
 
         return true;
     }
+
+    @Override
+    public boolean deleteProperties(String entityId) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        try {
+            connection = getConnection();
+            String deleteStatement = "DELETE FROM property WHERE entity_id=?";
+            statement = connection.prepareStatement(deleteStatement);
+            statement.setString(1, entityId);
+            statement.executeUpdate();
+            statement.close();
+
+            log.debug("Done resetting unfinished raw notifications");
+        } catch (SQLException sqle) {
+            throw new RuntimeException(sqle);
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    log.warn("Unable to close statement", e);
+                }
+                statement = null;
+            }
+            connectionPool.releaseEntry(connection);
+
+        }
+
+        return true;
+    }
 }
 

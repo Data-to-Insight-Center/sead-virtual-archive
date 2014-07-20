@@ -13,5 +13,6 @@ public interface PropertyDao {
 	// constructor only
     List<Property> getProperties(String entityId);
     boolean putProperties(String entityId, Set<Property> properties);
+    boolean deleteProperties(String entityId);
 }
 

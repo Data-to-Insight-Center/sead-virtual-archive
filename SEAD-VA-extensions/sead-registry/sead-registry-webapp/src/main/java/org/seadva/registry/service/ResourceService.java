@@ -66,6 +66,7 @@ public class ResourceService {
     static RoleTypeDao roleTypeDao;
     static RepositoryDao repositoryDao;
     static ProfileTypeDao profileTypeDao;
+    static PropertyDao propertyDao;
     static StateDao stateDao;
     static FixityDao fixityDao;
     static AggregationDao aggregationDao;
@@ -119,6 +120,7 @@ public class ResourceService {
         roleTypeDao = new RoleTypeDaoImpl();
         repositoryDao = new RepositoryDaoImpl();
         profileTypeDao = new ProfileTypeDaoImpl();
+        propertyDao = new PropertyDaoImpl();
         stateDao = new StateDaoImpl();
         fixityDao = new FixityDaoImpl();
         aggregationDao = new AggregationDaoImpl();
@@ -417,6 +419,7 @@ public class ResourceService {
     public Response putResource(
             @QueryParam("entity") String entityJson,
             @QueryParam("type") String type
+            //, @DefaultValue("false") @QueryParam("update") boolean update
     ) throws IOException, ClassNotFoundException
 
     {
@@ -433,7 +436,15 @@ public class ResourceService {
 
         BaseEntity existingEntity = baseEntityDao.getBaseEntity(baseEntity.getId());
         if(existingEntity!=null)
-            baseEntity.setProperties(existingEntity.getProperties(), newProperties);
+        {
+//            if(update==true)
+//            {
+                propertyDao.deleteProperties(baseEntity.getId());
+                baseEntity.setProperties(newProperties);
+//            }
+//            else
+//                baseEntity.setProperties(existingEntity.getProperties(), newProperties);
+        }
         else
             baseEntity.setProperties(newProperties);
 
