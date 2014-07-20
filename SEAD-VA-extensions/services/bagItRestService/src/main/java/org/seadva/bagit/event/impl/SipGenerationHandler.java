@@ -272,19 +272,23 @@ public class SipGenerationHandler implements Handler {
 
             if(typeTriples.size()>0){
 
-                if(Constants.acrInstances!=null) {
-                    for(MediciInstance instance: Constants.acrInstances){
-                        if(instance.getType().equalsIgnoreCase(typeTriples.get(0).getObjectLiteral())) {
-                            DcsResourceIdentifier duAltId = new DcsResourceIdentifier();
-                            duAltId.setIdValue(duId);
-                            duAltId.setTypeId(instance.getType());
-                            du.addAlternateId(duAltId);
-                            break;
+                for(Triple typeTriple: typeTriples) {
+                    boolean set = false;
+                    if(Constants.acrInstances!=null) {
+                        for(MediciInstance instance: Constants.acrInstances){
+                            if(instance.getType().equalsIgnoreCase(typeTriple.getObjectLiteral())) {
+                                DcsResourceIdentifier duAltId = new DcsResourceIdentifier();
+                                duAltId.setIdValue(duId);
+                                duAltId.setTypeId(instance.getType());
+                                du.addAlternateId(duAltId);
+                                set = true;
+                                break;
+                            }
                         }
                     }
-                }
-                else{
-                    du.setType(typeTriples.get(0).getObjectLiteral());
+                    if(!set&&(typeTriple.getObjectLiteral().contains("CurationObject")||typeTriple.getObjectLiteral().contains("PublishedObject"))){ //Todo- make state an Enum
+                        du.setType(typeTriple.getObjectLiteral());
+                    }
                 }
             }
 
