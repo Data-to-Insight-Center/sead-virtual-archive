@@ -159,7 +159,6 @@ insert into profile_type values(
 );
 
 
---Accpetable ACR metadata
 
 insert into metadata_type values('md:31', 'http://cet.ncsa.uiuc.edu/2007/annotation/', 'hasAnnotation');
 insert into metadata_type values('md:32', 'http://cet.ncsa.uiuc.edu/2007/metadata/Extractor/', 'WmsLayerName');
