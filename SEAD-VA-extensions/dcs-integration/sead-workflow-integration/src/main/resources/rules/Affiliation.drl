@@ -41,8 +41,12 @@ rule "UIUC Affiliation rule"
 when
     $repositoryMatcher:RepositoryMatcher();
      SeadDeliverableUnit( "CurationObject" in (type) )
+   //  SeadDeliverableUnit($contributors:dataContributors )
+   //  $seadPerson: SeadPerson( idType == "vivo"&& getEmail(id)=="University of Illinois") from $contributors;
      SeadDeliverableUnit($contributors:dataContributors )
-     $seadPerson: SeadPerson( idType == "vivo"&& getEmail(id)=="University of Illinois") from $contributors;
+         exists (
+               $seadPerson: SeadPerson(idType == "vivo"&& getEmail(id)=="University of Illinois") from $contributors
+         )
      $seadDu : SeadDeliverableUnit(sizeBytes < 10000000000 )
      SeadDeliverableUnit(fileNo < 1000 )
     // SeadDeliverableUnit( "CC" in (rights) )
@@ -71,10 +75,14 @@ rule "IU Scholaworks Affiliation rule"
 when
     $repositoryMatcher:RepositoryMatcher();
      SeadDeliverableUnit( "CurationObject" in (type) )
-     SeadDeliverableUnit($contributors:dataContributors )
+    // SeadDeliverableUnit($contributors:dataContributors )
      //SeadDeliverableUnit( title != null ) //Per IU SLA title of collection should not be null
      //eval( $contributors.size>0 ) //Creators should not be empty per IU SLA
-     $seadPerson: SeadPerson( idType == "vivo"&& getEmail(id)=="Indiana University") from $contributors;
+    // $seadPerson: SeadPerson( idType == "vivo"&& getEmail(id)=="Indiana University") from $contributors;
+     SeadDeliverableUnit($contributors:dataContributors )
+         exists (
+               $seadPerson: SeadPerson(idType == "vivo"&& getEmail(id)=="Indiana University") from $contributors
+         )
      $seadDu : SeadDeliverableUnit(sizeBytes < 10000000000 )
      SeadDeliverableUnit(fileNo < 1000 )
     // SeadDeliverableUnit( "CC" in (rights) )

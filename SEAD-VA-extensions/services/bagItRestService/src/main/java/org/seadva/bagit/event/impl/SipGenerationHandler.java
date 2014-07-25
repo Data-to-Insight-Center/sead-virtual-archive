@@ -51,6 +51,7 @@ public class SipGenerationHandler implements Handler {
     private static Predicate DC_REFERENCES = null;
     private static Predicate DC_TERMS_RIGHTS = null;
     private static Predicate DC_TERMS_CONTRIBUTOR = null;
+    private static Predicate DC_TERMS_CREATOR = null;
 
     private static Predicate CITO_IS_DOCUMENTED_BY = null;
     private static Predicate DC_TERMS_TYPE = null;
@@ -102,6 +103,12 @@ public class SipGenerationHandler implements Handler {
         DC_TERMS_CONTRIBUTOR.setPrefix(Vocab.dcterms_Agent.schema());
         DC_TERMS_CONTRIBUTOR.setName("contributor");
         DC_TERMS_CONTRIBUTOR.setURI(new URI(Constants.contributor));
+
+        DC_TERMS_CREATOR = new Predicate();
+        DC_TERMS_CREATOR.setNamespace(Vocab.dcterms_Agent.ns().toString());
+        DC_TERMS_CREATOR.setPrefix(Vocab.dcterms_Agent.schema());
+        DC_TERMS_CREATOR.setName("creator");
+        DC_TERMS_CREATOR.setURI(new URI(Constants.creatorTerm));
 
         METS_LOCATION = new Predicate();
         METS_LOCATION.setNamespace("http://www.loc.gov/METS");
@@ -352,6 +359,40 @@ public class SipGenerationHandler implements Handler {
                         person.setName(arr[0]);
                         person.setIdType(arr[1]);
                         person.setId(arr[2]);
+                    }
+                    else{
+                        person.setName(contributorStr);
+                        //person.setId(UUID.randomUUID().toString());
+                    }
+                    du.addDataContributor(person);
+                }
+            }
+
+            contributorTripleSelector = new TripleSelector();
+            contributorTripleSelector.setSubjectURI(rem.getAggregation().getURI());
+            contributorTripleSelector.setPredicate(DC_TERMS_CREATOR);
+            contributorTriples = rem.getAggregation().listAllTriples(contributorTripleSelector);
+
+            if(contributorTriples!=null && contributorTriples.size()>0){
+                for(Triple contributorTriple: contributorTriples){
+                    SeadPerson person = new SeadPerson();
+                    String contributorStr = contributorTriple.getObjectLiteral();
+                    if(contributorStr.contains(":")) {
+                        if(contributorStr.contains("vivo")){
+                            String[] arr = contributorStr.split(":");
+                            person.setName(arr[0].replace(" ",""));
+                            person.setIdType("vivo");
+                            person.setId(contributorStr.substring(contributorStr.indexOf("http")));
+                        }
+                    }
+                    else  if(contributorStr.contains(";")){
+
+
+                        String[] arr = contributorStr.split(";");
+                        person.setName(arr[0]);
+                        person.setIdType(arr[1]);
+                        person.setId(arr[2]);
+
                     }
                     else{
                         person.setName(contributorStr);
