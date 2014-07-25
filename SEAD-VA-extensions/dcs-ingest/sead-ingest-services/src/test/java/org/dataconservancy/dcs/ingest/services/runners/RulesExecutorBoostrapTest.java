@@ -22,10 +22,14 @@ import org.dataconservancy.dcs.ingest.impl.MemoryStager;
 import org.dataconservancy.dcs.ingest.services.IngestService;
 import org.dataconservancy.dcs.ingest.services.IngestServiceException;
 import org.dataconservancy.dcs.ingest.services.runners.RulesExecutorBootstrap;
+import org.dataconservancy.model.dcs.DcsDeliverableUnit;
+import org.drools.runtime.StatelessKnowledgeSession;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.seadva.model.builder.xstream.SeadXstreamStaxModelBuilder;
 import org.seadva.model.pack.ResearchObject;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -53,6 +57,14 @@ public class RulesExecutorBoostrapTest {
         Map<String,IngestService> serviceMap = new HashMap<String, IngestService>();
         serviceMap.put("test", new MockSuccessfulService());
         runner.setServiceMap(serviceMap);
+
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
+
+        String sessionKey = "ServiceSession";
+        StatelessKnowledgeSession session =
+                (StatelessKnowledgeSession)applicationContext.getBean(sessionKey);
+
+        runner.setKSession(session);
         runner.setIngestFramework(fwk);
         runner.setExecutor(Executors.newFixedThreadPool(1));
 

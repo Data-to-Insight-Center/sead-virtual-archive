@@ -1,0 +1,28 @@
+package org.seadva.matchmaker.drools.impl
+
+import org.slf4j.LoggerFactory;
+import function org.drools.core.util.StringUtils.isEmpty;
+import org.seadva.model.SeadDeliverableUnit;
+import org.seadva.model.SeadPerson;
+import org.dataconservancy.dcs.ingest.services.util.Output;
+ import org.dataconservancy.dcs.ingest.services.runners.model.ServiceQueueModifier;
+ import org.dataconservancy.dcs.ingest.services.runners.model.RepositoryMatcher;
+ import function org.dataconservancy.dcs.ingest.services.util.VivoUtil.getEmail;
+ import function org.dataconservancy.dcs.ingest.services.util.SchemaValidator.validateDDI;
+
+rule "Affiliation rule"
+	dialect "mvel"
+when
+     $queueModifier: ServiceQueueModifier()
+     SeadDeliverableUnit($contributors:dataContributors )
+     exists (
+          $seadPerson: SeadPerson(idType == "vivo"&& getEmail(id)=="University of Illinois") from $contributors
+     )
+     $seadDu : SeadDeliverableUnit(sizeBytes < 10000000000 )
+     SeadDeliverableUnit(fileNo < 1000 )
+     SeadDeliverableUnit( "CC" in (rights) )
+
+then
+     $queueModifier.addIngestServicesName("test");
+
+end
