@@ -98,7 +98,7 @@ public class DcsDBMapper {
                 collection.addProperty(property1);
 
             SeadDataLocation seadDataLocation = ((SeadDeliverableUnit)du).getPrimaryLocation();
-            if(seadDataLocation!=null&seadDataLocation.getLocation()!=null){
+            if(seadDataLocation!=null&&seadDataLocation.getLocation()!=null){
                 DataLocation dataLocation = new DataLocation();
                 DataLocationPK dataLocationPK = new DataLocationPK();
                 Repository repository = client.getRepositoryByName(seadDataLocation.getName());
@@ -107,6 +107,21 @@ public class DcsDBMapper {
                 dataLocation.setIsMasterCopy(1);
                 dataLocation.setLocationValue(seadDataLocation.getLocation());
                 collection.addDataLocation(dataLocation);
+            }
+
+            Set<SeadDataLocation> secondaryLocations = ((SeadDeliverableUnit)du).getSecondaryDataLocations();
+            for(SeadDataLocation secondaryLocation: secondaryLocations)
+            {
+                if(secondaryLocation!=null&&secondaryLocation.getLocation()!=null){
+                DataLocation dataLocation = new DataLocation();
+                DataLocationPK dataLocationPK = new DataLocationPK();
+                Repository repository = client.getRepositoryByName(secondaryLocation.getName());
+                dataLocationPK.setLocationType(repository);
+                dataLocation.setId(dataLocationPK);
+                dataLocation.setIsMasterCopy(0);
+                dataLocation.setLocationValue(secondaryLocation.getLocation());
+                collection.addDataLocation(dataLocation);
+                }
             }
 
             for(DcsResourceIdentifier alternateId: du.getAlternateIds()){
@@ -331,6 +346,7 @@ public class DcsDBMapper {
 
         Set<DataLocation> dataLocations = file.getDataLocations();
         for(DataLocation location:dataLocations){
+
             SeadDataLocation seadDataLocation = new SeadDataLocation();
             seadDataLocation.setType(location.getId().getLocationType().getSoftwareType());
             seadDataLocation.setName(location.getId().getLocationType().getRepositoryName());
@@ -391,11 +407,20 @@ public class DcsDBMapper {
 
         Set<DataLocation> dataLocations = collection.getDataLocations();
         for(DataLocation location:dataLocations){
-            SeadDataLocation seadDataLocation = new SeadDataLocation();
-            seadDataLocation.setType(location.getId().getLocationType().getSoftwareType());
-            seadDataLocation.setName(location.getId().getLocationType().getRepositoryName());
-            seadDataLocation.setLocation(location.getLocationValue());
-            du.setPrimaryLocation(seadDataLocation);
+            if(location.getIsMasterCopy()==1)  {
+                SeadDataLocation seadDataLocation = new SeadDataLocation();
+                seadDataLocation.setType(location.getId().getLocationType().getSoftwareType());
+                seadDataLocation.setName(location.getId().getLocationType().getRepositoryName());
+                seadDataLocation.setLocation(location.getLocationValue());
+                du.setPrimaryLocation(seadDataLocation);
+            }
+            else{
+                SeadDataLocation seadDataLocation = new SeadDataLocation();
+                seadDataLocation.setType(location.getId().getLocationType().getSoftwareType());
+                seadDataLocation.setName(location.getId().getLocationType().getRepositoryName());
+                seadDataLocation.setLocation(location.getLocationValue());
+                du.addSecondaryDataLocation(seadDataLocation);
+            }
         }
 
         for(DataIdentifier dataIdentifier: collection.getDataIdentifiers()){

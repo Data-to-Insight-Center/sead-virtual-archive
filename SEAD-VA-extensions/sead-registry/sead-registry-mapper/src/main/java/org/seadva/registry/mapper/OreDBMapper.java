@@ -23,6 +23,7 @@ public class OreDBMapper {
     private static Predicate DC_TERMS_IDENTIFIER = null;
     private static Predicate DC_TERMS_SOURCE = null;
     private static Predicate METS_LOCATION = null;
+    private static Predicate REPLICA_LOCATION = null;
     private static Predicate DC_TERMS_TITLE = null;
         private static Predicate DC_TERMS_FORMAT = null;
     private static Predicate DC_TERMS_ABSTRACT = null;
@@ -81,6 +82,12 @@ public class OreDBMapper {
         METS_LOCATION.setPrefix("http://www.loc.gov/METS");
         METS_LOCATION.setName("FLocat");
         METS_LOCATION.setURI(new URI("http://www.loc.gov/METS/FLocat"));
+
+        REPLICA_LOCATION = new Predicate();
+        REPLICA_LOCATION.setNamespace("http://seadva.org/terms/");
+        REPLICA_LOCATION.setPrefix("http://seadva.org/terms/");
+        REPLICA_LOCATION.setName("replica");
+        REPLICA_LOCATION.setURI(new URI("http://seadva.org/terms/replica"));
 
         // create the CITO:isDocumentedBy predicate
         CITO_IS_DOCUMENTED_BY = new Predicate();
@@ -176,6 +183,26 @@ public class OreDBMapper {
                 dataLocationPK.setLocationType(repository);
                 dataLocation.setId(dataLocationPK);
                 dataLocation.setIsMasterCopy(1);
+                dataLocation.setLocationValue(locArr[2]);
+                collection.addDataLocation(dataLocation);
+            }
+        }
+
+        TripleSelector replicaLocSelector = new TripleSelector();
+        replicaLocSelector.setSubjectURI(resourceMap.getAggregation().getURI());
+        replicaLocSelector.setPredicate(REPLICA_LOCATION);
+        List<Triple> replicaTriples = resourceMap.getAggregation().listAllTriples(replicaLocSelector);
+
+
+        for (Triple replicaTriple: replicaTriples){
+            if(replicaTriple.getObjectLiteral().contains(";")) {
+                String[] locArr = replicaTriple.getObjectLiteral().split(";");
+                DataLocation dataLocation = new DataLocation();
+                DataLocationPK dataLocationPK = new DataLocationPK();
+                Repository repository = client.getRepositoryByName(locArr[0]);
+                dataLocationPK.setLocationType(repository);
+                dataLocation.setId(dataLocationPK);
+                dataLocation.setIsMasterCopy(0);
                 dataLocation.setLocationValue(locArr[2]);
                 collection.addDataLocation(dataLocation);
             }

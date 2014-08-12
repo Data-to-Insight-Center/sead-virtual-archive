@@ -8,7 +8,8 @@
     xmlns:ore="http://www.openarchives.org/ore/terms/"
     xmlns:dcterms="http://purl.org/dc/terms/"
     xmlns:cito="http://purl.org/spar/cito/" 
-    xmlns:mets="http://www.loc.gov/METS/"> 
+    xmlns:mets="http://www.loc.gov/METS/"
+    xmlns:sead="http://seadva.org/terms/">
   <rdf:Description rdf:nodeID="A0">
     <foaf:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">SEAD_VA BagItService</foaf:name>
     <rdf:type rdf:resource="http://purl.org/dc/terms/Agent"/>
@@ -34,6 +35,8 @@
     </dcterms:creator>
     <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2014-03-24T11:32:03-0400</dcterms:created>
     <dcterms:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://dx.doi.org/10.5072/FK2TQ6DQP</dcterms:identifier>
+    <mets:FLocat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">IU Scholarworks;dspace;https://scholarworks.iu.edu/iuswdark/handle/2022/15472</mets:FLocat>
+    <sead:replica rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Amazon S3;cloud;eelriversteelheadstudyd2i</sead:replica>
     <ore:aggregates rdf:resource="http://seadva-test.d2i.indiana.edu/sead-wf/entity/166389"/>
     <ore:aggregates rdf:resource="http://seadva-test.d2i.indiana.edu/sead-wf/entity/166388"/>
     <ore:aggregates rdf:resource="http://seadva-test.d2i.indiana.edu/sead-wf/entity/166387"/>
