@@ -210,3 +210,8 @@ insert into metadata_type values('md:79', 'http://www.w3.org/ns/prov/#', 'hadRev
 insert into metadata_type values('md:81', 'tag:tupeloproject.org,2006:/2.0/files/', 'hasName');
 insert into metadata_type values('md:82', 'tag:tupeloproject.org,2006:/2.0/gis/', 'hasGeoPoint');
 
+
+insert into metadata_type values('md:83',
+'http://seadva.org/terms/','replica'
+);
+
