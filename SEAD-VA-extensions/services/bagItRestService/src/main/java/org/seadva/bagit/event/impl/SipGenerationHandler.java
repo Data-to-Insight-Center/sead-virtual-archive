@@ -45,6 +45,7 @@ public class SipGenerationHandler implements Handler {
     private static Predicate DC_TERMS_IDENTIFIER = null;
     private static Predicate DC_TERMS_SOURCE = null;
     private static Predicate METS_LOCATION = null;
+    private static Predicate REPLICA_LOCATION = null;
     private static Predicate DC_TERMS_TITLE = null;
     private static Predicate DC_TERMS_FORMAT = null;
     private static Predicate DC_TERMS_ABSTRACT = null;
@@ -115,6 +116,12 @@ public class SipGenerationHandler implements Handler {
         METS_LOCATION.setPrefix("http://www.loc.gov/METS");
         METS_LOCATION.setName("FLocat");
         METS_LOCATION.setURI(new URI("http://www.loc.gov/METS/FLocat"));
+
+        REPLICA_LOCATION = new Predicate();
+        REPLICA_LOCATION.setNamespace("http://seadva.org/terms/");
+        REPLICA_LOCATION.setPrefix("http://seadva.org/terms/");
+        REPLICA_LOCATION.setName("replica");
+        REPLICA_LOCATION.setURI(new URI(Constants.secondaryLocation));
 
         // create the CITO:isDocumentedBy predicate
         CITO_IS_DOCUMENTED_BY = new Predicate();
@@ -304,19 +311,41 @@ public class SipGenerationHandler implements Handler {
             sourceselector.setPredicate(METS_LOCATION);
             List<Triple> sourcetriples = rem.getAggregation().listAllTriples(sourceselector);
 
-            if(sourcetriples.size()>0)
-            {
-                if(sourcetriples.get(0).getObjectLiteral().contains(";")){
-                    String[] locArr = sourcetriples.get(0).getObjectLiteral().split(";");
+
+                if(sourcetriples.size()>0)
+                {
+                    if(sourcetriples.get(0).getObjectLiteral().contains(";")){
+                            String[] locArr = sourcetriples.get(0).getObjectLiteral().split(";");
+                            if(locArr.length==3){
+                                SeadDataLocation dataLocation = new SeadDataLocation();
+                                dataLocation.setName(locArr[0]);
+                                dataLocation.setType(locArr[1]);
+                                dataLocation.setLocation(locArr[2]);
+                                du.setPrimaryLocation(dataLocation);
+                            }
+                        }
+                }
+
+            TripleSelector replicaselector = new TripleSelector();
+            replicaselector.setSubjectURI(rem.getAggregation().getURI());
+            replicaselector.setPredicate(REPLICA_LOCATION);
+            List<Triple> replicaTriples = rem.getAggregation().listAllTriples(replicaselector);
+
+            for(Triple replicaTriple: replicaTriples){
+
+                if(replicaTriple.getObjectLiteral().contains(";")){
+                    String[] locArr = replicaTriple.getObjectLiteral().split(";");
                     if(locArr.length==3){
                         SeadDataLocation dataLocation = new SeadDataLocation();
                         dataLocation.setName(locArr[0]);
                         dataLocation.setType(locArr[1]);
                         dataLocation.setLocation(locArr[2]);
-                        du.setPrimaryLocation(dataLocation);
+                        du.addSecondaryDataLocation(dataLocation);
                     }
                 }
             }
+
+
             //get any metadata file associated
             TripleSelector tripleSelector = new TripleSelector();
             tripleSelector.setSubjectURI(rem.getAggregation().getURI());

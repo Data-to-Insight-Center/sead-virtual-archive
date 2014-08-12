@@ -130,6 +130,19 @@ public class SipParseHandler implements Handler {
                 propertyValues.put(Constants.sourceTerm, locList);
             }
 
+            Set<SeadDataLocation>  locations  = seadDeliverableUnit.getSecondaryDataLocations();
+
+            for(SeadDataLocation secondaryLocation:locations){
+                if(secondaryLocation.getLocation()!=null&&secondaryLocation.getName()!=null&&secondaryLocation.getType()!=null){
+                    String locationStr = secondaryLocation.getName()+";"+secondaryLocation.getType()+";"+secondaryLocation.getLocation();
+                    List<String> locList = new ArrayList<String>();
+                    if(propertyValues.containsKey(Constants.secondaryLocation))
+                        locList = propertyValues.get(Constants.secondaryLocation);
+                    locList.add(locationStr);
+                    propertyValues.put(Constants.secondaryLocation, locList);
+                }
+            }
+
 
             for(DcsMetadata metadata: du.getMetadata()){
                 List<String> otherMdList = new ArrayList<String>();

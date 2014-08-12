@@ -1,0 +1,98 @@
+
+<rdf:RDF
+        xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+        xmlns:j.0="http://www.loc.gov/METS/"
+        xmlns:foaf="http://xmlns.com/foaf/0.1/"
+        xmlns:owl="http://www.w3.org/2002/07/owl#"
+        xmlns:dc="http://purl.org/dc/elements/1.1/"
+        xmlns:ore="http://www.openarchives.org/ore/terms/"
+        xmlns:dcterms="http://purl.org/dc/terms/"
+        xmlns:j.1="http://www.w3.org/ns/prov#"
+        xmlns:j.2="http://purl.org/spar/cito/"
+        xmlns:sead="http://seadva.org/terms/"
+        xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" >
+    <rdf:Description rdf:about="http://sead-test/ea1c15b0-e237-4c0f-8816-66e545bc28ba">
+        <dcterms:contributor rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Janae Cummings</dcterms:contributor>
+        <dcterms:contributor rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Beth Plale</dcterms:contributor>
+        <dcterms:contributor rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Robert J. Ping</dcterms:contributor>
+        <dcterms:title rdf:datatype="http://www.w3.org/2001/XMLSchema#string">IEEE Cluster 2013 Visualization Showcase-Vortex2 Visualization.pptx</dcterms:title>
+        <j.2:isDocumentedBy rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://sead-test/cce29a32-1cbb-4859-bf03-15ecc8db97bc</j.2:isDocumentedBy>
+        <dcterms:contributor rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Alan Mauro</dcterms:contributor>
+        <j.2:isDocumentedBy rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://sead-test/9c81ccb9-36ac-445b-af5b-e8d3ae419511</j.2:isDocumentedBy>
+        <dcterms:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://sead-test/ea1c15b0-e237-4c0f-8816-66e545bc28ba</dcterms:identifier>
+        <dcterms:contributor rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Keith Danielson</dcterms:contributor>
+        <dcterms:contributor rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Quan Zhou</dcterms:contributor>
+        <dcterms:SizeOrDuration rdf:datatype="http://www.w3.org/2001/XMLSchema#string">-1</dcterms:SizeOrDuration>
+        <ore:isAggregatedBy>http://sead-test/0489a707-d428-4db4-8ce0-1ace548bc653</ore:isAggregatedBy>
+        <j.0:FLocat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">/home/kavchand/Documents/vortex2_test/0489a707-d428-4db4-8ce0-1ace548bc653data/IEEE Cluster 2013 Visualization Showcase-Vortex2 Visualization.pptx</j.0:FLocat>
+    </rdf:Description>
+    <rdf:Description rdf:nodeID="A0">
+        <rdf:type rdf:resource="http://purl.org/dc/terms/Agent"/>
+        <foaf:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Foresite ORE Library</foaf:name>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sead-test/cce29a32-1cbb-4859-bf03-15ecc8db97bc">
+        <ore:isAggregatedBy>http://sead-test/0489a707-d428-4db4-8ce0-1ace548bc653</ore:isAggregatedBy>
+        <dcterms:SizeOrDuration rdf:datatype="http://www.w3.org/2001/XMLSchema#string">-1</dcterms:SizeOrDuration>
+        <dcterms:source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://scholarworks.iu.edu/dspace/handle/2022/14983</dcterms:source>
+        <j.0:FLocat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">/home/kavchand/Documents/vortex2_test/0489a707-d428-4db4-8ce0-1ace548bc653data/Vortex_Mining.xlsx</j.0:FLocat>
+        <dcterms:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Spreadsheet that contains data extracted from Vortex2 dataset + added visualization features such as altitude and color for each geospatial point</dcterms:abstract>
+        <dcterms:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://sead-test/cce29a32-1cbb-4859-bf03-15ecc8db97bc</dcterms:identifier>
+        <dcterms:title rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Vortex Mining</dcterms:title>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sead-test/0489a707-d428-4db4-8ce0-1ace548bc653">
+        <ore:aggregates rdf:resource="http://sead-test/9c81ccb9-36ac-445b-af5b-e8d3ae419511"/>
+        <dcterms:publisher rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://d2i.indiana.edu/</dcterms:publisher>
+        <rdf:type rdf:resource="http://www.openarchives.org/ore/terms/Aggregation"/>
+        <dcterms:title rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Vortex2 Visualization</dcterms:title>
+        <j.0:FLocat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">IU Scholarworks;dspace;https://scholarworks.iu.edu/iuswdark/handle/2022/15472</j.0:FLocat>
+        <dcterms:creator rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Quan Zhou</dcterms:creator>
+        <sead:replica rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Amazon S3;cloud;eelriversteelheadstudyd2i</sead:replica>
+        <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2014-03-24T11:32:03-0400</dcterms:modified>
+        <ore:isDescribedBy rdf:resource="http://sead-test/0489a707-d428-4db4-8ce0-1ace548bc653_ResourceMap"/>
+        <ore:aggregates rdf:resource="http://sead-test/ce39f690-b369-11e3-a5e2-0800200c9a66"/>
+        <ore:aggregates rdf:resource="http://sead-test/ea1c15b0-e237-4c0f-8816-66e545bc28ba"/>
+        <dcterms:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The Vortex2 project (http://www.vortex2.org/home/) supported 100 scientists using over 40 science support vehicles participated in a nomadic effort to understand tornados. </dcterms:abstract>
+        <j.2:isDocumentedBy rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://sead-test/944e89f2-5f91-4f6b-ac46-60f076fc3e25</j.2:isDocumentedBy>
+        <dcterms:type rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PublishedObject</dcterms:type>
+        <dcterms:rights rdf:datatype="http://www.w3.org/2001/XMLSchema#string">All the data and visualizations are available for download and re-use. Proper attribution to the authors is required.</dcterms:rights>
+        <ore:aggregates rdf:resource="http://sead-test/cce29a32-1cbb-4859-bf03-15ecc8db97bc"/>
+        <dcterms:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://sead-test/0489a707-d428-4db4-8ce0-1ace548bc653</dcterms:identifier>
+        <ore:aggregates rdf:resource="http://sead-test/944e89f2-5f91-4f6b-ac46-60f076fc3e25"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sead-test/944e89f2-5f91-4f6b-ac46-60f076fc3e25">
+        <ore:isAggregatedBy>http://sead-test/0489a707-d428-4db4-8ce0-1ace548bc653</ore:isAggregatedBy>
+        <dcterms:SizeOrDuration rdf:datatype="http://www.w3.org/2001/XMLSchema#string">-1</dcterms:SizeOrDuration>
+        <j.0:FLocat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">/home/kavchand/Documents/vortex2_test/0489a707-d428-4db4-8ce0-1ace548bc653data/Vortex2_Visualization.xml</j.0:FLocat>
+        <dcterms:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#string">This is an OPM metadata file created by the author</dcterms:abstract>
+        <dcterms:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://sead-test/944e89f2-5f91-4f6b-ac46-60f076fc3e25</dcterms:identifier>
+        <dcterms:title rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Vortex2_Visualization.xml</dcterms:title>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sead-test/0489a707-d428-4db4-8ce0-1ace548bc653_ResourceMap">
+        <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2014-08-09T21:44:11-0400</dcterms:modified>
+        <dc:creator rdf:nodeID="A0"/>
+        <ore:describes rdf:resource="http://sead-test/0489a707-d428-4db4-8ce0-1ace548bc653"/>
+        <rdf:type rdf:resource="http://www.openarchives.org/ore/terms/ResourceMap"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sead-test/ce39f690-b369-11e3-a5e2-0800200c9a66">
+        <ore:isAggregatedBy>http://sead-test/0489a707-d428-4db4-8ce0-1ace548bc653</ore:isAggregatedBy>
+        <dcterms:SizeOrDuration rdf:datatype="http://www.w3.org/2001/XMLSchema#string">-1</dcterms:SizeOrDuration>
+        <j.0:FLocat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">/home/kavchand/Documents/vortex2_test/0489a707-d428-4db4-8ce0-1ace548bc653data/Vortex2_Mining2.xlsx</j.0:FLocat>
+        <dcterms:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Spreadsheet that contains a list of tornado warnings and their DOI IDs from Vortex 2 dataset that were used in the visualization</dcterms:abstract>
+        <dcterms:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://sead-test/ce39f690-b369-11e3-a5e2-0800200c9a66</dcterms:identifier>
+        <dcterms:title rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Vortex2_Mining2.xlsx</dcterms:title>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sead-test/9c81ccb9-36ac-445b-af5b-e8d3ae419511">
+        <dcterms:SizeOrDuration rdf:datatype="http://www.w3.org/2001/XMLSchema#string">-1</dcterms:SizeOrDuration>
+        <dcterms:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://sead-test/9c81ccb9-36ac-445b-af5b-e8d3ae419511</dcterms:identifier>
+        <dcterms:source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://sead-test/cce29a32-1cbb-4859-bf03-15ecc8db97bc</dcterms:source>
+        <dcterms:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1.Visualization visually conveys points in space and time where weather forecast captured a confirmed tornado siting;
+            2.Visualization uses times series and three-dimensional geospatial visualization techniques to display spatial distribution and temporal relation for Vortex2 data set;
+            3.The video employs voice-over and text to convey importance of forecast in relation to actual weather</dcterms:abstract>
+        <rdfs:seeAlso rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://www.youtube.com/watch?v=4lC733j8J0Y</rdfs:seeAlso>
+        <dcterms:title rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Daily Regional Weather Forecasts in Support of Vortex2.mp4</dcterms:title>
+        <j.1:wasGeneratedBy rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://www.worldwidetelescope.org</j.1:wasGeneratedBy>
+        <rdfs:seeAlso rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://d2i.indiana.edu/news/d2i-creates-vortex2-data-set-visualized-world-wide-telescope-wwt</rdfs:seeAlso>
+        <j.0:FLocat rdf:datatype="http://www.w3.org/2001/XMLSchema#string">/home/kavchand/Documents/vortex2_test/0489a707-d428-4db4-8ce0-1ace548bc653data/Daily Regional Weather Forecasts in Support of Vortex2.mp4</j.0:FLocat>
+        <ore:isAggregatedBy>http://sead-test/0489a707-d428-4db4-8ce0-1ace548bc653</ore:isAggregatedBy>
+    </rdf:Description>
+</rdf:RDF>

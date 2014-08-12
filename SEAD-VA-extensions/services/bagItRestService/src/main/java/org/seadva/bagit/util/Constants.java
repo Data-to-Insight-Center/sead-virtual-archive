@@ -52,12 +52,12 @@ public class Constants {
     public static String locationTerm = "http://purl.org/dc/terms/Location";
     public static String abstractTerm = "http://purl.org/dc/terms/abstract";
     public static String contentSourceTerm = "http://purl.org/dc/terms/source";
+    public static String secondaryLocation = "http://seadva.org/terms/replica";
     public static String contributor = "http://purl.org/dc/terms/contributor";
     public static String documentedBy  = "http://purl.org/spar/cito/isDocumentedBy";
 
     static{
         try {
-
             acrInstances = new Constants().loadAcrInstances();
             metadataPredicateMap = new Constants().loadAcrMetadataMapping();
         } catch (IOException e) {

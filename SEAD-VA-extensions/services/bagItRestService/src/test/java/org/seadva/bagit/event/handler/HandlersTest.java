@@ -163,4 +163,27 @@ public class HandlersTest extends JerseyTest {
     }
 
 
+    @Test
+    public void testOreGenerationHandlerForSip() throws IllegalAccessException, InstantiationException, ClassNotFoundException {
+
+        //SIP to ORE
+        PackageDescriptor packageDescriptor = new PackageDescriptor("sample_bag.zip", null, getClass().getResource("../../sample_bag").getPath());
+        packageDescriptor.setSipPath(
+                getClass().getResource("../../sample.xml").getPath()
+        );
+        packageDescriptor = ConfigBootstrap.packageListener.execute(Event.PARSE_SIP, packageDescriptor);
+        packageDescriptor = ConfigBootstrap.packageListener.execute(Event.GENERATE_ORE, packageDescriptor);
+        System.out.println("ORE file path:" + packageDescriptor.getOreFilePath());
+        assertNotNull(packageDescriptor.getOreFilePath());
+
+        //ORE to SIP
+        packageDescriptor = new PackageDescriptor(null, null,
+                getClass().getResource("../../ore").getPath()
+        );
+        packageDescriptor.setPackageId("sample");
+        packageDescriptor = ConfigBootstrap.packageListener.execute(Event.GENERATE_SIP, packageDescriptor);
+        System.out.println("SIP file path:" + packageDescriptor.getSipPath());
+        assertNotNull(packageDescriptor.getSipPath());
+    }
+
 }
