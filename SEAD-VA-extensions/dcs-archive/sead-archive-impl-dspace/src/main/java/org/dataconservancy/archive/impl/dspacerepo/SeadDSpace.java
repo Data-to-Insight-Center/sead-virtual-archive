@@ -122,7 +122,7 @@ public class SeadDSpace {
                 port = 80;
             }
 
-            client.setSocketTimeout(60*1000);
+            client.setSocketTimeout(60*60*1000);
             client.setServer(url.getHost(), port);
             message.setFormatNamespace("http://purl.org/net/sword-types/METSDSpaceSIP");
             message.setNoOp(noOp);
