@@ -494,7 +494,7 @@ public class SeadDeliverableUnitConverter extends AbstractEntityConverter {
             if (name.equals(E_SDATALOCATION)) {
                 final SeadDataLocation dataLoc =
                         (SeadDataLocation) context.convertAnother(du, SeadDataLocation.class);
-                if (dataLocation != null) { du.addSecondaryDataLocation(dataLoc); }
+                if (dataLoc != null) { du.addSecondaryDataLocation(dataLoc); }
                 reader.moveUp();
                 continue;
             }
