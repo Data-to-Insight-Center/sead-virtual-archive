@@ -21,6 +21,7 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
 import com.sun.jersey.test.framework.JerseyTest;
 import com.sun.jersey.test.framework.WebAppDescriptor;
 import org.apache.commons.io.IOUtils;
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
@@ -37,6 +38,7 @@ import org.seadva.model.SeadDeliverableUnit;
 import org.seadva.model.SeadRepository;
 import org.seadva.model.builder.xstream.SeadXstreamStaxModelBuilder;
 import org.seadva.model.pack.ResearchObject;
+import org.seadva.registry.mapper.DcsDBMapper;
 
 import javax.servlet.ServletContext;
 import javax.ws.rs.core.Context;
@@ -76,7 +78,8 @@ public class DPNBagItTest extends JerseyTest {
     public void testDPNBagUtil() throws IllegalAccessException, ClassNotFoundException, InstantiationException, FileNotFoundException, InvalidXmlException {
         WebResource webResource = resource();
         MultivaluedMap<String, String> params = new MultivaluedMapImpl();
-        String path = "/Users/Aravindh/Documents/DPN/sead/SEAD-VA-extensions/services/bagItRestService/target/test-classes/org/seadva/bagit/sample_bag/";
+        String path = "/home/dpnuser/Documents/dpn/sample_bag/";
+        //String path = "/home/dpnuser/Documents/mdpi_40000000000012-1gb/";
         params.add("dirPath", path);
 
         client = new DefaultHttpClient();//(DefaultHttpClient) appContext.getBean("httpClient");
@@ -98,7 +101,7 @@ public class DPNBagItTest extends JerseyTest {
         //Direct calls
 
         String sipPath = new DPNBagItUtil().getSip(path)+"IU-sip.xml";
-        System.out.print(sipPath);
+        System.out.println(sipPath);
 
         //Tar module in wf
         ResearchObject sip =new SeadXstreamStaxModelBuilder().buildSip(new FileInputStream(sipPath));
@@ -126,6 +129,7 @@ public class DPNBagItTest extends JerseyTest {
                 ));
         try {
             int code = doDeposit(new File(sipPath));
+            //buildSipFromRegistry();
         } catch (Exception e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
@@ -165,8 +169,13 @@ public class DPNBagItTest extends JerseyTest {
         HttpResponse response = client.execute(post);
 
         int code = response.getStatusLine().getStatusCode();
+        Header[] location = response.getHeaders("Location");
         if (code >= 200 && code <= 202) {
             response.getAllHeaders();
+            Header[] headers = response.getAllHeaders();
+            for (Header header : headers)
+                System.out.println("FinalKey : " + header.getName()
+                        + " ,FinalValue : " + header.getValue());
             HttpEntity responseEntity = response.getEntity();
             InputStream content = responseEntity.getContent();
             try {
@@ -176,6 +185,11 @@ public class DPNBagItTest extends JerseyTest {
             }
         }
         return code;
+    }
+
+    private void buildSipFromRegistry() throws IOException, ClassNotFoundException {
+        ResearchObject researchObject = new DcsDBMapper("http://localhost:8080/registry/rest/").getSip("http://localhost:8080/sead-wf/entity/81009");
+        new SeadXstreamStaxModelBuilder().buildSip(researchObject, new FileOutputStream("/tmp/output_sip.xml"));
     }
 }
 

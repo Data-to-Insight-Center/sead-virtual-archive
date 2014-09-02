@@ -207,6 +207,7 @@ public class DPNSipGenerationHandler implements Handler{
             ResourceMap rem = parser.parse(input);
 
             SeadDeliverableUnit du = new SeadDeliverableUnit();
+            du.setType("PublishedObject");
 
            /* if(metadataTriples.size()>0){
                 String[] fgdcFilePath = metadataTriples.get(0).getObjectLiteral().split("/");
