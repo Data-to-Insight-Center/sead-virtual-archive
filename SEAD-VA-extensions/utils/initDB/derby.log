@@ -1,10 +1,10 @@
 ----------------------------------------------------------------
-Fri Nov 01 15:16:17 EDT 2013:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.9.1.0 - (1344872): instance a816c00e-0142-1518-33ae-000002d50000 
-on database directory /tmp/db  with class loader java.net.URLClassLoader@191c263 
+Sun Jul 06 23:43:16 EDT 2014:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.9.1.0 - (1344872): instance a816c00e-0147-0eeb-2294-0000046014a8 
+on database directory /usr/local/database  with class loader java.net.URLClassLoader@64a06824 
 Loaded from jar:rsrc:derby.jar!/
 java.vendor=Oracle Corporation
-java.runtime.version=1.7.0_05-b06
-user.dir=/home/kavchand/scratch/release_1.0/git/utils/initDB
+java.runtime.version=1.7.0_55-b13
+user.dir=/home/dpnuser/Documents/sead/SEAD-VA-extensions/utils/initDB
 derby.system.home=null
 Database Class Loader started - derby.database.classpath=''

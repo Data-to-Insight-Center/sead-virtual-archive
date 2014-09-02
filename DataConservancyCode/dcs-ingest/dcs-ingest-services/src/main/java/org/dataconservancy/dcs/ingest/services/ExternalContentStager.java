@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import java.net.URLConnection;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -30,6 +31,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Collection;
+import java.util.Iterator;
 
 import org.apache.commons.codec.binary.Hex;
 
@@ -45,8 +48,13 @@ import org.dataconservancy.model.dcs.DcsEntityReference;
 import org.dataconservancy.model.dcs.DcsEvent;
 import org.dataconservancy.model.dcs.DcsFile;
 import org.dataconservancy.model.dcs.DcsFixity;
+import org.seadva.model.pack.ResearchObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.dataconservancy.model.dcs.DcsDeliverableUnit;
+import org.dataconservancy.model.dcs.DcsManifestation;
+import org.dataconservancy.model.dcs.DcsManifestationFile;
+import org.seadva.model.SeadDeliverableUnit;
 
 /**
  * Retrieves and stages extant content included by reference.
@@ -81,15 +89,22 @@ public class ExternalContentStager
         calculateFixity = algorithms;
     }
 
+
+
     public void execute(String sipRef) throws IngestServiceException {
         if (isDisabled()) return;
         FileContentStager fileStager = ingest.getFileContentStager();
         Dcp sip = ingest.getSipStager().getSIP(sipRef);
         Set<DcsFile> files = new HashSet<DcsFile>();
+        //Set files = new HashSet();
 
         boolean modified = false;
         for (DcsFile file : sip.getFiles()) {
-            if (file.isExtant() && !fileStager.contains(file.getSource())) {
+            if (file.getSource().startsWith("/")) {
+                file.setSource("file://" + file.getSource());
+            }
+
+            if ((file.isExtant()) && (!fileStager.contains(file.getSource()))) {
                 stageExternalFile(file);
                 modified = true;
             }
@@ -98,14 +113,14 @@ public class ExternalContentStager
 
         if (modified) {
             sip.setFiles(files);
-            ingest.getSipStager().updateSIP(sip, sipRef);
+            ingest.getSipStager().updateSIP((ResearchObject)sip, sipRef);
         }
     }
 
     private void stageExternalFile(DcsFile file) {
 
-        List<DcsEvent> eventsToAdd = new ArrayList<DcsEvent>();
-
+        //List<DcsEvent> eventsToAdd = new ArrayList<DcsEvent>();
+        List eventsToAdd = new ArrayList();
         URL fileUrl;
         try {
             fileUrl = new URL(file.getSource());
@@ -125,7 +140,20 @@ public class ExternalContentStager
         InputStream stream = null;
         StagedFile staged = null;
         try {
-            stream = fixityFilter(fileUrl.openStream(), metadata, eventsToAdd);
+            InputStream src = null;
+            if(file.getSource().contains("file:"))
+                src = fileUrl.openStream();
+            else if (file.getSource().contains("http:"))
+            {
+                String loginPassword = "kavchand@indiana.edu"+ ":" + "maximus";
+                String encoded = new sun.misc.BASE64Encoder().encode (loginPassword.getBytes());
+                URLConnection conn = fileUrl.openConnection();
+                conn.setConnectTimeout(15*1000);
+                conn.setReadTimeout(15*1000);
+                conn.setRequestProperty ("Authorization", "Basic " + encoded);
+                src = conn.getInputStream();
+            }
+            stream = fixityFilter(src, metadata, eventsToAdd);
             staged = ingest.getFileContentStager().add(stream, metadata);
             file.setSource(staged.getReferenceURI());
         } catch (IOException e) {
@@ -177,7 +205,7 @@ public class ExternalContentStager
             fixity.setValue(outcome[1]);
             fileEntity.addFixity(fixity);
         }
-        ingest.getSipStager().updateSIP(stagedSip, sipRef);
+        ingest.getSipStager().updateSIP((ResearchObject)stagedSip, sipRef);
 
         /*
          * Set the staged content file as the target for all events, and add

@@ -18,15 +18,15 @@ package org.seadva.registry.client;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 import org.apache.commons.io.IOUtils;
-import org.junit.Test;
 import org.seadva.registry.database.model.obj.vaRegistry.*;
+import org.seadva.registry.database.model.obj.vaRegistry.CollectionWrapper;
+import org.seadva.registry.service.util.QueryAttributeType;
 
 import javax.ws.rs.core.MultivaluedMap;
 import javax.xml.ws.http.HTTPException;
@@ -37,25 +37,21 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-
-public class RegistryClient{
+public class RegistryClient {
 
     static WebResource resource;
     static String serviceUrl;
-    Gson gson;
+    static Gson gson;
     private static WebResource resource(){
-       if(resource==null){
-           Client client = Client.create();
-           return client.resource(serviceUrl);
-           //"http://localhost:8080/registry/rest/"
-       }
-       return resource;
+        return resource;
     }
 
     public RegistryClient(String url){
         this.serviceUrl = url;
-        gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        resource = Client.create().resource(serviceUrl);
+        gson = new GsonBuilder()
+                .excludeFieldsWithoutExposeAnnotation()
+                .create();
     }
 
     /**
@@ -64,11 +60,17 @@ public class RegistryClient{
      */
 
     public BaseEntity getEntity(String entityId, String type) throws IOException, ClassNotFoundException {
+        if(type.equalsIgnoreCase(Collection.class.getName()))
+            return  getCollection(entityId);
+        else if(type.equalsIgnoreCase(File.class.getName()))
+            return getFile(entityId);
+
         WebResource webResource = resource();
 
         MultivaluedMap<String, String> params = new MultivaluedMapImpl();
 
         ClientResponse response = webResource.path("resource")
+                .path("entity")
                 .path(
                         URLEncoder.encode(
                                 entityId
@@ -91,6 +93,7 @@ public class RegistryClient{
         MultivaluedMap<String, String> params = new MultivaluedMapImpl();
 
         ClientResponse response = webResource.path("resource")
+                .path("collection")
                 .path(
                         URLEncoder.encode(
                                 collectionId
@@ -114,6 +117,7 @@ public class RegistryClient{
         MultivaluedMap<String, String> params = new MultivaluedMapImpl();
 
         ClientResponse response = webResource.path("resource")
+                .path("file")
                 .path(
                         URLEncoder.encode(
                                 fileId
@@ -154,6 +158,32 @@ public class RegistryClient{
         }.getType();
         return gson.fromJson(writer.toString(), listType);
     }
+
+    public List<CollectionWrapper> getCollectionList(String type, String repository, String submitterId) throws IOException {
+        WebResource webResource = resource();
+        webResource = webResource.path("resource")
+                .path("listCollections")
+                .path(type);
+
+        if(repository!=null)
+            webResource = webResource.queryParam("repository", repository);
+
+        if(submitterId!=null)
+            webResource = webResource.queryParam("submitterId", submitterId);
+
+        ClientResponse response = webResource
+                .get(ClientResponse.class);
+
+        if(response.getStatus()!=200)
+            throw new HTTPException(response.getStatus());
+
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(response.getEntityInputStream(), writer);
+        Type listType = new TypeToken<ArrayList<CollectionWrapper>>() {
+        }.getType();
+        return gson.fromJson(writer.toString(), listType);
+    }
+
 
     public List<AggregationWrapper> getAggregation(String parentId) throws IOException {
         WebResource webResource = resource();
@@ -278,16 +308,16 @@ public class RegistryClient{
         ClientResponse response = webResource.path("resource")
                 .path("metadataType")
                 .path(
-                      element
+                        element
                 )
                 .queryParams(params)
                 .get(ClientResponse.class);
 
         if(response.getStatus()!=200)
         {    if(response.getStatus()==404)
-                return null;
-            else
-                throw new HTTPException(response.getStatus());
+            return null;
+        else
+            throw new HTTPException(response.getStatus());
         }
 
         StringWriter writer = new StringWriter();
@@ -311,10 +341,11 @@ public class RegistryClient{
                 .get(ClientResponse.class);
 
         if(response.getStatus()!=200)
-        {    if(response.getStatus()==404)
-            return null;
-        else
-            throw new HTTPException(response.getStatus());
+        {
+            if(response.getStatus()==404)
+                return null;
+            else
+                throw new HTTPException(response.getStatus());
         }
 
         StringWriter writer = new StringWriter();
@@ -322,6 +353,30 @@ public class RegistryClient{
         RelationType relationType = (RelationType) gson.fromJson(writer.toString(), RelationType.class);
 
         return relationType;
+    }
+
+
+    public List<BaseEntity> queryByProperty(String key, String value, QueryAttributeType attributeType) throws IOException {
+        WebResource webResource = resource();
+
+         webResource = webResource.path("resource")
+                .path("query")
+                .queryParam("value", value)
+                .queryParam("type", attributeType.getName());
+
+        if(key!=null)
+                webResource = webResource.queryParam("key", key);
+
+
+        ClientResponse response  = webResource.get(ClientResponse.class);
+
+        if(response.getStatus()!=200)
+            throw new HTTPException(response.getStatus());
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(response.getEntityInputStream(), writer);
+        Type listType = new TypeToken<ArrayList<BaseEntity>>() {
+        }.getType();
+        return (List<BaseEntity>) gson.fromJson(writer.toString(), listType);
     }
 
     /**
@@ -352,7 +407,7 @@ public class RegistryClient{
                 .post(ClientResponse.class);
 
         if(response.getStatus()!=200)
-               throw new HTTPException(response.getStatus());
+            throw new HTTPException(response.getStatus());
     }
 
 
@@ -399,6 +454,7 @@ public class RegistryClient{
             throw new HTTPException(response.getStatus());
     }
 
+
     /**
      * Base entity post
      */
@@ -428,33 +484,104 @@ public class RegistryClient{
             throw new HTTPException(response.getStatus());
     }
 
+    private static RoleType getRoleByName(String role) throws IOException {
+        WebResource webResource = resource();
+
+        MultivaluedMap<String, String> params = new MultivaluedMapImpl();
+
+        ClientResponse response = webResource.path("resource")
+                .path("roleType")
+                .path(
+                        role
+                )
+                .queryParams(params)
+                .get(ClientResponse.class);
+
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(response.getEntityInputStream(), writer);
+        return gson.fromJson(writer.toString(), RoleType.class);
+    }
+
+
+    public State getStateByName(String stateName) throws IOException {
+        WebResource webResource = resource();
+
+        MultivaluedMap<String, String> params = new MultivaluedMapImpl();
+
+        ClientResponse response = webResource.path("resource")
+                .path("state")
+                .path(
+                        stateName
+                )
+                .queryParams(params)
+                .get(ClientResponse.class);
+
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(response.getEntityInputStream(), writer);
+        return gson.fromJson(writer.toString(), State.class);
+    }
+
+    public void postAgent(Agent agent, String roleName) throws IOException {
+        WebResource webResource = resource();
+
+        AgentRole role = new AgentRole();
+        AgentRolePK agentRolePK = new AgentRolePK();
+        agentRolePK.setAgent(agent);
+        agentRolePK.setRoleType(getRoleByName(roleName));
+        role.setId(agentRolePK);
+        agent.addAgentRole(role);
+
+        String json = gson.toJson(agent);
+        MultivaluedMap<String, String> params = new MultivaluedMapImpl();
+        List<String> values = new ArrayList<String>();
+        values.add(json);
+        params.put("entity",values);
+
+        List<String> types = new ArrayList<String>();
+        types.add("org.seadva.registry.database.model.obj.vaRegistry.Agent");
+
+        params.put("type", types);
+        ClientResponse response = webResource.path("resource")
+                .path("agent")
+                .path(
+                        URLEncoder.encode(
+                                agent.getId()
+                        )
+                )
+                .queryParams(params)
+                .post(ClientResponse.class);
+
+        if(response.getStatus()!=200)
+            throw new HTTPException(response.getStatus());
+    }
+
     /**
      *
      * @param aggregationWrappers
      * @param parentId
      * @return
-     * @throws IOException
+     * @throws java.io.IOException
      */
     public void postAggregation(List<AggregationWrapper> aggregationWrappers, String parentId) throws IOException {
-            WebResource webResource = resource();
+        WebResource webResource = resource();
 
-            MultivaluedMap<String, String> params = new MultivaluedMapImpl();
+        MultivaluedMap<String, String> params = new MultivaluedMapImpl();
 
-            List<String> values = new ArrayList<String>();
-            values.add(gson.toJson(aggregationWrappers));
-            params.put("aggList",values);
+        List<String> values = new ArrayList<String>();
+        values.add(gson.toJson(aggregationWrappers));
+        params.put("aggList",values);
 
-            ClientResponse response = webResource.path("resource")
-                    .path("aggregation")
-                    .path(
-                            URLEncoder.encode(
-                                    parentId
-                            )
-                    )
-                    .queryParams(params)
-                    .post(ClientResponse.class);
-            if(response.getStatus()!=200)
-                throw new HTTPException(response.getStatus());
+        ClientResponse response = webResource.path("resource")
+                .path("aggregation")
+                .path(
+                        URLEncoder.encode(
+                                parentId
+                        )
+                )
+                .queryParams(params)
+                .post(ClientResponse.class);
+        if(response.getStatus()!=200)
+            throw new HTTPException(response.getStatus());
     }
 
     public void postRelation(List<Relation> relationList) throws IOException {
@@ -470,6 +597,40 @@ public class RegistryClient{
                 .path("relation")
                 .queryParams(params)
                 .post(ClientResponse.class);
+        if(response.getStatus()!=200)
+            throw new HTTPException(response.getStatus());
+    }
+
+    public void deleteRelation(List<Relation> relationList) throws IOException {
+        WebResource webResource = resource();
+
+        MultivaluedMap<String, String> params = new MultivaluedMapImpl();
+
+        List<String> values = new ArrayList<String>();
+        values.add(gson.toJson(relationList));
+        params.put("relList",values);
+
+        ClientResponse response = webResource.path("resource")
+                .path("delrelation")
+                .queryParams(params)
+                .post(ClientResponse.class);
+        if(response.getStatus()!=200)
+            throw new HTTPException(response.getStatus());
+    }
+
+    public void makeObsolete(String entityId) throws IOException {
+        WebResource webResource = resource();
+
+
+        ClientResponse response = webResource.path("resource")
+                .path("obsolete")
+                .path(
+                        URLEncoder.encode(
+                                entityId
+                        )
+                )
+                .post(ClientResponse.class);
+
         if(response.getStatus()!=200)
             throw new HTTPException(response.getStatus());
     }

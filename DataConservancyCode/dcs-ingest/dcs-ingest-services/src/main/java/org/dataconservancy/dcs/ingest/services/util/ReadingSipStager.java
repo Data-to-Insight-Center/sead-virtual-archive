@@ -19,6 +19,7 @@ import java.util.Set;
 
 import org.dataconservancy.dcs.ingest.SipStager;
 import org.dataconservancy.model.dcp.Dcp;
+import org.seadva.model.pack.ResearchObject;
 import org.springframework.beans.factory.annotation.Required;
 
 /**

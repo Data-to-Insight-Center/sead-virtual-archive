@@ -17,24 +17,17 @@
 package org.seadva.registry.service;
 
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
-import com.sun.jersey.multipart.FormDataMultiPart;
-import com.sun.jersey.multipart.file.FileDataBodyPart;
 import com.sun.jersey.test.framework.JerseyTest;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.springframework.test.context.ContextConfiguration;
 
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
-import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -66,7 +59,7 @@ public class RegistryRESTTest extends JerseyTest {
         MultivaluedMap<String, String> params = new MultivaluedMapImpl();
 
         String json =
-                "{\"isObsolete\":0,\"name\":\"Vortex2 Visualization\",\"state\":{\"properties\":[]},\"versionNum\":\"1\",\"entityCreatedTime\":\"Apr 9, 2014 1:38:13 PM\",\"entityLastUpdatedTime\":\"Apr 9, 2014 1:38:13 PM\",\"entityName\":\"Vortex2 Visualization\",\"id\":\"http://sead-test/fakeUri/0489a707-d428-4db4-8ce0-1ace548bc653\",\"properties\":[{\"metadata\":{\"id\":\"md:6\",\"metadataElement\":\"creator\",\"metadataSchema\":\"http://purl.org/dc/terms/\"},\"valuestr\":\"Quan Zhou\"},{\"metadata\":{\"id\":\"md:4\",\"metadataElement\":\"isDocumentedBy\",\"metadataSchema\":\"http://purl.org/spar/cito/\"},\"valuestr\":\"http://sead-test/fakeUri/944e89f2-5f91-4f6b-ac46-60f076fc3e25\"},{\"metadata\":{\"id\":\"md:3\",\"metadataElement\":\"publisher\",\"metadataSchema\":\"http://purl.org/dc/terms/\"},\"valuestr\":\"http://d2i.indiana.edu/\"},{\"metadata\":{\"id\":\"md:6\",\"metadataElement\":\"creator\",\"metadataSchema\":\"http://purl.org/dc/terms/\"},\"valuestr\":\"Quan Zhou\"},{\"metadata\":{\"id\":\"md:12\",\"metadataElement\":\"abstract\",\"metadataSchema\":\"http://purl.org/dc/terms/\"},\"valuestr\":\"The Vortex2 project (http://www.vortex2.org/home/) supported 100 scientists using over 40 science support vehicles participated in a nomadic effort to understand tornados. For the six weeks from May 1st to June 15th, 2010, scientists went roaming from state-to-state following severe weather conditions. With the help of meteorologists in the field who initiated boundary conditions, LEAD II (https://portal.leadproject.org/gridsphere/gridsphere) delivered six forecasts per day, starting at 7am CDT, creating up to 600 weather images per day. This information was used by the VORTEX2 field team and the command and control center at the University of Oklahoma to determine when and where tornadoes are most likely to occur and to help the storm chasers get to the right place at the right time. VORTEX2 used an unprecedented fleet of cutting edge instruments to literally surround tornadoes and the supercell thunderstorms that form them. An armada of mobile radars, including the Doppler On Wheels (DOW) from the Cente\"}]}";
+                "{\"isObsolete\":0,\"name\":\"Vortex2 Visualization\",\"state\":{\"stateName\":\"CuO\",\"stateType\":\"CurationObject\",\"dataIdentifiers\":[],\"dataLocations\":[],\"id\":\"state:2\",\"properties\":[]},\"versionNum\":\"1\",\"entityCreatedTime\":\"Apr 9, 2014 1:38:13 PM\",\"entityLastUpdatedTime\":\"Apr 9, 2014 1:38:13 PM\",\"entityName\":\"Vortex2 Visualization\",\"id\":\"http://sead-test/fakeUri/0489a707-d428-4db4-8ce0-1ace548bc653\",\"properties\":[{\"metadata\":{\"id\":\"md:6\",\"metadataElement\":\"creator\",\"metadataSchema\":\"http://purl.org/dc/terms/\"},\"valuestr\":\"Quan Zhou\"},{\"metadata\":{\"id\":\"md:4\",\"metadataElement\":\"isDocumentedBy\",\"metadataSchema\":\"http://purl.org/spar/cito/\"},\"valuestr\":\"http://sead-test/fakeUri/944e89f2-5f91-4f6b-ac46-60f076fc3e25\"},{\"metadata\":{\"id\":\"md:3\",\"metadataElement\":\"publisher\",\"metadataSchema\":\"http://purl.org/dc/terms/\"},\"valuestr\":\"http://d2i.indiana.edu/\"},{\"metadata\":{\"id\":\"md:6\",\"metadataElement\":\"creator\",\"metadataSchema\":\"http://purl.org/dc/terms/\"},\"valuestr\":\"Quan Zhou\"},{\"metadata\":{\"id\":\"md:12\",\"metadataElement\":\"abstract\",\"metadataSchema\":\"http://purl.org/dc/terms/\"},\"valuestr\":\"The Vortex2 project (http://www.vortex2.org/home/) supported 100 scientists using over 40 science support vehicles participated in a nomadic effort to understand tornados. For the six weeks from May 1st to June 15th, 2010, scientists went roaming from state-to-state following severe weather conditions. With the help of meteorologists in the field who initiated boundary conditions, LEAD II (https://portal.leadproject.org/gridsphere/gridsphere) delivered six forecasts per day, starting at 7am CDT, creating up to 600 weather images per day. This information was used by the VORTEX2 field team and the command and control center at the University of Oklahoma to determine when and where tornadoes are most likely to occur and to help the storm chasers get to the right place at the right time. VORTEX2 used an unprecedented fleet of cutting edge instruments to literally surround tornadoes and the supercell thunderstorms that form them. An armada of mobile radars, including the Doppler On Wheels (DOW) from the Cente\"}]}";
 
 
         List<String> values = new ArrayList<String>();
@@ -158,6 +151,7 @@ public class RegistryRESTTest extends JerseyTest {
         MultivaluedMap<String, String> params = new MultivaluedMapImpl();
 
         ClientResponse response = webResource.path("resource")
+                .path("entity")
                 .path(
                         URLEncoder.encode(
                                 "http://sead-test/fakeUri/0489a707-d428-4db4-8ce0-1ace548bc653"
@@ -180,6 +174,7 @@ public class RegistryRESTTest extends JerseyTest {
         MultivaluedMap<String, String> params = new MultivaluedMapImpl();
 
         ClientResponse response = webResource.path("resource")
+                .path("entity")
                 .path(
                         URLEncoder.encode(
                                 "http://sead-test/fakeUri/944e89f2-5f91-4f6b-ac46-60f076fc3e25"
@@ -235,6 +230,24 @@ public class RegistryRESTTest extends JerseyTest {
         System.out.print(writer.toString());
         assertEquals(200, response.getStatus());
     }
+
+
+
+    @Test
+    public void testGetAllCollections() throws IOException {
+        WebResource webResource = Client.create().resource("http://localhost:8080/registry/rest");
+
+        ClientResponse response = webResource.path("resource")
+                .path("listCollections")
+                .path("CurationObject")
+                .get(ClientResponse.class);
+
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(response.getEntityInputStream(), writer);
+        System.out.print(writer.toString());
+        assertEquals(200, response.getStatus());
+    }
+
 
 
 }

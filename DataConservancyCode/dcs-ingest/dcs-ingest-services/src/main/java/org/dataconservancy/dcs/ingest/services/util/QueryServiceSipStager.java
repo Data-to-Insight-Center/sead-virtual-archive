@@ -30,6 +30,7 @@ import org.dataconservancy.model.dcs.DcsEntity;
 import org.dataconservancy.model.dcs.DcsEvent;
 import org.dataconservancy.model.dcs.DcsFile;
 import org.dataconservancy.model.dcs.DcsManifestation;
+import org.seadva.model.pack.ResearchObject;
 import org.springframework.beans.factory.annotation.Required;
 
 import static org.dataconservancy.dcs.index.solr.support.SolrQueryUtil.createLiteralQuery;
@@ -88,7 +89,7 @@ public class QueryServiceSipStager
                 return null; /* no results */
             }
 
-            Dcp result = new Dcp();
+            ResearchObject result = new ResearchObject();
 
             for (QueryMatch<DcsEntity> m : matches.getMatches()) {
                 DcsEntity entity = m.getObject();

@@ -1,15 +1,10 @@
 package org.seadva.registry.database.model.obj.vaRegistry;
 
-import com.felees.hbnpojogen.persistence.IPojoGenEntity;
-import java.io.Serializable;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Embeddable;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
+import com.google.gson.annotations.Expose;
 import org.seadva.registry.database.model.obj.vaRegistry.iface.IAgentRolePK;
+
+import javax.persistence.*;
+import java.io.Serializable;
 
 
 /** 
@@ -18,7 +13,7 @@ import org.seadva.registry.database.model.obj.vaRegistry.iface.IAgentRolePK;
  */
 
 @Embeddable
-public class AgentRolePK implements Cloneable, Serializable,  IAgentRolePK {
+public class AgentRolePK implements Cloneable, Serializable, IAgentRolePK {
 
 	/** Serial Version UID. */
 	private static final long serialVersionUID = -559002654L;
@@ -26,14 +21,15 @@ public class AgentRolePK implements Cloneable, Serializable,  IAgentRolePK {
 	
 
 	/** Field mapping. */
-	@ManyToOne( cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY )
+	@ManyToOne( cascade = { CascadeType.DETACH }, fetch = FetchType.LAZY )
 	@org.hibernate.annotations.Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
 	@Basic( optional = false )
 	@JoinColumn(name = "agent_id", nullable = false , insertable = false, updatable = false )
 	private Agent agent;
 
 	/** Field mapping. */
-	@ManyToOne( cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY )
+    @Expose
+	@ManyToOne( cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER )
 	@org.hibernate.annotations.Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
 	@Basic( optional = false )
 	@JoinColumn(name = "role_type_id", nullable = false , insertable = false, updatable = false )
@@ -135,7 +131,7 @@ public class AgentRolePK implements Cloneable, Serializable,  IAgentRolePK {
 			 return false;
 		}
 		
-		final AgentRolePK that; 
+		final AgentRolePK that;
 		try {
 			that = (AgentRolePK) proxyThat;
 			if ( !(that.getClassType().equals(this.getClassType()))){
@@ -149,7 +145,7 @@ public class AgentRolePK implements Cloneable, Serializable,  IAgentRolePK {
 		
 		
 		boolean result = true;
-		result = result && (((getAgent() == null) && (that.getAgent() == null)) || (getAgent() != null && getAgent().getId().equals(that.getAgent().getId())));	
+		result = result && (((getAgent() == null) && (that.getAgent() == null)) || (getAgent() != null && getAgent().getId().equals(that.getAgent().getId())));
 		result = result && (((getRoleType() == null) && (that.getRoleType() == null)) || (getRoleType() != null && getRoleType().getId().equals(that.getRoleType().getId())));	
 		return result;
 	}
@@ -161,7 +157,7 @@ public class AgentRolePK implements Cloneable, Serializable,  IAgentRolePK {
 	@Override
 	public int hashCode() {
 	int hash = 0;
-		hash = hash + getAgent().hashCode();
+//		hash = hash + getAgent().hashCode();
 		hash = hash + getRoleType().hashCode();
 	return hash;
 	}

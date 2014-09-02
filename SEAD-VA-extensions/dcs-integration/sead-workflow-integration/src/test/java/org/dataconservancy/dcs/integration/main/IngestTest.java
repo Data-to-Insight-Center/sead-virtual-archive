@@ -27,8 +27,11 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.dataconservancy.dcs.util.HttpHeaderUtil;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.seadva.model.builder.xstream.SeadXstreamStaxModelBuilder;
+import org.seadva.model.pack.ResearchObject;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -73,7 +76,11 @@ public class IngestTest {
                 new UsernamePasswordCredentials(
                         "seadva@gmail.com",hashPassword("password")
                 ));
-        int code = doDeposit(new File(IngestTest.class.getResource("/" + "sampleSip.xml").getPath()));
+        int code = doDeposit(new File(
+                IngestTest.class.getResource("/" + "sampleSip.xml").getPath()
+           //     "/home/dpnuser/Documents/dpn/sample_bag/IU-tags/IU-sip.xml"
+        ));
+
         assertEquals(code,202);
     }
 
@@ -108,6 +115,7 @@ public class IngestTest {
         assertEquals(code,202);
     }
     //https://accounts.google.com/o/oauth2/auth?scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&state=%2Fprofile&redirect_uri=http://localhost:8080/sead-access/&response_type=token&client_id=343397275658-72p8a7jemrm0rdkgci440dfnnse4g0f7.apps.googleusercontent.com
+
 
 
     private int doDeposit(File file) throws Exception {

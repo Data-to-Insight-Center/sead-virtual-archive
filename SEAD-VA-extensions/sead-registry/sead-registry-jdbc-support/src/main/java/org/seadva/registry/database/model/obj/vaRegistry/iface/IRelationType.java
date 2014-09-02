@@ -31,20 +31,20 @@ public interface IRelationType {
      * Return the value associated with the column: relation.
 	 * @return A Set&lt;Relation&gt; object (this.relation)
 	 */
-	Set<Relation> getRelations();
+	//Set<Relation> getRelations();
 	
 	/**
 	 * Adds a bi-directional link of type Relation to the relations set.
 	 * @param relation item to add
 	 */
-	void addRelation(Relation relation);
+//	void addRelation(Relation relation);
 
   
     /**  
      * Set the value related to the column: relation.
 	 * @param relation the relation value you wish to set
 	 */
-	void setRelations(final Set<Relation> relation);
+//	void setRelations(final Set<Relation> relation);
 
     /**
      * Return the value associated with the column: relationElement.

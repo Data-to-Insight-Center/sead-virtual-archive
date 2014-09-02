@@ -15,6 +15,7 @@
  */
 package org.dataconservancy.dcs.ingest.services;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -33,6 +34,7 @@ import org.dataconservancy.model.dcs.DcsEntityReference;
 import org.dataconservancy.model.dcs.DcsEvent;
 import org.dataconservancy.model.dcs.DcsFile;
 import org.dataconservancy.model.dcs.DcsFormat;
+import org.seadva.model.pack.ResearchObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,7 +71,7 @@ public class SimpleMimeCharacterizer
 
     public void execute(String sipRef) throws IngestServiceException {
         if (isDisabled()) return;
-        
+
         Dcp sip = ingest.getSipStager().getSIP(sipRef);
         Set<DcsFile> files = new HashSet<DcsFile>();
         List<DcsEvent> events = new ArrayList<DcsEvent>();
@@ -93,6 +95,11 @@ public class SimpleMimeCharacterizer
                 modified = true;
             }
 
+            File filePath = new File(file.getSource().replace("file://",""));
+            long length = filePath.length();
+            file.setSizeBytes(length);
+
+            modified = true;
             files.add(file);
         }
 

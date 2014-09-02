@@ -17,20 +17,20 @@ public interface IProfileType {
      * Return the value associated with the column: agentProfile.
 	 * @return A Set&lt;AgentProfile&gt; object (this.agentProfile)
 	 */
-	Set<AgentProfile> getAgentProfiles();
+	//Set<AgentProfile> getAgentProfiles();
 	
 	/**
 	 * Adds a bi-directional link of type AgentProfile to the agentProfiles set.
 	 * @param agentProfile item to add
 	 */
-	void addAgentProfile(AgentProfile agentProfile);
+	//void addAgentProfile(AgentProfile agentProfile);
 
   
     /**  
      * Set the value related to the column: agentProfile.
 	 * @param agentProfile the agentProfile value you wish to set
 	 */
-	void setAgentProfiles(final Set<AgentProfile> agentProfile);
+	//void setAgentProfiles(final Set<AgentProfile> agentProfile);
 
     /**
      * Return the value associated with the column: id.

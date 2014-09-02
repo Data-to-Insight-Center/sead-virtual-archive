@@ -6,7 +6,7 @@ CREATE TABLE base_entity (
    entity_created_time    TIMESTAMP NOT NULL,
    entity_last_updated_time    TIMESTAMP NOT NULL,
    PRIMARY KEY (entity_id)
-);
+) ENGINE=INNODB;
 
 DROP TABLE IF EXISTS entity_type;
 CREATE TABLE entity_type (
@@ -15,7 +15,7 @@ CREATE TABLE entity_type (
    entity_type_name               VARCHAR(256) NOT NULL,
    PRIMARY KEY (entity_id, entity_type_id),
    FOREIGN KEY (entity_id) REFERENCES base_entity(entity_id)
-);
+) ENGINE=INNODB;
 
 DROP TABLE IF EXISTS entity_content;
 CREATE TABLE entity_content (
@@ -24,7 +24,7 @@ CREATE TABLE entity_content (
  entity_id VARCHAR(127) NOT NULL,
  PRIMARY KEY (entity_content_id),
  FOREIGN KEY (entity_id) REFERENCES base_entity(entity_id)
-);
+) ENGINE=INNODB;
 
 DROP TABLE IF EXISTS metadata_type;
 CREATE TABLE metadata_type (
@@ -32,7 +32,7 @@ CREATE TABLE metadata_type (
    metadata_schema               VARCHAR(256) NOT NULL,
    metadata_element               VARCHAR(256) NOT NULL,
    PRIMARY KEY (metadata_id)
-);
+) ENGINE=INNODB;
 
 DROP TABLE IF EXISTS metadata_reference;
 CREATE TABLE metadata_reference (
@@ -44,7 +44,7 @@ CREATE TABLE metadata_reference (
   FOREIGN KEY (subject_entity_id) REFERENCES base_entity(entity_id),
   FOREIGN KEY (metadata_id) REFERENCES metadata_type(metadata_id),
   FOREIGN KEY (object_entity_id) REFERENCES base_entity(entity_id)
-);
+) ENGINE=INNODB;
 
 DROP TABLE IF EXISTS property;
 CREATE TABLE property (
@@ -55,7 +55,7 @@ CREATE TABLE property (
   PRIMARY KEY (property_id),
   FOREIGN KEY (metadata_id) REFERENCES metadata_type(metadata_id),
   FOREIGN KEY (entity_id) REFERENCES base_entity(entity_id)
-);
+) ENGINE=INNODB;
 
 
 DROP TABLE IF EXISTS relation_type;
@@ -64,7 +64,7 @@ CREATE TABLE relation_type (
    relation_schema               VARCHAR(256) NOT NULL,
    relation_element               VARCHAR(256) NOT NULL,
    PRIMARY KEY (relation_type_id)
-);
+) ENGINE=INNODB;
 
 DROP TABLE IF EXISTS aggregation;
 CREATE TABLE aggregation (
@@ -73,7 +73,7 @@ CREATE TABLE aggregation (
   PRIMARY KEY (parent_id, child_id),
   FOREIGN KEY (parent_id) REFERENCES base_entity(entity_id),
   FOREIGN KEY (child_id) REFERENCES base_entity(entity_id)
-);
+) ENGINE=INNODB;
 
 DROP TABLE IF EXISTS relation;
 CREATE TABLE relation (
@@ -84,7 +84,7 @@ CREATE TABLE relation (
  FOREIGN KEY (cause_id) REFERENCES base_entity(entity_id),
  FOREIGN KEY (effect_id) REFERENCES base_entity(entity_id),
  FOREIGN KEY (relation_type_id) REFERENCES relation_type(relation_type_id)
-);
+) ENGINE=INNODB;
 
 
 
@@ -97,7 +97,7 @@ CREATE TABLE file (
     is_obsolete    INT(1),
     PRIMARY KEY (entity_id),
     FOREIGN KEY (entity_id) REFERENCES base_entity(entity_id)
-);
+) ENGINE=INNODB;
 
 DROP TABLE IF EXISTS fixity;
 CREATE TABLE fixity (
@@ -106,7 +106,7 @@ CREATE TABLE fixity (
     valueStr      VARCHAR(127) NOT NULL,
     PRIMARY KEY (entity_id, type),
     FOREIGN KEY (entity_id) REFERENCES file(entity_id)
-);
+) ENGINE=INNODB;
 
 
 DROP TABLE IF EXISTS format;
@@ -117,9 +117,7 @@ CREATE TABLE format (
     valueStr      VARCHAR(127) NOT NULL,
     PRIMARY KEY (format_id),
     FOREIGN KEY (entity_id) REFERENCES file(entity_id)
-);
-
-
+) ENGINE=INNODB;
 
 
 DROP TABLE IF EXISTS event_type;
@@ -128,7 +126,7 @@ CREATE TABLE event_type (
    event_name                  VARCHAR(127) NOT NULL,
    event_description               VARCHAR(256) NOT NULL,
    PRIMARY KEY (event_type_id)
-);
+) ENGINE=INNODB;
 
 DROP TABLE IF EXISTS event;
 CREATE TABLE event (
@@ -138,7 +136,7 @@ CREATE TABLE event (
    PRIMARY KEY (event_id),
    FOREIGN KEY (event_id) REFERENCES base_entity(entity_id),
    FOREIGN KEY (event_type_id) REFERENCES event_type(event_type_id)
-);
+) ENGINE=INNODB;
 
 DROP TABLE IF EXISTS state;
 CREATE TABLE state (
@@ -147,7 +145,7 @@ CREATE TABLE state (
     state_type   VARCHAR(127) NOT NULL,
     PRIMARY KEY (state_id),
     FOREIGN KEY (state_id) REFERENCES base_entity(entity_id)
-);
+) ENGINE=INNODB;
 
 DROP TABLE IF EXISTS transition;
 CREATE TABLE transition (
@@ -158,7 +156,7 @@ CREATE TABLE transition (
   FOREIGN KEY (start_state_id) REFERENCES state(state_id),
   FOREIGN KEY (event_type_id) REFERENCES event_type(event_type_id),
   FOREIGN KEY (next_state_id) REFERENCES state(state_id)
-);
+) ENGINE=INNODB;
 
 
 DROP TABLE IF EXISTS collection;
@@ -171,7 +169,7 @@ CREATE TABLE collection (
     PRIMARY KEY (entity_id),
     FOREIGN KEY (entity_id) REFERENCES base_entity(entity_id),
     FOREIGN KEY (state_id) REFERENCES state(state_id)
-);
+) ENGINE=INNODB;
 
 
 DROP TABLE IF EXISTS data_identifier_type;
@@ -180,7 +178,7 @@ CREATE TABLE data_identifier_type (
    data_identifier_type_name                  VARCHAR(127) NOT NULL,
    schema_uri               VARCHAR(256) NOT NULL,
    PRIMARY KEY (data_identifier_type_id)
-);
+) ENGINE=INNODB;
 
 DROP TABLE IF EXISTS data_identifier;
 CREATE TABLE data_identifier (
@@ -190,7 +188,7 @@ CREATE TABLE data_identifier (
    PRIMARY KEY (entity_id, data_identifier_type_id),
    FOREIGN KEY (entity_id) REFERENCES base_entity(entity_id),
    FOREIGN KEY (data_identifier_type_id) REFERENCES data_identifier_type(data_identifier_type_id)
-);
+) ENGINE=INNODB;
 
 
 DROP TABLE IF EXISTS repository;
@@ -200,7 +198,7 @@ CREATE TABLE repository (
    software_type               VARCHAR(256) NOT NULL,
    affiliation               VARCHAR(256) NOT NULL,
    PRIMARY KEY (repository_id)
-);
+) ENGINE=INNODB;
 
 
 DROP TABLE IF EXISTS data_location;
@@ -212,7 +210,7 @@ CREATE TABLE data_location (
    PRIMARY KEY (entity_id, location_type_id),
    FOREIGN KEY (entity_id) REFERENCES base_entity(entity_id),
    FOREIGN KEY (location_type_id) REFERENCES repository(repository_id)
-);
+) ENGINE=INNODB;
 
 
 DROP TABLE IF EXISTS agent;
@@ -222,7 +220,7 @@ CREATE TABLE agent (
    last_name                           VARCHAR(256) NOT NULL,
    PRIMARY KEY (agent_id),
    FOREIGN KEY (agent_id) REFERENCES base_entity(entity_id)
-);
+) ENGINE=INNODB;
 
 DROP TABLE IF EXISTS profile_type;
 CREATE TABLE profile_type (
@@ -230,7 +228,7 @@ CREATE TABLE profile_type (
    profile_type_name                  VARCHAR(127) NOT NULL,
    profile_type_schema               VARCHAR(256) NOT NULL,
    PRIMARY KEY (profile_type_id)
-);
+) ENGINE=INNODB;
 
 DROP TABLE IF EXISTS agent_profile;
 CREATE TABLE agent_profile (
@@ -240,7 +238,7 @@ CREATE TABLE agent_profile (
    PRIMARY KEY (agent_id, profile_type_id),
    FOREIGN KEY (agent_id) REFERENCES agent(agent_id),
    FOREIGN KEY (profile_type_id) REFERENCES profile_type(profile_type_id)
-);
+) ENGINE=INNODB;
 
 DROP TABLE IF EXISTS role_type;
 CREATE TABLE role_type (
@@ -248,7 +246,7 @@ CREATE TABLE role_type (
    role_type_name                  VARCHAR(127) NOT NULL,
    role_description               VARCHAR(256) NOT NULL,
    PRIMARY KEY (role_type_id)
-);
+) ENGINE=INNODB;
 
 
 DROP TABLE IF EXISTS agent_role;
@@ -258,4 +256,4 @@ CREATE TABLE agent_role (
    PRIMARY KEY (agent_id, role_type_id),
    FOREIGN KEY (agent_id) REFERENCES agent(agent_id),
    FOREIGN KEY (role_type_id) REFERENCES role_type(role_type_id)
-);
+) ENGINE=INNODB;

@@ -1,22 +1,13 @@
 package org.seadva.registry.database.model.obj.vaRegistry;
 
-import java.util.HashSet;
-import java.util.Set;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import com.google.gson.annotations.Expose;
 import org.hibernate.proxy.HibernateProxy;
 import org.seadva.registry.database.enums.subtype.vaRegistry.BaseEntitySubclassType;
-import org.seadva.registry.database.model.obj.vaRegistry.AgentProfile;
-import org.seadva.registry.database.model.obj.vaRegistry.AgentRole;
-import org.seadva.registry.database.model.obj.vaRegistry.BaseEntity;
 import org.seadva.registry.database.model.obj.vaRegistry.iface.IAgent;
+
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 
 /** 
@@ -27,21 +18,26 @@ import org.seadva.registry.database.model.obj.vaRegistry.iface.IAgent;
 @Entity
 @PrimaryKeyJoinColumn(name = "agent_id")
 @Table(name = "agent", catalog = "va_registry")
-public class Agent extends BaseEntity implements  IAgent {
+public class Agent extends BaseEntity implements IAgent {
 
 	/** Serial Version UID. */
 	private static final long serialVersionUID = -559002660L;
 
 	
 
+    @Expose
 	/** Field mapping. */
 	private Set<AgentProfile> agentProfiles = new HashSet<AgentProfile>();
 
+    @Expose
 	/** Field mapping. */
 	private Set<AgentRole> agentRoles = new HashSet<AgentRole>();
 
+    @Expose
 	/** Field mapping. */
 	private String firstName;
+
+    @Expose
 	/** Field mapping. */
 	private String lastName;
  
@@ -72,7 +68,7 @@ public class Agent extends BaseEntity implements  IAgent {
      * Return the value associated with the column: agentProfile.
 	 * @return A Set&lt;AgentProfile&gt; object (this.agentProfile)
 	 */
- 	@OneToMany( fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE }, mappedBy = "id.agent"  )
+ 	@OneToMany( fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE }, mappedBy = "id.agent"  )
  	@org.hibernate.annotations.Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
 	public Set<AgentProfile> getAgentProfiles() {
 		return this.agentProfiles;
@@ -101,7 +97,7 @@ public class Agent extends BaseEntity implements  IAgent {
      * Return the value associated with the column: agentRole.
 	 * @return A Set&lt;AgentRole&gt; object (this.agentRole)
 	 */
- 	@OneToMany( fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE }, mappedBy = "id.agent"  )
+ 	@OneToMany( fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE }, mappedBy = "id.agent"  )
  	@org.hibernate.annotations.Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
 	public Set<AgentRole> getAgentRoles() {
 		return this.agentRoles;
@@ -113,7 +109,7 @@ public class Agent extends BaseEntity implements  IAgent {
 	 * @param agentRole item to add
 	 */
 	public void addAgentRole(AgentRole agentRole) {
-		agentRole.getId().setAgent(this);
+		//agentRole.getId().setAgent(this);
 		this.agentRoles.add(agentRole);
 	}
 
@@ -235,7 +231,7 @@ public class Agent extends BaseEntity implements  IAgent {
 			 return false;
 		}
 		
-		final Agent that; 
+		final Agent that;
 		try {
 			that = (Agent) proxyThat;
 			if ( !(that.getClassType().equals(this.getClassType()))){

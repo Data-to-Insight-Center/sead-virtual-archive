@@ -57,8 +57,15 @@
         <dependency>
             <groupId>org.seadva.registry</groupId>
             <artifactId>sead-registry-jdbc-support</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.seadva.registry</groupId>
+            <artifactId>sead-registry-webapp</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+
         <dependency>
             <groupId>org.seadva.model</groupId>
             <artifactId>sead-model</artifactId>
@@ -100,6 +107,13 @@
             <artifactId>jersey-test-framework-grizzly2</artifactId>
             <version>${jersey-version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>

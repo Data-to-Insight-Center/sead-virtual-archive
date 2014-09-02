@@ -31,6 +31,7 @@ import org.dataconservancy.model.dcs.DcsEntityReference;
 import org.dataconservancy.model.dcs.DcsEvent;
 import org.dataconservancy.model.dcs.DcsFile;
 import org.dataconservancy.model.dcs.DcsFixity;
+import org.seadva.model.pack.ResearchObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

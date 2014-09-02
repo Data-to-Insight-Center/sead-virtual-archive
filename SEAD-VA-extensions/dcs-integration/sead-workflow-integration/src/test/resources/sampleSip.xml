@@ -21,15 +21,11 @@
             <sizeBytes>0</sizeBytes>
             <fileNo>0</fileNo>
             <contact>Sead dev</contact>
+            <type>PublishedObject</type>
+            <primaryDataLocationName>Ideals</primaryDataLocationName>
+            <primaryDataLocationType>dspace</primaryDataLocationType>
+            <primaryDataLocationValue>http://seadtest.ideals.illinois.edu/sead/communities/2</primaryDataLocationValue>
         </DeliverableUnit>
     </DeliverableUnits>
 
-    <Repositories>
-        <Repository>
-            <irId>5</irId>
-            <url>https://www.sdarchive.iu.edu/</url>
-            <type>cloud</type>
-            <name>IU SDA</name>
-        </Repository>
-    </Repositories>
 </dcp>
