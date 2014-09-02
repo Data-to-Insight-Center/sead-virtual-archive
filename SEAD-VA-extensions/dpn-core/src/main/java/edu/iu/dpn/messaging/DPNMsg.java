@@ -92,7 +92,7 @@ public class DPNMsg {
     }
 
     public void send(DPNMsg msg, String routingKey) throws Exception{
-        AbstractApplicationContext ctx = new ClassPathXmlApplicationContext("context.xml");
+        AbstractApplicationContext ctx = new ClassPathXmlApplicationContext("rabbit-sender-context.xml");
         RabbitTemplate template = ctx.getBean(RabbitTemplate.class);
         //Set-up the message properties required for Rabbit
         MessageProperties properties = new MessageProperties();
@@ -106,6 +106,7 @@ public class DPNMsg {
             properties.setHeader(entry.getKey(),entry.getValue());
         }
 
+        //Message dpnMessage = new Message(msg.bodyToJson().getBytes(),properties);
         Message dpnMessage = new Message(msg.bodyToJson().getBytes(),properties);
         template.send(dpnMessage);
         ctx.destroy();
@@ -118,7 +119,8 @@ public class DPNMsg {
     }
     public String bodyToJson(){
         Gson gson = new GsonBuilder().create();
-        String bJson = gson.toJson(DPNMsgBody);
+        String bJson = gson.toJson(DPNMsgBody.getBody());
+        //System.out.println("bodyToJson: "+bJson);
         return bJson;
     }
 

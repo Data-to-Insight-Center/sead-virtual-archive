@@ -39,6 +39,8 @@ public class DPNSendMessageTest {
 //        msg.setBody(DPNMsgBody);
 
         DPNReplicationInitQuery initQuery = new DPNReplicationInitQuery();
+        initQuery.setReplication_size("4096");
+        initQuery.setDpn_object_id("45b6-c3869-4869-jgu3");
         DPNMsg msg = initQuery.getDPNReplicationInitMsg();
 
         try{

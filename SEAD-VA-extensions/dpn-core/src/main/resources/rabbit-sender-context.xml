@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+    http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit-1.0.xsd">
+
+    <!--<rabbit:connection-factory id="connectionFactory" host="dpntest.d2i.indiana.edu" username="dpnuser" password="$$logmein$$"/>-->
+    <rabbit:connection-factory id="connectionFactory" host="mq-aws.lib.utexas.edu" port="5672" virtual-host="/" username="test" password="test"/>
+
+    <!-- obtain admin rights to create the an exchange -->
+    <rabbit:admin connection-factory="connectionFactory" />
+
+    <!--<rabbit:template id="amqpTemplate" connection-factory="connectionFactory" exchange="IU-Exchange" routing-key="dpn.iu"/>-->
+    <rabbit:template id="amqpTemplate" connection-factory="connectionFactory" exchange="test-control-exchange" routing-key="dpn.utexas.inbound"/>
+</beans>

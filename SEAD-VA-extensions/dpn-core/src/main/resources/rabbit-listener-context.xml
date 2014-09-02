@@ -1,0 +1,22 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit-1.0.xsd
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       ">
+
+    <!--<rabbit:connection-factory id="connectionFactory" host="dpntest.d2i.indiana.edu" username="dpnuser" password="$$logmein$$"/>-->
+    <rabbit:connection-factory id="connectionFactory" host="mq-aws.lib.utexas.edu" port="5672" virtual-host="/" username="test" password="test"/>
+    <rabbit:admin connection-factory="connectionFactory" />
+    <rabbit:queue id="iu.queue" />
+
+
+    <bean id="MsgListener" class="edu.iu.dpn.messaging.DPNMsgListener"/>
+    <rabbit:listener-container connection-factory="connectionFactory">
+        <rabbit:listener ref="MsgListener" method="onMessage" queue-names="iu.queue"/>
+    </rabbit:listener-container>
+
+</beans>
+

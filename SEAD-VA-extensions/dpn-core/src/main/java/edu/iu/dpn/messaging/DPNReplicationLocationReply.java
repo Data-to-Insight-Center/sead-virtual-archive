@@ -17,24 +17,26 @@ import static edu.iu.dpn.messaging.DPNMsgConstants.*;
  */
 public class DPNReplicationLocationReply {
     DPNReplicationLocationReply(){}
-    public DPNMsg getDPNReplicationLocationMsg(String correlation_id, String reply_key){
+    public DPNMsg getDPNReplicationLocationMsg(String correlation_id, String reply_key, String location){
         SimpleDateFormat today = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssz");
         DPNMsg msg = new DPNMsg();
         Map<String, Object> headerMap = new HashMap<>();
-        headerMap.put(FROM.toString(), DPNMsgConstants.FROM_VALUE);
-        headerMap.put(REPLY_KEY.toString(), reply_key);
-        headerMap.put(SEQUENCE.toString(),DPNMsgConstants.REP_LOC_REPLY_SEQUENCE);
+        headerMap.put(FROM.toString(), DPNMsgConstants.FROM_VALUE.toString());
+        headerMap.put(REPLY_KEY.toString(), DPNMsgConstants.REPLY_KEY_VALUE.toString());
+        headerMap.put(SEQUENCE.toString(),DPNMsgConstants.REP_LOC_REPLY_SEQUENCE.toString());
+        //System.out.println("LOC_QUERY:CORRELATION_ID ="+correlation_id);
         headerMap.put(CORRELATION_ID.toString(), correlation_id);
         headerMap.put(DATE.toString(), today.format(new Date()).toString());
-        headerMap.put(TTL.toString(),DPNMsgConstants.TTL_DURATION);
+        headerMap.put(TTL.toString(),DPNMsgConstants.TTL_DURATION.toString());
         DPNMsgHeader DPNMsgHeader = new DPNMsgHeader();
         DPNMsgHeader.setHeader(headerMap);
         msg.setHeader(DPNMsgHeader);
 
         Map<String, Object> bodyMap = new HashMap<>();
-        bodyMap.put(MESSAGE_NAME.toString(), DPNMsgTypes.REPLICATION_LOCATION_REPLY);
-        bodyMap.put(PROTOCOL.toString(), DPNMsgConstants.PROTOCOL_TYPE);
-        bodyMap.put(LOCATION.toString(),"SDA");
+        bodyMap.put(MESSAGE_NAME.toString(), DPNMsgTypes.REPLICATION_LOCATION_REPLY.toString());
+        //bodyMap.put(PROTOCOL.toString(), DPNMsgConstants.PROTOCOL_TYPE.toString());
+        bodyMap.put(PROTOCOL.toString(), new String[] {DPNMsgConstants.PROTOCOL_TYPE.toString()});
+        bodyMap.put(LOCATION.toString(),location);
         DPNMsgBody DPNMsgBody = new DPNMsgBody();
         DPNMsgBody.setBody(bodyMap);
         msg.setBody(DPNMsgBody);

@@ -1,0 +1,42 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit-1.0.xsd
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       ">
+
+    <bean id="props" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations" value="classpath:replication.properties"/>
+    </bean>
+
+    <bean class="edu.iu.dpn.messaging.DPNReplicationInitQuery">
+        <property name="broadCastKey" value="${broadCastKey}"/>
+    </bean>
+
+    <rabbit:connection-factory id="connectionFactory" host="dpntest.d2i.indiana.edu" username="dpnuser" password="$$logmein$$"/>
+    <!--<rabbit:connection-factory id="connectionFactory" host="mq-aws.lib.utexas.edu" port="5672" virtual-host="/" username="test" password="test"/>-->
+
+    <rabbit:template id="amqpTemplate" connection-factory="connectionFactory" exchange="IU-Exchange" routing-key="dpn.iu"/>
+
+    <rabbit:admin connection-factory="connectionFactory"/>
+
+    <!--<rabbit:queue id="queue.iu" name="queue.iu" durable="true"/>-->
+    <!--<rabbit:queue id="queue.broadcast" name="queue.broadcast" durable="true"/>-->
+    <rabbit:queue id="utexas.queue" name="utexas.queue" durable="true"/>
+
+    <!--<rabbit:topic-exchange name="IU-Exchange">-->
+        <!--<rabbit:bindings>-->
+            <!--<rabbit:binding queue="queue.iu" pattern="${queue.test.pattern}"/>-->
+            <!--<rabbit:binding queue="queue.broadcast" pattern="${queue.broadcast.pattern}"/>-->
+        <!--</rabbit:bindings>-->
+    <!--</rabbit:topic-exchange>-->
+
+    <rabbit:listener-container connection-factory="connectionFactory">
+        <!--<rabbit:listener ref="MsgListener" method="onMessage" queue-names="queue.iu,queue.broadcast"/>-->
+        <rabbit:listener ref="MsgListener" method="onMessage" queue-names="queue.iu,queue.broadcast"/>
+    </rabbit:listener-container>
+    <bean id="MsgListener" class="edu.iu.dpn.messaging.DPNMsgListener"/>
+
+</beans>

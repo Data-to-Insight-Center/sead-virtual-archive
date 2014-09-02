@@ -10,8 +10,10 @@ public class RsyncDownload {
         this.USER = USER;
     }
 
-    public Path downloadFile(String URI, Path local) throws Exception {
-        String[] cmd = new String[]{"rsync", "-r", USER + "@" + URI, local.toString()};
+    public String downloadFile(String URI, String hostname, String local) throws Exception {
+        System.out.println("URI: "+URI+" hostname: "+hostname+" local: "+local);
+        //String[] cmd = new String[]{"rsync", USER + "@"+hostname+":" + URI, local};
+        String[] cmd = new String[]{"rsync", URI, local};
         ProcessBuilder pb = new ProcessBuilder(cmd);
         Process p = null;
         int val;
@@ -26,6 +28,8 @@ public class RsyncDownload {
         if (val != 0) {
             throw new Exception("Exception during RSync; return code = " + val);
         }
+        String fileName = URI.substring(URI.lastIndexOf("/")+1);
+        local =  local+"/"+fileName;
         return local;
     }
 }
