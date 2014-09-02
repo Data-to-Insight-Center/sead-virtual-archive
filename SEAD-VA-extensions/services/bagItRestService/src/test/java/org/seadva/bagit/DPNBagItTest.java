@@ -78,9 +78,9 @@ public class DPNBagItTest extends JerseyTest {
     public void testDPNBagUtil() throws IllegalAccessException, ClassNotFoundException, InstantiationException, FileNotFoundException, InvalidXmlException {
         WebResource webResource = resource();
         MultivaluedMap<String, String> params = new MultivaluedMapImpl();
-        //String path = "/home/dpnuser/Documents/dpn/sample_bag/";
+        String path = "/home/dpnuser/Documents/dpn/sample_bag/";
         //String path = "/home/dpnuser/Documents/mdpi_40000000000012-1gb/";
-        String path = "/Users/Aravindh/Documents/DPN/DPNBags/sample_bag/";
+        //String path = "/Users/Aravindh/Documents/DPN/DPNBags/sample_bag/";
         params.add("dirPath", path);
 
         client = new DefaultHttpClient();//(DefaultHttpClient) appContext.getBean("httpClient");
