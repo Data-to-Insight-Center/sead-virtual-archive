@@ -7,22 +7,37 @@ import java.io.*;
 import java.security.MessageDigest;
 import java.util.*;
 
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.compress.archivers.ArchiveOutputStream;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.codehaus.plexus.util.FileUtils;
 import org.dataconservancy.dcs.ingest.Events;
 import org.dataconservancy.model.dcs.*;
 import org.seadva.model.SeadDataLocation;
 import org.seadva.model.SeadDeliverableUnit;
 import org.seadva.model.pack.ResearchObject;
+import org.springframework.beans.factory.annotation.Required;
+import org.springframework.beans.factory.annotation.Value;
 
 public class TarUtilService extends IngestServiceBase implements IngestService {
     String dirPath;
     //String tarFileName = "dpntest.tar";
     String tarFilePath;
     Writer bagInfo;
+
+    String tarFileLocation;
+
+    @Required
+    public void setTarFileLocation(String tarFileLocation)
+    {
+        this.tarFileLocation = tarFileLocation+"/";
+        System.out.println("Tarfile location in setTarFileLocation is"+tarFileLocation);
+    }
+
     public void execute(String sipRef) {
 
         System.out.println("SIP Ref in TarUtilService: "+sipRef);
@@ -98,6 +113,7 @@ public class TarUtilService extends IngestServiceBase implements IngestService {
                 System.out.println("bagSize is "+bagSize);
                 dirPath = dataLocation.getLocation();
 
+
                 File bagDirectory = new File(dirPath);
                 FileWriter bagInfoStream = null;
                 System.out.println(((SeadDeliverableUnit)d).getSizeBytes());
@@ -123,8 +139,9 @@ public class TarUtilService extends IngestServiceBase implements IngestService {
 
             }
         }
-
-        System.out.println("TarFilePath in TarUtilService: "+tarFilePath);
+//        tarFileLocation = tarFileLocation +tarFileName;
+//        System.out.println("TarFileLocation in TarUtilService"+tarFileLocation);
+//        System.out.println("TarFilePath in TarUtilService: "+tarFilePath);
 
         for(DcsDeliverableUnit du :sip.getDeliverableUnits())
         {
@@ -134,7 +151,7 @@ public class TarUtilService extends IngestServiceBase implements IngestService {
             location.setType("filepath");
             ((SeadDeliverableUnit) du).setPrimaryLocation(location);
             try {
-                String SHA1Fixity = generateCheckSum(tarFilePath,"SHA1");
+                String SHA1Fixity = generateCheckSum(tarFilePath,"SHA-256");
                 DcsResourceIdentifier dpnSHA1FixityValue = new DcsResourceIdentifier();
                 dpnSHA1FixityValue.setIdValue(SHA1Fixity);
                 dpnSHA1FixityValue.setTypeId("fixity-sha1");
@@ -144,14 +161,34 @@ public class TarUtilService extends IngestServiceBase implements IngestService {
                 dpnMD5FixityValue.setIdValue(MD5Fixity);
                 dpnMD5FixityValue.setTypeId("fixity-md5");
                 du.addAlternateId(dpnMD5FixityValue);
+                XStream xStream = new XStream(new DomDriver());
+                xStream.alias("map",Map.class);
+                Map<String,String> map = new HashMap<String, String>();
+                String key = "TarFileLocation";
+                map.put(key, tarFileLocation +tarFileName); //Here key and value would be your key and value
+                DcsMetadata metadata = new DcsMetadata();
+                metadata.setSchemaUri(key);
+                metadata.setMetadata(xStream.toXML(map));
+                du.addMetadata(metadata);
             } catch (Exception e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
-
         }
-
+        try {
+            CopyTarFile(tarFilePath, tarFileLocation+tarFileName);
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
         ingest.getSipStager().updateSIP(sip,sipRef);
         addTarEvent(sipRef);
+    }
+
+    public void CopyTarFile(String inputFile, String destinationFile) throws IOException{
+        System.out.println("inputFile in setTarFileLocation:"+inputFile);
+        System.out.println("destinationFile in setTarFileLocation:"+destinationFile);
+        File source = new File(inputFile);
+        File destination = new File(destinationFile);
+        FileUtils.copyFile(source,destination);
     }
 
     public void unTarFile(String inputTarPath, String destinationDirectory)throws IOException {

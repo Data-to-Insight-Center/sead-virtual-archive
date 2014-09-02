@@ -59,6 +59,8 @@ public class SeadRegistryIngester
         ResearchObject dcp = (ResearchObject)ingest.getSipStager().getSIP(sipRef);
 
         try {
+            System.out.println("SeadRegistryIngester.java: ");
+            System.out.println(dcp.toString());
             new DcsDBMapper(this.registryUrl).mapfromSip(dcp);
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.

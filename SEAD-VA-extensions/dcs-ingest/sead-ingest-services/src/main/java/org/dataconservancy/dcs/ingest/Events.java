@@ -41,5 +41,5 @@ public interface Events {
     public static final String MATCH_MAKING = "matchmaking";
     public static final String REGISTRY_INGEST = "registry.entry";
     public static final String TARBAG = "tarbag";
-    public static final String MSGNR = "messenger";
+    public static final String MSGNR = "messenger.registry";
 }
