@@ -1,0 +1,170 @@
+<configuration scan="true" scanPeriod="10 seconds">
+    <!--
+    | Appenders
+    +-->
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%-3p [%t]: %c{3}@%L %d %m %n</pattern>
+        </encoder>
+    </appender>
+
+    <!--appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>/usr/share/tomcat/80/apache-tomcat-7.0.52/logs/logback/dcs-ui.log</file>
+        <append>false</append>
+        <encoder>
+            <pattern>%-3p [%t]: %c{3}@%L %d %m %n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="DCS" class="ch.qos.logback.core.FileAppender">
+        <file>/usr/share/tomcat/80/apache-tomcat-7.0.52/logs/logback/dcs.log</file>
+        <append>false</append>
+        <encoder>
+            <pattern>%-3p [%t]: %c{3}@%L %d %m %n</pattern>
+        </encoder>
+    </appender-->
+
+    <!--
+    | Loggers
+    +-->
+
+    <root level="ERROR">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </root>
+
+    <logger name="org.dataconservancy" additivity="false" level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="DCS"/>
+    </logger>
+
+    <logger name="org.dataconservancy.ui" additivity="false" level="WARN">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </logger>
+    <logger name="net.sourceforge.stripes" level="WARN">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </logger>
+
+    <logger name="org.springframework" level="WARN">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </logger>
+
+    <logger name="org.springframework.security" additivity="false" level="WARN">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </logger>
+    <logger name="org.springframework.jdbc" additivity="false" level="WARN">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </logger>
+    <logger name="org.apache.solr" level="WARN">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </logger>
+
+    <!--
+    | "Useful" classes
+    |
+    | Adusting the log level of these classes can be useful (e.g. to DEBUG or TRACE),
+    | because they give specific insight into what the system is doing, without
+    | requring you to set the entire package (like Spring Security) to DEBUG or TRACE.
+    +-->
+
+    <!-- Logs interactions of the UI with the DCS Archive -->
+    <logger name="org.dataconservancy.ui.services.ArchiveServiceImpl" additivity="false"
+            level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </logger>
+
+    <!-- Logs the mapping of the DataSet UI business object to a DCP package and back -->
+    <logger name="org.dataconservancy.ui.dcpmap.DataSetMapper" additivity="false" level="TRACE">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </logger>
+
+    <!-- Setting this logger to DEBUG will reveal all of the SQL executed by Spring JDBC -->
+    <logger name="org.springframework.jdbc.core.JdbcTemplate" additivity="false" level="WARN">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </logger>
+    <!-- Setting this logger to DEBUG will reveal the workings of Spring MVC -->
+    <logger name="org.springframework.web" additivity="false" level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </logger>
+    <!-- Setting this logger to TRACE will reveal the workings of the Request Util -->
+    <logger name="org.dataconservancy.ui.api.support.RequestUtil" additivity="false" level="TRACE">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </logger>
+    <!-- Setting this logger to DEBUG will reveal the workings of the ProjectController -->
+    <logger name="org.dataconservancy.ui.api.ProjectController" additivity="false" level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </logger>
+
+    <!--
+    | "Noisy" classes
+    |
+    | These classes are typically noisy at DEBUG or INFO levels, so we call them
+    | out here, and mute them by setting them to ERROR or WARN levels.
+    +-->
+
+    <logger name="net.sourceforge.stripes.vfs.DefaultVFS" additivity="false" level="ERROR">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </logger>
+    <logger name="net.sourceforge.stripes.tag.layout" additivity="false" level="ERROR">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </logger>
+
+    <logger name="net.sourceforge.stripes.controller.UrlBindingFactory" additivity="false"
+            level="ERROR">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </logger>
+    <logger name="org.apache.http.impl.client.DefaultRedirectStrategy" additivity="false"
+            level="ERROR">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </logger>
+
+    <logger name="org.apache.http.impl.client.DefaultRequestDirector" additivity="false"
+            level="ERROR">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </logger>
+
+    <logger name="org.springframework.beans.factory.support.DefaultListableBeanFactory"
+            additivity="false" level="ERROR">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+    <logger name="net.sourceforge.stripes.controller.multipart.DefaultMultipartWrapperFactory"
+            additivity="false" level="ERROR">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </logger>
+
+    <logger name="net.sourceforge.stripes.util.ResolverUtil" additivity="false" level="ERROR">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </logger>
+
+    <logger name="net.sourceforge.stripes.format.DefaultFormatterFactory" level="ERROR">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </logger>
+    <logger name="org.apache.solr.core.SolrCore" additivity="false" level="WARN">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </logger>
+
+</configuration>
+
