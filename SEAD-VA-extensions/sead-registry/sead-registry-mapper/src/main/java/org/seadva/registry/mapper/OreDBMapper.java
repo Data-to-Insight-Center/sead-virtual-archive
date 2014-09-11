@@ -11,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.util.*;
 
 /**
@@ -233,12 +234,7 @@ public class OreDBMapper {
                 continue;
 
             String predicateUri = predicate.getURI().toString();
-            String splitChar = "/";
-            if(predicateUri.contains("#"))
-                splitChar = "#";
-            String[] metadataUri = predicateUri.split(splitChar);
-            String metadataElement = metadataUri[metadataUri.length-1];
-            metadataType = client.getMetadataByType(metadataElement); //eventually Map ORE element to DB element if they are going to be different
+            metadataType = client.getMetadataByType(URLEncoder.encode(predicateUri)); //eventually Map ORE element to DB element if they are going to be different
             if(metadataType.getId()==null)
                 continue;
             if(metadataType!=null&&metadataTriple.isLiteral()){

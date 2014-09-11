@@ -6,6 +6,7 @@ import org.seadva.registry.database.model.dao.vaRegistry.MetadataTypeDao;
 import org.seadva.registry.database.model.obj.vaRegistry.MetadataType;
 import org.springframework.stereotype.Repository;
 
+import java.net.URLDecoder;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -31,15 +32,32 @@ public class MetadataTypeDaoImpl implements MetadataTypeDao {
 
     @Override
     public MetadataType getMetadataType(String metadataName) {
+        metadataName = URLDecoder.decode(metadataName);
         MetadataType metadataType = new MetadataType();
         Connection connection = null;
         PreparedStatement statement = null;
 
+        // Fix to handle dc/terms/creator and dc/elements/1.1/creator
+        String ns = null;
+        String splitChar = "/";
+        if(metadataName.contains("#"))
+            splitChar = "#";
+        if (metadataName.contains(splitChar)) {
+            int index = metadataName.lastIndexOf(splitChar);
+            ns = metadataName.substring(0, index + 1);
+            metadataName = metadataName.substring(index + 1);
+        }
+
         try {
             connection = getConnection();
-
-            statement = connection.prepareStatement("Select * from metadata_type where metadata_element=?");
-            statement.setString(1, metadataName);
+            if (ns != null) {
+                statement = connection.prepareStatement("Select * from metadata_type where metadata_schema=? and metadata_element=?");
+                statement.setString(1, ns);
+                statement.setString(2, metadataName);
+            } else {
+                statement = connection.prepareStatement("Select * from metadata_type where metadata_element=?");
+                statement.setString(1, metadataName);
+            }
             ResultSet resultSet = statement.executeQuery();
 
 
