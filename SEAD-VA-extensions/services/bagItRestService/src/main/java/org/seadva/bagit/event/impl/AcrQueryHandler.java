@@ -49,7 +49,7 @@ public class AcrQueryHandler implements Handler{
         typeProperty.put(tagId,AggregationType.COLLECTION);
 
         try {
-            populateAggregation(tagId, packageDescriptor.getMediciInstance());
+            populateAggregationREST(tagId, packageDescriptor.getMediciInstance());
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (JSONException e) {
@@ -75,12 +75,74 @@ public class AcrQueryHandler implements Handler{
 
     AcrQueryUtil util = new AcrQueryUtil();
 
+    private void populateAggregationREST(String tagId, MediciInstance mediciInstance)
+            throws IOException, JSONException {
+        // ACR to ORE mappings
+        Map<String, String> mappings = Constants.metadataPredicateMap;
+        // read available metadata for the resource
+        Map<String, List<String>> metadata = util.readMetadata(mediciInstance, tagId);
+        // iterate through the set of metadata items
+        for (Map.Entry<String, List<String>> pair : metadata.entrySet()) {
+            // if the current predicate is not in mappings, ignore it
+            if (mappings.get(pair.getKey()) == null) {
+                continue;
+            }
+            List<String> values = pair.getValue();
+            if ((pair.getKey()).contains("hasPart")) {
+                for (String child : values) {
+                    List<String> children = aggregation.get(tagId);
+                    if (children == null)
+                        children = new ArrayList<String>();
+                    children.add(child);
+
+                    aggregation.put(tagId, children);
+
+                    if (!typeProperty.containsKey(child)) {
+                        if (child.contains("Collection"))
+                            typeProperty.put(child, AggregationType.COLLECTION);
+                        else {
+                            typeProperty.put(child, AggregationType.FILE);
+                            Map<String, List<String>> existingProperties;
+                            if (properties.containsKey(child))
+                                existingProperties = properties.get(child);
+                            else
+                                existingProperties = new HashMap<String, List<String>>();
+                            List<String> existingValues = existingProperties.get(Constants.sourceTerm);
+                            if (existingValues == null)
+                                existingValues = new ArrayList<String>();
+                            existingValues.add(mediciInstance.getUrl() + "/api/image/download/" + child);
+                            existingProperties.put(Constants.sourceTerm, existingValues);
+                            properties.put(child, existingProperties);
+                        }
+                    }
+                    populateAggregationREST(child, mediciInstance);
+                }
+            } else {
+                Map<String, List<String>> existingProperties;
+                if (properties.containsKey(tagId))
+                    existingProperties = properties.get(tagId);
+                else {
+                    existingProperties = new HashMap<String, List<String>>();
+                    properties.put(tagId, existingProperties);
+                }
+                for (String result : values) {
+                    List<String> existingValues = existingProperties.get(pair.getKey());
+                    if (existingValues == null) {
+                        existingValues = new ArrayList<String>();
+                        existingProperties.put(mappings.get(pair.getKey()), existingValues);
+                    }
+                    existingValues.add(result);
+                }
+            }
+        }
+    }
+
     void populateAggregation(String tagId,
-                             MediciInstance mediciInstance
-                             ) throws IOException, JSONException {
+                             MediciInstance mediciInstance) throws IOException, JSONException {
 
         String json = "";
         Iterator iterator = Constants.metadataPredicateMap.entrySet().iterator();
+
         while (iterator.hasNext()){
 
             Map.Entry pair = (Map.Entry)iterator.next();

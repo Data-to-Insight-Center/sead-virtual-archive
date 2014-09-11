@@ -23,10 +23,12 @@ import org.sead.acr.common.utilities.json.JSONObject;
 import org.seadva.bagit.model.MediciInstance;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.net.URLEncoder;
+import java.util.*;
 
 public class AcrQueryUtil {
+
+    public static final String ACR_REST_CONTEXT = "@context";
 
     String query;
 
@@ -119,4 +121,54 @@ public class AcrQueryUtil {
         }
         return result;
     }
+
+    public Map<String, List<String>> readMetadata(MediciInstance t_instance, String tagId)
+            throws IOException {
+        // call ACR REST api and get a dynamic metadata set of given tagID
+        String path = "/resteasy/datasets/";
+        if (tagId.contains("Collection")) {
+            path = "/resteasy/collections/";
+        }
+        String json = getProxy(t_instance).executeAuthenticatedGet(path +
+                URLEncoder.encode(tagId) + "/unique", "");
+
+        Map<String, List<String>> metadata = new HashMap<String, List<String>>();
+        try {
+            JSONObject response = new JSONObject(json);
+            JSONObject context = response.getJSONObject(ACR_REST_CONTEXT);
+            // iterate through all children
+            Iterator itr = response.keys();
+            while (itr.hasNext()) {
+                String child = (String) itr.next();
+                // ignore context object
+                if (child.equals(ACR_REST_CONTEXT)) {
+                    continue;
+                }
+                // add predicate and value to the map
+                String predicate = context.get(child).toString();
+                List<String> list = metadata.get(predicate);
+                if (list == null) {
+                    list = new ArrayList<String>();
+                    metadata.put(predicate, list);
+                }
+                Object value = response.get(child);
+                if (value instanceof String) {
+                    list.add(value.toString());
+                } else if (value instanceof JSONArray) {
+                    JSONArray array = (JSONArray) value;
+                    for (int i = 0; i < array.length(); i++) {
+                        Object arrayItem = array.get(i);
+                        if (arrayItem instanceof String) {
+                            list.add(arrayItem.toString());
+                        }
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            // TODO : Use logging and handle exceptions
+            e.printStackTrace();
+        }
+        return metadata;
+    }
+
 }
