@@ -6,11 +6,6 @@
 Welcome to SEAD Virtual Archive's documentation!
 ================================================
 
-Contents:
-
-.. toctree::
-   :maxdepth: 2
-
 Codeset
 =======
 
@@ -55,7 +50,7 @@ Build
 
 	$ cd SEAD-VA-extensions/services/ro-subsystem/
 	$ mvn clean install -DskipTests
-	copy ro-subsystem-service/target/ro-x.x.x.war into tomcat/webapps/ro.war
+	(copy ro-subsystem-service/target/ro-x.x.x.war into tomcat/webapps/ro.war)
 	$ mvn test
 
 - Build BagIt Service::
@@ -71,21 +66,23 @@ Build
 	$ mvn clean
 	$ mvn package -DskipTests
 
-..note::
+	.. note::
 
-	If you are using tomcat, please rename the war to sead-wf.war and copy to webapp folder. Make changes to the values in the following files
+		If you are using tomcat, please rename the war to sead-wf.war and copy to webapp folder. Make changes to the values in the following files
 
-	- default.properties
-	- sead-wf/WEB-INF/classes/RepositoryCredentials.xml 
+		- default.properties
+		- sead-wf/WEB-INF/classes/RepositoryCredentials.xml 
 
 	$ mvn test
 
-	The end points enabled would include:
+	.. note::
 
-	- Deposit Status Servlet: http://localhost:8080/sead-wf/content/sipDeposit/{sipId}
-	- SIP Deposit Servlet: http://localhost:8080/sead-wf/deposit/sip (POST method)
-	- Query Servlet: http://localhost:8080/sead-wf/deposit/squery?q=title:eel (sample query) 
-	- Data Stream Servlet: http://localhost:8080/sead-wf/deposit/datastream/
+		The end points enabled would include:
+
+		- Deposit Status Servlet: http://localhost:8080/sead-wf/content/sipDeposit/{sipId}
+		- SIP Deposit Servlet: http://localhost:8080/sead-wf/deposit/sip (POST method)
+		- Query Servlet: http://localhost:8080/sead-wf/deposit/squery?q=title:eel (sample query) 
+		- Data Stream Servlet: http://localhost:8080/sead-wf/deposit/datastream/
 
 - Build the Front End::
 
@@ -93,8 +90,12 @@ Build
 	$ mvn clean compile gwt:compile package
 	(Rename the generated war file to sead-access.war and copy the war file into tomcat webapps folder)
 
-	..note::
-		To open in gwt-dev mode in eclipse, install GWT plugin for eclipse. Import project as maven project. Right click->Properties->Google ->Web Application -> check 'This project has a war directory' -> browse src/main/webapp ->Web Toolkit -> check 'Use Google web toolkit' Click Ok
+	.. note::
+
+		- To open in gwt-dev mode in eclipse, install GWT plugin for eclipse. 
+		- Import project as maven project. Right click->Properties->Google ->Web Application -> check 'This project has a war directory' 
+		- -> browse src/main/webapp ->Web Toolkit -> check 'Use Google web toolkit' 
+		- Click Ok
 
 	Once the war file is deployed, the following configuration files needs to be updated::
 
@@ -115,6 +116,11 @@ Test Cases
 - Creating new user: The resgister button is used to register a new user. When logged in as 'Admin' (eg: seadva@gmail.com), an 'Administration' tab is visible, where the admin can select a role for a new user and approve the user.
 - Google Login: A user can register using Google Login. If it is the first time a user logs in using Google, they need to be approved by the admin before they are able to ingest data sets into Virtual Archive.
 - Ingesting datasets: In the 'Upload Data' tab, please login using admin credentials or any other login that was created. Now select "Nced Project" and click on "View Collections to Publish". 20 datasets in this case will displayed that can be published.
+
+Contents:
+
+.. toctree::
+   :maxdepth: 2
 
 Indices and tables
 ==================
