@@ -55,11 +55,53 @@
 <div class="section" id="pre-requisites">
 <h2>Pre-requisites<a class="headerlink" href="#pre-requisites" title="Permalink to this headline">¶</a></h2>
 <p>Before setting up the Virtual Archive service, please complete the following tasks:</p>
-<ul class="simple">
-<li>Creating an ACR account: (Not needed for local bag upload) Please request an account in <a href="#id1"><span class="problematic" id="id2">`Active Content Repository`_</span></a></li>
+<ul>
+<li><p class="first">Creating an ACR account: (Not needed for local bag upload) Please request an account in <a class="reference external" href="http://sead-demo.ncsa.illinois.edu/acr/">Active Content Repository</a></p>
+</li>
+<li><p class="first">Build requirements: For building code please use maven and jdk (1.7.x) Please setup latest version of Apache Tomcat Once tomcat is setup, please copy <a class="reference external" href="http://seadva-test.d2i.indiana.edu:8081/artifactory/ext-release-local/h2/h2/1.2.139/h2-1.2.139.jar">Hibernate jar</a> jar and <a class="reference external" href="http://dev.mysql.com/downloads/connector/j/">mysql-connector jar</a> into the into the lib folder inside tomcat folder.</p>
+</li>
+<li><p class="first">Increase the stack size as with JAVA_OPTS environment variable for jvm and to also allow encoding of slash and backslash as shown below:</p>
+<div class="highlight-python"><div class="highlight"><pre>export JAVA_OPTS=&quot;-Xss512m -Xms512m -Xmx1024m -XX:MaxPermSize=1024m -Dorg.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH=true -Dorg.apache.catalina.connector.CoyoteAdapter.ALLOW_BACKSLASH=true&quot;
+</pre></div>
+</div>
+</li>
+<li><p class="first">In tomcat/conf/server.xml, in Connector set maxHttpHeaderSize to 65536. This allows for large registry requests, needed for POST calls for insert or updates on entities with large number of properties:</p>
+<div class="highlight-python"><div class="highlight"><pre>&lt;Connector port=&quot;8080&quot; protocol=&quot;HTTP/1.1&quot; maxHttpHeaderSize=&quot;65536&quot; connectionTimeout=&quot;20000&quot; redirectPort=&quot;8443&quot; /&gt;
+</pre></div>
+</div>
+</li>
+<li><p class="first">Install curl:</p>
+<div class="highlight-python"><div class="highlight"><pre>yum install curl or apt-get install curl
+</pre></div>
+</div>
+</li>
 </ul>
+</div>
+<div class="section" id="build-code">
+<h2>Build Code<a class="headerlink" href="#build-code" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="id1">
+<h2>Pre-requisites<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>Build requirements: For building code please use maven and jdk (1.7.x) Please setup latest version of Apache Tomcat Once tomcat is setup, please copy <a href="#id3"><span class="problematic" id="id4">`Hibernate`_</span></a> jar and <a href="#id5"><span class="problematic" id="id6">`mysql-connector`_</span></a> jar into the into the lib folder inside tomcat folder.</li>
+<li>Before building the code, please copy the settings.xml file from maven/conf folder in the git repository into your maven folder.</li>
+<li>Setting up Database: Please follow instructions in SEAD-VA-extensions/dcs-access/sead-access-ui/README file</li>
+</ul>
+</div>
+<div class="section" id="build">
+<h2>Build<a class="headerlink" href="#build" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first">Build Registry Module: Please follow README instructions in sead-registry module</p>
+</li>
+<li><p class="first">Build Komadu Module: Please follow instructions from <a class="reference external" href="https://github.com/Data-to-Insight-Center/komadu/">Komadu github site</a></p>
+</li>
+<li><p class="first">Build RO REST Service (Please ensure port numbers are right in ro-subsystem-service/src/main/resources/org/seadva/data/lifecycle/service/Config.properties):</p>
+<div class="highlight-python"><div class="highlight"><pre>$ cd SEAD-VA-extensions/services/ro-subsystem/
+$ mvn clean install -DskipTests
+copy ro-subsystem-service/target/ro-x.x.x.war into tomcat/webapps/ro.war
+$ mvn test
+</pre></div>
+</div>
+</li>
 </ul>
 </div>
 </div>
@@ -83,6 +125,9 @@
 <li><a class="reference internal" href="#">Welcome to SEAD Virtual Archive&#8217;s documentation!</a></li>
 <li><a class="reference internal" href="#codeset">Codeset</a><ul>
 <li><a class="reference internal" href="#pre-requisites">Pre-requisites</a></li>
+<li><a class="reference internal" href="#build-code">Build Code</a></li>
+<li><a class="reference internal" href="#id1">Pre-requisites</a></li>
+<li><a class="reference internal" href="#build">Build</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
