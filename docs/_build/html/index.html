@@ -109,47 +109,54 @@ Copy bagItRestService/target/bagit-x.x.x.war into tomcat/webapps/bagit.war
 <div class="highlight-python"><div class="highlight"><pre>$ cd dcs-integration/sead-workflow-integration
 $ mvn clean
 $ mvn package -DskipTests
-
-.. note::
-
-        If you are using tomcat, please rename the war to sead-wf.war and copy to webapp folder. Make changes to the values in the following files
-
-        - default.properties
-        - sead-wf/WEB-INF/classes/RepositoryCredentials.xml
-
-$ mvn test
-
-        .. note::
-
-                The end points enabled would include:
-
-                - Deposit Status Servlet: http://localhost:8080/sead-wf/content/sipDeposit/{sipId}
-                - SIP Deposit Servlet: http://localhost:8080/sead-wf/deposit/sip (POST method)
-                - Query Servlet: http://localhost:8080/sead-wf/deposit/squery?q=title:eel (sample query)
-                - Data Stream Servlet: http://localhost:8080/sead-wf/deposit/datastream/
 </pre></div>
 </div>
 </li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>If you are using tomcat, please rename the war to sead-wf.war and copy to webapp folder. Make changes to the values in the following files</p>
+<ul class="simple">
+<li>default.properties</li>
+<li>sead-wf/WEB-INF/classes/RepositoryCredentials.xml</li>
+</ul>
+<p class="last">$ mvn test</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>The end points enabled would include:</p>
+<ul class="last simple">
+<li>Deposit Status Servlet: <a class="reference external" href="http://localhost:8080/sead-wf/content/sipDeposit">http://localhost:8080/sead-wf/content/sipDeposit</a>/{sipId}</li>
+<li>SIP Deposit Servlet: <a class="reference external" href="http://localhost:8080/sead-wf/deposit/sip">http://localhost:8080/sead-wf/deposit/sip</a> (POST method)</li>
+<li>Query Servlet: <a class="reference external" href="http://localhost:8080/sead-wf/deposit/squery?q=title:eel">http://localhost:8080/sead-wf/deposit/squery?q=title:eel</a> (sample query)</li>
+<li>Data Stream Servlet: <a class="reference external" href="http://localhost:8080/sead-wf/deposit/datastream/">http://localhost:8080/sead-wf/deposit/datastream/</a></li>
+</ul>
+</div>
+<ul>
 <li><p class="first">Build the Front End:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ cd dcs-access/sead-access-ui
 $ mvn clean compile gwt:compile package
 (Rename the generated war file to sead-access.war and copy the war file into tomcat webapps folder)
-
-        .. note::
-
-                - To open in gwt-dev mode in eclipse, install GWT plugin for eclipse.
-                - Import project as maven project. Right click-&gt;Properties-&gt;Google -&gt;Web Application -&gt; check &#39;This project has a war directory&#39;
-                - -&gt; browse src/main/webapp -&gt;Web Toolkit -&gt; check &#39;Use Google web toolkit&#39;
-                - Click Ok
-
-Once the war file is deployed, the following configuration files needs to be updated::
-
-- webapps/sead-access/sead_access/Config.properties
+</pre></div>
+</div>
+</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<ul class="simple">
+<li>To open in gwt-dev mode in eclipse, install GWT plugin for eclipse.</li>
+<li>Import project as maven project. Right click-&gt;Properties-&gt;Google -&gt;Web Application -&gt; check &#8216;This project has a war directory&#8217;</li>
+<li>-&gt; browse src/main/webapp -&gt;Web Toolkit -&gt; check &#8216;Use Google web toolkit&#8217;</li>
+<li>Click Ok</li>
+</ul>
+<p>Once the war file is deployed, the following configuration files needs to be updated:</p>
+<div class="last highlight-python"><div class="highlight"><pre>- webapps/sead-access/sead_access/Config.properties
 - webapps/sead-access/WEB-INF/classes/DBConfig.properties​
 - webapps/sead-access/WEB-INF/classes/acrInstances.xml
 </pre></div>
 </div>
-</li>
+</div>
+<ul>
 <li><p class="first">Running the Service:</p>
 <div class="highlight-python"><div class="highlight"><pre>Once the installation is complete, access the UI at `Sead Virtual Archive &lt;http://localhost:8080/sead-access&gt;`_
 </pre></div>
