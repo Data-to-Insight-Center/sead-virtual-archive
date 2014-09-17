@@ -3,8 +3,13 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to SEAD Virtual Archive's documentation!
-================================================
+SEAD Virtual Archive Developer documentation!
+=============================================
+
+.. Contents:
+
+.. toctree::
+   :maxdepth: 2
 
 Codeset
 =======
@@ -65,6 +70,7 @@ Build
 	$ cd dcs-integration/sead-workflow-integration
 	$ mvn clean
 	$ mvn package -DskipTests
+	$ mvn test (Run this step, after you have updated the values in the property file mentioned in the note below)
 
 .. note::
 
@@ -72,10 +78,6 @@ Build
 
 	- default.properties
 	- sead-wf/WEB-INF/classes/RepositoryCredentials.xml 
-
-	$ mvn test
-
-.. note::
 
 	The end points enabled would include:
 
@@ -117,10 +119,6 @@ Test Cases
 - Google Login: A user can register using Google Login. If it is the first time a user logs in using Google, they need to be approved by the admin before they are able to ingest data sets into Virtual Archive.
 - Ingesting datasets: In the 'Upload Data' tab, please login using admin credentials or any other login that was created. Now select "Nced Project" and click on "View Collections to Publish". 20 datasets in this case will displayed that can be published.
 
-Contents:
-
-.. toctree::
-   :maxdepth: 2
 
 Indices and tables
 ==================

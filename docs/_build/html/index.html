@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Welcome to SEAD Virtual Archive’s documentation! &mdash; SEAD Virtual Archive 1.0 documentation</title>
+    <title>SEAD Virtual Archive Developer documentation! &mdash; SEAD Virtual Archive 1.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -41,8 +41,12 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="welcome-to-sead-virtual-archive-s-documentation">
-<h1>Welcome to SEAD Virtual Archive&#8217;s documentation!<a class="headerlink" href="#welcome-to-sead-virtual-archive-s-documentation" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="sead-virtual-archive-developer-documentation">
+<h1>SEAD Virtual Archive Developer documentation!<a class="headerlink" href="#sead-virtual-archive-developer-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul class="simple">
+</ul>
+</div>
 </div>
 <div class="section" id="codeset">
 <h1>Codeset<a class="headerlink" href="#codeset" title="Permalink to this headline">¶</a></h1>
@@ -109,6 +113,7 @@ Copy bagItRestService/target/bagit-x.x.x.war into tomcat/webapps/bagit.war
 <div class="highlight-python"><div class="highlight"><pre>$ cd dcs-integration/sead-workflow-integration
 $ mvn clean
 $ mvn package -DskipTests
+$ mvn test (Run this step, after you have updated the values in the property file mentioned in the note below)
 </pre></div>
 </div>
 </li>
@@ -120,10 +125,6 @@ $ mvn package -DskipTests
 <li>default.properties</li>
 <li>sead-wf/WEB-INF/classes/RepositoryCredentials.xml</li>
 </ul>
-<p class="last">$ mvn test</p>
-</div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
 <p>The end points enabled would include:</p>
 <ul class="last simple">
 <li>Deposit Status Servlet: <a class="reference external" href="http://localhost:8080/sead-wf/content/sipDeposit">http://localhost:8080/sead-wf/content/sipDeposit</a>/{sipId}</li>
@@ -173,11 +174,6 @@ $ mvn clean compile gwt:compile package
 <li>Google Login: A user can register using Google Login. If it is the first time a user logs in using Google, they need to be approved by the admin before they are able to ingest data sets into Virtual Archive.</li>
 <li>Ingesting datasets: In the &#8216;Upload Data&#8217; tab, please login using admin credentials or any other login that was created. Now select &#8220;Nced Project&#8221; and click on &#8220;View Collections to Publish&#8221;. 20 datasets in this case will displayed that can be published.</li>
 </ul>
-<p>Contents:</p>
-<div class="toctree-wrapper compound">
-<ul class="simple">
-</ul>
-</div>
 </div>
 </div>
 <div class="section" id="indices-and-tables">
@@ -197,7 +193,7 @@ $ mvn clean compile gwt:compile package
         <div class="sphinxsidebarwrapper">
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Welcome to SEAD Virtual Archive&#8217;s documentation!</a></li>
+<li><a class="reference internal" href="#">SEAD Virtual Archive Developer documentation!</a></li>
 <li><a class="reference internal" href="#codeset">Codeset</a><ul>
 <li><a class="reference internal" href="#pre-requisites">Pre-requisites</a></li>
 <li><a class="reference internal" href="#build-code">Build Code</a></li>
