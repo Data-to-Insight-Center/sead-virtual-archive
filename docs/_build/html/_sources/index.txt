@@ -75,14 +75,14 @@ Build
 
 	$ mvn test
 
-	.. note::
+		.. note::
 
-		The end points enabled would include:
+			The end points enabled would include:
 
-		- Deposit Status Servlet: http://localhost:8080/sead-wf/content/sipDeposit/{sipId}
-		- SIP Deposit Servlet: http://localhost:8080/sead-wf/deposit/sip (POST method)
-		- Query Servlet: http://localhost:8080/sead-wf/deposit/squery?q=title:eel (sample query) 
-		- Data Stream Servlet: http://localhost:8080/sead-wf/deposit/datastream/
+			- Deposit Status Servlet: http://localhost:8080/sead-wf/content/sipDeposit/{sipId}
+			- SIP Deposit Servlet: http://localhost:8080/sead-wf/deposit/sip (POST method)
+			- Query Servlet: http://localhost:8080/sead-wf/deposit/squery?q=title:eel (sample query) 
+			- Data Stream Servlet: http://localhost:8080/sead-wf/deposit/datastream/
 
 - Build the Front End::
 
@@ -90,12 +90,12 @@ Build
 	$ mvn clean compile gwt:compile package
 	(Rename the generated war file to sead-access.war and copy the war file into tomcat webapps folder)
 
-	.. note::
+		.. note::
 
-		- To open in gwt-dev mode in eclipse, install GWT plugin for eclipse. 
-		- Import project as maven project. Right click->Properties->Google ->Web Application -> check 'This project has a war directory' 
-		- -> browse src/main/webapp ->Web Toolkit -> check 'Use Google web toolkit' 
-		- Click Ok
+			- To open in gwt-dev mode in eclipse, install GWT plugin for eclipse. 
+			- Import project as maven project. Right click->Properties->Google ->Web Application -> check 'This project has a war directory' 
+			- -> browse src/main/webapp ->Web Toolkit -> check 'Use Google web toolkit' 
+			- Click Ok
 
 	Once the war file is deployed, the following configuration files needs to be updated::
 
