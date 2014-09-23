@@ -153,6 +153,26 @@
     <url-pattern>/registry/*</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>linkServlet</servlet-name>
+    <servlet-class>org.dataconservancy.dcs.access.http.PackageLinkServlet</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>packageServlet</servlet-name>
+    <servlet-class>org.dataconservancy.dcs.access.http.PackageDataServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>linkServlet</servlet-name>
+    <url-pattern>/packageLink/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>packageServlet</servlet-name>
+    <url-pattern>/package/*</url-pattern>
+  </servlet-mapping>
+
   <listener>
     <listener-class>
       org.springframework.web.context.ContextLoaderListener</listener-class>
