@@ -147,10 +147,10 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
         Map<String,Credential> repoCredentials = null;
         try {
             repoCredentials = Util.loadCredentials(
-                    this.getClass().getResource("/RepositoryCredentials.xml").openStream()
-//                    new FileInputStream(
-//                            repositoryCredentialsFilePath
-//                    )
+//                    this.getClass().getResource("/RepositoryCredentials.xml").openStream()
+                    new FileInputStream(
+                            repositoryCredentialsFilePath
+                    )
             );
         } catch (Exception e) {
             e.printStackTrace();
