@@ -24,6 +24,7 @@ import edu.mit.libraries.facade.app.DSpaceSIP;
 import org.apache.abdera.Abdera;
 import org.apache.abdera.model.Entry;
 import org.apache.log4j.Logger;
+import org.dataconservancy.model.dcs.DcsDeliverableUnit;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
@@ -32,6 +33,9 @@ import org.purl.sword.base.DepositResponse;
 import org.purl.sword.client.Client;
 import org.purl.sword.client.PostMessage;
 import org.purl.sword.client.Status;
+import org.seadva.model.SeadDeliverableUnit;
+import org.seadva.model.SeadPerson;
+import org.seadva.model.pack.ResearchObject;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -217,6 +221,86 @@ public class SeadDSpace {
             t.printStackTrace ();
         }
         return null;
+    }
+
+    public void descriptiveMetadata(ResearchObject ro) {
+        // get the first one -- will there ever be more than one?
+        DcsDeliverableUnit unit = ro.getDeliverableUnits().iterator().next();
+
+        try {
+            decriptiveMd = new ArrayList<Element>();
+
+            DescriptionSetDocument descriptionSetDocument = DescriptionSetDocument.Factory.newInstance();
+            DescriptionSetElement descriptionSetElement = descriptionSetDocument.addNewDescriptionSet();
+            DescriptionElement descriptionElement = descriptionSetElement.addNewDescription();
+
+            descriptionElement.setResourceId("sword-mets-epdcx-1");
+            StatementElement statementElement = descriptionElement.addNewStatement();
+            statementElement.setPropertyURI("http://purl.org/dc/elements/1.1/type");
+            statementElement.setValueURI("http://purl.org/eprint/entityType/ScholarlyWork");
+
+            String title = unit.getTitle();
+            statementElement = descriptionElement.addNewStatement();
+            statementElement.setPropertyURI("http://purl.org/dc/elements/1.1/title");
+            ValueStringElement valueStringElement = statementElement.addNewValueString();
+            valueStringElement.setStringValue(title);
+
+            String abstr = ((SeadDeliverableUnit) unit).getAbstrct();
+            statementElement = descriptionElement.addNewStatement();
+            statementElement.setPropertyURI("http://purl.org/dc/terms/abstract");
+            valueStringElement = statementElement.addNewValueString();
+            valueStringElement.setStringValue(abstr);
+
+            Set<SeadPerson> creators = ((SeadDeliverableUnit)unit).getDataContributors();
+            for (SeadPerson creator : creators) {
+                statementElement = descriptionElement.addNewStatement();
+                statementElement.setPropertyURI("http://purl.org/dc/elements/1.1/creator");
+                valueStringElement = statementElement.addNewValueString();
+                valueStringElement.setStringValue(creator.getName());
+            }
+
+            String rights = unit.getRights();
+            statementElement = descriptionElement.addNewStatement();
+            statementElement.setPropertyURI("http://purl.org/dc/terms/rights");
+            valueStringElement = statementElement.addNewValueString();
+            valueStringElement.setStringValue(rights);
+
+            String dummyDOI = unit.getId();
+            statementElement = descriptionElement.addNewStatement();
+            statementElement.setPropertyURI("http://purl.org/dc/elements/1.1/identifier");
+            valueStringElement = statementElement.addNewValueString();
+            valueStringElement.setSesURI("http://purl.org/dc/terms/URI");
+            valueStringElement.setStringValue(dummyDOI);
+
+
+            statementElement = descriptionElement.addNewStatement();
+            statementElement.setPropertyURI("http://purl.org/eprint/terms/isExpressedAs");
+            statementElement.setValueURI("sword-mets-expr-1");
+
+            DescriptionElement descriptionElement_expr = descriptionSetElement.addNewDescription();
+            descriptionElement_expr.setResourceId("sword-mets-expr-1");
+
+            statementElement = descriptionElement_expr.addNewStatement();
+            statementElement.setPropertyURI("http://purl.org/dc/elements/1.1/type");
+            statementElement.setValueURI("http://purl.org/eprint/entityType/Expression");
+
+            statementElement = descriptionElement_expr.addNewStatement();
+            statementElement.setPropertyURI("http://purl.org/dc/elements/1.1/language");
+            statementElement.setVesURI("http://purl.org/dc/terms/RFC3066");
+            statementElement.setValueURI("en");
+            InputStream in = new ByteArrayInputStream(
+                descriptionSetDocument.xmlText().getBytes()
+            );
+
+            SAXBuilder builder = new SAXBuilder();
+            Document xmlDoc = builder == null ? null : builder.build(in);
+
+            decriptiveMd.addAll(xmlDoc.getContent());
+
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void descriptiveMetadata(String title, String abstr, String creator,String dummyDOI, String rights)

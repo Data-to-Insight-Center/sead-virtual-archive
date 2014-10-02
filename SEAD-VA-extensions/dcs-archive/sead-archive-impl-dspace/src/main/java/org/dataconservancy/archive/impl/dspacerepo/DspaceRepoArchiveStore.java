@@ -147,10 +147,10 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
         Map<String,Credential> repoCredentials = null;
         try {
             repoCredentials = Util.loadCredentials(
-//                    this.getClass().getResource("/RepositoryCredentials.xml").openStream()
-                    new FileInputStream(
-                            repositoryCredentialsFilePath
-                    )
+                    this.getClass().getResource("/RepositoryCredentials.xml").openStream()
+//                    new FileInputStream(
+//                            repositoryCredentialsFilePath
+//                    )
             );
         } catch (Exception e) {
             e.printStackTrace();
@@ -302,14 +302,14 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
             for(DcsFile file:files){
                 if(file.getId().equalsIgnoreCase(metadataRef.getRef())){
                     String[] tempArr = rootDu.getPrimaryLocation().getLocation().split("/");
-                    int number = Integer.parseInt(tempArr[tempArr.length-1]);
+//                    int number = Integer.parseInt(tempArr[tempArr.length-1]);
                     String collectionId = rootDu.getPrimaryLocation().getLocation()
                             .replace("https://scholarworks.iu.edu/","http://maple.dlib.indiana.edu:8245/")
                             .replace("iuswdark/handle","sword/deposit");
                     System.out.print("submit to "+collectionId);
                     firstDspaceCollection = collectionId;
-                    dspaceClient.descriptiveMetadata(file.getName(), "",creator+"(Submitted as part of SEAD project)","",rootDu.getRights());
-
+//                    dspaceClient.descriptiveMetadata(file.getName(), "",creator+"(Submitted as part of SEAD project)","",rootDu.getRights());
+                    dspaceClient.descriptiveMetadata(pkg);
                     File targetDir = new File(System.getProperty("java.io.tmpdir"));
                     String[] filepaths = new String[1] ;
                     String[] filenames = new String[1] ;
