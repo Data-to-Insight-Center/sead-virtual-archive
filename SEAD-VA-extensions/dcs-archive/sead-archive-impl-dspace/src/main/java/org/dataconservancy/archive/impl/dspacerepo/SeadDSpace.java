@@ -468,38 +468,53 @@ public class SeadDSpace {
         try {
             Abdera abdera = Abdera.getInstance();
 
+            // TODO : Only these predicates work at IDEALS side
+//            String name = entry.getExtension(DC_TITLE).getText();
+//            String copyrightText = entry.getExtension(DC_RIGHTS).getText();
+//            String shortDescription = entry.getExtension(DCTERMS_ALTERNATIVE).getText();
+//            String introductoryText = entry.getExtension(DCTERMS_ABSTRACT).getText();
+//            String licenseText = entry.getExtension(DCTERMS_CONFORMSTO).getText();
+//            String provenanceText = entry.getExtension(DCTERMS_PROVENANCE).getText();
+
             Entry entry = abdera.newEntry();
-            // Hardcoded metadata to be changed later
             entry.addExtension(DC_TYPE).setText("Collection");
+
+//            entry.addExtension(DC_TITLE).setText(title);
             entry.addExtension(DC_RIGHTS).setText("Rights statement from SEAD");
-            entry.addExtension(DCTERMS_ALTERNATIVE).setText("Submitted as part of SEAD Project");
-            entry.addExtension(DCTERMS_CONFORMSTO).setText("Creative Commons");
-            entry.addExtension(DCTERMS_PROVENANCE).setText("Provenance information");
-
-            entry.addExtension(DC_TITLE).setText(title);
+            entry.addExtension(DCTERMS_ALTERNATIVE).setText("Dataset that supports a publication");
             entry.addExtension(DCTERMS_ABSTRACT).setText(abstr);
-            entry.addExtension(DC_DATE).setText(new Date().toString());
-
-            Set<SeadPerson> creators = unit.getDataContributors();
-            for (SeadPerson creator : creators) {
-                entry.addExtension(DC_CREATOR).setText(creator.getName());
-            }
+            entry.addExtension(DCTERMS_CONFORMSTO).setText("Creative Commons");
+            entry.addExtension(DCTERMS_PROVENANCE).setText("Submitted by SEAD VA on " + new Date().toString());
 
             for (Map.Entry<String, String> meta : metadataMap.entrySet()) {
                 String key = meta.getKey();
-                QName predicate = null;
-                if (key.contains("creator")) {
-                    continue;
-                } else if (key.startsWith(DCTERMS)) {
-                    predicate = new QName(DCTERMS, key.substring(key.lastIndexOf('/') + 1), "dcterms");
-                } else if (key.startsWith(DC)) {
-                    predicate = new QName(DC, key.substring(key.lastIndexOf('/') + 1), "dc");
-                }
-                if (predicate != null) {
-                    entry.addExtension(predicate).setText(meta.getValue());
-                    System.out.println("Set to collection ---> " + key + " : " + meta.getValue());
+                if (key.contains("http://purl.org/dc/terms/alternative")) {
+                    entry.addExtension(DC_TITLE).setText(meta.getValue());
                 }
             }
+
+            // TODO : Setting other metadata is useless because Ideals don't recognize them
+//            entry.addExtension(DC_DATE).setText(new Date().toString());
+//            Set<SeadPerson> creators = unit.getDataContributors();
+//            for (SeadPerson creator : creators) {
+//                entry.addExtension(DC_CREATOR).setText(creator.getName());
+//            }
+//
+//            for (Map.Entry<String, String> meta : metadataMap.entrySet()) {
+//                String key = meta.getKey();
+//                QName predicate = null;
+//                if (key.contains("creator")) {
+//                    continue;
+//                } else if (key.startsWith(DCTERMS)) {
+//                    predicate = new QName(DCTERMS, key.substring(key.lastIndexOf('/') + 1), "dcterms");
+//                } else if (key.startsWith(DC)) {
+//                    predicate = new QName(DC, key.substring(key.lastIndexOf('/') + 1), "dc");
+//                }
+//                if (predicate != null) {
+//                    entry.addExtension(predicate).setText(meta.getValue());
+//                    System.out.println("Set to collection ---> " + key + " : " + meta.getValue());
+//                }
+//            }
 
             entry.setUpdated(new Date());
 
