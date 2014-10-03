@@ -70,7 +70,7 @@ public class SeadDSpaceTest {
     public void testCreateCollection() throws IOException, XmlPullParserException, AIPFormatException, InvalidXmlException {
         seadCommunity = "http://poplar.dlib.indiana.edu:8250/sead/communities/202";   //IU
         seadCommunity = "http://seadtest.ideals.illinois.edu/sead/communities/2";     //UIUC
-        collection = new SeadDSpace(credential.getUsername(),credential.getPassword()).createCollection(seadCommunity,"Test sead collection");
+        collection = new SeadDSpace(credential.getUsername(),credential.getPassword()).createCollection(null, seadCommunity,"Test sead collection");
         assertNotNull(collection);
     }
 

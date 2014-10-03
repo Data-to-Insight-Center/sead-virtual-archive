@@ -223,7 +223,7 @@ public class SeadDSpace {
         return null;
     }
 
-    public void descriptiveMetadata(ResearchObject ro) {
+    public void descriptiveMetadata(ResearchObject ro, String title) {
         // get the first one -- will there ever be more than one?
         DcsDeliverableUnit unit = ro.getDeliverableUnits().iterator().next();
 
@@ -239,7 +239,9 @@ public class SeadDSpace {
             statementElement.setPropertyURI("http://purl.org/dc/elements/1.1/type");
             statementElement.setValueURI("http://purl.org/eprint/entityType/ScholarlyWork");
 
-            String title = unit.getTitle();
+            if (title == null) {
+                title = unit.getTitle();
+            }
             statementElement = descriptionElement.addNewStatement();
             statementElement.setPropertyURI("http://purl.org/dc/elements/1.1/title");
             ValueStringElement valueStringElement = statementElement.addNewValueString();
@@ -303,7 +305,8 @@ public class SeadDSpace {
         }
     }
 
-    public void descriptiveMetadata(String title, String abstr, String creator,String dummyDOI, String rights)
+    public void descriptiveMetadata(Map<String, String> metadataMap, String title, String abstr,
+                                    String creator, String dummyDOI, String rights)
     {
         try
         {
@@ -318,21 +321,40 @@ public class SeadDSpace {
             statementElement.setPropertyURI("http://purl.org/dc/elements/1.1/type");
             statementElement.setValueURI("http://purl.org/eprint/entityType/ScholarlyWork");
 
+            for (Map.Entry<String, String> meta : metadataMap.entrySet()) {
+                statementElement = descriptionElement.addNewStatement();
+                String key = meta.getKey();
+                String predicate;
+//                if (key.contains("title") || key.contains("creator")) {
+                if (key.contains("title")) {
+                    continue;
+                }
+
+                if (key.contains("creator")) {
+                    predicate = "http://purl.org/dc/elements/1.1/creator";
+                } else {
+                    predicate = key;
+                }
+                statementElement.setPropertyURI(predicate);
+                ValueStringElement valueStringElement = statementElement.addNewValueString();
+                valueStringElement.setStringValue(meta.getValue());
+            }
+
             statementElement = descriptionElement.addNewStatement();
             statementElement.setPropertyURI("http://purl.org/dc/elements/1.1/title");
             ValueStringElement valueStringElement = statementElement.addNewValueString();
             valueStringElement.setStringValue(title);
 
 
-            statementElement = descriptionElement.addNewStatement();
-            statementElement.setPropertyURI("http://purl.org/dc/terms/abstract");
-            valueStringElement = statementElement.addNewValueString();
-            valueStringElement.setStringValue(abstr);
+//            statementElement = descriptionElement.addNewStatement();
+//            statementElement.setPropertyURI("http://purl.org/dc/terms/abstract");
+//            valueStringElement = statementElement.addNewValueString();
+//            valueStringElement.setStringValue(abstr);
 
-            statementElement = descriptionElement.addNewStatement();
-            statementElement.setPropertyURI("http://purl.org/dc/elements/1.1/creator");
-            valueStringElement = statementElement.addNewValueString();
-            valueStringElement.setStringValue(creator);
+//            statementElement = descriptionElement.addNewStatement();
+//            statementElement.setPropertyURI("http://purl.org/dc/elements/1.1/creator");
+//            valueStringElement = statementElement.addNewValueString();
+//            valueStringElement.setStringValue(creator);
 
             statementElement = descriptionElement.addNewStatement();
             statementElement.setPropertyURI("http://purl.org/dc/terms/rights");
@@ -402,6 +424,8 @@ public class SeadDSpace {
     private final QName DC_TYPE = new QName(DC, "type", "dc");
     private final QName DC_TITLE = new QName(DC, "title", "dc");
     private final QName DC_RIGHTS = new QName(DC, "rights", "dc");
+    private final QName DC_CREATOR = new QName(DC, "creator", "dc");
+    private final QName DC_DATE = new QName(DC, "date", "dc");
     private final QName DCTERMS_ALTERNATIVE = new QName(DCTERMS, "alternative", "dcterms");
     private final QName DCTERMS_ABSTRACT = new QName(DCTERMS, "abstract", "dcterms");
     private final QName DCTERMS_CONFORMSTO = new QName(DCTERMS, "conformsTo", "dcterms");
@@ -423,7 +447,13 @@ public class SeadDSpace {
       *  @PUT: http://localhost:8080/sead/communities/{communityID}/collections/{collectionID}
       *  @DELETE: http://localhost:8080/sead/communities/{communityID}/collections/{collectionID}
       */
-    public String createCollection(String communityId, String title){
+    public String createCollection(ResearchObject pkg, String communityId, String title) {
+        // read metadata from deliverable unit
+        SeadDeliverableUnit unit = (SeadDeliverableUnit) pkg.getDeliverableUnits().iterator().next();
+        String abstr = unit.getAbstrct();
+        System.out.println("++++++ Collection Metadata ++++++");
+        Map<String, String> metadataMap = Util.extractMetadata(unit.getMetadata());
+
         com.sun.jersey.api.client.Client client = com.sun.jersey.api.client.Client.create();
 
         client.addFilter(new HTTPBasicAuthFilter(userName, passWord));
@@ -439,15 +469,37 @@ public class SeadDSpace {
             Abdera abdera = Abdera.getInstance();
 
             Entry entry = abdera.newEntry();
-
+            // Hardcoded metadata to be changed later
             entry.addExtension(DC_TYPE).setText("Collection");
-            entry.addExtension(DC_TITLE).setText(title);
             entry.addExtension(DC_RIGHTS).setText("Rights statement from SEAD");
             entry.addExtension(DCTERMS_ALTERNATIVE).setText("Submitted as part of SEAD Project");
-            entry.addExtension(DCTERMS_ABSTRACT).setText("Sub-Collection");
+            entry.addExtension(DCTERMS_CONFORMSTO).setText("Creative Commons");
+            entry.addExtension(DCTERMS_PROVENANCE).setText("Provenance information");
 
-             entry.addExtension(DCTERMS_CONFORMSTO).setText("Creative Commons");
-             entry.addExtension(DCTERMS_PROVENANCE).setText("Provenance information");
+            entry.addExtension(DC_TITLE).setText(title);
+            entry.addExtension(DCTERMS_ABSTRACT).setText(abstr);
+            entry.addExtension(DC_DATE).setText(new Date().toString());
+
+            Set<SeadPerson> creators = unit.getDataContributors();
+            for (SeadPerson creator : creators) {
+                entry.addExtension(DC_CREATOR).setText(creator.getName());
+            }
+
+            for (Map.Entry<String, String> meta : metadataMap.entrySet()) {
+                String key = meta.getKey();
+                QName predicate = null;
+                if (key.contains("creator")) {
+                    continue;
+                } else if (key.startsWith(DCTERMS)) {
+                    predicate = new QName(DCTERMS, key.substring(key.lastIndexOf('/') + 1), "dcterms");
+                } else if (key.startsWith(DC)) {
+                    predicate = new QName(DC, key.substring(key.lastIndexOf('/') + 1), "dc");
+                }
+                if (predicate != null) {
+                    entry.addExtension(predicate).setText(meta.getValue());
+                    System.out.println("Set to collection ---> " + key + " : " + meta.getValue());
+                }
+            }
 
             entry.setUpdated(new Date());
 

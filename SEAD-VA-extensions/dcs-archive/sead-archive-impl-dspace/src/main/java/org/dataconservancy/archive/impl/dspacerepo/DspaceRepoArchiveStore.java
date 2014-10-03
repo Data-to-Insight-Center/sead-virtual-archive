@@ -35,6 +35,7 @@ import org.springframework.beans.factory.annotation.Required;
 
 import java.io.*;
 import java.net.URL;
+import java.sql.Timestamp;
 import java.util.*;
 
 
@@ -202,7 +203,7 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
         pkg.setDeliverableUnits(dus);
 
 
-        parseTree(relations);
+        parseTree(relations, pkg);
 
         //put all items in a manifestation into a collection --  we do not consider multiple manifestations right now
 
@@ -239,8 +240,10 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
                 int i=0;
                 String actualDoi ="";
                 String doiPrefixedId =null;
+                Map<String, String> metadataMap = new HashMap<String, String>();
 
                 for(DcsFile f:shpFile)   {
+                    metadataMap = Util.extractMetadata(f.getMetadata());
 
                     DcsResourceIdentifier id = null;
 
@@ -260,7 +263,7 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
                     i++;
                 }
 
-                dspaceClient.descriptiveMetadata((String)pair.getKey(), "",
+                dspaceClient.descriptiveMetadata(metadataMap, (String)pair.getKey(), "",
                         creator+
                                 "(Submitted as part of SEAD project)",actualDoi,rootDu.getRights());
 
@@ -286,11 +289,11 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
                         }
                     }
                 }
-                try {
-                    Thread.sleep(5*1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    Thread.sleep(5*1000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
                 shpIt.remove();
             }
 
@@ -309,7 +312,7 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
                     System.out.print("submit to "+collectionId);
                     firstDspaceCollection = collectionId;
 //                    dspaceClient.descriptiveMetadata(file.getName(), "",creator+"(Submitted as part of SEAD project)","",rootDu.getRights());
-                    dspaceClient.descriptiveMetadata(pkg);
+                    dspaceClient.descriptiveMetadata(pkg, null);
                     File targetDir = new File(System.getProperty("java.io.tmpdir"));
                     String[] filepaths = new String[1] ;
                     String[] filenames = new String[1] ;
@@ -376,7 +379,9 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
         {
             e.printStackTrace();
         }
-        dspaceClient.descriptiveMetadata("ore", "", "(Submitted as part of SEAD project)", "", "");
+//        dspaceClient.descriptiveMetadata(new HashMap<String, String>(), "Collection_Aggregation_Map", "",
+//                "(Submitted as part of SEAD project)", "", "");
+        dspaceClient.descriptiveMetadata(pkg, "Collection_Aggregation_Map");
 
         String[] filepaths = new String[1];
         String[] filenames = new String[1];
@@ -406,7 +411,7 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
         }
         if(os!=null){
             //Sword desposit to firstDspaceCollection
-            dspaceClient.descriptiveMetadata("sip", "","(Submitted as part of SEAD project)","","");
+            dspaceClient.descriptiveMetadata(new HashMap<String, String>(), "sip", "","(Submitted as part of SEAD project)","","");
 
             File targetDir = new File(System.getProperty("java.io.tmpdir"));
 
@@ -424,7 +429,7 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
     DSpaceCommunity projectCommunity;
 
 
-    private void parseTree(TreeNode node){
+    private void parseTree(TreeNode node, ResearchObject pkg){
 
         int i=1;
         if(node.children!=null)  //leaf nodes
@@ -435,9 +440,13 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
             {
                 if(child.title.equalsIgnoreCase("manifestation"))
                 {
+                    Date date = new Date();
+                    String time = new Timestamp(date.getTime()).toString().replace(' ', '_');
+                    time = time.substring(0, time.lastIndexOf(':'));
                     //any parent whose children are leaf nodes, start creating collection
                     String dspaceCollection =
-                            dspaceClient.createCollection(projectCommunity.getId(),node.title+"_collection"+i);
+                            dspaceClient.createCollection(pkg, projectCommunity.getId(), node.title + "_" + time);
+//                            dspaceClient.createCollection(projectCommunity.getId(),node.title+"_collection"+i);
 
                     //TODO : Do not create collections for empty deliverable units
                     duDspaceCollection.put(child.id,dspaceCollection);     //manifestation id for which a collection in DSpace has been created
@@ -445,7 +454,7 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
                 }
                 else
                 {
-                    parseTree(child);
+                    parseTree(child, pkg);
                 }
             }
 

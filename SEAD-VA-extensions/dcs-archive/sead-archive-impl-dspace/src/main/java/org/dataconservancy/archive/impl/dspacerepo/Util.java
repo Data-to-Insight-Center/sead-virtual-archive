@@ -16,6 +16,7 @@
 
 package org.dataconservancy.archive.impl.dspacerepo;
 
+import org.dataconservancy.model.dcs.DcsMetadata;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -23,6 +24,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -88,5 +90,29 @@ public class Util {
         }
 
         return repoCredentials;
+    }
+
+    public static Map<String, String> extractMetadata(Collection<DcsMetadata> metadata) {
+        Map<String, String> metadataMap = new HashMap<String, String>();
+        System.out.println("++++++++++++++++++++++++++++++++++");
+
+        for (DcsMetadata meta : metadata) {
+            String metadataElement = meta.getMetadata();
+            int predicateIndex = metadataElement.indexOf("http");
+            if (predicateIndex < 0) {
+                continue;
+            }
+            String temp = metadataElement.substring(predicateIndex);
+            String predicate = temp.substring(0, temp.indexOf('<'));
+            String value = temp.substring(temp.indexOf('<'));
+            value = value.substring(value.indexOf('>') + 1);
+            value = value.substring(value.indexOf('>') + 1);
+            value = value.substring(0, value.indexOf('<'));
+            System.out.println("**" + predicate + " : " + value);
+            metadataMap.put(predicate, value);
+        }
+
+        System.out.println("+++++++++++++++++++++++++++++++++++");
+        return metadataMap;
     }
 }
