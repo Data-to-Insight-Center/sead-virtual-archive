@@ -51,7 +51,7 @@ CREATE TABLE property (
   property_id              BIGINT NOT NULL AUTO_INCREMENT,
   entity_id                VARCHAR(127) NOT NULL,
   metadata_id              VARCHAR(127) NOT NULL,
-  valueStr                 VARCHAR(1023) NOT NULL,
+  valueStr                 VARCHAR(10000) NOT NULL,
   PRIMARY KEY (property_id),
   FOREIGN KEY (metadata_id) REFERENCES metadata_type(metadata_id),
   FOREIGN KEY (entity_id) REFERENCES base_entity(entity_id)
