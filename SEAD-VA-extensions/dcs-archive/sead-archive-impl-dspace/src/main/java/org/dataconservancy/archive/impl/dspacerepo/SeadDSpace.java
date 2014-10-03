@@ -49,6 +49,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.*;
 import java.net.URL;
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.zip.Deflater;
 
@@ -272,8 +273,7 @@ public class SeadDSpace {
             statementElement.setPropertyURI("http://purl.org/dc/elements/1.1/identifier");
             valueStringElement = statementElement.addNewValueString();
             valueStringElement.setSesURI("http://purl.org/dc/terms/URI");
-            valueStringElement.setStringValue(dummyDOI);
-
+            valueStringElement.setStringValue("http://seadva.d2i.indiana.edu/sead-access/#entity;" + dummyDOI);
 
             statementElement = descriptionElement.addNewStatement();
             statementElement.setPropertyURI("http://purl.org/eprint/terms/isExpressedAs");
@@ -489,7 +489,9 @@ public class SeadDSpace {
             for (Map.Entry<String, String> meta : metadataMap.entrySet()) {
                 String key = meta.getKey();
                 if (key.contains("http://purl.org/dc/terms/alternative")) {
-                    entry.addExtension(DC_TITLE).setText(meta.getValue());
+                    String time = new Timestamp(new Date().getTime()).toString();
+                    time = time.substring(0, time.lastIndexOf(':'));
+                    entry.addExtension(DC_TITLE).setText(meta.getValue() + " " + time);
                 }
             }
 
