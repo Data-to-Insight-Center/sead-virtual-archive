@@ -240,11 +240,7 @@ public class OreDBMapper {
             if(metadataType!=null&&metadataTriple.isLiteral()){
                 property = new Property();
                 property.setMetadata(metadataType);
-
-                int end = metadataTriple.getObjectLiteral().length()-1;
-                if(end>1020)
-                    end = 1020;
-                property.setValuestr(metadataTriple.getObjectLiteral().substring(0,end+1));
+                property.setValuestr(metadataTriple.getObjectLiteral());
                 property.setEntity(collection);
                 properties.add(property);
             }
@@ -342,10 +338,7 @@ public class OreDBMapper {
                 if(metadataType!=null){
                     property = new Property();
                     property.setMetadata(metadataType);
-                    int end = metadataTriple.getObjectLiteral().length()-1;
-                    if(end>1020)
-                        end = 1020;
-                    property.setValuestr(metadataTriple.getObjectLiteral().substring(0,end+1));
+                    property.setValuestr(metadataTriple.getObjectLiteral());
                     property.setEntity(collection);
                     properties.add(property);
                 }
