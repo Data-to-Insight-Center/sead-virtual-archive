@@ -25,6 +25,7 @@ import org.apache.abdera.Abdera;
 import org.apache.abdera.model.Entry;
 import org.apache.log4j.Logger;
 import org.dataconservancy.model.dcs.DcsDeliverableUnit;
+import org.dataconservancy.model.dcs.DcsResourceIdentifier;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
@@ -274,6 +275,16 @@ public class SeadDSpace {
             valueStringElement = statementElement.addNewValueString();
             valueStringElement.setSesURI("http://purl.org/dc/terms/URI");
             valueStringElement.setStringValue("http://seadva.d2i.indiana.edu/sead-access/#entity;" + dummyDOI);
+
+            Collection<DcsResourceIdentifier> altIds = unit.getAlternateIds();
+            for (DcsResourceIdentifier id : altIds) {
+                String idVal = id.getIdValue();
+                statementElement = descriptionElement.addNewStatement();
+                statementElement.setPropertyURI("http://purl.org/dc/elements/1.1/identifier");
+                valueStringElement = statementElement.addNewValueString();
+                valueStringElement.setSesURI("http://purl.org/dc/terms/URI");
+                valueStringElement.setStringValue(idVal);
+            }
 
             statementElement = descriptionElement.addNewStatement();
             statementElement.setPropertyURI("http://purl.org/eprint/terms/isExpressedAs");
