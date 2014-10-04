@@ -255,12 +255,21 @@ public class SeadDSpace {
             valueStringElement = statementElement.addNewValueString();
             valueStringElement.setStringValue(abstr);
 
+            // TODO : A quick solution to eliminate submitter from creator list
+            String submitter = ((SeadDeliverableUnit) unit).getSubmitter().getName().trim();
+            // have to remove duplicates too
+            List<String> addedList = new ArrayList<String>();
             Set<SeadPerson> creators = ((SeadDeliverableUnit)unit).getDataContributors();
             for (SeadPerson creator : creators) {
+                String name = creator.getName();
+                if (addedList.contains(name) || name.trim().equals(submitter)) {
+                    continue;
+                }
                 statementElement = descriptionElement.addNewStatement();
                 statementElement.setPropertyURI("http://purl.org/dc/elements/1.1/creator");
                 valueStringElement = statementElement.addNewValueString();
-                valueStringElement.setStringValue(creator.getName());
+                valueStringElement.setStringValue(name);
+                addedList.add(name);
             }
 
             String rights = unit.getRights();
