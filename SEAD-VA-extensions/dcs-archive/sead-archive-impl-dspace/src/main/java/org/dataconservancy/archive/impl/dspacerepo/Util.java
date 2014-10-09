@@ -115,4 +115,15 @@ public class Util {
         System.out.println("+++++++++++++++++++++++++++++++++++");
         return metadataMap;
     }
+
+    public static String formatName(String name) {
+        String formattedName = "";
+        if (name != null && !name.equals("")) {
+            int i = name.indexOf(',');
+            String first = name.substring(0, i).trim();
+            String last =  name.substring(i + 1).trim();
+            formattedName = first + ", " + last;
+        }
+        return formattedName;
+    }
 }

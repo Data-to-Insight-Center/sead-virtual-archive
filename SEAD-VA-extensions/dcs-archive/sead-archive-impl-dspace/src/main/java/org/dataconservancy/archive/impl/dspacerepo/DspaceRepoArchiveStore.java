@@ -381,7 +381,7 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
         }
 //        dspaceClient.descriptiveMetadata(new HashMap<String, String>(), "Collection_Aggregation_Map", "",
 //                "(Submitted as part of SEAD project)", "", "");
-        dspaceClient.descriptiveMetadata(pkg, "Collection_Aggregation_Map");
+        dspaceClient.descriptiveMetadata(pkg, "Collection Aggregation Map");
 
         String[] filepaths = new String[1];
         String[] filenames = new String[1];

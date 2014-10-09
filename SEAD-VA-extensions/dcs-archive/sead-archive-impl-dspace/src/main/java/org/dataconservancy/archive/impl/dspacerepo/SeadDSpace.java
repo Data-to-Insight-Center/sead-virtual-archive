@@ -268,7 +268,7 @@ public class SeadDSpace {
                 statementElement = descriptionElement.addNewStatement();
                 statementElement.setPropertyURI("http://purl.org/dc/elements/1.1/creator");
                 valueStringElement = statementElement.addNewValueString();
-                valueStringElement.setStringValue(name);
+                valueStringElement.setStringValue(Util.formatName(name));
                 addedList.add(name);
             }
 
