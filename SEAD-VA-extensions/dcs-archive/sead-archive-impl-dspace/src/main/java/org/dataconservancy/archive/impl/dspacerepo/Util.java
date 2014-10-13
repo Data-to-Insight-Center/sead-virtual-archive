@@ -17,16 +17,20 @@
 package org.dataconservancy.archive.impl.dspacerepo;
 
 import org.dataconservancy.model.dcs.DcsMetadata;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.Namespace;
+import org.jdom.input.SAXBuilder;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Util to load credentials for repositories
@@ -92,9 +96,8 @@ public class Util {
         return repoCredentials;
     }
 
-    public static Map<String, String> extractMetadata(Collection<DcsMetadata> metadata) {
-        Map<String, String> metadataMap = new HashMap<String, String>();
-        System.out.println("++++++++++++++++++++++++++++++++++");
+    public static Map<String, List<String>> extractMetadata(Collection<DcsMetadata> metadata) {
+        Map<String, List<String>> metadataMap = new HashMap<String, List<String>>();
 
         for (DcsMetadata meta : metadata) {
             String metadataElement = meta.getMetadata();
@@ -108,11 +111,14 @@ public class Util {
             value = value.substring(value.indexOf('>') + 1);
             value = value.substring(value.indexOf('>') + 1);
             value = value.substring(0, value.indexOf('<'));
-            System.out.println("**" + predicate + " : " + value);
-            metadataMap.put(predicate, value);
+//            System.out.println("**" + predicate + " : " + value);
+            List<String> values = metadataMap.get(predicate);
+            if (values == null) {
+                values = new ArrayList<String>();
+                metadataMap.put(predicate, values);
+            }
+            values.add(value);
         }
-
-        System.out.println("+++++++++++++++++++++++++++++++++++");
         return metadataMap;
     }
 
@@ -125,5 +131,32 @@ public class Util {
             formattedName = first + ", " + last;
         }
         return formattedName;
+    }
+
+    public static void addDimMetadata(Element root, String element,
+                                      String qualifier, String text) {
+        if (element == null) {
+            return;
+        }
+        Namespace ns = root.getNamespace();
+        Element child = new Element("field", ns);
+        child.setText(text);
+        child.setAttribute("element", element);
+        if (qualifier != null) {
+            child.setAttribute("qualifier", qualifier);
+        }
+        child.setAttribute("mdschema", "dc");
+        root.addContent(child);
+    }
+
+    public static Document getDimTemplate() throws JDOMException, IOException {
+        // dim template
+        String dim = "<dim:dim dspaceType=\"ITEM\" xmlns:dim=\"http://www.dspace.org/xmlns/dspace/dim\">\n" +
+                "<dim:field element=\"language\" qualifier=\"rfc3066\" mdschema=\"dc\"/>\n" +
+                "</dim:dim>";
+        InputStream in = new ByteArrayInputStream(dim.getBytes());
+        // parse as a jdom document
+        SAXBuilder builder = new SAXBuilder();
+        return builder.build(in);
     }
 }

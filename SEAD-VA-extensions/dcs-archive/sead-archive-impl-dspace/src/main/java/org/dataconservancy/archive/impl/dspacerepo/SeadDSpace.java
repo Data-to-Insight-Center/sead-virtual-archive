@@ -29,6 +29,7 @@ import org.dataconservancy.model.dcs.DcsResourceIdentifier;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
+import org.jdom.output.XMLOutputter;
 import org.purl.eprint.epdcx.x20061116.*;
 import org.purl.sword.base.DepositResponse;
 import org.purl.sword.client.Client;
@@ -83,7 +84,8 @@ public class SeadDSpace {
 
             for(int i=0;i<decriptiveMd.size();i++)
             {
-                sip.addDescriptiveMD("EPDCX", decriptiveMd.get(i));
+//                sip.addDescriptiveMD("EPDCX", decriptiveMd.get(i));
+                sip.addDescriptiveMD("DIM", decriptiveMd.get(i));
             }
             // Write SIP to a file
             
@@ -223,6 +225,136 @@ public class SeadDSpace {
             t.printStackTrace ();
         }
         return null;
+    }
+
+    // creating dspace metadata in DIM format
+    public void descriptiveMetadataDim(ResearchObject ro, String title) {
+        // get the first one -- will there ever be more than one?
+        DcsDeliverableUnit unit = ro.getDeliverableUnits().iterator().next();
+        Map<String, List<String>> metadataMap = Util.extractMetadata(unit.getMetadata());
+
+        try {
+            decriptiveMd = new ArrayList<Element>();
+            // generate template in jdom
+            Document xmlDoc = Util.getDimTemplate();
+            Element root = xmlDoc.getRootElement();
+
+            // add metadata as children
+            Util.addDimMetadata(root, "title", null, title);
+            String abstr = ((SeadDeliverableUnit) unit).getAbstrct();
+            Util.addDimMetadata(root, "description", "abstract", abstr);
+            Util.addDimMetadata(root, "identifier", "uri",
+                    "http://seadva.d2i.indiana.edu/sead-access/#entity;" + unit.getId());
+
+            // TODO : A quick solution to eliminate submitter from creator list
+            String submitter = ((SeadDeliverableUnit) unit).getSubmitter().getName().trim();
+            // have to remove duplicates too
+            List<String> addedList = new ArrayList<String>();
+            Set<SeadPerson> creators = ((SeadDeliverableUnit)unit).getDataContributors();
+            for (SeadPerson creator : creators) {
+                String name = creator.getName();
+                if (addedList.contains(name) || name.trim().equals(submitter)) {
+                    continue;
+                }
+                Util.addDimMetadata(root, "contributor", "author", Util.formatName(name));
+                addedList.add(name);
+            }
+
+            Collection<DcsResourceIdentifier> altIds = unit.getAlternateIds();
+            for (DcsResourceIdentifier id : altIds) {
+                String idVal = id.getIdValue();
+                if (idVal.contains("doi")) {
+                    Util.addDimMetadata(root, "identifier", "doi", idVal);
+                } else {
+                    Util.addDimMetadata(root, "identifier", "uri", idVal);
+                }
+            }
+
+            for (Map.Entry<String, List<String>> meta : metadataMap.entrySet()) {
+                String key = meta.getKey();
+                for (String metaValue : meta.getValue()) {
+                    String element = null;
+                    String qualifier = null;
+                    if (key.contains("subject")) {
+                        element = "subject";
+                    } else if (key.contains("coverage")) {
+                        element = "coverage";
+                        qualifier = "spatial";
+                    } else if (key.contains("description")) {
+                        element = "description";
+                    } else if (key.contains("label")) {
+                        element = "title";
+                        qualifier = "alternative";
+                    }
+                    Util.addDimMetadata(root, element, qualifier, metaValue);
+                }
+            }
+
+            System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&");
+            System.out.println(new XMLOutputter().outputString(xmlDoc));
+            System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&");
+
+            decriptiveMd.addAll(xmlDoc.getContent());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void descriptiveMetadataDim(Map<String, List<String>> metadataMap, String title,
+                                       String doi, String rights) {
+        try {
+            decriptiveMd = new ArrayList<Element>();
+            // generate template in jdom
+            Document xmlDoc = Util.getDimTemplate();
+            Element root = xmlDoc.getRootElement();
+
+            // add metadata as children
+            if (doi != null && !"".equals(doi))
+                Util.addDimMetadata(root, "identifier", "doi", doi);
+
+            boolean isTitleSet = false;
+            for (Map.Entry<String, List<String>> meta : metadataMap.entrySet()) {
+                String key = meta.getKey();
+                for (String metaValue : meta.getValue()) {
+                    String element = null;
+                    String qualifier = null;
+                    if (key.contains("creator")) {
+                        element = "contributor";
+                        qualifier = "author";
+                    } else if (key.contains("abstract")) {
+                        element = "description";
+                        qualifier = "abstract";
+                    } else if (key.contains("subject")) {
+                        element = "subject";
+                    } else if (key.contains("coverage") || key.contains("location")) {
+                        element = "coverage";
+                        qualifier = "spatial";
+                    } else if (key.contains("description")) {
+                        element = "description";
+                    } else if (key.contains("label")) {
+                        element = "title";
+                        qualifier = "alternative";
+                    } else if (key.contains("alternative")) {
+                        element = "title";
+                        isTitleSet = true;
+                    }
+                    Util.addDimMetadata(root, element, qualifier, metaValue);
+                }
+            }
+
+            if (!isTitleSet) {
+                Util.addDimMetadata(root, "title", null, title);
+            }
+
+            System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&");
+            System.out.println(new XMLOutputter().outputString(xmlDoc));
+            System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&");
+
+            decriptiveMd.addAll(xmlDoc.getContent());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void descriptiveMetadata(ResearchObject ro, String title) {
@@ -471,13 +603,10 @@ public class SeadDSpace {
         // read metadata from deliverable unit
         SeadDeliverableUnit unit = (SeadDeliverableUnit) pkg.getDeliverableUnits().iterator().next();
         String abstr = unit.getAbstrct();
-        System.out.println("++++++ Collection Metadata ++++++");
-        Map<String, String> metadataMap = Util.extractMetadata(unit.getMetadata());
+        Map<String, List<String>> metadataMap = Util.extractMetadata(unit.getMetadata());
 
         com.sun.jersey.api.client.Client client = com.sun.jersey.api.client.Client.create();
-
         client.addFilter(new HTTPBasicAuthFilter(userName, passWord));
-
 
         System.out.print("Values being used for creating collection:"+userName+","+passWord+":"+communityId+"----------\n");
         WebResource webResource = client.resource(communityId+"/collections");
@@ -499,57 +628,40 @@ public class SeadDSpace {
             Entry entry = abdera.newEntry();
             entry.addExtension(DC_TYPE).setText("Collection");
 
-//            entry.addExtension(DC_TITLE).setText(title);
             entry.addExtension(DC_RIGHTS).setText("Rights statement from SEAD");
             entry.addExtension(DCTERMS_ALTERNATIVE).setText("Dataset that supports a publication");
             entry.addExtension(DCTERMS_ABSTRACT).setText(abstr);
             entry.addExtension(DCTERMS_CONFORMSTO).setText("Creative Commons");
             entry.addExtension(DCTERMS_PROVENANCE).setText("Submitted by SEAD VA on " + new Date().toString());
 
-            for (Map.Entry<String, String> meta : metadataMap.entrySet()) {
+            boolean isTitleSet = false;
+            for (Map.Entry<String, List<String>> meta : metadataMap.entrySet()) {
                 String key = meta.getKey();
                 if (key.contains("http://purl.org/dc/terms/alternative")) {
                     String time = new Timestamp(new Date().getTime()).toString();
                     time = time.substring(0, time.lastIndexOf(':'));
-                    entry.addExtension(DC_TITLE).setText(meta.getValue() + " " + time);
+                    entry.addExtension(DC_TITLE).setText(meta.getValue().get(0) + " " + time);
+                    isTitleSet = true;
                 }
             }
 
-            // TODO : Setting other metadata is useless because Ideals don't recognize them
-//            entry.addExtension(DC_DATE).setText(new Date().toString());
-//            Set<SeadPerson> creators = unit.getDataContributors();
-//            for (SeadPerson creator : creators) {
-//                entry.addExtension(DC_CREATOR).setText(creator.getName());
-//            }
-//
-//            for (Map.Entry<String, String> meta : metadataMap.entrySet()) {
-//                String key = meta.getKey();
-//                QName predicate = null;
-//                if (key.contains("creator")) {
-//                    continue;
-//                } else if (key.startsWith(DCTERMS)) {
-//                    predicate = new QName(DCTERMS, key.substring(key.lastIndexOf('/') + 1), "dcterms");
-//                } else if (key.startsWith(DC)) {
-//                    predicate = new QName(DC, key.substring(key.lastIndexOf('/') + 1), "dc");
-//                }
-//                if (predicate != null) {
-//                    entry.addExtension(predicate).setText(meta.getValue());
-//                    System.out.println("Set to collection ---> " + key + " : " + meta.getValue());
-//                }
-//            }
+            if (!isTitleSet) {
+                entry.addExtension(DC_TITLE).setText(title);
+            }
+
+            // TODO : Setting other metadata here is useless because Ideals don't recognize them
+            // TODO : As an alternative, we set all metadata at ORE level
 
             entry.setUpdated(new Date());
 
             response = webResource.type("application/xml").post(ClientResponse.class,entry);
             client.destroy();
-            System.out.println(response.toString());
-            if( response.getHeaders().get("Handle")==null)
+            if( response.getHeaders().get("Handle")==null) {
                 throw new RuntimeException("Error creating DSpace Collection");
+            }
             collectionID = response.getHeaders().get("Handle").get(0);
 
-
         } catch (UniformInterfaceException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             return  null;
         }

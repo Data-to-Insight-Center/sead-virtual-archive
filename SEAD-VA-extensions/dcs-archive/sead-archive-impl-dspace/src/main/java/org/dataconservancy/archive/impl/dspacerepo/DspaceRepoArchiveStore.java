@@ -240,7 +240,7 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
                 int i=0;
                 String actualDoi ="";
                 String doiPrefixedId =null;
-                Map<String, String> metadataMap = new HashMap<String, String>();
+                Map<String, List<String>> metadataMap = new HashMap<String, List<String>>();
 
                 for(DcsFile f:shpFile)   {
                     metadataMap = Util.extractMetadata(f.getMetadata());
@@ -263,9 +263,9 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
                     i++;
                 }
 
-                dspaceClient.descriptiveMetadata(metadataMap, (String)pair.getKey(), "",
-                        creator+
-                                "(Submitted as part of SEAD project)",actualDoi,rootDu.getRights());
+//                dspaceClient.descriptiveMetadataDim(metadataMap, (String)pair.getKey(), "",
+//                        creator + "(Submitted as part of SEAD project)", actualDoi, rootDu.getRights());
+                dspaceClient.descriptiveMetadataDim(metadataMap, (String)pair.getKey(), actualDoi, rootDu.getRights());
 
                 File targetDir = new File(System.getProperty("java.io.tmpdir"));
 
@@ -312,7 +312,7 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
                     System.out.print("submit to "+collectionId);
                     firstDspaceCollection = collectionId;
 //                    dspaceClient.descriptiveMetadata(file.getName(), "",creator+"(Submitted as part of SEAD project)","",rootDu.getRights());
-                    dspaceClient.descriptiveMetadata(pkg, null);
+                    dspaceClient.descriptiveMetadataDim(pkg, null);
                     File targetDir = new File(System.getProperty("java.io.tmpdir"));
                     String[] filepaths = new String[1] ;
                     String[] filenames = new String[1] ;
@@ -381,7 +381,7 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
         }
 //        dspaceClient.descriptiveMetadata(new HashMap<String, String>(), "Collection_Aggregation_Map", "",
 //                "(Submitted as part of SEAD project)", "", "");
-        dspaceClient.descriptiveMetadata(pkg, "Collection Aggregation Map");
+        dspaceClient.descriptiveMetadataDim(pkg, "Collection Aggregation Map");
 
         String[] filepaths = new String[1];
         String[] filenames = new String[1];
