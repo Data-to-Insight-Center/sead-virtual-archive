@@ -166,11 +166,7 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
             dspaceClient = new SeadDSpace(credential.getUsername(),credential.getPassword());
         }
 
-
-
-
         Iterator<DcsDeliverableUnit> iterator = pkg.getDeliverableUnits().iterator();
-
 
         //Create hierarchy
         TreeNode relations = getRelationsTree(pkg);
@@ -185,7 +181,6 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
             }
 
         }
-
 
         Collection<DcsDeliverableUnit> dus = pkg.getDeliverableUnits();
 
@@ -205,6 +200,7 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
 
         parseTree(relations, pkg);
 
+        System.out.println("duDspaceCollection: "+duDspaceCollection.toString());
         //put all items in a manifestation into a collection --  we do not consider multiple manifestations right now
 
         String firstDspaceCollection = null;
@@ -273,7 +269,6 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
 
                 Map<String,String> tUrl = dspaceClient.uploadPackage(dspaceCollection, true,zippedPackage);
 
-
                 for(SeadFile f:shpFile)   {
 
                     String fileUrl = tUrl.get(f.getName());
@@ -333,9 +328,33 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
             }
 
         }
+        
+        // Code to set the handle in SIP
+        String duCollection = duDspaceCollection.toString();
+        String str = new String("deposit");
+        int strLen = duCollection.length();
+        int tmp = duCollection.indexOf(str);
+        int handleStart = tmp+8; // 8th character from start of string deposit
+        String handle = duCollection.substring(handleStart,strLen-1);
+        String dSpaceURL = duCollection.substring(duCollection.lastIndexOf("http"), duCollection.lastIndexOf(".edu") + 4);
+        handle = dSpaceURL+"/handle/"+handle;
+        System.out.println("DspaceRepoArchiveStore: "+handle);
+        for(DcsDeliverableUnit du :pkg.getDeliverableUnits())
+        {
+            try {
+                DcsResourceIdentifier dSpaceHandle = new DcsResourceIdentifier();
+                dSpaceHandle.setIdValue(handle);
+                dSpaceHandle.setTypeId("handle");
+                du.addAlternateId(dSpaceHandle);
+            } catch (Exception e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+        }
+        // End of Code to set the handle in SIP
+        
         pkg.setFiles(files);
 
-      //  sipArchival(pkg,firstDspaceCollection);
+        //  sipArchival(pkg,firstDspaceCollection);
         try {
             oreArchival(pkg, firstDspaceCollection, dspaceClient, model);
         } catch (FileNotFoundException e) {
@@ -447,7 +466,6 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
                     String dspaceCollection =
                             dspaceClient.createCollection(pkg, projectCommunity.getId(), node.title + "_" + time);
 //                            dspaceClient.createCollection(projectCommunity.getId(),node.title+"_collection"+i);
-
                     //TODO : Do not create collections for empty deliverable units
                     duDspaceCollection.put(child.id,dspaceCollection);     //manifestation id for which a collection in DSpace has been created
                     i++;
