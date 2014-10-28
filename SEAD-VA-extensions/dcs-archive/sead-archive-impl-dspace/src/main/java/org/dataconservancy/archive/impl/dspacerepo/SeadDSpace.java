@@ -739,7 +739,6 @@ public class SeadDSpace {
 
     }
 
-
     private String getItemHandle(String response) throws XmlPullParserException, IOException {
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
         factory.setNamespaceAware(true);

@@ -144,7 +144,6 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
         duDspaceCollection = new HashMap<String, String>();
         manFile = new HashMap<String, List<DcsFile>>();
 
-
         Map<String,Credential> repoCredentials = null;
         try {
             repoCredentials = Util.loadCredentials(

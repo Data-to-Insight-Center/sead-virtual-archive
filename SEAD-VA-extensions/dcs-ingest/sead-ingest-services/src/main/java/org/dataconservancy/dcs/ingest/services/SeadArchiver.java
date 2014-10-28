@@ -124,7 +124,7 @@ public class SeadArchiver
         Set<DcsEntityReference> entities = getEntities(dcp);
 
         archiveEvent.setOutcome(Integer.toString(entities.size()));
-        archiveEvent.setDetail("Archived " + entities.size());// + " entities into "+ ((ResearchObject)dcp).getRepositories().iterator().next().getName());
+        archiveEvent.setDetail("Archived: " + entities.size());// + " entities into "+ ((ResearchObject)dcp).getRepositories().iterator().next().getName());
         archiveEvent.setTargets(entities);
 
         ingest.getEventManager().addEvent(sipRef, archiveEvent);

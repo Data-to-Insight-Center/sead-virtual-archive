@@ -98,7 +98,6 @@ public class DoiUpdationService extends IngestServiceBase
                             break;
                         }
                     }
-
                 }
             }
         }
@@ -151,7 +150,6 @@ public class DoiUpdationService extends IngestServiceBase
         }
         addDoiEvent(sipRef);
 
-
         /* save the SIP containing updated entities */
         ingest.getSipStager().updateSIP(sip, sipRef);
 
@@ -164,7 +162,7 @@ public class DoiUpdationService extends IngestServiceBase
 
         Dcp dcp = ingest.getSipStager().getSIP(sipRef);
         doiEvent.setOutcome(Integer.toString(dcp.getFiles().size()+1));
-        doiEvent.setDetail("DOI Updation Successful");
+        doiEvent.setDetail("DOI Update Successful");
 
         ingest.getEventManager().addEvent(sipRef, doiEvent);
     }
