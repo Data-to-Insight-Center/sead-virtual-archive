@@ -145,7 +145,7 @@ public class ExternalContentStager
             InputStream src = null;
             if(file.getSource().contains("file:"))
                 src = fileUrl.openStream();
-            else if (file.getSource().contains("http:"))
+            else if (file.getSource().contains("http:") || file.getSource().contains("https:"))
             {
                 String loginPassword = this.acrUser + ":" + this.acrPassword;
                 String encoded = new sun.misc.BASE64Encoder().encode (loginPassword.getBytes());

@@ -110,7 +110,7 @@ public class AcrQueryHandler implements Handler{
                             List<String> existingValues = existingProperties.get(Constants.sourceTerm);
                             if (existingValues == null)
                                 existingValues = new ArrayList<String>();
-                            existingValues.add(mediciInstance.getUrl() + "/api/image/download/" + child);
+                            existingValues.add(mediciInstance.getUrl() + "/resteasy/datasets/" + child + "/file");
                             existingProperties.put(Constants.sourceTerm, existingValues);
                             properties.put(child, existingProperties);
                         }
@@ -172,7 +172,7 @@ public class AcrQueryHandler implements Handler{
                             List<String> existingValues = existingProperties.get(Constants.sourceTerm);
                             if(existingValues==null)
                                 existingValues = new ArrayList<String>();
-                            existingValues.add(mediciInstance.getUrl()+ "/api/image/download/"+child);
+                            existingValues.add(mediciInstance.getUrl() + "/resteasy/datasets/" + child + "/file");
                             existingProperties.put(Constants.sourceTerm,existingValues);
                             properties.put(child,existingProperties);
                         }
