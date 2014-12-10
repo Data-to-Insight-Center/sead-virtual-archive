@@ -216,10 +216,18 @@ public class SipGenerationHandler implements Handler {
     ResearchObject sip = new ResearchObject();
     public void generateSIP(String packageId, String collectionId, String parentId, String unzippedDir) throws FileNotFoundException {//top collection id
 
-
-        try{
-            collectionId = collectionId.split("/")[collectionId.split("/").length-1];
+        try {
+            String[] parts;
+            if (collectionId.indexOf('/') > -1) {
+                parts = collectionId.split("/");
+                collectionId = parts[parts.length - 1];
+            }
             String duId = collectionId;
+
+            if (packageId.indexOf('/') > -1) {
+                parts = packageId.split("/");
+                packageId = parts[parts.length - 1];
+            }
 
             InputStream input = new FileInputStream(new File(unzippedDir +"/"+ packageId + "_oaiore.xml"));
             OREParser parser = OREParserFactory.getInstance("RDF/XML");
