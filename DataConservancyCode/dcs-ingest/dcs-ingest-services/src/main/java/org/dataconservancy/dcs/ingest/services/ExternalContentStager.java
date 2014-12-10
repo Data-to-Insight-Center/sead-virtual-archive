@@ -22,6 +22,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -125,7 +126,7 @@ public class ExternalContentStager
 
         URL fileUrl;
         try {
-            fileUrl = new URL(file.getSource());
+            fileUrl = new URL(encodeTagId(file.getSource()));
         } catch (MalformedURLException e) {
             throw new RuntimeException(String
                     .format("Invalid file content url in file %s: %s", file
@@ -166,7 +167,7 @@ public class ExternalContentStager
                 try {
                     stream.close();
                 } catch (IOException e) {
-
+                    log.error("Error while downloading file", e);
                 }
             }
         }
@@ -177,6 +178,14 @@ public class ExternalContentStager
          */
         updateStagedSip(staged.getSipRef(), fileUrl, metadata, eventsToAdd);
 
+    }
+
+    private String encodeTagId(String url) {
+        int tagIndex = url.indexOf("tag:");
+        String start = url.substring(0, tagIndex);
+        String tagId = url.substring(tagIndex, url.lastIndexOf('/'));
+        String end = url.substring(url.lastIndexOf('/'));
+        return start + URLEncoder.encode(tagId) + end;
     }
 
     private void updateStagedSip(String sipRef,
