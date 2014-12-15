@@ -182,6 +182,8 @@ public class ExternalContentStager
 
     private String encodeTagId(String url) {
         int tagIndex = url.indexOf("tag:");
+        if (tagIndex == -1)
+            return url;
         String start = url.substring(0, tagIndex);
         String tagId = url.substring(tagIndex, url.lastIndexOf('/'));
         String end = url.substring(url.lastIndexOf('/'));
