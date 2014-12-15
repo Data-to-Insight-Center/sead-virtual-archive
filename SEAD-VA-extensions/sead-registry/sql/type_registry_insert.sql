@@ -75,6 +75,13 @@ insert into state values('state:3',
 'CO','CapturedObject'
 );
 
+insert into base_entity values('state:4', 'OO',
+'2014-12-10 00:21:11', '2014-12-10 00:21:11');
+
+insert into state values('state:4',
+'OO','OtherObject'
+);
+
 insert into repository values(
   'repo:1',
   'IU SDA',

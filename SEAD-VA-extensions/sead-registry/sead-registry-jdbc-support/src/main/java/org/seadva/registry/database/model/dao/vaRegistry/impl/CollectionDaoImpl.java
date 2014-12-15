@@ -99,6 +99,16 @@ public class CollectionDaoImpl implements CollectionDao {
 
         Connection connection = null;
         PreparedStatement statement = null;
+        /**
+         * This is to handle sub-collections which doesn't go under CO, PO or CuO
+         * We identify all sub-collections as OO or 'OtherObject' type.
+         */
+        if (collection.getState() == null) {
+            State s = new State();
+            s.setId("state:4");
+            s.setStateName("OO");
+            collection.setState(s);
+        }
         try {
             baseEntityDao.insertEntity(collection);
             connection = getConnection();
@@ -116,7 +126,6 @@ public class CollectionDaoImpl implements CollectionDao {
                 versionNum = collection.getVersionNum();
             statement.setString(4, versionNum);
             statement.setString(5, collection.getName());
-
             statement.setString(6, collection.getState().getId());
             statement.setInt(7, collection.getIsObsolete());
             statement.setString(8, versionNum);
