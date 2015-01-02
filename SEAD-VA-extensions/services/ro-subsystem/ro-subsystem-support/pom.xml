@@ -18,7 +18,7 @@
         <dependency>
             <groupId>edu.indiana.d2i.komadu</groupId>
             <artifactId>komadu-axis2-client-core</artifactId>
-            <version>1.0</version>
+            <version>1.0.0</version>
         </dependency>
 
         <dependency>
