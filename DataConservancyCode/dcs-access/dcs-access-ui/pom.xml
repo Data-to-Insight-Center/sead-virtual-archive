@@ -27,7 +27,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.dataconservancy.access</groupId>
   <artifactId>dcs-access-ui</artifactId>
-  <packaging>war</packaging>
+  <packaging>jar</packaging>
   <name>Access UI</name>
 
   <properties>
@@ -74,6 +74,15 @@
 
 
   <build>
+    <resources>
+      <resource>
+        <directory>src/main/java</directory>
+        <includes>
+          <include>**/*.java</include>
+          <include>**/*.gwt.xml</include>
+        </includes>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
