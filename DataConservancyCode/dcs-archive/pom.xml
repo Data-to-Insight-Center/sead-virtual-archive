@@ -38,7 +38,7 @@
       </activation>
       <modules>
         <module>dcs-archive-api</module>
-        <module>dcs-archive-impl-fcrepo</module>
+        <!--module>dcs-archive-impl-fcrepo</module-->
         <module>dcs-archive-impl-elm</module>
         <module>dcs-archive-impl-elm-fs</module>
         <module>dcs-archive-impl-elm-memory</module>

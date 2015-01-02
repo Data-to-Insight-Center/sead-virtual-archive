@@ -36,12 +36,12 @@
         <activeByDefault>true</activeByDefault>
       </activation>
       <modules>
-        <module>dcs-integration-main</module>
+        <!--module>dcs-integration-main</module-->
         <module>dcs-integration-rebuild-dcpsolr</module>
         <module>dcs-integration-support</module>
         <module>dcs-integration-dryvalleys</module>
         <module>dcs-integration-virus-checker</module>
-        <module>dcs-integration-lineage</module>
+        <!--module>dcs-integration-lineage</module-->
         <module>dcs-integration-bootstrap</module>
       </modules>
     </profile>
