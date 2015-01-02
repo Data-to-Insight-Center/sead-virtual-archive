@@ -87,7 +87,7 @@
       <dependency>
           <groupId>org.dataconservancy.access</groupId>
           <artifactId>dcs-access-http</artifactId>
-          <version>1.1.1-SNAPSHOT</version>
+          <version>1.1.1-SEAD-SNAPSHOT</version>
       </dependency>
 
       <dependency>
@@ -106,12 +106,6 @@
           <groupId>org.dataconservancy.model</groupId>
           <artifactId>dcs-model-builder</artifactId>
           <version>1.1.0-SNAPSHOT</version>
-      </dependency>
-
-      <dependency>
-          <groupId>org.dataconservancy.access</groupId>
-          <artifactId>dcs-access-http</artifactId>
-          <version>1.1.1-SNAPSHOT</version>
       </dependency>
 
       <dependency>
@@ -287,4 +281,12 @@
 
 
   </dependencies>
+
+<distributionManagement>
+    <snapshotRepository>
+        <id>sead-repo-snapshot</id>
+        <name>seadva-test.d2i.indiana.edu-snapshots</name>
+        <url>http://seadva-test.d2i.indiana.edu:8081/artifactory/ext-snapshot-local</url>
+    </snapshotRepository>
+</distributionManagement>
 </project>

@@ -58,7 +58,7 @@
    <dependency>
       <artifactId>dcs-index-dcp-solr</artifactId>
       <groupId>org.dataconservancy.index</groupId>
-      <version>1.1.1-SNAPSHOT</version>
+      <version>1.1.1-SEAD-SNAPSHOT</version>
       <type>jar</type>
     </dependency>
 
@@ -69,11 +69,11 @@
       <scope>test</scope>
     </dependency>
 
-      <dependency>
+      <!--dependency>
           <artifactId>dcs-access-http</artifactId>
           <groupId>org.dataconservancy.access</groupId>
-          <version>1.1.1-SNAPSHOT</version>
-      </dependency>
+          <version>1.1.1-SEAD-SNAPSHOT</version>
+      </dependency-->
 
       <dependency>
           <artifactId>sead-index-extension</artifactId>
