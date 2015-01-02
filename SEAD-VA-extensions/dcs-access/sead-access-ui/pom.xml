@@ -210,19 +210,19 @@
       <dependency>
           <groupId>org.seadva.model</groupId>
           <artifactId>sead-model</artifactId>
-          <version>1.1.0-SNAPSHOT</version>
+          <version>1.0.1-SNAPSHOT</version>
       </dependency>
 
       <dependency>
           <groupId>org.seadva.model</groupId>
           <artifactId>sead-model-builder-xstream</artifactId>
-          <version>1.1.0-SNAPSHOT</version>
+          <version>1.0.1-SNAPSHOT</version>
       </dependency>
 
       <dependency>
-          <groupId>org.dataconservancy.dcs</groupId>
+          <groupId>org.seadva.ingest</groupId>
           <artifactId>sead-ingest-core</artifactId>
-          <version>1.1.0-SNAPSHOT</version>
+          <version>1.0.1-SNAPSHOT</version>
       </dependency>
       <dependency>
           <groupId>org.dataconservancy.model</groupId>
