@@ -44,7 +44,7 @@
         <module>dcs-ingest-deposit</module>
         <module>dcs-ingest-services</module>
         <module>dcs-ingest-client</module>
-        <module>dcs-ingest-ui</module>
+        <!--module>dcs-ingest-ui</module-->
         <module>dcs-ingest-test</module>
         <module>dcs-ingest-integration</module>
       </modules>
