@@ -94,7 +94,7 @@ public class SdaArchiveStore implements SeadArchiveStore {
         mountPath = mPath;
     }
 
-    @Required
+//    @Required
     public void setIsTar(Boolean bValue){
         isTar = bValue;
     }
