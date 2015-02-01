@@ -470,6 +470,7 @@
           <include>passwords.xml</include>
           <include>acrInstances.xml</include>
           <include>DBConfig.properties</include>
+          <include>commons.properties</include>
         </includes>
       </resource>
     </resources>
