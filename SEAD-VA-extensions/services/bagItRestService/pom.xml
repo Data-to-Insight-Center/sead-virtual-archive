@@ -284,7 +284,13 @@
         <dependency>
             <groupId>org.sead.acr.common</groupId>
             <artifactId>ACRCommon</artifactId>
-            <version>1.1.0-SNAPSHOT</version>
+            <version>1.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codeartisans</groupId>
+            <artifactId>org.json</artifactId>
+            <version>20131017</version>
         </dependency>
 
         <dependency>

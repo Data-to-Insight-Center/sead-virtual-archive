@@ -18,7 +18,7 @@ package org.seadva.bagit.service;
 import com.thoughtworks.xstream.XStream;
 import org.apache.commons.io.IOUtils;
 import org.dspace.foresite.OREException;
-import org.sead.acr.common.utilities.json.JSONException;
+import org.json.JSONException;
 import org.seadva.bagit.util.NotFoundException;
 import org.seadva.bagit.model.PackageDescriptor;
 import org.seadva.bagit.event.api.Event;

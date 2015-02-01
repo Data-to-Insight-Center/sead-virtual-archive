@@ -16,7 +16,7 @@
 package org.seadva.bagit.event.impl;
 
 import org.apache.commons.io.IOUtils;
-import org.sead.acr.common.utilities.json.JSONException;
+import org.json.JSONException;
 import org.seadva.bagit.model.AggregationType;
 import org.seadva.bagit.model.PackageDescriptor;
 import org.seadva.bagit.event.api.Handler;

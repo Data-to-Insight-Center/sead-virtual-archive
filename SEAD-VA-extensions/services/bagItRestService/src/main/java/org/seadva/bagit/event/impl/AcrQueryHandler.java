@@ -19,7 +19,7 @@ import org.dspace.foresite.Predicate;
 import org.dspace.foresite.Triple;
 import org.dspace.foresite.Vocab;
 import org.dspace.foresite.jena.TripleJena;
-import org.sead.acr.common.utilities.json.JSONException;
+import org.json.JSONException;
 import org.seadva.bagit.util.AcrQueryUtil;
 import org.seadva.bagit.model.AggregationType;
 import org.seadva.bagit.model.PackageDescriptor;

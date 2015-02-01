@@ -17,7 +17,7 @@ package org.seadva.bagit.event.impl;
 
 import org.dspace.foresite.*;
 import org.dspace.foresite.jena.TripleJena;
-import org.sead.acr.common.utilities.json.JSONException;
+import org.json.JSONException;
 import org.seadva.bagit.event.api.Handler;
 import org.seadva.bagit.model.AggregationType;
 import org.seadva.bagit.model.PackageDescriptor;
@@ -84,7 +84,7 @@ public class OreGenerationHandler implements Handler {
      * @param bagPath
      * @param dataPath
      * @throws java.io.IOException
-     * @throws org.sead.acr.common.utilities.json.JSONException
+     * @throws org.json.JSONException
      * @throws java.net.URISyntaxException
      * @throws org.dspace.foresite.OREException
      * @throws org.dspace.foresite.ORESerialiserException

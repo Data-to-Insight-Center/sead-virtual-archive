@@ -28,7 +28,7 @@ import com.thoughtworks.xstream.XStream;
 import org.apache.commons.io.IOUtils;
 import org.dspace.foresite.*;
 import org.junit.Test;
-import org.sead.acr.common.utilities.json.JSONException;
+import org.json.JSONException;
 import org.seadva.bagit.Exception.SEADInvalidOREException;
 import org.seadva.bagit.event.impl.OreValidationHandler;
 import org.seadva.bagit.model.ActiveWorkspace;

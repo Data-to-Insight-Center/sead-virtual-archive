@@ -18,7 +18,6 @@ package org.seadva.bagit.service;
 import com.thoughtworks.xstream.XStream;
 import org.apache.commons.io.IOUtils;
 import org.dspace.foresite.OREException;
-import org.sead.acr.common.utilities.json.JSONException;
 import org.seadva.bagit.event.api.Event;
 import org.seadva.bagit.impl.ConfigBootstrap;
 import org.seadva.bagit.model.ActiveWorkspace;
