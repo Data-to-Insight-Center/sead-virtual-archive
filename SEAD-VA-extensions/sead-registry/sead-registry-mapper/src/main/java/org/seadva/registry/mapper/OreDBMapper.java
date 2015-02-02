@@ -411,8 +411,7 @@ public class OreDBMapper {
                 if(baseEntity.getId().equalsIgnoreCase(collectionId))
                     resourceMap.setAggregation(getAggregation((Collection)baseEntity));//Add aggregation metadata
                 else{
-                    resourceMap.getAggregation().addAggregatedResource(getAggregatedResource((Collection)baseEntity,
-                            resourceMap.getAggregation()));//Add aggregated resource metadata
+                    resourceMap.getAggregation().addAggregatedResource(getAggregatedResource((Collection)baseEntity));//Add aggregated resource metadata
                 }
             }
             else if(baseEntity instanceof File)
@@ -506,10 +505,9 @@ public class OreDBMapper {
         return aggregatedResource;
     }
 
-    public AggregatedResource getAggregatedResource(Collection collection,
-                                                    org.dspace.foresite.Aggregation agg) throws URISyntaxException, OREException {
+    public AggregatedResource getAggregatedResource(Collection collection) throws URISyntaxException, OREException {
 
-        AggregatedResource aggregatedResource = agg.createAggregatedResource(new URI(collection.getId()));
+        AggregatedResource aggregatedResource = OREFactory.createAggregatedResource(new URI(collection.getId()));
 
         Triple resourceMapId = new TripleJena();
         resourceMapId.initialise(aggregatedResource);
