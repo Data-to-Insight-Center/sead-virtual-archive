@@ -74,7 +74,7 @@ public class Constants {
 
         InputStream inputStream =
                 Constants.class.getResourceAsStream(
-                        "./" +
+//                        "./" +
                                 "ACR_to_ORE_MappingConfig.properties");
 
         StringWriter writer = new StringWriter();
@@ -98,7 +98,7 @@ public class Constants {
 
         InputStream inputStream =
                 Constants.class.getResourceAsStream(
-                        "./" +
+//                        "./" +
                                 "acrInstances.xml");
         StringWriter writer = new StringWriter();
         IOUtils.copy(inputStream, writer);
