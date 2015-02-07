@@ -102,6 +102,12 @@ public class Labeller
             sip.setDeliverableUnits(dus);
         }
 
+        /**
+         * After updating id's of DUs, we have to go through all DUs and fix parent references
+         * using the idMap which contains oldID:newID mapping
+         */
+        updateParentIds(dus, idMap);
+
         Collection<DcsManifestation> mans = sip.getManifestations();
         if (mans.size() > 0) {
             idItr = idIteratorForType(mans.size(), Types.MANIFESTATION.getTypeName());
@@ -141,6 +147,20 @@ public class Labeller
         sip = updateReferences(ingest.getSipStager().getSIP(sipRef), idMap);
         ingest.getSipStager().updateSIP((ResearchObject)sip, sipRef);
 
+    }
+
+    private void updateParentIds(Collection<DcsDeliverableUnit> dus, Map<String, String> idMap) {
+        for (DcsDeliverableUnit du : dus) {
+            // go through all parent references and fix those
+            for (DcsDeliverableUnitRef ref : du.getParents()) {
+                // go through the idMap and find a matching entry and set the new id
+                for (Map.Entry<String, String> e : idMap.entrySet()) {
+                    if (e.getKey().contains(ref.getRef())) {
+                        ref.setRef(e.getValue());
+                    }
+                }
+            }
+        }
     }
 
     private Collection<DcsEvent> assignId(DcsEntity e,
