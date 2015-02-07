@@ -36,6 +36,8 @@ import org.dataconservancy.model.builder.InvalidXmlException;
 import org.dataconservancy.model.dcs.DcsDeliverableUnit;
 import org.dataconservancy.model.dcs.DcsFile;
 import org.dataconservancy.model.dcs.DcsMetadata;
+import org.dspace.foresite.*;
+import org.dspace.foresite.jena.TripleJena;
 import org.seadva.bagit.impl.ConfigBootstrap;
 import org.seadva.bagit.model.PackageDescriptor;
 import org.seadva.data.lifecycle.support.model.Event;
@@ -44,12 +46,14 @@ import org.seadva.model.builder.xstream.SeadXstreamStaxModelBuilder;
 import org.seadva.model.pack.ResearchObject;
 import org.seadva.registry.client.RegistryClient;
 import org.seadva.registry.database.model.obj.vaRegistry.*;
+import org.seadva.registry.database.model.obj.vaRegistry.Agent;
 import org.seadva.registry.database.model.obj.vaRegistry.Collection;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import java.io.*;
 import java.lang.reflect.Type;
+import java.net.URI;
 import java.net.URLEncoder;
 import java.util.*;
 import java.util.Map.Entry;
@@ -499,31 +503,14 @@ public class RegistryServiceImpl extends RemoteServiceServlet
 
     @Override
     public String getRO(String roId, String roUrl) throws IOException {
-        WebResource webResource =  Client.create().resource(
-                roUrl
-        );
-
-        ClientResponse response = webResource.path("resource")
-                .path("ro")
-                .path(
-                        URLEncoder.encode(
-                                roId
-                        )
-                )
-                .get(ClientResponse.class);
-
-        String id = UUID.randomUUID().toString();
-        String orePath = id+"_oaiore.xml";
-
-        IOUtils.copy(response.getEntityInputStream(),new FileOutputStream(orePath));
-
+        String orePath = handleNestedRO(roId, roUrl);
         System.out.println(orePath);
 
         String temp = new java.io.File(orePath).getAbsolutePath();
         String dir = temp.substring(0, temp.lastIndexOf('/'));
         //Convert ORE to SIP
 
-        String sipPath = sipConversion(orePath, dir, id);
+        String sipPath = sipConversion(orePath, dir, roId.substring(roId.lastIndexOf('/') + 1));
         String tempSipPath = sipPath.replace("_sip.xml", "_0.xml");
         IOUtils.copy(new FileInputStream(sipPath), new FileOutputStream(tempSipPath));
         System.out.println(sipPath);
@@ -540,6 +527,82 @@ public class RegistryServiceImpl extends RemoteServiceServlet
         }
         return tempWriter.toString();
 
+    }
+
+    private String handleNestedRO(String roId, String roUrl) {
+        String orePath = null;
+        try {
+            WebResource webResource = Client.create().resource(roUrl);
+            ClientResponse response = webResource.path("resource").path("ro")
+                    .path(URLEncoder.encode(roId))
+                    .get(ClientResponse.class);
+
+            orePath = roId.substring(roId.lastIndexOf('/') + 1) + "_oaiore.xml";
+            IOUtils.copy(response.getEntityInputStream(), new FileOutputStream(orePath));
+
+            // Read ORE to find aggregated collections
+            InputStream input = new FileInputStream(orePath);
+            OREParser parser = OREParserFactory.getInstance("RDF/XML");
+            ResourceMap resourceMap = parser.parse(input);
+
+            List<AggregatedResource> aggregatedResources =
+                    resourceMap.getAggregation().getAggregatedResources();
+            TripleSelector idSelector;
+            List<Triple> idTriples;
+            boolean changed = false;
+
+            for (AggregatedResource aggregatedResource : aggregatedResources) {
+                List<URI> types = aggregatedResource.getTypes();
+                for (URI type : types) {
+                    if (type.toString().contains("Aggregation")) {
+                        idSelector = new TripleSelector();
+                        idSelector.setSubjectURI(aggregatedResource.getURI());
+                        // identifier predicate
+                        Predicate dcTermsIdentifier = new Predicate();
+                        dcTermsIdentifier.setNamespace(Vocab.dcterms_Agent.ns().toString());
+                        dcTermsIdentifier.setPrefix(Vocab.dcterms_Agent.schema());
+                        dcTermsIdentifier.setName("identifier");
+                        dcTermsIdentifier.setURI(new URI("http://purl.org/dc/terms/identifier"));
+                        idSelector.setPredicate(dcTermsIdentifier);
+                        idTriples = resourceMap.getAggregation().listAllTriples(idSelector);
+
+                        if (idTriples.size() > 0) {
+                            // get child resource
+                            String childPath = handleNestedRO(idTriples.get(0).getObjectLiteral(), roUrl);
+                            // add child location in the parent
+                            Triple locTriple = new TripleJena();
+                            locTriple.initialise(aggregatedResource);
+                            // location predicate
+                            Predicate metsLocation = new Predicate();
+                            metsLocation.setNamespace("http://www.loc.gov/METS");
+                            metsLocation.setPrefix("http://www.loc.gov/METS");
+                            metsLocation.setName("FLocat");
+                            metsLocation.setURI(new URI("http://www.loc.gov/METS/FLocat"));
+                            locTriple.relate(metsLocation, childPath);
+                            resourceMap.addTriple(locTriple);
+                            changed = true;
+                        }
+                    }
+                }
+            }
+
+            // serialize the resource map if changed
+            if (changed) {
+                FileWriter oreStream = new FileWriter(orePath);
+                BufferedWriter ore = new BufferedWriter(oreStream);
+
+                ORESerialiser serial = ORESerialiserFactory.getInstance("RDF/XML");
+                ResourceMapDocument doc = serial.serialise(resourceMap);
+                String resourceMapXml = doc.toString();
+
+                ore.write(resourceMapXml);
+                ore.close();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return orePath;
     }
 
     @Override
