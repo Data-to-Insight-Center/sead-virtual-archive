@@ -32,8 +32,11 @@ public class VivoSparqlServiceImpl extends RemoteServiceServlet
 		return VivoUtil.getAllUsers();
 	}
 	
-	public String getAgentAffiliation(String vivoId){
-		String affiliation = VivoUtil.getAffiliation(vivoId);
-		return VivoUtil.vivoVAInstiutionMap.get(affiliation);
-	}
+    public String getAgentAffiliation(String vivoId){
+        String affiliation = VivoUtil.getAffiliation(vivoId);
+        String matchedAff = VivoUtil.vivoVAInstiutionMap.get(affiliation);
+        if (matchedAff == null)
+            matchedAff = "IU SDA";                  // default is always SDA
+        return matchedAff;
+    }
 }
