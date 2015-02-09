@@ -116,6 +116,11 @@ To open in gwt-dev mode in eclipse, install GWT plugin for eclipse. Import proje
 <br/>->Web Application -> check 'This project has a war directory' -> browse src/main/webapp
 <br/>->Web Toolkit -> check 'Use Google web toolkit'
 <br/>Click Ok
+<li>Copy the solr schema found in following link to /tmp/index/solr/default/conf.
+
+https://github.com/Data-to-Insight-Center/sead-virtual-archive/blob/master/SEAD-VA-extensions/solr-conf/schema.xml
+
+</li>
 </ol>
 
 <b>Setting up the configuration file</b>:
