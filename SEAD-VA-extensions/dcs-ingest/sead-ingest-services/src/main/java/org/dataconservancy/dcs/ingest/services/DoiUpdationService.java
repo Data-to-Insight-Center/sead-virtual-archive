@@ -82,7 +82,7 @@ public class DoiUpdationService extends IngestServiceBase
         idService.setCredentials(doiUserName, doiPassword);
 
         // Code to get the handle for DSpace
-        String handle=null;
+        String handle = null;
         Collection<DcsDeliverableUnit> dspace = sip.getDeliverableUnits();
         for(DcsDeliverableUnit d : dspace){
             Collection<DcsResourceIdentifier> alternateIds = null;
@@ -122,7 +122,7 @@ public class DoiUpdationService extends IngestServiceBase
                             if(locationValue==null)
                                 locationValue = "http://seadva.d2i.indiana.edu:8181/sead-access/#entity;"+ d.getId();
 
-                            if(handle.indexOf("illinois")!=-1)
+                            if (handle != null && handle.contains("illinois"))
                                 metadata.put(IdMetadata.Metadata.TARGET, handle.trim());
                             else
                                 metadata.put(IdMetadata.Metadata.TARGET, locationValue.trim());

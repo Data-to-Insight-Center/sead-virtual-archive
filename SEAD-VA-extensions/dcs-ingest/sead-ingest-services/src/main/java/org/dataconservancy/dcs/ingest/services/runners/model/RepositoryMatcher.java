@@ -43,7 +43,8 @@ final public class RepositoryMatcher {
             }
         }
     else{
-            if(du.getPrimaryLocation().getName().contains("IU"))
+            // TODO : Remove hardcoded values
+            if(du.getPrimaryLocation().getName().contains("IU Scholarworks"))
                 return "iu";
             if(du.getPrimaryLocation().getName().contains("Ideals"))
                 return "uiuc";
