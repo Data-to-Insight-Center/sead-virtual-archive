@@ -470,6 +470,7 @@ public class ResearchObjectService {
 
             new KomaduIngester(komaduServiceUrl).trackEvent(event, agent, collectionEntity);
         } catch (Exception e) {
+            e.printStackTrace(); // TODO : add logging
             return Response.serverError().entity(e.getMessage()).build();
         }
 
@@ -494,7 +495,8 @@ public class ResearchObjectService {
         for(AggregationWrapper aggregation:aggregations){
             Entity child = new Entity();
             child.setId(aggregation.getChild().getId());
-            BaseEntity baseEntity = new RegistryClient(registryServiceUrl).getEntity(child.getId(), "org.seadva.registry.database.model.obj.vaRegistry.File");
+            BaseEntity baseEntity = new RegistryClient(registryServiceUrl).getEntity(child.getId(),
+                    aggregation.getChildType());
             child.setName(baseEntity.getEntityName());
             collectionEntity.addChild(child);
         }
