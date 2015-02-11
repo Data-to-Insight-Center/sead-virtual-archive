@@ -274,6 +274,7 @@ public final class VivoUtil {
     public static Map<String,String> vivoVAInstiutionMap = new HashMap<String, String>();
     static {
     	vivoVAInstiutionMap.put("University of Illinois", "Ideals");
+        vivoVAInstiutionMap.put("UIUC", "Ideals");
         vivoVAInstiutionMap.put(
         		"Indiana University",
         		//"IU SDA"
