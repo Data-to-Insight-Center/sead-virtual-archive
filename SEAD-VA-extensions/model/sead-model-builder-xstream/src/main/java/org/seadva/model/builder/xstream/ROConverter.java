@@ -108,7 +108,7 @@ class ROConverter extends AbstractEntityConverter {
             writer.startNode(E_FILES);
             for (DcsFile f : files) {
                 writer.startNode(FileConverter.E_FILE);
-                context.convertAnother((SeadFile)f);
+                context.convertAnother(f);
                 writer.endNode();
             }
             writer.endNode();
