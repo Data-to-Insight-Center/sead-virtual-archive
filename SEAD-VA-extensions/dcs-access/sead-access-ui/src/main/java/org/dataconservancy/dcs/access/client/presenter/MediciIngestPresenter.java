@@ -961,9 +961,8 @@ public class MediciIngestPresenter  implements Presenter {
         facetContent.clear();
         bind();
         nPanel = notificationPanel;
-        mainContainer.setWidth("100%");
-        mainContainer.setHeight("100%");
-        mainContainer.setStyleName("Border");
+        
+        mainContainer.addStyleName("Border");
         //mainContainer.add(content);
         mainContainer.add(mainContentPanel);
 

@@ -240,9 +240,7 @@ public class ActivityPresenter implements Presenter {
         mainContainer.clear();
         facetContent.clear();
         bind();
-        mainContainer.setWidth("100%");
-        mainContainer.setHeight("100%");
-        mainContainer.setStyleName("Border");
+        mainContainer.addStyleName("Border");
 
         mainContainer.add(this.display.getActivityContainer());
     }

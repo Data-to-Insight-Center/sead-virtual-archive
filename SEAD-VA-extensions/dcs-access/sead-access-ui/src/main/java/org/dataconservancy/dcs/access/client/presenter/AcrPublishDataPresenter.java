@@ -304,7 +304,7 @@ public class AcrPublishDataPresenter implements Presenter {
         bind();
         mainContainer.setWidth("100%");
         mainContainer.setHeight("100%");
-        mainContainer.setStyleName("Border");
+        mainContainer.addStyleName("Border");
         
         mainContainer.add(this.display.getPublishContainer());
 

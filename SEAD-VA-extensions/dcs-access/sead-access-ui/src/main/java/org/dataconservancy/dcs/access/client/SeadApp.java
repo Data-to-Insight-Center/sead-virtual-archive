@@ -20,8 +20,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.ResizeEvent;
-import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.SimpleEventBus;
@@ -30,6 +28,7 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
+
 import org.dataconservancy.dcs.access.client.Search.UserField;
 import org.dataconservancy.dcs.access.client.api.UserService;
 import org.dataconservancy.dcs.access.client.api.UserServiceAsync;
@@ -93,10 +92,6 @@ public class SeadApp implements EntryPoint {
     Label curatorPage;
     Label activityPage;
     Label home;
-    Label features;
-    //  Label team;
-    Label resources;
-    Label partners;
     Button logoutButton;
     Button loginButton;
 
@@ -159,6 +154,7 @@ public class SeadApp implements EntryPoint {
                 public void onClick(ClickEvent event) {
                     loginPanel.clear();
                     loginPanel.add(loginButton);
+                    //JDM: Why add these on logout? They appear to disappear quickly
                     dataHistory.setStyleName("Option");
                     adminPage.setStyleName("Option");
                     curatorPage.setStyleName("Option");
@@ -172,52 +168,39 @@ public class SeadApp implements EntryPoint {
         }
 
     }
-    int i  = 1;
+
     //Module Load function
     public void onModuleLoad() {
 
 
-        if(getUserAgent().contains("chrome")){
-            mainHorz = new HorizontalPanel();
-            ((HorizontalPanel)mainHorz).setHorizontalAlignment(HorizontalPanel.ALIGN_CENTER);
-        }
-        else{
-            mainHorz = new FlowPanel();
-        }
-        mainHorz.setSize("100%", "100%");
-        //
-        //	mainHorz.setStylePrimaryName("MainHorz");
+        mainHorz = new FlowPanel();
 
-//    	mainHorz.getElement().getStyle().setProperty("float", "center");
         accessurl_tb = new TextBox();
         main = new DockLayoutPanel(Unit.PX);
         main.setStylePrimaryName("Main");
-//        main.setStyleName("orientation-style");
 
         mainHorz.add(main);
-        main.setSize("80%", "100%");
+
         //header parameters
 
         header = new VerticalPanel();
         header.setStylePrimaryName("TopHeader");
-        header.setHeight(Window.getClientHeight()/4 + "px");
-
-
-        HorizontalPanel footer = new HorizontalPanel();
-        footer.setStylePrimaryName("SeadFooter");
-        footer.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-        footer.setWidth("100%");
-
-        HorizontalPanel footerContent = new HorizontalPanel();
-        footerContent.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-        footerContent.setWidth("30%");
-        Image nsfFooterImage = new Image(GWT.getModuleBaseURL()+ "../images/nsf_footer.png");
-        Label nsfFooterText = Util.label("SEAD is funded by the National Science Foundation under cooperative agreement #OCI0940824", "greyFont");
-        footerContent.add(nsfFooterImage);
-        footerContent.add(nsfFooterText);
-
-        footer.add(footerContent);
-
+        
+        HTML footer = new HTML();
+        //Standard SEAD footer (see http://sead-data.net/) 
+        footer.setHTML("<footer id=\"colophon\" class=\"um-scope clearfix\">\n" +
+			"<div class=\"footer-socket-wrapper clearfix\">\n" +
+				"<div class=\"inner-wrap\">\n" +
+					"<div class=\"footer-socket-area\">\n" +
+						"<div class=\"copyright\"><img id=\"nsf\" src=\"http://sead-data.net/wp-content/uploads/2014/06/nsf2.png\" alt=\"NSF\" height=\"30px\" width=\"30px\">SEAD is funded by the National Science Foundation under cooperative agreement #OCI0940824.</div>\n" +						
+					       "<nav class=\"small-menu\">\n" +
+							"<div class=\"menu-footer-menu-container\">	<ul id=\"menu-footer-menu\" class=\"menu\">\n" +	
+								"<a href=\"http://sead-data.net/contactus/\">Contact Us</a></ul></div>" +
+					       "</nav>\n" +
+					"</div>\n" +
+				"</div>\n" + 
+			"</div>\n" +
+			"</footer>");
 
         outerMoreLinks = new HorizontalPanel();
         outerMoreLinks.setStyleName("MoreLinkStyle");
@@ -225,7 +208,6 @@ public class SeadApp implements EntryPoint {
         final Grid moreLinks = new Grid(1,4);
         moreLinks.setCellPadding(7);
 
-        Image more = new Image(GWT.getModuleBaseURL()+ "../images/more.png");
         Button browseButton = new Button("Browse Data");
         Button uploadButton = new Button("Publish Data");
 
@@ -251,8 +233,6 @@ public class SeadApp implements EntryPoint {
         moreLinks.setWidget(0, 2, uploadButton);
 
 
-        main.addNorth(header, 150);//,DockPanel.NORTH);
-        main.addSouth(footer,Window.getClientHeight()/17);
         outerMoreLinks.add(moreLinks);
 
         facetOuterPanel = new FlowPanel();
@@ -263,13 +243,11 @@ public class SeadApp implements EntryPoint {
         facetOuterPanel.setStyleName("FacetPanel");
         facetOuterPanel.add(facetContent);
 
-        main.addWest(facetOuterPanel,250);
-
         loginPanel = new FlowPanel();
         loginButton = new Button("LOG IN");
         loginButton.setStyleName("LoginButton");
         loginPanel.add(loginButton);
-        //loginPanel1.add(registerLabel);
+
         loginButton.addClickHandler(new ClickHandler() {
 
             @Override
@@ -278,12 +256,9 @@ public class SeadApp implements EntryPoint {
             }
         });
 
-        main.addEast(loginPanel, 200);
-
         final Panel headerOuterPanel = new FlowPanel();
         headerOuterPanel.setStyleName("HeaderOuter");
         HorizontalPanel middlePanel = new HorizontalPanel();
-        middlePanel.setWidth("100%");
         middlePanel.setStyleName("Menu");
 
         optionsHorz = new HorizontalPanel();
@@ -300,16 +275,8 @@ public class SeadApp implements EntryPoint {
                 History.newItem(SeadState.HOME.toToken());
             }
         });
-        features = Util.label("Features", "Option");
-        //   team = Util.label("Team", "Option");
-        resources = Util.label("Resources", "Option");
-        partners = Util.label("Partners", "Option");
 
         optionsHorz.add(home);
-        optionsHorz.add(features);
-        //  optionsHorz.add(team);
-        optionsHorz.add(resources);
-        optionsHorz.add(partners);
 
         middlePanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
         middlePanel.add(optionsHorz);
@@ -319,15 +286,9 @@ public class SeadApp implements EntryPoint {
         headerOuterPanel.add(middlePanel);
         headerOuterPanel.setStyleName("Gradient");
 
-        headerOuterPanel.setHeight(Window.getClientHeight()/7 + "px");
+        
 
-        Window.addResizeHandler(new ResizeHandler() {
-            public void onResize(ResizeEvent event) {
-                int height = event.getHeight();
-                header.setHeight(height/4 + "px");
-                headerOuterPanel.setHeight(height/7 + "px");
-            }
-        });
+
 
         ClickHandler goDataSearch = new ClickHandler() {
             public void onClick(ClickEvent event) {
@@ -390,10 +351,19 @@ public class SeadApp implements EntryPoint {
 
 
         centerPanel = new ScrollPanel();
+  main.addNorth(header, 200);
+        //Note order of insertion is important - adding south after west (and then changing the size of the west widget)
+        // shifts the south widget to the right. If it is added first, it stays fixed.
+        main.addSouth(footer,51);
+
+        main.addWest(facetOuterPanel,250);
+
+        main.addEast(loginPanel, 200);
 
         main.add(centerPanel);
-        //  centerPanel.setStylePrimaryName("Middle");
-
+        centerPanel.setStylePrimaryName("centerPanel");
+      
+        
         uploadPanel = new TabPanel();
         uploadPanel.setStylePrimaryName("UploadTabPanel");
 
@@ -401,45 +371,20 @@ public class SeadApp implements EntryPoint {
         mediciUpload = new FlowPanel();
         bagUpload = new FlowPanel();
         uploadPanel.add(localUpload,"Local Upload");
-        uploadPanel.add(mediciUpload,"Medici Upload");
+        uploadPanel.add(mediciUpload,"Project Upload");
 
 
         uploadPanel.selectTab(1);
-        uploadPanel.setSize("100%", "100%");
+       
 
 
         publishData = new FlowPanel();
+        publishData.addStyleName("publishPanel");
 
-        /* Image logo = new Image(GWT.getModuleBaseURL()
-       + "../images/sead_logo_2.png");*/
-        Image logo = new Image(GWT.getModuleBaseURL()
-                + "../images/sead_logoV2_a.png");
+        //Main SEAD menu (see http://sead-data.net/)
+        header.add(getSeadMenu());
 
-        ClickHandler gohome = new ClickHandler() {
-            public void onClick(ClickEvent event) {
-                History.newItem(SeadState.HOME.toToken());
-            }
-        };
-
-        logo.addClickHandler(gohome);
-
-
-
-        Image toptext = new Image(GWT.getModuleBaseURL()
-                + "../images/topic_V2_a.png");
-
-
-        toptext.addClickHandler(gohome);
-
-
-        Panel logoPanel = new HorizontalPanel();
-        logoPanel.add(logo);
-        logoPanel.add(toptext);
-
-        header.setWidth("100%");
-        header.add(logoPanel);
-
-
+        //The VA tab panes/menu
         header.add(headerOuterPanel);
 
         RootLayoutPanel.get().add(mainHorz);
@@ -479,10 +424,6 @@ public class SeadApp implements EntryPoint {
                             if(!logoutButton.isAttached())
                                 loginPanel.add(logoutButton);
 
-                            features.setStyleName("Option");
-                            //  team.setStyleName("Option");
-                            resources.setStyleName("Option");
-                            partners.setStyleName("Option");
                             activityPage.setStyleName("Option");
                             adminPage.setStyleName("Option");
                             home.setStyleName("OptionSelected");
@@ -506,14 +447,6 @@ public class SeadApp implements EntryPoint {
             }
         });
 
-        //uncomment this part
-        /*if (accessurl != null) {
-            updateAccessServiceUrl();
-            deposit_endpoint =
-            		accessurl+"deposit/";
-            userService.checkSession(null,cb);
-            History.fireCurrentHistoryState();
-        } else */{
             // load config
 
           
@@ -599,9 +532,85 @@ public class SeadApp implements EntryPoint {
             //Init DB
         }
 
-    }
 
-    private void handleHistoryTokenError(String token) {
+    /*Making SEAD header/menu an HTML element that can be added to VA's current page structure
+     * more easily than just adding it to the Sead_access.html file
+     * (Could try to detach/move static Html instead?)
+     */
+    private HTML getSeadMenu() {
+    	StringBuilder sb = new StringBuilder("<header class=\"um-scope site-header clearfix\" id=\"masthead\">");
+    	sb.append("<div id=\"header-text-nav-wrap\" class=\"clearfix\">");
+    	
+    	sb.append("<!-- #header-logo-image -->");
+    	sb.append("<div id=\"header-left-section\">");
+    	sb.append("<div id=\"header-logo-image\">");
+    	sb.append("<a href=\"http://sead-data.net/\" title=\"SEAD\" rel=\"home\"><img src=\"http://sead-data.net/wp-content/uploads/2014/06/logo.png\" alt=\"SEAD\"></a></div>");;
+    	sb.append("<!-- #header-logo-image -->");
+
+    	sb.append("<!-- #header-right-section social icons-->"); 
+    	sb.append("<div id=\"header-right-section\">");
+    	sb.append("	<div id=\"header-right-sidebar\" class=\"clearfix\">");
+    	sb.append("		<aside id=\"cnss_widget-3\" class=\"widget widget_cnss_widget\">");
+    	sb.append("			<table class=\"cnss-social-icon\" style=\"width:138px\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">");
+    	sb.append("<tbody><tr><td>");
+    	sb.append("<a target=\"_blank\" title=\"facebook\" href=\"https://www.facebook.com/SEADDataNet\">");
+    	sb.append("	<img src=\"http://sead-data.net/wp-content/uploads/1403285144_facebook.png\" alt=\"facebook\" border=\"0\" height=\"32\" width=\"32\">");
+    	sb.append("	</a></td><td>");
+    	sb.append("	<a target=\"_blank\" title=\"twitter\" href=\"https://twitter.com/SEADdatanet\">");
+    	sb.append("	<img src=\"http://sead-data.net/wp-content/uploads/1403285215_twitter.png\" alt=\"twitter\" border=\"0\" height=\"32\" width=\"32\">");
+    	sb.append("	</a></td><td>");
+    	sb.append("	<a target=\"_blank\" title=\"Slideshare\" href=\"http://www.slideshare.net/SEADdatanet\">");
+    	sb.append("	<img src=\"http://sead-data.net/wp-content/uploads/1403285311_slidershare.png\" alt=\"Slideshare\" border=\"0\" height=\"32\" width=\"32\">");
+    	sb.append("</a></td><td><a target=\"_blank\" title=\"Rss Feed\" href=\"http://www.sead-data.net/?cat=11,12,13,29,30,31&amp;feed=rss2\"><img src=\"http://sead-data.net/wp-content/uploads/1415982481_rss.png\" alt=\"Rss Feed\" style=\"opacity: 1;\" border=\"0\" height=\"32\" width=\"32\"></a></td>");
+    	sb.append("</tr></tbody></table></aside></div></div>");
+    	sb.append("<!-- #header-right-section -->"); 
+
+    	sb.append("<!--header navigation begin-->");
+    	sb.append("<div id=\"header-navigation\">");
+    	sb.append("<nav id=\"site-navigation\" class=\"main-navigation\" role=\"navigation\">");
+    	sb.append("<h1 class=\"menu-toggle\">Menu</h1>");
+    	sb.append("<div class=\"menu-global-navigation-container\">");
+    	sb.append("<ul id=\"menu-global-navigation\" class=\"menunav-menu\">");
+    	sb.append("<li class=\"menu-item \"><a href=\"http://sead-data.net/\">Home</a></li>");
+    	sb.append("<li class=\"menu-item  menu-item-has-children \"><a href=\"http://sead-data.net/about/\">About</a>");
+    	sb.append("<ul class=\"sub-menu\">");
+    	sb.append("<li class=\"menu-item\"><a href=\"http://sead-data.net/about/sead-team/\">Project Team</a></li>");
+    	sb.append("<li class=\"menu-item\"><a href=\"http://sead-data.net/about/advisory-board/\">Advisory Board</a></li>");
+    	sb.append("<li class=\"menu-item\"><a href=\"http://sead-data.net/about/publicationspresentations/\">Publications &amp; Presentations</a></li>");
+    	sb.append("<li class=\"menu-item\"><a href=\"http://sead-data.net/about/newsevents/\">News &amp; Events</a></li>");
+    	sb.append("</ul></li>");
+    	sb.append("<li class=\"menu-item menu-item-has-children\"><a href=\"http://sead-data.net/feature-tour/\">Features Tour</a>");
+    	sb.append("<ul class=\"sub-menu\">");
+    	sb.append("<li class=\"menu-item\"><a href=\"http://sead-data.net/feature-tour/tools-in-development/\">Tools in Development</a></li>");
+    	sb.append("</ul></li>");
+    	sb.append("<li class=\"menu-item \"><a href=\"https://sead.ncsa.illinois.edu/projects/\">Project Spaces</a></li>");
+    	sb.append("<li class=\"menu-item current-menu-item \"><a href=\"http://seadva.d2i.indiana.edu:8181/sead-access/\">Virtual Archive</a></li>");
+    	sb.append("<li class=\"menu-item menu-item-has-children\"><a href=\"http://sead-vivo.d2i.indiana.edu:8080/sead-vivo/\">Research Network</a>");
+    	sb.append("<ul class=\"sub-menu\">");
+    	sb.append("<li class=\"menu-item \"><a href=\"http://sead-vivo.d2i.indiana.edu:8080/sead-vivo/people\">People</a></li>");
+    	sb.append("<li class=\"menu-item \"><a href=\"http://sead-vivo.d2i.indiana.edu:8080/sead-vivo/organizations\">Organizations</a></li>");
+    	sb.append("<li class=\"menu-item \"><a href=\"http://sead-vivo.d2i.indiana.edu:8080/sead-vivo/research\">Research</a></li>");
+    	sb.append("<li class=\"menu-item \"><a href=\"http://sead-vivo.d2i.indiana.edu:8080/sead-vivo/events\">Events</a></li>");
+    	sb.append("</ul></li>");
+    	sb.append("<li class=\"menu-item menu-item-has-children\"><a href=\"http://sead-data.net/help/\">Help</a>");
+    	sb.append("<ul class=\"sub-menu\">");
+    	sb.append("<li class=\"menu-item\"><a href=\"http://sead-data.net/help/faq/\">FAQ</a></li>");
+    	sb.append("</ul></li></ul></div></nav></div>");
+    	sb.append("<!--header navigation end-->");    
+
+    	sb.append("</div><!-- #header-left-section -->");
+    	sb.append("</div>");
+        
+    	sb.append("<!-- Project space table body -->");
+    	sb.append("</header>");
+    	
+    	HTML headerHtml = new HTML();
+    	headerHtml.setHTML(sb.toString());
+    	return headerHtml;
+    	
+	}
+
+	private void handleHistoryTokenError(String token) {
         Window.alert("Error parsing action: " + token);
     }
 
@@ -672,10 +681,6 @@ public class SeadApp implements EntryPoint {
             if(!centerPanel.isAttached())
                 main.add(centerPanel);
 
-            features.setStyleName("Option");
-            //  team.setStyleName("Option");
-            resources.setStyleName("Option");
-            partners.setStyleName("Option");
             activityPage.setStyleName("Option");
             adminPage.setStyleName("Option");
             home.setStyleName("OptionSelected");
@@ -700,10 +705,19 @@ public class SeadApp implements EntryPoint {
             handleHistoryTokenError(token);
             return;
         }
+        
+        //Browse appears to be the only panel that hides the login/logout panel
+        //This will reset it whenever people go to another page/token
+        if (state != SeadState.BROWSE) {
+            main.setWidgetSize(loginPanel, 200);
+            loginPanel.setVisible(true);
+        	
+        }
         if (state == SeadState.HOME) {
 
             if(facetOuterPanel.isAttached()){
                 main.setWidgetSize(facetOuterPanel,0);
+                facetOuterPanel.setVisible(false);
             }
 
             if(!centerPanel.isAttached())
@@ -725,7 +739,8 @@ public class SeadApp implements EntryPoint {
         }else if (state == SeadState.ADVANCED) {
             if(facetOuterPanel.isAttached()){
                 main.setWidgetSize(facetOuterPanel,250);
-
+                facetOuterPanel.setVisible(true);
+                
                 if(!centerPanel.isAttached())
                     main.add(centerPanel);
 
@@ -745,13 +760,17 @@ public class SeadApp implements EntryPoint {
         }else if (state == SeadState.BROWSE) {
             if(facetOuterPanel.isAttached()){
                 main.setWidgetSize(facetOuterPanel,250);
+                facetOuterPanel.setVisible(true);
             }
             else
                 main.addWest(facetOuterPanel,250);
+            facetOuterPanel.setVisible(true);
+            
             if(!centerPanel.isAttached())
                 main.add(centerPanel);
             if(loginPanel.isAttached()){
                 main.setWidgetSize(loginPanel, 0);
+                loginPanel.setVisible(false);
             }
 
             UserField[] userfields = new UserField[1];
@@ -779,9 +798,11 @@ public class SeadApp implements EntryPoint {
         else if (state == SeadState.SEARCH) {
             if(facetOuterPanel.isAttached()){
                 main.setWidgetSize(facetOuterPanel,250);
+                facetOuterPanel.setVisible(true);
             }
             else
                 main.addWest(facetOuterPanel,250);
+            facetOuterPanel.setVisible(true);
             if(!centerPanel.isAttached())
                 main.add(centerPanel);
             /*	if(loginPanel.isAttached()){
@@ -864,6 +885,7 @@ public class SeadApp implements EntryPoint {
         } else if (state == SeadState.ENTITY) {
             if(facetOuterPanel.isAttached()){
                 main.setWidgetSize(facetOuterPanel,0);
+                facetOuterPanel.setVisible(false);
             }
             if(!centerPanel.isAttached())
                 main.add(centerPanel);
@@ -879,6 +901,7 @@ public class SeadApp implements EntryPoint {
         } else if (state == SeadState.RELATED) {
             if(facetOuterPanel.isAttached()){
                 main.setWidgetSize(facetOuterPanel,0);
+                facetOuterPanel.setVisible(false);
             }
             if(!centerPanel.isAttached())
                 main.add(centerPanel);
@@ -899,6 +922,7 @@ public class SeadApp implements EntryPoint {
         else if (state == SeadState.CURATIONOBJECT) {
             if(facetOuterPanel.isAttached()){
                 main.setWidgetSize(facetOuterPanel,0);
+                facetOuterPanel.setVisible(false);
             }
             if(!centerPanel.isAttached())
                 main.add(centerPanel);
@@ -954,6 +978,7 @@ public class SeadApp implements EntryPoint {
                 main.add(centerPanel);
             if(facetOuterPanel.isAttached()){
                 main.setWidgetSize(facetOuterPanel,0);
+                facetOuterPanel.setVisible(false);
             }
 
             AsyncCallback<UserSession> cb =
@@ -1006,6 +1031,7 @@ public class SeadApp implements EntryPoint {
                 main.add(centerPanel);
             if(facetOuterPanel.isAttached()){
                 main.setWidgetSize(facetOuterPanel,0);
+                facetOuterPanel.setVisible(false);
             }
 
             AsyncCallback<UserSession> cb =
@@ -1074,6 +1100,7 @@ public class SeadApp implements EntryPoint {
                 main.add(centerPanel);
             if(facetOuterPanel.isAttached()){
                 main.setWidgetSize(facetOuterPanel,0);
+                facetOuterPanel.setVisible(false);
             }
             List<String> tempargs = SeadState.tokenArguments(token);
 
@@ -1101,6 +1128,7 @@ public class SeadApp implements EntryPoint {
                 main.add(centerPanel);
             if(facetOuterPanel.isAttached()){
                 main.setWidgetSize(facetOuterPanel,0);
+                facetOuterPanel.setVisible(false);
             }
 
             AsyncCallback<UserSession> cb =
@@ -1171,6 +1199,7 @@ public class SeadApp implements EntryPoint {
 
             if(facetOuterPanel.isAttached()){
                 main.setWidgetSize(facetOuterPanel,0);
+                facetOuterPanel.setVisible(false);
             }
 
             dataSearch.setStyleName("Option");
@@ -1223,6 +1252,7 @@ public class SeadApp implements EntryPoint {
                 History.newItem(SeadState.UPLOAD.toToken());
             if(facetOuterPanel.isAttached())
                 main.setWidgetSize(facetOuterPanel,0);
+            facetOuterPanel.setVisible(false);
 
             if(!centerPanel.isAttached())
                 main.add(centerPanel);
@@ -1282,6 +1312,7 @@ public class SeadApp implements EntryPoint {
         }else if (state == SeadState.ACRUPLOAD) {
             if(facetOuterPanel.isAttached())
                 main.setWidgetSize(facetOuterPanel,0);
+            facetOuterPanel.setVisible(false);
 
             if(!centerPanel.isAttached())
                 main.add(centerPanel);
@@ -1374,6 +1405,7 @@ public class SeadApp implements EntryPoint {
         }else if (state == SeadState.MONITOR) {
             if(facetOuterPanel.isAttached())
                 main.setWidgetSize(facetOuterPanel,0);
+            facetOuterPanel.setVisible(false);
 
             if(!centerPanel.isAttached())
                 main.add(centerPanel);
@@ -1539,9 +1571,6 @@ public class SeadApp implements EntryPoint {
 
     void initCuratorLogin(){
         home.setStyleName("Option");
-        features.setStyleName("Option");
-        resources.setStyleName("Option");
-        partners.setStyleName("Option");
         uploadData.setStyleName("Option");
         curatorPage.setStyleName("OptionSelected");
         activityPage.setStyleName("Option");
@@ -1549,15 +1578,6 @@ public class SeadApp implements EntryPoint {
 
         if(!home.isAttached())
             optionsHorz.add(home);
-
-        if(!features.isAttached())
-            optionsHorz.add(features);
-
-        if(!resources.isAttached())
-            optionsHorz.add(resources);
-
-        if(!partners.isAttached())
-            optionsHorz.add(partners);
 
         if(!uploadData.isAttached())
             optionsHorz.add(uploadData);
@@ -1574,24 +1594,12 @@ public class SeadApp implements EntryPoint {
 
     void initUserLogin(){
         home.setStyleName("Option");
-        features.setStyleName("Option");
-        resources.setStyleName("Option");
-        partners.setStyleName("Option");
         uploadData.setStyleName("OptionSelected");
         activityPage.setStyleName("Option");
         dataHistory.setStyleName("Option");
 
         if(!home.isAttached())
             optionsHorz.add(home);
-
-        if(!features.isAttached())
-            optionsHorz.add(features);
-
-        if(!resources.isAttached())
-            optionsHorz.add(resources);
-
-        if(!partners.isAttached())
-            optionsHorz.add(partners);
 
         if(!uploadData.isAttached())
             optionsHorz.add(uploadData);
@@ -1605,9 +1613,6 @@ public class SeadApp implements EntryPoint {
 
     void initAdminLogin(){
         home.setStyleName("Option");
-        features.setStyleName("Option");
-        resources.setStyleName("Option");
-        partners.setStyleName("Option");
         uploadData.setStyleName("Option");
         curatorPage.setStyleName("Option");
         adminPage.setStyleName("OptionSelected");
@@ -1616,15 +1621,6 @@ public class SeadApp implements EntryPoint {
 
         if(!home.isAttached())
             optionsHorz.add(home);
-
-        if(!features.isAttached())
-            optionsHorz.add(features);
-
-        if(!resources.isAttached())
-            optionsHorz.add(resources);
-
-        if(!partners.isAttached())
-            optionsHorz.add(partners);
 
         if(!uploadData.isAttached())
             optionsHorz.add(uploadData);
@@ -1646,22 +1642,9 @@ public class SeadApp implements EntryPoint {
     void initNoLogin(){
 
         home.setStyleName("OptionSelected");
-        features.setStyleName("Option");
-        // team.setStyleName("Option");
-        resources.setStyleName("Option");
-        partners.setStyleName("Option");
 
         if(!home.isAttached())
             optionsHorz.add(home);
-
-        if(!features.isAttached())
-            optionsHorz.add(features);
-
-        if(!resources.isAttached())
-            optionsHorz.add(resources);
-
-        if(!partners.isAttached())
-            optionsHorz.add(partners);
 
         if(curatorPage.isAttached())
             optionsHorz.remove(curatorPage);

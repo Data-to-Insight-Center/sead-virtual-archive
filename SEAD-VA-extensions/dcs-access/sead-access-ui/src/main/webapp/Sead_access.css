@@ -172,6 +172,8 @@ margin-bottom:10px;
 
 .TopHeader {
   background-color: #FFFFFF;
+  height:200px;
+	border-bottom:thick solid #4C8EFC !important;
 }
 
 .TopHeader img {
@@ -193,6 +195,11 @@ margin-bottom:10px;
   margin-left: 300px;
   margin-top: 50px;
 }
+
+.TopHeader .gwt-HTML {
+width: 1200px;
+}
+
 .logoutPanel{
   margin-left: 350px;
   margin-top: 50px;
@@ -362,15 +369,24 @@ margin-bottom:10px;
 .Main {
   color: #000000;
   background-color: #FFFFFF;
-  width: 100%;
+  width: 1200px!important;
   height: 100%;
   border-collapse: collapse;
+  overflow:visible;
+
+  margin:auto;
 }
+
+.Main>div {
+overflow:visible !important;
+}
+
 .MainHorz{
   color: #000000;
   /*background-color: #E0E0D1; */
   background-color: #FFFFFF;
-  width: 100%;
+  width: 1200px;
+  margin:auto;
   height: 100%;
   border-collapse: collapse;
 }
@@ -413,7 +429,7 @@ white-space:normal;
 }
 
 .PublishContainer{
-	margin-top:4%;
+	margin-top:1%;
 	background-color: #F7F7F7;
 }
 
@@ -493,25 +509,8 @@ white-space:normal;
 }
 
 .Gradient{
- /* background-image: url(images/nav-bg.png);*/
- background-image: -ms-linear-gradient(top, #FFFFFF 0%, #E1E9EF 100%);
-
-/* Mozilla Firefox */ 
-background-image: -moz-linear-gradient(top, #FFFFFF 0%, #E1E9EF 100%);
-
-/* Opera */ 
-background-image: -o-linear-gradient(top, #FFFFFF 0%, #E1E9EF 100%);
-
-/* Webkit (Safari/Chrome 10) */ 
-background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FFFFFF), color-stop(1, #E1E9EF));
-
-/* Webkit (Chrome 11+) */ 
-background-image: -webkit-linear-gradient(top, #FFFFFF 0%, #E1E9EF 100%);
-
-/* W3C Markup, IE10 Release Preview */ 
-background-image: linear-gradient(to bottom, #FFFFFF 0%, #E1E9EF 100%);	
-  background-repeat: repeat-x; 
- 
+ display:inline-block;
+ height:26px;
 }
 
 .GradientFacet{
@@ -638,7 +637,6 @@ background-image: linear-gradient(to bottom, #FFFFFF 0%, #E1E9EF 100%);
 .LoginButton{
 	color: #FFFFFF;
 	width: 50%;
-	height: 5%;
 	background-image: url(images/login_gradient.jpg);
 	background-repeat: repeat-x;
 	border-width: 2px;
@@ -656,7 +654,6 @@ background-image: linear-gradient(to bottom, #FFFFFF 0%, #E1E9EF 100%);
 .LogoutButton{
 	color: #FFFFFF;
 	width: 50%;
-	height: 5%;
 	text-shadow: 0 1px 1px rgba(0, 0, 0, 0.75);
 	font-weight: 400;
 	background-image: -ms-linear-gradient(top, #86B5FC 0%, #4C8FFC 100%);
@@ -685,11 +682,12 @@ background-image: linear-gradient(to bottom, #FFFFFF 0%, #E1E9EF 100%);
 }
 
 .Menu{
-  height: 133px;/*increase value to decrease height*/
-  background: url(images/blue.jpg) repeat-x center bottom;
+  height: 43px;/*increase value to decrease height*/
   border-radius: 2px;
   width: auto;
 }
+
+
 
 .Notification{
 	color: #FFFFFF;
@@ -1482,9 +1480,12 @@ color: darkgray;
 .addRemoveButton{
 	width: 100%;
 	height: auto;
-	zoom:.2 !important;
 	background:white !important;
 	border:none !important;
+}
+.addRemoveButton img {
+height:48px;
+width:48px;
 }
 
 .gwt-TabBar {
@@ -1518,5 +1519,16 @@ color: darkgray;
 	margin:30px;
 }
 
+.Border {
+	setWidth:100%;
+	setHeight:100%;
+	overflow: auto !important;
+	
+}
+
+.centerPanel {
+	overflow: auto !important;
+}
+}
 }
 

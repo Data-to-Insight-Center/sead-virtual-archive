@@ -19,152 +19,187 @@ package org.dataconservancy.dcs.access.client.ui;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.*;
+
 import org.dataconservancy.dcs.access.client.SeadState;
 import org.dataconservancy.dcs.access.client.Search;
 
 public class SeadAdvancedSearchWidget extends Composite {
 
-    FlowPanel advancedPanel;
-    public SeadAdvancedSearchWidget(Search.UserField[] userfields,
-                                    String[] userqueries) {
+	FlowPanel advancedPanel;
 
-        advancedPanel = new FlowPanel();
-        advancedPanel.setStyleName("advancedSearchPanel");
-        initWidget(advancedPanel);
-        Button search = new Button("Search");
+	public SeadAdvancedSearchWidget(Search.UserField[] userfields,
+			String[] userqueries) {
 
-        final FlexTable table = new FlexTable();
+		advancedPanel = new FlowPanel();
+		advancedPanel.setStyleName("advancedSearchPanel");
+		initWidget(advancedPanel);
+		Button search = new Button("Search");
 
-        final Button add = new Button("<image src='images/add.ico'>");
-        add.addStyleName("addRemoveButton");
+		final FlexTable table = new FlexTable();
 
-        advancedPanel.add(table);
+		advancedPanel.add(table);
 
-        // Called to search filled in query
+		// Called to search filled in query
 
-        final ClickHandler searchlistener = new ClickHandler() {
+		final ClickHandler searchlistener = new ClickHandler() {
 
-            public void onClick(ClickEvent event) {
-                // Build up search history token
+			public void onClick(ClickEvent event) {
+				doSearch(table);
+			}
+		};
 
-                String[] data = new String[(table.getRowCount() * 2) + 1+1];
-                int dataindex = 0;
-                boolean emptyquery = true;
+		final Button add = createNewAddButton(table);
 
-                for (int i = 0; i < table.getRowCount(); i++) {
-                    ListBox lb = (ListBox) table.getWidget(i, 2);
-                    TextBox tb = (TextBox) table.getWidget(i, 0);
+		if (userfields != null) {
+			for (int i = 0; i < userfields.length; i++) {
+				if (userfields[i] == null) {
+					continue;
+				}
 
-                    int sel = lb.getSelectedIndex();
+				int row = table.getRowCount();
+				addRow(table, row);
 
-                    if (sel != -1) {
-                        String userquery = tb.getText().trim();
-                        String userfield = Search.UserField.values()[sel]
-                                .name();
+				ListBox lb = (ListBox) table.getWidget(row, 2);
+				TextBox tb = (TextBox) table.getWidget(row, 0);
+				tb.setText(userqueries[i]);
+			}
+		} else {
+			addRow(table, 0);
+		}
 
-                        if (userquery.isEmpty()) {
-                            userfield = null;
-                            userquery = null;
-                        } else {
-                            emptyquery = false;
-                        }
+		HorizontalPanel hp = new HorizontalPanel();
+		hp.setHorizontalAlignment(HorizontalPanel.ALIGN_RIGHT);
+		hp.setSpacing(5);
+		// hp.add(add);
+		hp.add(search);
 
-                        data[dataindex++] = userfield;
-                        data[dataindex++] = userquery;
-                    }
-                }
+		advancedPanel.add(hp);
+		hp.setWidth("80%"); // 80% to align hp to the right of AdvancedPanel
+		search.addClickHandler(searchlistener);
 
-                data[dataindex] = "0";
-                data[dataindex+1] = "0";
+	}
 
-                if (!emptyquery) {
-                    History.newItem(SeadState.SEARCH.toToken(data));
-                }
-            }
-        };
+	ListBox createAdvancedSearchFieldSelector() {
+		ListBox lb = new ListBox();
+		// lb.setStyleName("SimpleTextBox");
 
-        ClickHandler addlistener = new ClickHandler() {
+		for (Search.UserField uf : Search.UserField.values()) {
+			lb.addItem(uf.display);
+		}
 
-            public void onClick(ClickEvent event) {
-                int row = table.getRowCount();
+		return lb;
+	}
 
-                TextBox tb = new TextBox();
-                //tb.setStyleName("SimpleTextBox");
-                table.setWidget(row, 0, tb);
-                table.setWidget(row, 1, new Label("in"));
-                table.setWidget(row, 2 , createAdvancedSearchFieldSelector());
+	private void doSearch(FlexTable table) {
+		// Build up search history token
 
+		String[] data = new String[(table.getRowCount() * 2) + 1 + 1];
+		int dataindex = 0;
+		boolean emptyquery = true;
 
+		for (int i = 0; i < table.getRowCount(); i++) {
+			ListBox lb = (ListBox) table.getWidget(i, 2);
+			TextBox tb = (TextBox) table.getWidget(i, 0);
 
-                tb.addKeyDownHandler(new KeyDownHandler() {
+			int sel = lb.getSelectedIndex();
 
-                    public void onKeyDown(KeyDownEvent event) {
-                        if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-                            searchlistener.onClick(null);
-                        }
-                    }
-                });
+			if (sel != -1) {
+				String userquery = tb.getText().trim();
+				String userfield = Search.UserField.values()[sel].name();
 
-                
-                //final Button remove = new Button("Remove");
-                final Button remove = new Button("<image src='images/remove.png'>");
-                remove.addStyleName("addRemoveButton");
-                
-                table.setWidget(row, 3, remove);
-                table.setWidget(row, 4 , add);
+				if (userquery.isEmpty()) {
+					userfield = null;
+					userquery = null;
+				} else {
+					emptyquery = false;
+				}
 
-                remove.addClickHandler(new ClickHandler() {
+				data[dataindex++] = userfield;
+				data[dataindex++] = userquery;
+			}
+		}
 
-                    public void onClick(ClickEvent event) {
-                        for (int row = 0; row < table.getRowCount(); row++) {
-                            if (table.getWidget(row, 3) == remove) {
-                                table.removeRow(row);
-                            }
-                        }
-                    }
-                });
-            }
-        };
+		data[dataindex] = "0";
+		data[dataindex + 1] = "0";
 
-        add.addClickHandler(addlistener);
+		if (!emptyquery) {
+			History.newItem(SeadState.SEARCH.toToken(data));
+		}
+	}
 
-        if (userfields != null) {
-            for (int i = 0; i < userfields.length; i++) {
-                if (userfields[i] == null) {
-                    continue;
-                }
+	private void addRow(final FlexTable table, int row) {
 
-                int row = table.getRowCount();
-                addlistener.onClick(null);
+		TextBox tb = new TextBox();
+		// tb.setStyleName("SimpleTextBox");
+		table.setWidget(row, 0, tb);
+		table.setWidget(row, 1, new Label("in"));
+		table.setWidget(row, 2, createAdvancedSearchFieldSelector());
 
-                ListBox lb = (ListBox) table.getWidget(row,2);
-                TextBox tb = (TextBox) table.getWidget(row, 0);
-                tb.setText(userqueries[i]);
-            }
-        } else {
-            addlistener.onClick(null);
-        }
+		tb.addKeyDownHandler(new KeyDownHandler() {
 
-        HorizontalPanel hp = new HorizontalPanel();
-        hp.setHorizontalAlignment(HorizontalPanel.ALIGN_RIGHT);
-        hp.setSpacing(5);
-        //hp.add(add);
-        hp.add(search);
+			public void onKeyDown(KeyDownEvent event) {
+				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+					doSearch(table);
+				}
+			}
+		});
 
-        advancedPanel.add(hp);
-        hp.setWidth("80%");	// 80% to align hp to the right of AdvancedPanel
-        search.addClickHandler(searchlistener);
+		if (row != 0) { // More than one row - can remove a row
+			// final Button remove = new Button("Remove");
 
-    }
+			table.setWidget(row, 3, createNewRemoveButton(table));
 
-    ListBox createAdvancedSearchFieldSelector() {
-        ListBox lb = new ListBox();
-        //lb.setStyleName("SimpleTextBox");
+			if (row == 1) {
+				// Just added a second row, need to add a remove button
+				// on the first row too
+				table.setWidget(0, 3, createNewRemoveButton(table));
+			}
 
-        for (Search.UserField uf : Search.UserField.values()) {
-            lb.addItem(uf.display);
-        }
+		}
+		table.setWidget(row, 4, createNewAddButton(table));
+	}
 
-        return lb;
-    }
+	private Button createNewAddButton(final FlexTable table) {
+		Button newAddButton = new Button("<image src='images/add.ico'>");
+
+		newAddButton.addStyleName("addRemoveButton");
+
+		final ClickHandler addlistener = new ClickHandler() {
+
+			public void onClick(ClickEvent event) {
+				int nextRow = table.getRowCount();
+				addRow(table, nextRow);
+				table.setWidget(nextRow-1, 4, null);
+			}
+		};
+		newAddButton.addClickHandler(addlistener);
+		return newAddButton;
+	}
+
+	private Button createNewRemoveButton(final FlexTable table) {
+
+		Button remove = new Button("<image src='images/remove.png'>");
+		remove.addStyleName("addRemoveButton");
+
+		remove.addClickHandler(new ClickHandler() {
+
+			public void onClick(ClickEvent event) {
+				int rowIndex = table.getCellForEvent(event).getRowIndex();
+				int count = table.getRowCount();
+				table.removeRow(rowIndex);
+				if (rowIndex == (count - 1)) {
+					// Make sure last row has an add button (if we
+					// removed the old last row)
+
+					table.setWidget(rowIndex - 1, 4, createNewAddButton(table));
+				}
+				if (count == 2) {
+					// Don't allow the last row to be removed
+					table.setWidget(0, 3, null);
+				}
+			}
+		});
+		return remove;
+	}
+
 }

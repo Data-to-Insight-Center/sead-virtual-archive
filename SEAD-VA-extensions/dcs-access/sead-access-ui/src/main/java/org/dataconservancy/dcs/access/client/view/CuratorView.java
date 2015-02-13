@@ -21,6 +21,7 @@ public class CuratorView extends Composite implements org.dataconservancy.dcs.ac
 
     public CuratorView() {
         publishContainer =  new VerticalPanel();
+        publishContainer.addStyleName("curatorView");
         Image loadImage =  new Image("images/loading.gif");
         final int height = Window.getClientHeight();
         final int width = Window.getClientWidth();

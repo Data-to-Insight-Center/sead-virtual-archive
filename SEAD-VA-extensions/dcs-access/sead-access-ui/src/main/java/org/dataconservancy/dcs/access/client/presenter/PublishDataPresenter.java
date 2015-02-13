@@ -480,11 +480,9 @@ public class PublishDataPresenter implements Presenter {
         mainContainer.clear();
         facetContent.clear();
         bind();
-        //nPanel = notificationPanel;
-        mainContainer.setWidth("100%");
-        mainContainer.setHeight("100%");
-        mainContainer.setStyleName("Border");
-        //mainContainer.add(content);
+
+        mainContainer.addStyleName("Border");
+
         verticalPanel = new VerticalPanel();
         verticalPanel.add(this.display.getPublishContainer());
         mainContainer.add(verticalPanel);
