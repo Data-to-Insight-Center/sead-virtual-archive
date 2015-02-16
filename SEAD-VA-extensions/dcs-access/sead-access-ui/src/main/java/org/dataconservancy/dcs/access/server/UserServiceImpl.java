@@ -163,6 +163,8 @@ public class UserServiceImpl extends RemoteServiceServlet
             }
         }
 
+        if (toAddress.size() == 0)
+            return false;
         String[] toAddressArr = toAddress.toArray(new String[toAddress.size()]);
         emailSender.sendEmail(toAddressArr, "New Research Object available for curation", "Please note that a new Research Object" +
                 " has been submitted for review to be deposited under your Institutional Repository at " + affiliation+".");
