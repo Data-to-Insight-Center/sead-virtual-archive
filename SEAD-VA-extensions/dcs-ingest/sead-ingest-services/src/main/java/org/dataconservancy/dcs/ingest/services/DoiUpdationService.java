@@ -114,24 +114,18 @@ public class DoiUpdationService extends IngestServiceBase
                     DcsResourceIdentifier id = null;
                     Iterator<DcsResourceIdentifier> idIt = alternateIds.iterator();
 
-                    while(idIt.hasNext()){
+                    while (idIt.hasNext()) {
                         id = idIt.next();
                         if(id.getTypeId().equalsIgnoreCase("doi")) {
-                            Map metadata = new HashMap<IdMetadata.Metadata,String>();
-                            String locationValue = ((SeadDeliverableUnit)d).getPrimaryLocation().getName();
-                            if(locationValue==null)
-                                locationValue = "http://seadva.d2i.indiana.edu:8181/sead-access/#entity;"+ d.getId();
-
+                            Map<IdMetadata.Metadata,String> metadata = new HashMap<IdMetadata.Metadata,String>();
                             if (handle != null && handle.contains("illinois"))
                                 metadata.put(IdMetadata.Metadata.TARGET, handle.trim());
                             else
-                                metadata.put(IdMetadata.Metadata.TARGET, locationValue.trim());
+                                metadata.put(IdMetadata.Metadata.TARGET, getLocation(d.getId()));
                             String[] tempShouler = doiShoulder.split(":");
                             int beginIndex = id.getIdValue().indexOf(tempShouler[tempShouler.length-1]);
                             String identifier = id.getIdValue().substring(beginIndex);
                             idService.setService("https://ezid.cdlib.org/id/" +
-                                    //"doi:10.5967/M0"
-                                    //"doi:10.5072/FK2"
                                     "doi:"+identifier.trim()
                             );
                             try {
@@ -155,6 +149,14 @@ public class DoiUpdationService extends IngestServiceBase
 
     }
 
+    private String getLocation(String duId) {
+        // set production sead va instance as default
+        String location = "http://seadva.d2i.indiana.edu/sead-access/#entity;" + duId;
+        if (duId.contains("sead-wf")) {
+            location = duId.substring(0, duId.indexOf("sead-wf")) + "sead-access/#entity;" + duId;
+        }
+        return location;
+    }
 
     private void addDoiEvent(String sipRef) {
         DcsEvent doiEvent =
