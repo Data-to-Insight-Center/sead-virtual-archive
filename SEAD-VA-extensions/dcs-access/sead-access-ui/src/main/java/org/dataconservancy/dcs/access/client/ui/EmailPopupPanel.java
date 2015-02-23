@@ -122,7 +122,7 @@ public class EmailPopupPanel extends PopupPanel {
 					if(result!=null){
 						String[] recipients = new String[1];
 						recipients[0] = emailBox.getText();
-						userService.sendEmail(recipients, "Datast ready for download",
+						userService.sendEmail(recipients, "Dataaset ready for download!",
 							"Your download is ready and can be obtained from the following url(s):\n"
 							+ result
 							+ ".\n\nThanks,\nSEAD Virtual Archive Team", emailCallback );
