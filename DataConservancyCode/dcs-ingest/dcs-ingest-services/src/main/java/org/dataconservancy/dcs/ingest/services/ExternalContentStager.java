@@ -158,7 +158,9 @@ public class ExternalContentStager
             }
             stream = fixityFilter(src, metadata, eventsToAdd);
             staged = ingest.getFileContentStager().add(stream, metadata);
-            file.setSource(staged.getReferenceURI());
+            // file.setSource(staged.getReferenceURI());
+            // TODO : Directly setting the access URI due to Reference URI resolving issues for large collections
+            file.setSource(staged.getAccessURI());
         } catch (IOException e) {
             throw new RuntimeException("Error getting content from "
                     + fileUrl.toString());
