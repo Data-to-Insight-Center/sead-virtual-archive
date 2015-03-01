@@ -27,8 +27,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.thoughtworks.xstream.XStream;
 
+import org.dataconservancy.dcs.query.api.QueryService;
 import org.dataconservancy.dcs.query.api.QueryServiceException;
 import org.dataconservancy.dcs.query.dcpsolr.DcsDataModelQueryService;
+import org.dataconservancy.dcs.query.dcpsolr.SeadConfig;
+import org.dataconservancy.dcs.query.dcpsolr.SeadDataModelQueryService;
 import org.dataconservancy.dcs.query.endpoint.utils.dcpsolr.Config;
 import org.dataconservancy.dcs.query.endpoint.utils.dcpsolr.ResultFormat;
 import org.dataconservancy.model.builder.DcsModelBuilder;
@@ -48,7 +51,7 @@ public class EntityServlet
 
     private XStream jsonbuilder;
 
-    private Config config;
+    private SeadConfig config;
 
     private Logger log = LoggerFactory.getLogger(this.getClass());
     
@@ -56,7 +59,7 @@ public class EntityServlet
         super.init(cfg);
 
         this.dcpbuilder = new DcsXstreamStaxModelBuilder();
-        this.config = Config.instance(getServletContext());
+        this.config = SeadConfig.instance(getServletContext());
         this.jsonbuilder = DcpUtil.toJSONConverter();
     }
 
@@ -77,7 +80,8 @@ public class EntityServlet
             return null;
         }
 
-        DcsDataModelQueryService queryService = (DcsDataModelQueryService) config.dcpQueryService();
+        //DcsDataModelQueryService queryService = (DcsDataModelQueryService) config.dcpQueryService();
+        SeadDataModelQueryService queryService = (SeadDataModelQueryService) config.dcpQueryService();
 
         // TODO: If not found by the query service, search the archive.
         return queryService.lookupEntity(id);
@@ -171,7 +175,8 @@ public class EntityServlet
             return -1;
         }
 
-        DcsDataModelQueryService queryService = (DcsDataModelQueryService) config.dcpQueryService();
+        //DcsDataModelQueryService queryService = (DcsDataModelQueryService) config.dcpQueryService();
+        SeadDataModelQueryService queryService = (SeadDataModelQueryService) config.dcpQueryService();
         try {
             return queryService.lookupEntityLastModified(id);
         } catch (QueryServiceException e) {

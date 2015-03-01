@@ -32,6 +32,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.dataconservancy.dcs.query.api.QueryServiceException;
 import org.dataconservancy.dcs.query.dcpsolr.DcsDataModelQueryService;
+import org.dataconservancy.dcs.query.dcpsolr.SeadConfig;
+import org.dataconservancy.dcs.query.dcpsolr.SeadDataModelQueryService;
 import org.dataconservancy.dcs.query.endpoint.utils.dcpsolr.Config;
 import org.dataconservancy.model.builder.DcsModelBuilder;
 import org.dataconservancy.model.builder.xstream.DcsXstreamStaxModelBuilder;
@@ -51,14 +53,14 @@ public class DatastreamServlet
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private Config config;
+    private SeadConfig config;
     private DcsModelBuilder dcpbuilder;
 
     public void init(ServletConfig cfg) throws ServletException {
         super.init(cfg);
        
         this.dcpbuilder = new DcsXstreamStaxModelBuilder();
-        this.config = Config.instance(getServletContext());
+        this.config = SeadConfig.instance(getServletContext());
     }
     
     public void destroy() {
@@ -80,11 +82,14 @@ public class DatastreamServlet
                            "Malformed entity id " + req.getPathInfo());
             return null;
         }
-        
+
+        id = id.replaceFirst(":/", "://");
+
         DcsEntity entity = null;
         
         try {
-            DcsDataModelQueryService queryService = (DcsDataModelQueryService) config.dcpQueryService();
+            //DcsDataModelQueryService queryService = (DcsDataModelQueryService) config.dcpQueryService();
+            SeadDataModelQueryService queryService = (SeadDataModelQueryService) config.dcpQueryService();
             entity = queryService.lookupEntity(id);
         } catch (Exception e) {
             final String msg = "Error performing search for entity '" + id + "': " + e.getMessage();
