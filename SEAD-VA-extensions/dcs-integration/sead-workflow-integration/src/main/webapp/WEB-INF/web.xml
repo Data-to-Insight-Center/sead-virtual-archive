@@ -63,7 +63,7 @@
 
   <servlet>
     <servlet-name>datastreamServlet</servlet-name>
-    <servlet-class>org.dataconservancy.dcs.access.http.DatastreamServlet</servlet-class>
+    <servlet-class>org.dataconservancy.dcs.access.http.SeadDatastreamServlet</servlet-class>
   </servlet>
 
   <!--servlet>
