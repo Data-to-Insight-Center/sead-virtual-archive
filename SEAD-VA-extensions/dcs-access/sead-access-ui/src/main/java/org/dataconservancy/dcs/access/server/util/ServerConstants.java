@@ -16,13 +16,21 @@
 
 package org.dataconservancy.dcs.access.server.util;
 
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.core.util.MultivaluedMapImpl;
 import org.apache.commons.io.IOUtils;
 import org.dataconservancy.dcs.access.server.database.DBConnectionPool;
 import org.dataconservancy.dcs.access.shared.MediciInstance;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.seadva.registry.database.model.obj.vaRegistry.RoleType;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import javax.ws.rs.core.MultivaluedMap;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
@@ -45,7 +53,7 @@ public class ServerConstants {
 				if(pwd.getKey().equals("email-sender"))
 					emailPassword = pwd.getValue();
 			}
-			acrInstances = serverConstants.loadAcrInstances();
+			acrInstances = serverConstants.loadAcrInstancesRest();
 			serverConstants.loadDBConfig();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -161,6 +169,53 @@ public class ServerConstants {
 		}
         return passwords;
 	}
+
+    private List<MediciInstance> loadAcrInstancesRest() throws IOException {
+        List<MediciInstance> instances = new ArrayList<MediciInstance>();
+        MediciInstance stored = loadAcrInstances().get(0);
+
+        WebResource webResource = Client.create()
+                .resource("https://sead.ncsa.illinois.edu/projects/spaces");
+
+        try {
+            ClientResponse response = webResource.get(ClientResponse.class);
+            StringWriter writer = new StringWriter();
+            IOUtils.copy(response.getEntityInputStream(), writer);
+            String json = writer.toString();
+            JSONArray array = new JSONArray(json);
+            for (int i = 0; i < array.length(); i++) {
+                MediciInstance instance = new MediciInstance();
+                instance.setId(i + 1);
+                String url = array.getString(i);
+                instance.setUrl(url);
+                instance.setTitle(getInstanceName(url));
+                instance.setRemoteAPI(stored.getRemoteAPI());
+                instance.setType(stored.getType());
+                instance.setUser(stored.getUser());
+                instance.setPassword(stored.getPassword());
+                instances.add(instance);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return instances;
+    }
+
+    private String getInstanceName(String url) {
+        String name = url;              // default
+        WebResource webResource = Client.create().resource(url + "/resteasy/sys/config");
+        try {
+            ClientResponse response = webResource.get(ClientResponse.class);
+            StringWriter writer = new StringWriter();
+            IOUtils.copy(response.getEntityInputStream(), writer);
+            String json = writer.toString();
+            JSONObject obj = new JSONObject(json);
+            name = obj.getString("project.name");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return name;
+    }
 	
 	private List<MediciInstance> loadAcrInstances() throws IOException{
 		List<MediciInstance> instances = new ArrayList<MediciInstance>();
