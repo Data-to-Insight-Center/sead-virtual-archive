@@ -133,6 +133,19 @@ insert into data_identifier_type values(
      'http://seadva.d2i.indiana.edu'
 );
 
+insert into data_identifier_type values(
+    'id:6',
+    'storage_format',
+     'Storage Format'
+);
+
+insert into data_identifier_type values(
+    'id:7',
+    'sda_location',
+     'SDA Tarfile Location '
+);
+
+
 insert into role_type values(
     'role:1',
     'Curator',

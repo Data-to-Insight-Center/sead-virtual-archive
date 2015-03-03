@@ -234,12 +234,14 @@ public class DepositServiceImpl
 	      BufferedReader rd;
 	      String line;
 	      String result = "";
+          System.out.println("getLinks: "+urlStr);
 	      try {
 	         url = new URL(urlStr);
 	         conn = (HttpURLConnection) url.openConnection();
 	         conn.setRequestMethod("GET");
 	         rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 	         result = rd.readLine();
+             System.out.println("getLinks result: "+result);
 	         while ((line = rd.readLine()) != null) {
 	            result += "\n" + line;
 	         }

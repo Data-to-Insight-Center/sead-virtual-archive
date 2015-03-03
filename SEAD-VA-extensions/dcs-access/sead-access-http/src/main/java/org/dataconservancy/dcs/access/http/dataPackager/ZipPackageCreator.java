@@ -48,6 +48,7 @@ import java.util.*;
 import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import java.io.FileOutputStream;
 
 /**
  * Class that creates zipped packages from data from any archive store in SEAD VA
@@ -120,29 +121,78 @@ public class ZipPackageCreator extends PackageCreatorBase
         zipOutputStream = new ZipOutputStream(stream);
         zipOutputStream.setLevel(Deflater.NO_COMPRESSION);
 
-        String sipPath = cachePath+link.substring(link.lastIndexOf("/")+1).replace(".zip","");
+        String sipPath = cachePath + link.substring(link.lastIndexOf("/") + 1).replace(".zip", "");
+        System.out.println("SIP Path: "+sipPath);
 
-        if(!new File(sipPath).exists())
+        if (!new File(sipPath).exists())
             throw new FileNotFoundException("Sorry, there seems to be an error. Package does not exist.");
 
         ResearchObject dcp = null;
         try {
-            dcp = (ResearchObject)builder.buildSip(new FileInputStream(new File(sipPath)));
+            dcp = (ResearchObject) builder.buildSip(new FileInputStream(new File(sipPath)));
+            System.out.println("DCP: "+dcp.toString());
         } catch (InvalidXmlException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
 
-
         allEntities = new HashMap<String, DcsEntity>();
 
         String rootId = "";
-        for(DcsEntity entity:dcp.getDeliverableUnits())
-        {
-            if(((DcsDeliverableUnit)entity).getParents().isEmpty())
+        String collectionTitle = "";
+
+        for (DcsEntity entity : dcp.getDeliverableUnits()) {
+            if (((DcsDeliverableUnit) entity).getParents().isEmpty())
                 rootId = entity.getId();
-            allEntities.put(entity.getId(),entity);
+            allEntities.put(entity.getId(), entity);
         }
+
+        /************* This part of the code is used to get the tar file from SDA *****************************/
+        DcsEntity tmp = allEntities.get(rootId);
+        if (tmp instanceof DcsDeliverableUnit) {
+            collectionTitle = ((DcsDeliverableUnit) tmp).getTitle();
+        }
+
+        String storageFormat = null;
+        Collection<DcsDeliverableUnit> dus = dcp.getDeliverableUnits();
+
+        for (DcsDeliverableUnit d : dus) {
+            Collection<DcsResourceIdentifier> alternateIds = null;
+            if (d.getParents() == null || d.getParents().isEmpty()) {
+                alternateIds = d.getAlternateIds();
+                if (alternateIds != null) {
+                    DcsResourceIdentifier id = null;
+                    Iterator<DcsResourceIdentifier> idIt = alternateIds.iterator();
+                    while (idIt.hasNext()) {
+                        id = idIt.next();
+                        if (id.getTypeId().equalsIgnoreCase("storage_format")) {
+                            storageFormat = id.getIdValue();
+                            System.out.println("Alternate Object ID for storage_format: " + storageFormat);
+                            break;
+                        }
+                    }
+
+                }
+            }
+        }
+        if(storageFormat.equalsIgnoreCase("tar")){
+            getTarFromSDA("", collectionTitle);
+            try {
+                zipOutputStream.putNextEntry(new ZipEntry(collectionTitle + ".tar"));
+                IOUtils.copy(new FileInputStream(collectionTitle + ".tar"), zipOutputStream);
+                zipOutputStream.closeEntry();
+
+                //Close the whole Zip stream
+                zipOutputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }catch(Exception e){
+                System.out.println("Something went wrong...");
+            }
+            return;
+        }
+        /*************************************************************************************************/
+
 
         for(DcsEntity entity:dcp.getFiles())
             allEntities.put(entity.getId(),entity);
@@ -175,8 +225,6 @@ public class ZipPackageCreator extends PackageCreatorBase
 
         createZip("", rootId);
         try {
-
-
             //Add ORE file inside the folder
             String id =  rootId.split("/")[rootId.split("/").length-1];
             String oreFilePath = oreConversion(sipPath,id);
@@ -253,6 +301,30 @@ public class ZipPackageCreator extends PackageCreatorBase
         }
     }
 
+    void getTarFromSDA(String path, String title){
+        if(path.length() > 0){
+            path += "/" + title;
+        }
+
+        String tarFileName = title+".tar";
+        FileOutputStream fileOutputStream = null;
+        Sftp sftp = null;
+        try {
+            fileOutputStream = new FileOutputStream(new File(tarFileName));
+            sftp = new Sftp(
+                    config.getSdahost(),config.getSdauser(),config.getSdapwd(),config.getSdamount()
+            );
+            sftp.downloadFile(title, tarFileName, fileOutputStream);
+            sftp.disConnectSession();
+        }catch(FileNotFoundException e){
+            e.printStackTrace();
+        }catch(SftpException e){
+            e.printStackTrace();
+        }catch (JSchException e) {
+            e.printStackTrace();
+        }
+//        return;
+    }
 
 
     boolean isFileCached(String fileId){
@@ -265,7 +337,7 @@ public class ZipPackageCreator extends PackageCreatorBase
     private static final Logger log =
             LoggerFactory.getLogger(ZipPackageCreator.class);
     void downloadFileStream(SeadFile file, OutputStream destination) throws EntityNotFoundException, EntityTypeException {
-                String filePath = null;
+            String filePath = null;
             if(file.getPrimaryLocation().getType()!=null&&file.getPrimaryLocation().getType().length()>0
                     &&file.getPrimaryLocation().getLocation()!=null&&file.getPrimaryLocation().getLocation().length()>0
                     &&file.getPrimaryLocation().getName()!=null&&file.getPrimaryLocation().getName().length()>0

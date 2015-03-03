@@ -18,12 +18,15 @@ package org.seadva.archive.impl.cloud;
 
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
+import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.alias.ClassMapper;
+import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.dataconservancy.archive.api.AIPFormatException;
 import org.dataconservancy.archive.api.EntityNotFoundException;
 import org.dataconservancy.archive.api.EntityType;
 import org.dataconservancy.archive.api.EntityTypeException;
+import org.dataconservancy.dcs.id.api.IdentifierNotFoundException;
 import org.dataconservancy.dcs.index.dcpsolr.SolrService;
 import org.dataconservancy.model.builder.DcsModelBuilder;
 import org.dataconservancy.model.builder.InvalidXmlException;
@@ -45,6 +48,9 @@ import org.apache.commons.compress.utils.IOUtils;
 import org.seadva.bagit.impl.ConfigBootstrap;
 import org.seadva.bagit.model.PackageDescriptor;
 import org.seadva.bagit.event.api.Event;
+
+import org.dataconservancy.dcs.id.api.IdentifierNotFoundException;
+import java.io.*;
 
 import java.io.*;
 import java.util.*;
@@ -213,6 +219,47 @@ public class SdaArchiveStore implements SeadArchiveStore {
         populateRelations(pkg);
         Collection<DcsDeliverableUnit> dus = pkg.getDeliverableUnits();
         Collection<DcsFile> files = pkg.getFiles();
+//        String sipSource = sipArchival(pkg);
+
+        for(DcsDeliverableUnit du: dus){
+            System.out.println("DU: "+du.toString());
+            Collection<DcsResourceIdentifier> alternateIds = null;
+            if(du.getParents().isEmpty()){
+                alternateIds = du.getAlternateIds();
+                System.out.println("Alternate IDs: "+alternateIds.toString());
+                if(alternateIds==null)
+                    alternateIds= new HashSet<DcsResourceIdentifier>();
+                else{
+                    DcsResourceIdentifier id = null;
+                    Iterator<DcsResourceIdentifier> idIt = alternateIds.iterator();
+
+                    int alreadySet =0;
+                    while(idIt.hasNext()){
+                        id = idIt.next();
+
+                        if(id.getTypeId().equalsIgnoreCase("storage_format")) {
+                            alreadySet=1;
+                        }
+                    }
+                    if(alreadySet==1)
+                        break;
+                }
+                try{
+                    DcsResourceIdentifier storage_format = new DcsResourceIdentifier();
+                    storage_format.setTypeId("storage_format");
+                    if (isTar)
+                        storage_format.setIdValue("tar");
+                    else
+                        storage_format.setIdValue("collection");
+                    System.out.println("AlternateID: "+storage_format.toString());
+                    alternateIds.add(storage_format);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                du.setAlternateIds(alternateIds);
+            }
+        }
+        pkg.setDeliverableUnits(dus);
         String sipSource = sipArchival(pkg);
 
         if(isTar){
@@ -306,19 +353,15 @@ public class SdaArchiveStore implements SeadArchiveStore {
             }
             System.out.println("End of tar file upload");
 
-            //Upload the OAIORE file
-            System.out.println("Uploading the OAIORE file: "+oreFilePath+" - "+t_sipDirectory+" - "+collectionName+"_oaiore.xml");
-            try {
-                if (sftp != null) {
-                    sftp.uploadFile(oreFilePath, t_sipDirectory + "/" + collectionName + "_oaiore.xml", useMount);
-                }
-            }catch(NullPointerException npe){
-                System.err.println("SFTP OAI ORE file upload failed!");
-            }
-            System.out.println("oreFilePath: "+oreFilePath);
-            System.out.println("End of oaiore file upload");
-            System.out.println("Uploading the SIP file: "+sipSource+" - "+t_sipDirectory+" - "+UUID.randomUUID().toString()+"_sip.xml");
-            System.out.println("sipSource: "+sipSource);
+//            //Upload the OAIORE file
+//            System.out.println("Uploading the OAIORE file: "+oreFilePath+" - "+t_sipDirectory+" - "+collectionName+"_oaiore.xml");
+//            try {
+//                if (sftp != null) {
+//                    sftp.uploadFile(oreFilePath, t_sipDirectory + "/" + collectionName + "_oaiore.xml", useMount);
+//                }
+//            }catch(NullPointerException npe){
+//                System.err.println("SFTP OAI ORE file upload failed!");
+//            }
             try {
                 if (sftp != null) {
                     sftp.uploadFile(sipSource, t_sipDirectory + "/" + UUID.randomUUID().toString() + "_sip.xml", useMount);
@@ -421,6 +464,7 @@ public class SdaArchiveStore implements SeadArchiveStore {
                 }
 
             }
+
             pkg.setDeliverableUnits(dus);
             pkg.setFiles(files);
             try {
@@ -431,11 +475,6 @@ public class SdaArchiveStore implements SeadArchiveStore {
                 System.err.println("SFTP Upload failed!");
             }
         }
-
-
-        //upload the sip.xml to the top-most possible directory
-
-
         if (sftp != null) {
             sftp.disConnectSession();
         }
