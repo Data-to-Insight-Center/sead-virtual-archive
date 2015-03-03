@@ -565,6 +565,8 @@ public class ZipPackageCreator extends PackageCreatorBase
     private ResearchObject addDUs(ResearchObject newSip, Map<String, DcsDeliverableUnit> duHashMap, String duId){
 
         DcsDeliverableUnit du = duHashMap.get(duId);
+        if (newSip.getDeliverableUnits().contains(du))
+            return newSip;
         newSip.addDeliverableUnit(du);//change to SeadDeliverableUnit
 
         if(du.getParents()==null||du.getParents().size()==0)
