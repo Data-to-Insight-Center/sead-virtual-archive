@@ -73,6 +73,10 @@ public class SdaArchiveStore implements SeadArchiveStore {
         fmodelBuilder = mb;
     }
 
+    public DcsModelBuilder getModelBuilder(){
+        return fmodelBuilder;
+    }
+
     @Required
     public void setUsername(String un) {
         username = un;
@@ -97,6 +101,12 @@ public class SdaArchiveStore implements SeadArchiveStore {
     public void setMountPath(String mPath) {
         mountPath = mPath;
     }
+
+    public void setIsTar(Boolean bValue){
+        isTar = bValue;
+    }
+
+    public SdaArchiveStore() throws JSchException {}
 
     public SdaArchiveStore(String hostname, String username, String password, String mountPath) throws JSchException {
         this.hostname = hostname;
