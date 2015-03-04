@@ -55,6 +55,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>1.8.2</version>
+        </dependency>
+        <dependency>
             <groupId>org.dataconservancy.archive</groupId>
             <artifactId>dcs-archive-api</artifactId>
             <version>1.1.0-SNAPSHOT</version>
@@ -69,6 +74,11 @@
             <optional>false</optional>
         </dependency>
 
+        <dependency>
+            <groupId>org.seadva.bagit</groupId>
+            <artifactId>bagit</artifactId>
+            <version>1.0.1-SNAPSHOT</version>
+        </dependency>
 
         <dependency>
             <groupId>org.dataconservancy.model</groupId>
@@ -130,6 +140,12 @@
             <version>2.5</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>1.8</version>
+        </dependency>
+
 
     </dependencies>
 

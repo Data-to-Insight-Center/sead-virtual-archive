@@ -122,7 +122,6 @@ public class ZipPackageCreator extends PackageCreatorBase
         zipOutputStream.setLevel(Deflater.NO_COMPRESSION);
 
         String sipPath = cachePath + link.substring(link.lastIndexOf("/") + 1).replace(".zip", "");
-        System.out.println("SIP Path: "+sipPath);
 
         if (!new File(sipPath).exists())
             throw new FileNotFoundException("Sorry, there seems to be an error. Package does not exist.");
@@ -130,7 +129,6 @@ public class ZipPackageCreator extends PackageCreatorBase
         ResearchObject dcp = null;
         try {
             dcp = (ResearchObject) builder.buildSip(new FileInputStream(new File(sipPath)));
-            System.out.println("DCP: "+dcp.toString());
         } catch (InvalidXmlException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
@@ -175,21 +173,26 @@ public class ZipPackageCreator extends PackageCreatorBase
                 }
             }
         }
-        if(storageFormat.equalsIgnoreCase("tar")){
-            getTarFromSDA("", collectionTitle);
-            try {
-                zipOutputStream.putNextEntry(new ZipEntry(collectionTitle + ".tar"));
-                IOUtils.copy(new FileInputStream(collectionTitle + ".tar"), zipOutputStream);
-                zipOutputStream.closeEntry();
+        try {
+            if (storageFormat.equalsIgnoreCase("tar")) {
+                getTarFromSDA("", collectionTitle);
+                try {
+                    zipOutputStream.putNextEntry(new ZipEntry(collectionTitle + ".tar"));
+                    IOUtils.copy(new FileInputStream(collectionTitle + ".tar"), zipOutputStream);
+                    zipOutputStream.closeEntry();
 
-                //Close the whole Zip stream
-                zipOutputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            }catch(Exception e){
-                System.out.println("Something went wrong...");
+                    //Close the whole Zip stream
+                    zipOutputStream.close();
+                }catch (IOException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }catch (Exception e) {
+                    System.out.println("Something went wrong...");
+                }
+
+                return;
             }
-            return;
+        }catch (NullPointerException e) {
+            e.printStackTrace();
         }
         /*************************************************************************************************/
 

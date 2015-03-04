@@ -18,15 +18,12 @@ package org.seadva.archive.impl.cloud;
 
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.alias.ClassMapper;
-import com.thoughtworks.xstream.io.xml.DomDriver;
+import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.dataconservancy.archive.api.AIPFormatException;
 import org.dataconservancy.archive.api.EntityNotFoundException;
 import org.dataconservancy.archive.api.EntityType;
 import org.dataconservancy.archive.api.EntityTypeException;
-import org.dataconservancy.dcs.id.api.IdentifierNotFoundException;
 import org.dataconservancy.dcs.index.dcpsolr.SolrService;
 import org.dataconservancy.model.builder.DcsModelBuilder;
 import org.dataconservancy.model.builder.InvalidXmlException;
@@ -41,16 +38,12 @@ import org.seadva.model.builder.xstream.SeadXstreamStaxModelBuilder;
 import org.seadva.model.pack.ResearchObject;
 import org.springframework.beans.factory.annotation.Required;
 import org.apache.commons.compress.archivers.ArchiveOutputStream;
-import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.utils.IOUtils;
 
 import org.seadva.bagit.impl.ConfigBootstrap;
 import org.seadva.bagit.model.PackageDescriptor;
 import org.seadva.bagit.event.api.Event;
-
-import org.dataconservancy.dcs.id.api.IdentifierNotFoundException;
-import java.io.*;
 
 import java.io.*;
 import java.util.*;
@@ -80,9 +73,6 @@ public class SdaArchiveStore implements SeadArchiveStore {
         fmodelBuilder = mb;
     }
 
-    public DcsModelBuilder getModelBuilder(){
-        return fmodelBuilder;
-    }
     @Required
     public void setUsername(String un) {
         username = un;
@@ -108,23 +98,12 @@ public class SdaArchiveStore implements SeadArchiveStore {
         mountPath = mPath;
     }
 
-//    @Required
-    public void setIsTar(Boolean bValue){
-        isTar = bValue;
-    }
-
-
-    public SdaArchiveStore() throws JSchException {
-    }
-
     public SdaArchiveStore(String hostname, String username, String password, String mountPath) throws JSchException {
         this.hostname = hostname;
         this.username = username;
         this.password = password;
         this.mountPath = mountPath;
     }
-
-
 
     @Override
     public Iterator<String> listEntities(EntityType type) {
@@ -219,17 +198,13 @@ public class SdaArchiveStore implements SeadArchiveStore {
         populateRelations(pkg);
         Collection<DcsDeliverableUnit> dus = pkg.getDeliverableUnits();
         Collection<DcsFile> files = pkg.getFiles();
-//        String sipSource = sipArchival(pkg);
 
         for(DcsDeliverableUnit du: dus){
-            System.out.println("DU: "+du.toString());
             Collection<DcsResourceIdentifier> alternateIds = null;
             if(du.getParents().isEmpty()){
                 alternateIds = du.getAlternateIds();
                 System.out.println("Alternate IDs: "+alternateIds.toString());
-                if(alternateIds==null)
-                    alternateIds= new HashSet<DcsResourceIdentifier>();
-                else{
+                if(alternateIds != null) {
                     DcsResourceIdentifier id = null;
                     Iterator<DcsResourceIdentifier> idIt = alternateIds.iterator();
 
@@ -243,6 +218,9 @@ public class SdaArchiveStore implements SeadArchiveStore {
                     }
                     if(alreadySet==1)
                         break;
+                }
+                else{
+                    alternateIds = new HashSet<DcsResourceIdentifier>();
                 }
                 try{
                     DcsResourceIdentifier storage_format = new DcsResourceIdentifier();
@@ -320,17 +298,21 @@ public class SdaArchiveStore implements SeadArchiveStore {
                 }
                 String tmpDirectory = "/tmp/tarFileLocation/"+rootDu.getTitle()+"/"+rootDu.getTitle();
                 System.out.println("Collecting files to create a tar...");
-                collectTarFiles(rootDu.getId(), tmpDirectory, t_dus, pkg.getManifestations(), t_files);
+                collectTarFiles(rootDu.getId(), tmpDirectory);
                 System.out.println("Creating the tar ...");
                 collectionName = rootDu.getTitle();
                 tarFileName = rootDu.getTitle()+".tar";
                 tarFilePath = "/tmp/tarFileLocation/"+rootDu.getTitle()+"/"+tarFileName;
                 long tarStartTime = System.nanoTime();
-                tarDirectory(new File("/tmp/tarFileLocation/"+rootDu.getTitle()), "/tmp/tarFileLocation/"+rootDu.getTitle()+"/"+rootDu.getTitle()+".tar");
+//                tarDirectory(new File("/tmp/tarFileLocation/"+rootDu.getTitle()), "/tmp/tarFileLocation/"+rootDu.getTitle()+"/"+rootDu.getTitle()+".tar");
+                createTar(new File("/tmp/tarFileLocation/" + rootDu.getTitle()), "/tmp/tarFileLocation/" + rootDu.getTitle() + "/" + rootDu.getTitle() + ".tar");
+//                generateTar(new File("/tmp/tarFileLocation/"+rootDu.getTitle()), "/tmp/tarFileLocation/"+rootDu.getTitle()+"/"+rootDu.getTitle()+".tar");
+
                 long tarEndTime = System.nanoTime();
                 System.out.println("Time taken to tar file: "+(TimeUnit.SECONDS.convert((tarEndTime - tarStartTime), TimeUnit.NANOSECONDS))+" seconds");
                 //
                 SeadDataLocation dataLocation = new SeadDataLocation();
+                dataLocation.setName(ArchiveEnum.Archive.SDA.getArchive());
                 dataLocation.setType(ArchiveEnum.Archive.SDA.getType().getText());
                 dataLocation.setLocation(t_sipDirectory+"/"+tarFileName);
                 dataLocation.setName(ArchiveEnum.Archive.SDA.getArchive());
@@ -557,8 +539,7 @@ public class SdaArchiveStore implements SeadArchiveStore {
 
     }
 
-    private void collectTarFiles(String id, String directoryName,
-                                 Collection<DcsDeliverableUnit> dus, Collection<DcsManifestation> manifestations, Collection<DcsFile> files){
+    private void collectTarFiles(String id, String directoryName){
 
         // Create a directory if a directory for holding
         // the tar files does not exist
@@ -570,8 +551,12 @@ public class SdaArchiveStore implements SeadArchiveStore {
 
         // Create a directory
         File rootDir = new File(directoryName);
+        if(!rootDir.delete())
+            System.out.println("Temporary Directory deletion failed!");
         if(!rootDir.exists())
-            rootDir.mkdirs();
+            if(!rootDir.mkdirs()){
+                System.out.println("Temporary Directory creation failed!");
+            }
         List<DcsEntity> children = t_duChildren.get(id);
         if(children == null)
             System.out.println("Children is null");
@@ -585,12 +570,12 @@ public class SdaArchiveStore implements SeadArchiveStore {
                             System.out.println("Directory Creation failed!");
 
                     //create a directory
-                    collectTarFiles(child.getId(), tempDirectoryName, dus, manifestations, files);
+                    collectTarFiles(child.getId(), tempDirectoryName);
                 }
                 else if(child instanceof DcsManifestation){
                     String[] manId = child.getId().split("/");
                     String tempDirectoryName =directoryName+"/man_" + manId[manId.length-1];
-                    collectTarFiles(child.getId(), tempDirectoryName, dus, manifestations, files);
+                    collectTarFiles(child.getId(), tempDirectoryName);
 
                 }
                 else if(child instanceof SeadFile){
@@ -648,42 +633,61 @@ public class SdaArchiveStore implements SeadArchiveStore {
 
     }
 
-    private void getFilesList(File dir) throws IOException {
-        File[] files = dir.listFiles();
-        try {
-            for (File file : files) {
-                if (file.isFile()) filesListInDir.add(file.getAbsolutePath());
-                else getFilesList(file);
+    public List<File> recurseDirectory(final File directory) {
+        List<File> files = new ArrayList<File>();
+        if (directory != null && directory.isDirectory()) {
+            try{
+                File[] filesList = directory.listFiles();
+                if(filesList != null) {
+                    for (File file : filesList) {
+
+                        if (file.isDirectory()) {
+                            files.addAll(recurseDirectory(file));
+                        } else {
+                            files.add(file);
+                        }
+                    }
+                }
+            }catch (NullPointerException e){
+                e.printStackTrace();
             }
-        }catch(NullPointerException e){
-            e.printStackTrace();
         }
+
+        return files;
     }
 
-    List<String> filesListInDir;
-    public void tarDirectory(File dir, String tarFileName){
-        System.out.println("Tar file name: "+tarFileName);
-        System.out.println("Tar Directory: "+dir.toString());
-        try{
-            filesListInDir = new ArrayList<String>();
-            getFilesList(dir);
-            FileOutputStream fos = new FileOutputStream(tarFileName);
-            ArchiveOutputStream aos = new ArchiveStreamFactory().createArchiveOutputStream(ArchiveStreamFactory.TAR, fos);
-            for(String filePath : filesListInDir){
-                System.out.println("tarDirectory - filePath: "+filePath);
-                File inputFile = new File(filePath);
-                TarArchiveEntry te = new TarArchiveEntry(filePath.substring(dir.getAbsolutePath().length()+1, filePath.length()));
-                te.setSize(inputFile.length());
-                aos.putArchiveEntry(te);
-                IOUtils.copy(new FileInputStream(inputFile), aos);
-                aos.closeArchiveEntry();
+    public void createTar(final File dir, final String tarFileName){
+        try {
+            OutputStream tarOutput = new FileOutputStream(new File(tarFileName));
+            ArchiveOutputStream tarArchive = new TarArchiveOutputStream(tarOutput);
+            List<File> files = new ArrayList<File>();
+            File[] filesList = dir.listFiles();
+            if(filesList != null) {
+                for (File file : filesList) {
+                    files.addAll(recurseDirectory(file));
+                }
             }
-            fos.close();
+            for(File file:files){
+//                tarArchiveEntry = new TarArchiveEntry(file, file.getPath());
+                TarArchiveEntry tarArchiveEntry = new TarArchiveEntry(
+                        file.toString().substring(dir.getAbsolutePath().length() + 1, file.toString().length()));
+                tarArchiveEntry.setSize(file.length());
+                tarArchive.putArchiveEntry(tarArchiveEntry);
+                FileInputStream fileInputStream = new FileInputStream(file);
+                IOUtils.copy(fileInputStream, tarArchive);
+                fileInputStream.close();
+                tarArchive.closeArchiveEntry();
+            }
+            tarArchive.finish();
+            tarOutput.close();
+        }catch(FileNotFoundException e){
+            e.printStackTrace();
+        }catch(NullPointerException e){
+            e.printStackTrace();
         }catch(IOException e){
             e.printStackTrace();
-        }catch (Exception e){
-            e.printStackTrace();
         }
+
     }
 
     public String oreConversion(String sipFilePath, String rootId) {
@@ -722,7 +726,9 @@ public class SdaArchiveStore implements SeadArchiveStore {
 
         try {
             if(!sipFile.exists())
-                sipFile.createNewFile();
+                if(!sipFile.createNewFile()){
+                    System.out.println("SIP File creation failed!");
+                }
             os = new FileOutputStream(sipFileName);
             DcsModelBuilder modelBuilder = new SeadXstreamStaxModelBuilder();
             modelBuilder.buildSip(pkg, os);
@@ -798,39 +804,29 @@ public class SdaArchiveStore implements SeadArchiveStore {
             children.add(man);
             duChildren.put(parentId,children);
             //create another folder
-            Iterator<DcsManifestationFile> mFiles = man.getManifestationFiles().iterator();
-            while(mFiles.hasNext())
-            {
-                DcsManifestationFile mFile = mFiles.next();
-                for(DcsFile file:pkg.getFiles())
-                {
-                    if(file.getId().equals(mFile.getRef().getRef()))
-                    {
-                        if(duChildren.containsKey(man.getId()))
-                        {
+            for (DcsManifestationFile mFile : man.getManifestationFiles()) {
+                for (DcsFile file : pkg.getFiles()) {
+                    if (file.getId().equals(mFile.getRef().getRef())) {
+                        if (duChildren.containsKey(man.getId())) {
                             children = duChildren.get(man.getId());
                             duChildren.remove(man.getId());
-                        }
-                        else
+                        } else
                             children = new ArrayList<DcsEntity>();
 
                         children.add(file);
-                        duChildren.put(man.getId(),children);
+                        duChildren.put(man.getId(), children);
                     }
                 }
             }
         }
         t_duChildren = duChildren;
-        Iterator iterator = duChildren.entrySet().iterator();
-        while(iterator.hasNext()){
-            Map.Entry<String,List<DcsEntity>> child = (Map.Entry)iterator.next();
-            for(DcsEntity entity:child.getValue())
-                if(leftOverParents.contains(entity.getId()))
+        for (Object o : duChildren.entrySet()) {
+            Map.Entry<String, List<DcsEntity>> child = (Map.Entry) o;
+            for (DcsEntity entity : child.getValue())
+                if (leftOverParents.contains(entity.getId()))
                     leftOverParents.remove(entity.getId());
         }
 
     }
 
 }
-
-

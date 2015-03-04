@@ -223,28 +223,28 @@ public final class JsDeliverableUnit
                 altIdStr =altIds.get(i).getIdValue();
 
                 final String finalLink;
-                if(altIds.get(i).getTypeId().equals("medici")){
-                    finalLink = "http://nced.ncsa.illinois.edu/acr/#collection?uri="+altIds.get(i).getIdValue();
-                    altIdStr = getCoreMd().getTitle();
+                if(!altIds.get(i).getTypeId().equalsIgnoreCase("storage_format")) {
+                    if (altIds.get(i).getTypeId().equals("medici")) {
+                        finalLink = "http://nced.ncsa.illinois.edu/acr/#collection?uri=" + altIds.get(i).getIdValue();
+                        altIdStr = getCoreMd().getTitle();
+                    } else
+                        finalLink = altIdStr;
+
+                    Label altIdLabel = Util.label(altIdStr, "Hyperlink");
+                    altIdLabel.addClickHandler(new ClickHandler() {
+
+                        @Override
+                        public void onClick(ClickEvent event) {
+                            Window.open(finalLink, "_blank", "");
+                        }
+                    });
+
+                    if (altIds.get(i).getTypeId().equals("medici")) {
+
+                        altLocPanel.add(altIdLabel);
+                    } else
+                        altIdPanel.add(altIdLabel);
                 }
-                else
-                    finalLink= altIdStr;
-
-                Label altIdLabel = Util.label(altIdStr, "Hyperlink");
-                altIdLabel.addClickHandler(new ClickHandler() {
-
-                    @Override
-                    public void onClick(ClickEvent event) {
-                        Window.open(finalLink, "_blank", "");
-                    }
-                });
-
-                if(altIds.get(i).getTypeId().equals("medici")){
-
-                    altLocPanel.add(altIdLabel);
-                }
-                else
-                    altIdPanel.add(altIdLabel);
 
             }
             table.setWidget(6, 1, altIdPanel);
