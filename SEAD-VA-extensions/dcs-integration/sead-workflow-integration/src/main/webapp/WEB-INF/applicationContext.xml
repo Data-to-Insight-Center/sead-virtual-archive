@@ -432,7 +432,7 @@
             <map>
                 <entry><key><value>doi-creation</value></key><ref bean="org.dataconservancy.dcs.ingest.services.DoiCreationService" /></entry>
                 <!--entry><key><value>dataone-id-creation</value></key><ref bean="org.dataconservancy.dcs.ingest.services.DataOneIdService" /></entry-->
-                <!--entry key="y"><ref bean="org.dataconservancy.dcs.ingest.services.MetadataGenerator" /-->
+                <entry><key><value>metadata-generator</value></key><ref bean="org.dataconservancy.dcs.ingest.services.MetadataGenerator" /></entry>
                 <entry><key><value>labeller</value></key><ref bean="org.dataconservancy.dcs.ingest.services.Labeller" /></entry>
                 <!--entry key="y"><ref bean="org.dataconservancy.dcs.ingest.services.MatchmakerClient" /-->
                 <entry><key><value>content-stager</value></key><ref bean="org.dataconservancy.dcs.ingest.services.ExternalContentStager" /></entry>
@@ -481,6 +481,29 @@
         <property name="doiUserName" value="${doi.user}" />
         <property name="doiPassword" value="${doi.pwd}" />
         <property name="disabled" value="false" />
+    </bean>
+
+    <!--<bean id="org.dataconservancy.dcs.ingest.services.DataOneIdService"
+          class="org.dataconservancy.dcs.ingest.services.DataOneIdService">
+	<property name="ingestFramework" ref="ingestFramework" />
+    </bean>
+
+    <bean id="org.dataconservancy.dcs.ingest.services.DataOneInitService"
+          class="org.dataconservancy.dcs.ingest.services.DataOneInitService">
+	<property name="ingestFramework" ref="ingestFramework" />
+        <property name="identifierService" ref="org.dataconservancy.dcs.id.impl.DataciteIdService" />
+        <property name="doiShoulder" value="${doi.shoulder}" />
+        <property name="doiUserName" value="${doi.user}" />
+        <property name="doiPassword" value="${doi.pwd}" />
+    </bean>
+	-->
+
+    <bean id="org.dataconservancy.dcs.ingest.services.MetadataGenerator"
+          class="org.dataconservancy.dcs.ingest.services.MetadataGenerator">
+	<property name="ingestFramework" ref="ingestFramework" />
+	<property name="modelBuilder" ref="seadModelBuilder" />
+	<property name="metadataService" ref="org.seadva.metadata.service.api.MetadataService" />
+	<property name="solrService" ref="solrService" />
     </bean>
 
     <bean id="org.dataconservancy.dcs.ingest.services.DoiUpdationService"

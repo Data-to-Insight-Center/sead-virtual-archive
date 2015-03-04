@@ -90,7 +90,7 @@ public class RulesExecutorBootstrap
 
 
     public void startIngest(String stagedSipID) {
-        ServiceQueueModifier queueModifier = new ServiceQueueModifier(new ArrayBlockingQueue<IngestService>(10));
+        ServiceQueueModifier queueModifier = new ServiceQueueModifier(new ArrayBlockingQueue<IngestService>(11));
         Map<String, Integer> matchedRepositories  = new HashMap<String, Integer>();
         executor.execute(new RulesRunner(queueModifier, ingest.getSipStager(), stagedSipID, matchedRepositories));
         executor.execute(new IngestRunner(queueModifier, stagedSipID));

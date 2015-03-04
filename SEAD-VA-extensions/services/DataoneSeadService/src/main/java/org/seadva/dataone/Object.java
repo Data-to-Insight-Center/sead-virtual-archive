@@ -42,6 +42,7 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -96,13 +97,14 @@ public class Object{
         List<QueryMatch<DcsEntity>> matches = result.getMatches();
         for(QueryMatch<DcsEntity> entity: matches){
             DcsFile dcsFile = (DcsFile)entity.getObject();
-            //String filePath = dcsFile.getSource().replace("file://","").replace("file:","").replace(":/","://").replace(":///","://");
-            String filePath = SeadQueryService.datastreamURL +  URLEncoder.encode(dcsFile.getId());
+            String filePath = dcsFile.getSource().replace("file://","").replace("file:","").replace(":/","://").replace(":///","://");
+            //String filePath = SeadQueryService.datastreamURL +  URLEncoder.encode(dcsFile.getId());
 
 
-            URL url = new URL(filePath);
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            InputStream is = urlConnection.getInputStream();
+            //URL url = new URL(filePath);
+            //HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            //InputStream is = urlConnection.getInputStream();
+            InputStream is = new FileInputStream(filePath);
 
             String lastFormat = null;
             if(dcsFile.getFormats().size()>0){

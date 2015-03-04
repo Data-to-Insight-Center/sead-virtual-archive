@@ -33,6 +33,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -79,13 +80,14 @@ public class Replica {
         List<QueryMatch<DcsEntity>> matches = result.getMatches();
         for(QueryMatch<DcsEntity> entity: matches){
             DcsFile dcsFile = (DcsFile)entity.getObject();
-            //String filePath = dcsFile.getSource().replace("file://","").replace("file:","").replace(":/","://").replace(":///","://");
-            String filePath = "http://bluespruce.pti.indiana.edu:8080/dcs-nced/datastream/"+  URLEncoder.encode(dcsFile.getId());
+            String filePath = dcsFile.getSource().replace("file://","").replace("file:","").replace(":/","://").replace(":///","://");
+            //String filePath = "http://bluespruce.pti.indiana.edu:8080/dcs-nced/datastream/"+  URLEncoder.encode(dcsFile.getId());
 
 
-            URL url = new URL(filePath);
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            InputStream is = urlConnection.getInputStream();
+            //URL url = new URL(filePath);
+            //HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            //InputStream is = urlConnection.getInputStream();
+            InputStream is = new FileInputStream(filePath);
 
             String lastFormat = null;
             if(dcsFile.getFormats().size()>0){
