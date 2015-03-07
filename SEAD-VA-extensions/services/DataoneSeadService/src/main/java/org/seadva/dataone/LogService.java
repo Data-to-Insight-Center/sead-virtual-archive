@@ -23,7 +23,9 @@ import org.seadva.model.SeadEvent;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -41,7 +43,7 @@ public class LogService{
     public LogService() {
     }
 
-
+    @Produces(MediaType.APPLICATION_XML)
     @GET
     public String getLogRecords(@QueryParam("start") int start,
                              @QueryParam("count") String countStr,
@@ -56,6 +58,10 @@ public class LogService{
         DataOneLogService.Result result = SeadQueryService.dataOneLogService.queryLog(start,countStr,event, pidFilter,fromDate, toDate);
 
         for(SeadEvent d1log: result.logs){
+
+            if(d1log.getLogDetail().getSubject() == null || d1log.getLogDetail().getNodeIdentifier() == null) {
+                continue;
+            }
 
             LogEntry logEntry = new LogEntry();
 

@@ -20,6 +20,7 @@ import org.dataconservancy.dcs.id.impl.UidGenerator;
 import org.dataconservancy.dcs.index.api.IndexServiceException;
 import org.dataconservancy.dcs.index.dcpsolr.DcpIndexService;
 import org.dataconservancy.dcs.index.dcpsolr.DcsSolrField;
+import org.dataconservancy.dcs.index.dcpsolr.ROIndexService;
 import org.dataconservancy.dcs.index.dcpsolr.SolrService;
 import org.dataconservancy.dcs.index.solr.support.SolrQueryUtil;
 import org.dataconservancy.dcs.query.api.QueryMatch;
@@ -45,10 +46,10 @@ import static org.dataconservancy.dcs.util.DateUtility.toIso8601;
  */
 public class DataOneLogService {
 
-    DcpIndexService dcpIndexService;
+    ROIndexService dcpIndexService;
 
     public DataOneLogService(SolrService solr) {
-        dcpIndexService = new DcpIndexService(
+        dcpIndexService = new ROIndexService(
                 solr
                 );
     }
@@ -100,7 +101,7 @@ public class DataOneLogService {
         else {
             queryStr+= " AND ("+ DcsSolrField.EventField.TYPE.solrName() + ":" + SeadQueryService.d1toSeadEventTypes.get(Event.READ.xmlValue()) ;
             queryStr+= " OR "+ DcsSolrField.EventField.TYPE.solrName() + ":" + Events.FILEMETADATA_D1READ ;  //other type of read
-            queryStr+= " OR "+ DcsSolrField.EventField.TYPE.solrName() + ":" + SeadQueryService.d1toSeadEventTypes.get(Event.REPLICATE) +" )";
+            queryStr+= " OR "+ DcsSolrField.EventField.TYPE.solrName() + ":" + SeadQueryService.d1toSeadEventTypes.get(Event.REPLICATE.xmlValue()) +" )";
         }
         if(pidFilter!=null){
             pidFilter = pidFilter.replace(":","\\:");

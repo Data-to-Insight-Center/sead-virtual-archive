@@ -128,6 +128,7 @@ then
        // $queueModifier.addIngestServicesName("sda");
         $queueModifier.addIngestServicesName($repositoryMatcher.getFinalMatch( $seadDu));
         $queueModifier.addIngestServicesName("doi-updation");
+	$queueModifier.addIngestServicesName("metadata-generator");
         $queueModifier.addIngestServicesName("after-index");
         $queueModifier.addIngestServicesName("ro-ingest");
         $queueModifier.addIngestServicesName("finisher")
