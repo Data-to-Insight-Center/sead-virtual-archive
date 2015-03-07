@@ -49,6 +49,9 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+import static org.apache.commons.compress.archivers.tar.TarArchiveOutputStream.LONGFILE_ERROR;
+import static org.apache.commons.compress.archivers.tar.TarArchiveOutputStream.LONGFILE_POSIX;
+
 /**
  * SEAD Virtual Archive SDA repository client
  */
@@ -319,7 +322,10 @@ public class SdaArchiveStore implements SeadArchiveStore {
 //                generateTar(new File("/tmp/tarFileLocation/"+rootDu.getTitle()), "/tmp/tarFileLocation/"+rootDu.getTitle()+"/"+rootDu.getTitle()+".tar");
 
                 long tarEndTime = System.nanoTime();
-                System.out.println("Time taken to tar file: "+(TimeUnit.SECONDS.convert((tarEndTime - tarStartTime), TimeUnit.NANOSECONDS))+" seconds");
+                long tarElapsedTime = tarEndTime - tarStartTime;
+                double tarSeconds = tarElapsedTime / 1.0E09;
+                System.out.println ("Time taken to tar file: " + tarSeconds + " seconds");
+
                 //
                 SeadDataLocation dataLocation = new SeadDataLocation();
                 dataLocation.setName(ArchiveEnum.Archive.SDA.getArchive());
@@ -338,7 +344,10 @@ public class SdaArchiveStore implements SeadArchiveStore {
                     long sftpStartTime = System.nanoTime();
                     sftp.uploadFile(tarFilePath, t_sipDirectory + "/" + tarFileName, useMount);
                     long sftpEndTime = System.nanoTime();
-                    System.out.println("Time taken to transfer file: "+(TimeUnit.SECONDS.convert((sftpEndTime - sftpStartTime), TimeUnit.NANOSECONDS))+" seconds");
+                    long sftpElapsedTime = sftpEndTime - sftpStartTime;
+                    double sftpSeconds = sftpElapsedTime / 1.0E09;
+                    System.out.println ("Time taken to transfer file: " + sftpSeconds + " seconds");
+//                    System.out.println("Time taken to transfer file: "+(TimeUnit.SECONDS.convert((sftpEndTime - sftpStartTime), TimeUnit.NANOSECONDS))+" seconds");
                 }
             }catch(NullPointerException npe){
                 System.err.println("SFTP Tar file upload failed!");
@@ -669,7 +678,8 @@ public class SdaArchiveStore implements SeadArchiveStore {
     public void createTar(final File dir, final String tarFileName){
         try {
             OutputStream tarOutput = new FileOutputStream(new File(tarFileName));
-            ArchiveOutputStream tarArchive = new TarArchiveOutputStream(tarOutput);
+            TarArchiveOutputStream tarArchiveOutputStream = new TarArchiveOutputStream(tarOutput);
+            tarArchiveOutputStream.setLongFileMode(LONGFILE_POSIX);
             List<File> files = new ArrayList<File>();
             File[] filesList = dir.listFiles();
             if(filesList != null) {
@@ -678,17 +688,16 @@ public class SdaArchiveStore implements SeadArchiveStore {
                 }
             }
             for(File file:files){
-//                tarArchiveEntry = new TarArchiveEntry(file, file.getPath());
                 TarArchiveEntry tarArchiveEntry = new TarArchiveEntry(
                         file.toString().substring(dir.getAbsolutePath().length() + 1, file.toString().length()));
                 tarArchiveEntry.setSize(file.length());
-                tarArchive.putArchiveEntry(tarArchiveEntry);
+                tarArchiveOutputStream.putArchiveEntry(tarArchiveEntry);
                 FileInputStream fileInputStream = new FileInputStream(file);
-                IOUtils.copy(fileInputStream, tarArchive);
+                IOUtils.copy(fileInputStream, tarArchiveOutputStream);
                 fileInputStream.close();
-                tarArchive.closeArchiveEntry();
+                tarArchiveOutputStream.closeArchiveEntry();
             }
-            tarArchive.finish();
+            tarArchiveOutputStream.finish();
             tarOutput.close();
         }catch(FileNotFoundException e){
             e.printStackTrace();
