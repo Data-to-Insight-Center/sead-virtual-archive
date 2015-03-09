@@ -78,6 +78,15 @@ The above maven build generates a .war file in target folder.
 
 Install: <br/>Please deploy this war in a servlet container. If you are using tomcat, please copy to webapp folder. When copying, please rename to sead-wf.war, since this is the value that is set as 'prefix' in sead-wf/WEB-INF/classes/default.properties file in the war. Please also change any values you want to change in default.properties file as needed. 
 <br/>
+SEAD Workflow also supports compression in the form of TAR files if the repository supports TAR. To enable this option, do the following:
+<ol>
+<li> Open the applicationContext.xml file under webapps/sead-wf/WEB-INF
+<li> Look for the bean id: bean id="org.seadva.archive.impl.cloud.SdaArchiveStore"
+<li> Add the line: <property name="isTar" value="true" /> to the bean
+<li> You can change the value to "false" if you would like to turn off the tarring option.
+<li> Save the file and restart tomcat for the change to take effect
+</ol>
+<br/>
 sead-wf/WEB-INF/classes/RepositoryCredentials.xml also needs to be set with repository credentials.
 <br/>
 Then run: mvn test
