@@ -48,7 +48,8 @@ public class FgdcUtil {
                                                   Set<String> creators,
                                                   Set<String> contacts,
                                                   String abstrct,
-                                                  String publicationDate) //Arguments added by Kavitha
+                                                  String publicationDate,
+                                                  String onlink) //Arguments added by Kavitha
     {
         MetadataDocument metadataDoc = MetadataDocument.Factory.newInstance();
         MetadataType metadataType = metadataDoc.addNewMetadata();
@@ -81,8 +82,11 @@ public class FgdcUtil {
             citeinfoType.setTitle(title);
         else
             citeinfoType.setTitle(SeadNCEDConstants.DEFAULT_UUID);
-        OnlinkType onlinkType = citeinfoType.addNewOnlink();
-     //   onlinkType.setStringValue(SeadConstants.DEFAULT_ONLINK);    //commented by Kavitha
+
+        if(onlink != null) {
+            OnlinkType onlinkType = citeinfoType.addNewOnlink();
+            onlinkType.setStringValue(onlink);    //commented by Kavitha
+        }
         
         DescriptType descriptType = idinfoType.addNewDescript();
         if(abstrct!=null)

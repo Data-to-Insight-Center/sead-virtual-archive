@@ -504,6 +504,8 @@
 	<property name="modelBuilder" ref="seadModelBuilder" />
 	<property name="metadataService" ref="org.seadva.metadata.service.api.MetadataService" />
 	<property name="solrService" ref="solrService" />
+	<property name="baseURL" value="${dcs.baseurl}" />
+	<property name="disabled" value="false" />
     </bean>
 
     <bean id="org.dataconservancy.dcs.ingest.services.DoiUpdationService"

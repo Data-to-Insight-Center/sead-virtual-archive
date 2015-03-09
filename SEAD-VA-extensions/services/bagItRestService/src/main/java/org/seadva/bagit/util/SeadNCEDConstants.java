@@ -40,7 +40,7 @@ import noNamespace.*;
 public class SeadNCEDConstants {
     
     public static final String DEFAULT_ORIGINATOR = "NCED";
-    public static final String DEFAULT_PUBDATE = "01/01/2007";
+    public static final String DEFAULT_PUBDATE = "20070101";
     public static final String DEFAULT_ABSTRACT = "All data created or compiled by NCED-funded scientists.";
     public static final String DEFAULT_PURPOSE = "Data related to study of Earth Surface Dynamics";
     public static final String DEFAULT_CONTACTPERSON = "National Center for Earth-surface Dynamics";
@@ -92,7 +92,7 @@ public class SeadNCEDConstants {
     };
     
     public static final String DEFAULT_METADATANAME = "FGDC Standard for Digital Geospatial Metadata";
-    public static final String DEFAULT_METADATAVERS = "001-1998";
+    public static final String DEFAULT_METADATAVERS = "FGDC-STD-001-1998";
 }
 
 

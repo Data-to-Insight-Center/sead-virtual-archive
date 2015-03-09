@@ -1,5 +1,7 @@
 package org.dataconservancy.dcs.ingest.services;
 
+import net.sf.saxon.FeatureKeys;
+import net.sf.saxon.om.Validation;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.FileUtils;
 import org.dataconservancy.dcs.index.api.BatchIndexer;
@@ -17,22 +19,43 @@ import org.seadva.model.SeadFile;
 import org.seadva.model.SeadPerson;
 import org.seadva.model.pack.ResearchObject;
 import org.springframework.beans.factory.annotation.Required;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.*;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MetadataGenerator extends IngestServiceBase
         implements IngestService
 {
     private DcsModelBuilder builder;
     private MetadataService metadataService;
+    private String baseURL;
     private SolrService solrService;
     private HashMap<String, String> d12seadFormat = new HashMap<String, String>();
+
+    public MetadataGenerator() {
+
+        d12seadFormat.put(MetadataType.FGDC.getText(), "http://www.fgdc.gov/schemas/metadata/fgdc-std-001-1998.xsd");
+
+    }
 
     @Required
     public void setModelBuilder(DcsModelBuilder mb)
@@ -46,6 +69,12 @@ public class MetadataGenerator extends IngestServiceBase
     }
 
     @Required
+    public void setBaseURL(String baseURL)
+    {
+        this.baseURL = baseURL;
+    }
+
+    @Required
     public void setSolrService(SolrService solrService) {
         this.solrService = solrService;
     }
@@ -54,8 +83,6 @@ public class MetadataGenerator extends IngestServiceBase
         if (isDisabled()) return;
 
         Dcp dcp = this.ingest.getSipStager().getSIP(sipRef);
-
-        d12seadFormat.put(MetadataType.FGDC.getText(), "http://www.fgdc.gov/schemas/metadata/fgdc-std-001-1998.xsd");
 
         this.generateMetadata(dcp, MetadataType.FGDC);
 
@@ -85,14 +112,22 @@ public class MetadataGenerator extends IngestServiceBase
             try {
                 metadataFilePath.createNewFile();
             } catch (IOException e) {
+                System.out.println("Error creating FGDC metadata file");
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                return;
             }
 
+        String onlink = null;
+        Pattern pattern = Pattern.compile("http://([^/]*)/.*");
+        Matcher matcher = pattern.matcher(this.baseURL);
+        if(matcher.matches()) {
+            String host = matcher.group(1);
+            onlink = "http://" + host + "/sead-access/#entity;" + this.baseURL + "/entity/" + guid;
+        }
 
         String metadata = null;
         if(outputType.equals(MetadataType.FGDC)) {
-            metadata = toFGDC(sip);
-            metadata = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" + metadata;
+            metadata = toFGDC(sip, onlink);
         }
 
         if(metadata != null) {
@@ -101,6 +136,8 @@ public class MetadataGenerator extends IngestServiceBase
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } else {
+            return;
         }
 
         ResearchObject researchObject = new ResearchObject();
@@ -146,6 +183,7 @@ public class MetadataGenerator extends IngestServiceBase
         identifier.setIdValue("seadva-"+creator.replace(" ","").replace(",","")+UUID.randomUUID().toString());
         identifier.setTypeId("dataone");
         metadataFile.addAlternateId(identifier);
+        metadataFile.setSizeBytes(metadataFilePath.length());
 
         researchObject.addFile(metadataFile);
 
@@ -158,7 +196,7 @@ public class MetadataGenerator extends IngestServiceBase
         }
     }
 
-    private String toFGDC(Dcp sip) {
+    public String toFGDC(Dcp sip, String onlink) {
         Iterator i = sip.getDeliverableUnits().iterator();
 
         SeadDeliverableUnit du;
@@ -181,7 +219,58 @@ public class MetadataGenerator extends IngestServiceBase
         HashSet<String> contacts = new HashSet<String>();
         contacts.add(du.getContact());
 
-        return FgdcUtil.makeDefaultDoc(du.getTitle(), creators, contacts, du.getAbstrct(), du.getPubdate());
+        String pubDate;
+        /*if(du.getPubdate() != null) {
+            pubDate = du.getPubdate();
+        } else {*/
+        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyyMMdd");
+        Date now = new Date();
+        pubDate = sdfDate.format(now);
+        //}
+
+        String fgdcXML = FgdcUtil.makeDefaultDoc(du.getTitle(), creators, contacts, du.getAbstrct(), pubDate, onlink);
+        fgdcXML = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" + fgdcXML;
+
+        fgdcXML = fgdcXML.replace("<metadata>","<metadata xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+                " xsi:noNamespaceSchemaLocation=\"http://www.fgdc.gov/metadata/fgdc-std-001-1998.xsd\">");
+
+        if(validateXML(fgdcXML)){
+            return fgdcXML;
+        } else {
+            return null;
+        }
+    }
+
+    private boolean validateXML(String xml) {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setValidating(true);
+        factory.setNamespaceAware(true);
+
+        try {
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            builder.setErrorHandler(new SimpleErrorHandler());
+            Document document = builder.parse(new ByteArrayInputStream(xml.getBytes()));
+        } catch (Exception e) {
+            System.out.println("Error creating FGDC metadata:");
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+
+    }
+
+    private class SimpleErrorHandler implements ErrorHandler {
+        public void warning(SAXParseException e) throws SAXException {
+            //System.out.println("Warning when generating FGDC metadata :"+e.getMessage());
+        }
+
+        public void error(SAXParseException e) throws SAXException {
+            //System.out.println("Error when generating FGDC metadata :"+e.getMessage());
+        }
+
+        public void fatalError(SAXParseException e) throws SAXException {
+            System.out.println("Fatal error when generating FGDC metadata :"+e.getMessage());
+        }
     }
 
 }
