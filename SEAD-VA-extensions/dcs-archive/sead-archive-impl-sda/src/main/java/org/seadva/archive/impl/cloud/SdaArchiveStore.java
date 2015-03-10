@@ -47,9 +47,7 @@ import org.seadva.bagit.event.api.Event;
 
 import java.io.*;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
-import static org.apache.commons.compress.archivers.tar.TarArchiveOutputStream.LONGFILE_ERROR;
 import static org.apache.commons.compress.archivers.tar.TarArchiveOutputStream.LONGFILE_POSIX;
 
 /**
@@ -309,36 +307,49 @@ public class SdaArchiveStore implements SeadArchiveStore {
                     }
 
                 }
-                String tmpDirectory = "/tmp/tarFileLocation/"+rootDu.getTitle()+"/"+rootDu.getTitle();
+                // Eg. /tmp/tarFileLocation/4_SES_notes
+                // When we upload a local bag, we have the option to choose a different
+                // name rather than 4_SES_notes. But when we get the collection from
+                // ACR, we don't have an option to customize. As a result in the tmp
+                // location, the contents are being written into existing directory thereby
+                // doubling the contents.
+
+                UUID id = UUID.randomUUID();
+                String parentDirectory = "/tmp/tarFileLocation/"+String.valueOf(id);
+                String tmpDirectory = parentDirectory+"/"+rootDu.getTitle();;
+//                String tmpDirectory = "/tmp/tarFileLocation/"+rootDu.getTitle()+"/"+rootDu.getTitle();
                 System.out.println("Collecting files to create a tar...");
                 collectTarFiles(rootDu.getId(), tmpDirectory);
                 System.out.println("Creating the tar ...");
                 collectionName = rootDu.getTitle();
                 tarFileName = rootDu.getTitle()+".tar";
-                tarFilePath = "/tmp/tarFileLocation/"+rootDu.getTitle()+"/"+tarFileName;
+                tarFilePath = parentDirectory+"/"+tarFileName;
                 long tarStartTime = System.nanoTime();
 //                tarDirectory(new File("/tmp/tarFileLocation/"+rootDu.getTitle()), "/tmp/tarFileLocation/"+rootDu.getTitle()+"/"+rootDu.getTitle()+".tar");
-                createTar(new File("/tmp/tarFileLocation/" + rootDu.getTitle()), "/tmp/tarFileLocation/" + rootDu.getTitle() + "/" + rootDu.getTitle() + ".tar");
-//                generateTar(new File("/tmp/tarFileLocation/"+rootDu.getTitle()), "/tmp/tarFileLocation/"+rootDu.getTitle()+"/"+rootDu.getTitle()+".tar");
+                createTar(new File(parentDirectory), parentDirectory + "/" + rootDu.getTitle() + ".tar");
 
                 long tarEndTime = System.nanoTime();
                 long tarElapsedTime = tarEndTime - tarStartTime;
                 double tarSeconds = tarElapsedTime / 1.0E09;
                 System.out.println ("Time taken to tar file: " + tarSeconds + " seconds");
 
-                //
                 SeadDataLocation dataLocation = new SeadDataLocation();
                 dataLocation.setName(ArchiveEnum.Archive.SDA.getArchive());
                 dataLocation.setType(ArchiveEnum.Archive.SDA.getType().getText());
-                dataLocation.setLocation(t_sipDirectory+"/"+tarFileName);
-                dataLocation.setName(ArchiveEnum.Archive.SDA.getArchive());
+                dataLocation.setLocation(rootDu.getTitle());
+                ((SeadDeliverableUnit) rootDu).setPrimaryLocation(dataLocation);
+//                dataLocation.setName(ArchiveEnum.Archive.SDA.getArchive());
             }
 
             String oreFilePath = oreConversion(sipSource,collectionName);
             System.out.println("oreFilePath: "+oreFilePath);
 
-            //Upload the tar file
+            // Upload the tar file
             System.out.println("Uploading the tar file: "+tarFilePath+" - "+t_sipDirectory+" - "+tarFileName);
+            File tarFile = new File(tarFilePath);
+            float tarFileSize = tarFile.length();
+            tarFileSize /= (float) (1024 * 1024);;
+            System.out.println("Tar file size in (MB): "+tarFileSize);
             try {
                 if (sftp != null) {
                     long sftpStartTime = System.nanoTime();
@@ -373,6 +384,7 @@ public class SdaArchiveStore implements SeadArchiveStore {
             System.out.println("End of SIP file upload");
             System.out.println("###############################################################");
         }else {
+
             for (DcsDeliverableUnit rootDu : rootDUs) {
                 if (((SeadDeliverableUnit) rootDu).getPrimaryLocation().getLocation() == null) {
                     sipDirectory = rootDu.getTitle();
@@ -484,7 +496,7 @@ public class SdaArchiveStore implements SeadArchiveStore {
 
     private void uploadToSDA(Sftp sftp, String id, String directoryName,
                              Collection<DcsDeliverableUnit> dus, Collection<DcsManifestation> manifestations, Collection<DcsFile> files){
-
+        long sftpStartTime=System.nanoTime();
         List<DcsEntity> children = duChildren.get(id);
         if(children!=null)
             for(DcsEntity child:children){
@@ -555,10 +567,18 @@ public class SdaArchiveStore implements SeadArchiveStore {
             }
 
         duChildren.remove(id);
-
+        long sftpEndTime = System.nanoTime();
+        long sftpElapsedTime = sftpEndTime - sftpStartTime;
+        double sftpSeconds = sftpElapsedTime / 1.0E09;
+        System.out.println("Total time spent in UploadToSDA: "+sftpSeconds);
     }
 
-    private void collectTarFiles(String id, String directoryName){
+    /**
+     *
+     * @param rootDuID
+     * @param directoryName:
+     */
+    private void collectTarFiles(String rootDuID, String directoryName){
 
         // Create a directory if a directory for holding
         // the tar files does not exist
@@ -576,7 +596,7 @@ public class SdaArchiveStore implements SeadArchiveStore {
             if(!rootDir.mkdirs()){
                 System.out.println("Temporary Directory creation failed!");
             }
-        List<DcsEntity> children = t_duChildren.get(id);
+        List<DcsEntity> children = t_duChildren.get(rootDuID);
         if(children == null)
             System.out.println("Children is null");
         if(children!=null)
@@ -648,7 +668,7 @@ public class SdaArchiveStore implements SeadArchiveStore {
                     }
                 }
             }
-        t_duChildren.remove(id);
+        t_duChildren.remove(rootDuID);
 
     }
 
@@ -675,6 +695,11 @@ public class SdaArchiveStore implements SeadArchiveStore {
         return files;
     }
 
+    /**
+     *
+     * @param dir  Eg./tmp/tarFileLocation/aaaa-bbbb-cccc-dddd
+     * @param tarFileName  Eg./tmp/tarFileLocation/aaaa-bbbb-cccc-dddd/4-SES_notes.tar
+     */
     public void createTar(final File dir, final String tarFileName){
         try {
             OutputStream tarOutput = new FileOutputStream(new File(tarFileName));

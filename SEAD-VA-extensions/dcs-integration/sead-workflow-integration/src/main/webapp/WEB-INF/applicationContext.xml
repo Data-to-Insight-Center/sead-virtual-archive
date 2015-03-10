@@ -651,6 +651,7 @@
         <property name="password" value="${sda.pwd}" />
         <property name="hostname" value="${sda.host}" />
         <property name="mountPath" value="${sda.mount}" />
+        <property name="isTar" value="${isTar}" />
         <property name="solrService" ref="solrService" />
     </bean>
     <!-- Limited number of executing threads, but unbounded queue. Invoking

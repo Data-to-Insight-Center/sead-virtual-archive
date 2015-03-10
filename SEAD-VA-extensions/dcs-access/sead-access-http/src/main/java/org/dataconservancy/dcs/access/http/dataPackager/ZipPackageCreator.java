@@ -175,6 +175,7 @@ public class ZipPackageCreator extends PackageCreatorBase
         }
         try {
             if (storageFormat.equalsIgnoreCase("tar")) {
+                long sftpStartTime = System.nanoTime();
                 getTarFromSDA("", collectionTitle);
                 try {
                     zipOutputStream.putNextEntry(new ZipEntry(collectionTitle + ".tar"));
@@ -188,7 +189,10 @@ public class ZipPackageCreator extends PackageCreatorBase
                 }catch (Exception e) {
                     System.out.println("Something went wrong...");
                 }
-
+                long sftpEndTime = System.nanoTime();
+                long sftpElapsedTime = sftpEndTime - sftpStartTime;
+                double sftpSeconds = sftpElapsedTime / 1.0E09;
+                System.out.println ("Compression: Time taken to generate zip file " + sftpSeconds + " seconds");
                 return;
             }
         }catch (NullPointerException e) {
@@ -225,7 +229,7 @@ public class ZipPackageCreator extends PackageCreatorBase
             }
         }
 
-
+        long sftpStartTime = System.nanoTime();
         createZip("", rootId);
         try {
             //Add ORE file inside the folder
@@ -247,6 +251,10 @@ public class ZipPackageCreator extends PackageCreatorBase
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
+        long sftpEndTime = System.nanoTime();
+        long sftpElapsedTime = sftpEndTime - sftpStartTime;
+        double sftpSeconds = sftpElapsedTime / 1.0E09;
+        System.out.println ("Collection: Time taken to generate zip file " + sftpSeconds + " seconds");
         return;
     }
 
