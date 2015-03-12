@@ -19,6 +19,7 @@ package org.seadva.archive.impl.cloud;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
+import org.apache.commons.io.FileUtils;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.dataconservancy.archive.api.AIPFormatException;
 import org.dataconservancy.archive.api.EntityNotFoundException;
@@ -307,17 +308,9 @@ public class SdaArchiveStore implements SeadArchiveStore {
                     }
 
                 }
-                // Eg. /tmp/tarFileLocation/4_SES_notes
-                // When we upload a local bag, we have the option to choose a different
-                // name rather than 4_SES_notes. But when we get the collection from
-                // ACR, we don't have an option to customize. As a result in the tmp
-                // location, the contents are being written into existing directory thereby
-                // doubling the contents.
 
-                UUID id = UUID.randomUUID();
-                String parentDirectory = "/tmp/tarFileLocation/"+String.valueOf(id);
-                String tmpDirectory = parentDirectory+"/"+rootDu.getTitle();;
-//                String tmpDirectory = "/tmp/tarFileLocation/"+rootDu.getTitle()+"/"+rootDu.getTitle();
+                String parentDirectory = "/tmp/tarFileLocation/"+rootDu.getTitle();
+                String tmpDirectory = parentDirectory+"/"+rootDu.getTitle();
                 System.out.println("Collecting files to create a tar...");
                 collectTarFiles(rootDu.getId(), tmpDirectory);
                 System.out.println("Creating the tar ...");
@@ -325,7 +318,6 @@ public class SdaArchiveStore implements SeadArchiveStore {
                 tarFileName = rootDu.getTitle()+".tar";
                 tarFilePath = parentDirectory+"/"+tarFileName;
                 long tarStartTime = System.nanoTime();
-//                tarDirectory(new File("/tmp/tarFileLocation/"+rootDu.getTitle()), "/tmp/tarFileLocation/"+rootDu.getTitle()+"/"+rootDu.getTitle()+".tar");
                 createTar(new File(parentDirectory), parentDirectory + "/" + rootDu.getTitle() + ".tar");
 
                 long tarEndTime = System.nanoTime();
@@ -338,7 +330,6 @@ public class SdaArchiveStore implements SeadArchiveStore {
                 dataLocation.setType(ArchiveEnum.Archive.SDA.getType().getText());
                 dataLocation.setLocation(rootDu.getTitle());
                 ((SeadDeliverableUnit) rootDu).setPrimaryLocation(dataLocation);
-//                dataLocation.setName(ArchiveEnum.Archive.SDA.getArchive());
             }
 
             String oreFilePath = oreConversion(sipSource,collectionName);
@@ -590,8 +581,13 @@ public class SdaArchiveStore implements SeadArchiveStore {
 
         // Create a directory
         File rootDir = new File(directoryName);
-        if(!rootDir.delete())
-            System.out.println("Temporary Directory deletion failed!");
+        if(rootDir.exists()){
+            try {
+                FileUtils.deleteDirectory(rootDir);
+            } catch (IOException e) {
+                System.out.println("Temporary Directory deletion failed!");;
+            }
+        }
         if(!rootDir.exists())
             if(!rootDir.mkdirs()){
                 System.out.println("Temporary Directory creation failed!");
