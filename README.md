@@ -129,6 +129,12 @@ To open in gwt-dev mode in eclipse, install GWT plugin for eclipse. Import proje
 
 https://github.com/Data-to-Insight-Center/sead-virtual-archive/blob/master/SEAD-VA-extensions/solr-conf/schema.xml
 
+<li>Building DataONE API:
+<br/>cd SEAD-VA-extensions/services/DataoneSeadService/
+<br/>Make sure that 'solr.path' variable is set to the Solr home directory in /src/main/resources/org/seadva/dataone/Config.properties and /src/main/webapp/WEB-INF/Config.properties configuration files.
+<br/>mvn clean install
+<br/>copy the target/sead.war into tomcat/webapps/ directory 
+
 </li>
 </ol>
 
