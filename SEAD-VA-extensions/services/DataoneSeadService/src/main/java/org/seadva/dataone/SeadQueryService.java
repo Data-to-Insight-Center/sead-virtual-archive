@@ -41,6 +41,7 @@ public class SeadQueryService {
 
     public static String NODE_IDENTIFIER;
     public static String SUBJECT;
+    public static String BASE_URL;
     static Map<String,String> d1toSeadfixity;
     static Map<String,String> sead2d1fixity;
     static Map<String,String> d1toSeadEventTypes;
@@ -88,7 +89,10 @@ public class SeadQueryService {
                        NODE_IDENTIFIER = value;
                    }
                    if (name.equals("contact.subject")) {
-                       SUBJECT = value.replace("=","-");
+                       SUBJECT = value.replace("-","=");
+                   }
+                   if (name.equals("base.url")) {
+                       BASE_URL = value;
                    }
                }
             solr =
