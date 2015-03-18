@@ -90,7 +90,7 @@ public class NodeDetails {
         node.setDescription("SEAD Virtual Archive is part of the SEAD DataNet project [http://sead-data.net/]. "+
                 "\n SEAD Virtual Archive is a thin virtualization layer on top of multiple university Institutional Repositories focusing on " +
                 "preservation of long-tail scientific data.");
-        node.setBaseURL("http://seadva.d2i.indiana.edu:8081/sead/rest/mn");
+        node.setBaseURL(SeadQueryService.BASE_URL);
         Services services = new Services();
 
         Service service1 = new Service();
