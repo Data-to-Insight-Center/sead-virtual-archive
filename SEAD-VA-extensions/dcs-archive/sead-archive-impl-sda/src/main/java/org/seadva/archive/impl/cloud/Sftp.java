@@ -240,7 +240,31 @@ public class Sftp {
 
     }
 
+    public void downloadFile(String file, OutputStream destinationStream) throws JSchException, SftpException {
 
+        log.debug("download "+file);
+        if(channel.isConnected())
+            log.debug("true");
+        else
+            log.debug("false");
+        int tryNum = 1;
+        while(true){
+            try {
+                sftpChannel.get(file, destinationStream);
+            } catch (SftpException e) {
+                if(tryNum>3){
+                    e.printStackTrace();
+                    break;
+                }
+                else{
+                    tryNum++;
+                    continue;
+                }
+            }
+            break;
+        }
+
+    }
 
     public InputStream downloadFile(String source,String file) throws JSchException, SftpException {
 

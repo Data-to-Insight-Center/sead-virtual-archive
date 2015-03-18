@@ -332,14 +332,20 @@ public class ZipPackageCreator extends PackageCreatorBase
             );
             fileOutputStream = new FileOutputStream(new File(tarFileName));
             sftp.downloadFile(title, tarFileName, fileOutputStream);
+            fileOutputStream.flush();
+            fileOutputStream.close();
             fileOutputStream = new FileOutputStream(new File(sipFileName));
-            sftp.downloadFile(title, sipFileName, fileOutputStream);
+            sftp.downloadFile(sipFileName, fileOutputStream);
+            fileOutputStream.flush();
+            fileOutputStream.close();
             sftp.disConnectSession();
         }catch(FileNotFoundException e){
             e.printStackTrace();
         }catch(SftpException e){
             e.printStackTrace();
         }catch (JSchException e) {
+            e.printStackTrace();
+        }catch (IOException e){
             e.printStackTrace();
         }
 //        return;
