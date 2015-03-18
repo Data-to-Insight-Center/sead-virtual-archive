@@ -367,7 +367,7 @@ public class SdaArchiveStore implements SeadArchiveStore {
 //            }
             try {
                 if (sftp != null) {
-                    sftp.uploadFile(sipSource, t_sipDirectory + "/" + UUID.randomUUID().toString() + "_sip.xml", useMount);
+                    sftp.uploadFile(sipSource, t_sipDirectory + "/" + collectionName + "_sip.xml", useMount);
                 }
             }catch(NullPointerException npe){
                 System.err.println("SFTP SIP file upload failed!");

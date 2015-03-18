@@ -1474,11 +1474,6 @@ public class SeadApp implements EntryPoint {
         }
     }
 
-
-
-
-
-
     public static String datastreamURL(String id) {
         return accessurl + "datastream/" + encodeURLPath(id);
     }

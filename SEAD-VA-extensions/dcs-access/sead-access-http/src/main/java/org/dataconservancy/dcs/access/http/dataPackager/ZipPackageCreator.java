@@ -176,10 +176,14 @@ public class ZipPackageCreator extends PackageCreatorBase
         try {
             if (storageFormat.equalsIgnoreCase("tar")) {
                 long sftpStartTime = System.nanoTime();
-                getTarFromSDA("", collectionTitle);
+                getFilesFromSDA("", collectionTitle);
                 try {
                     zipOutputStream.putNextEntry(new ZipEntry(collectionTitle + ".tar"));
                     IOUtils.copy(new FileInputStream(collectionTitle + ".tar"), zipOutputStream);
+                    zipOutputStream.closeEntry();
+
+                    zipOutputStream.putNextEntry(new ZipEntry(collectionTitle + "_sip.xml"));
+                    IOUtils.copy(new FileInputStream(collectionTitle + "_sip.xml"), zipOutputStream);
                     zipOutputStream.closeEntry();
 
                     //Close the whole Zip stream
@@ -312,20 +316,24 @@ public class ZipPackageCreator extends PackageCreatorBase
         }
     }
 
-    void getTarFromSDA(String path, String title){
+
+    void getFilesFromSDA(String path, String title){
         if(path.length() > 0){
             path += "/" + title;
         }
 
         String tarFileName = title+".tar";
+        String sipFileName = title+"_sip.xml";
         FileOutputStream fileOutputStream = null;
         Sftp sftp = null;
         try {
-            fileOutputStream = new FileOutputStream(new File(tarFileName));
             sftp = new Sftp(
                     config.getSdahost(),config.getSdauser(),config.getSdapwd(),config.getSdamount()
             );
+            fileOutputStream = new FileOutputStream(new File(tarFileName));
             sftp.downloadFile(title, tarFileName, fileOutputStream);
+            fileOutputStream = new FileOutputStream(new File(sipFileName));
+            sftp.downloadFile(title, sipFileName, fileOutputStream);
             sftp.disConnectSession();
         }catch(FileNotFoundException e){
             e.printStackTrace();
