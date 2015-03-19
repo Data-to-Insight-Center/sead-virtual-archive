@@ -18,6 +18,7 @@ package org.dataconservancy.dcs.index.dcpsolr;
 import noNamespace.MetadataDocument;
 import noNamespace.PlaceType;
 import noNamespace.ThemeType;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.common.util.DateUtil;
@@ -969,9 +970,9 @@ public class SeadSolrMapper {
             du.setTitle(getFirst(doc, CoreMetadataField.TITLE));
         }
 
-
         if (has(doc, SeadSolrField.EntityField.ABSTRACT)) {
             String abstrct = get(doc, SeadSolrField.EntityField.ABSTRACT);
+            abstrct = StringEscapeUtils.unescapeHtml(abstrct);
             du.setAbstrct(abstrct);
         }
 
