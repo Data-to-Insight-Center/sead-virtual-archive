@@ -38,6 +38,8 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static org.dataconservancy.dcs.util.DateUtility.now;
@@ -144,9 +146,13 @@ public class SeadSolrMapper {
             add(doc, SeadSolrField.EntityField.ABSTRACT, du.getAbstrct());
         }
 
-        if(du.getPubdate()!=null) {
-            add(doc, SeadSolrField.EntityField.PUBDATE, du.getPubdate());
+        String pubDate = du.getPubdate();
+        if (pubDate == null) {                  // use current date
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = new Date();
+            pubDate = dateFormat.format(date);
         }
+        add(doc, SeadSolrField.EntityField.PUBDATE, pubDate);
 
         if(du.getContact()!=null) {
             add(doc, SeadSolrField.CoreMetadataField.CONTACT, du.getContact());
