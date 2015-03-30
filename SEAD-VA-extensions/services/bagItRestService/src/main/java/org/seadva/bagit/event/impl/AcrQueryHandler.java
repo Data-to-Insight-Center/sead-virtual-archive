@@ -81,6 +81,13 @@ public class AcrQueryHandler implements Handler{
         Map<String, String> mappings = Constants.metadataPredicateMap;
         // read available metadata for the resource
         Map<String, List<String>> metadata = util.readMetadata(mediciInstance, tagId);
+        // add generatedAt if not already set
+        List<String> genAtValues = metadata.get("http://sead-data.net/terms/generatedAt");
+        if (genAtValues == null) {
+            genAtValues = new ArrayList<String>();
+            metadata.put("http://sead-data.net/terms/generatedAt", genAtValues);
+        }
+        genAtValues.add(mediciInstance.getUrl() + "/#collection?uri=" + tagId);
         // iterate through the set of metadata items
         for (Map.Entry<String, List<String>> pair : metadata.entrySet()) {
             // if the current predicate is not in mappings, ignore it
