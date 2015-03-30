@@ -247,6 +247,33 @@ public final class JsDeliverableUnit
                 }
 
             }
+
+            // Setting ACR Location
+            JsArray<JsMetadata> metadata = getMetadata();
+            String acrLocation = null;
+            for (int i = 0; i < metadata.length(); i++) {
+                String meta = metadata.get(i).getMetadata();
+                if (meta.contains("http://purl.org/dc/terms/Location") && meta.contains("ncsa")
+                        && meta.contains("tag")) {
+                    String[] split = meta.split("<string>");
+                    meta = split[2];
+                    acrLocation = meta.substring(0, meta.indexOf("</string>"));
+                    break;
+                }
+            }
+            if (acrLocation != null && !"".equals(acrLocation)) {
+                Label acrLocLabel = Util.label(acrLocation, "Hyperlink");
+                final String finalACRLink = acrLocation;
+                acrLocLabel.addClickHandler(new ClickHandler() {
+
+                    @Override
+                    public void onClick(ClickEvent event) {
+                        Window.open(finalACRLink, "_blank", "");
+                    }
+                });
+                altLocPanel.add(acrLocLabel);
+            }
+
             table.setWidget(6, 1, altIdPanel);
             table.setWidget(8, 1, altLocPanel);
 
