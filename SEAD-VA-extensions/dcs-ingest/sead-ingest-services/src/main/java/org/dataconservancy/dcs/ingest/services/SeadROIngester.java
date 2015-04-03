@@ -30,18 +30,18 @@ import com.google.gson.GsonBuilder;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import com.sun.jersey.multipart.FormDataMultiPart;
 import com.sun.jersey.multipart.file.FileDataBodyPart;
 import org.dataconservancy.dcs.ingest.Events;
 import org.dataconservancy.dcs.ingest.services.runners.RulesExecutorBootstrap;
 import org.dataconservancy.model.dcp.Dcp;
-import org.dataconservancy.model.dcs.DcsDeliverableUnit;
-import org.dataconservancy.model.dcs.DcsEntity;
-import org.dataconservancy.model.dcs.DcsEntityReference;
-import org.dataconservancy.model.dcs.DcsEvent;
+import org.dataconservancy.model.dcs.*;
 import org.seadva.bagit.event.api.Event;
 import org.seadva.bagit.impl.ConfigBootstrap;
+import org.seadva.bagit.model.MediciInstance;
 import org.seadva.bagit.model.PackageDescriptor;
+import org.seadva.bagit.util.Constants;
 import org.seadva.model.SeadDeliverableUnit;
 import org.seadva.model.builder.xstream.SeadXstreamStaxModelBuilder;
 import org.seadva.model.pack.ResearchObject;
@@ -51,11 +51,10 @@ import javax.ws.rs.core.MediaType;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.net.HttpURLConnection;
+import java.net.URLEncoder;
 import java.text.ParseException;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class SeadROIngester
         extends IngestServiceBase
@@ -134,6 +133,62 @@ public class SeadROIngester
 
         if(response.getStatus()!=200&&response.getStatus()!=202)
             throw new IngestServiceException("Unable to register in RO subsystem");
+
+
+        // Setting 'Publication Date' and reset 'Proposed for Publication' flag in ACR
+        if(rootDu.getType().equals("PublishedObject")){
+
+            Collection<DcsMetadata> metadata = rootDu.getMetadata();
+            String acrLocation = null;
+            for(DcsMetadata data : metadata) {
+                String meta = data.getMetadata();
+                if(meta.contains("http://purl.org/dc/terms/Location") &&  meta.contains("ncsa")
+                        && meta.contains("tag")){
+                    String[] split = meta.split("<string>");
+                    meta = split[2];
+                    acrLocation = meta.substring(0, meta.indexOf("</string>"));
+                    break;
+                }
+
+            }
+
+            if(acrLocation != null) {
+                String uri = acrLocation.split("#collection")[0];
+                String id = acrLocation.split("#collection\\?uri=")[1];
+
+                String username = "";
+                String password = "";
+                List<MediciInstance> mediciInstanceList = Constants.acrInstances;
+                for(MediciInstance mediciInstance : mediciInstanceList){
+                    if(uri.contains(mediciInstance.getUrl())){
+                        username = mediciInstance.getUser();
+                        password = mediciInstance.getPassword();
+                    }
+
+                }
+
+                String update_url = uri + "resteasy/collections/" + URLEncoder.encode(id) + "/published";
+                Client client = Client.create();
+                client.addFilter(new HTTPBasicAuthFilter(username, password));
+                WebResource service = client.resource(update_url);
+
+                response = service
+                        .type(MediaType.MULTIPART_FORM_DATA)
+                        .put(ClientResponse.class, "");
+
+                int response_code = response.getStatus() ;
+
+                if(response_code == HttpURLConnection.HTTP_OK) {
+                    System.out.println("Published Date successfully updated in ACR");
+                } else if(response_code == HttpURLConnection.HTTP_FORBIDDEN){
+                    System.out.println("Error updating Published Date in ACR : Do not have permission to edit metadata");
+                } else if(response_code == HttpURLConnection.HTTP_CONFLICT){
+                    System.out.println("Error updating Published Date in ACR : 'Proposed for Publication' flag is not set");
+                }
+
+            }
+
+        }
 
         addRegisterEvent(sipRef, dcp);
     }
