@@ -167,7 +167,14 @@ public class SeadROIngester
 
                 }
 
-                String update_url = uri + "resteasy/collections/" + URLEncoder.encode(id) + "/published";
+                String doi = "";
+                for( DcsResourceIdentifier alternateID : rootDu.getAlternateIds()){
+                    if(alternateID.getTypeId().equalsIgnoreCase("doi")) {
+                        doi = alternateID.getIdValue();
+                    }
+                }
+
+                String update_url = uri + "resteasy/collections/" + URLEncoder.encode(id) + "/published?pid=" + URLEncoder.encode(doi.trim());
                 Client client = Client.create();
                 client.addFilter(new HTTPBasicAuthFilter(username, password));
                 WebResource service = client.resource(update_url);
