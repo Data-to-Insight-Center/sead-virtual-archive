@@ -105,7 +105,7 @@ public class AcrQueryHandler implements Handler{
                     aggregation.put(tagId, children);
 
                     if (!typeProperty.containsKey(child)) {
-                        if (child.contains("Collection"))
+                        if (child.contains("Collection") || child.contains(":col_"))
                             typeProperty.put(child, AggregationType.COLLECTION);
                         else {
                             typeProperty.put(child, AggregationType.FILE);

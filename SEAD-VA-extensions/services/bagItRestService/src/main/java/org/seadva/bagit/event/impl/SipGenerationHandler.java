@@ -222,10 +222,18 @@ public class SipGenerationHandler implements Handler {
                 parts = collectionId.split("/");
                 collectionId = parts[parts.length - 1];
             }
+            if(collectionId.indexOf(':') > -1) {
+                parts = collectionId.split(":");
+                collectionId = parts[parts.length - 1];
+            }
             String duId = collectionId;
 
             if (packageId.indexOf('/') > -1) {
                 parts = packageId.split("/");
+                packageId = parts[parts.length - 1];
+            }
+            if (packageId.indexOf(':') > -1){
+                parts = packageId.split(":");
                 packageId = parts[parts.length - 1];
             }
 
