@@ -142,7 +142,7 @@ public class SeadROIngester
             String acrLocation = null;
             for(DcsMetadata data : metadata) {
                 String meta = data.getMetadata();
-                if(meta.contains("http://purl.org/dc/terms/Location") &&  meta.contains("ncsa")
+                if(meta.contains("http://purl.org/dc/terms/source") &&  meta.contains("ncsa")
                         && meta.contains("tag")){
                     String[] split = meta.split("<string>");
                     meta = split[2];
