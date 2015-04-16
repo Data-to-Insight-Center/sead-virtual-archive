@@ -231,3 +231,5 @@ insert into metadata_type values('md:81', 'tag:tupeloproject.org,2006:/2.0/files
 insert into metadata_type values('md:82', 'tag:tupeloproject.org,2006:/2.0/gis/', 'hasGeoPoint');
 insert into metadata_type values('md:83', 'http://seadva.org/terms/','replica');
 insert into metadata_type values('md:84', 'http://purl.org/dc/elements/1.1/', 'creator');
+insert into metadata_type values('md:85', 'http://sead-data.net/vocab/', 'hasComment');
+insert into metadata_type values('md:86', 'http://sead-data.net/vocab/', 'hasGeoPoint');

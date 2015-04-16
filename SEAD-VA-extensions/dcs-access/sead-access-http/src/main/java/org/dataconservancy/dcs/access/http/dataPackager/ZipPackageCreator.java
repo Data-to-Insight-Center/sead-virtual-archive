@@ -502,7 +502,7 @@ public class ZipPackageCreator extends PackageCreatorBase
             for(DcsManifestationFile manifestationFile:manifestation.getManifestationFiles())
                 if(fileHashMap.containsKey(manifestationFile.getRef().getRef()))
                 {
-                    DcsFile file = fileHashMap.get(manifestationFile.getRef().getRef());
+                    DcsFile file = new SeadFile(fileHashMap.get(manifestationFile.getRef().getRef()));
                     if(totalSize + file.getSizeBytes()>twoGB) {
                         try {
                             duIds = new ArrayList<String>();

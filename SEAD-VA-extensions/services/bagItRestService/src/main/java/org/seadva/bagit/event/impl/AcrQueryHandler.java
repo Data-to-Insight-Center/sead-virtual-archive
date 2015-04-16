@@ -49,7 +49,7 @@ public class AcrQueryHandler implements Handler{
         typeProperty.put(tagId,AggregationType.COLLECTION);
 
         try {
-            populateAggregationREST(tagId, packageDescriptor.getMediciInstance());
+            populateAggregationREST(tagId, packageDescriptor.getMediciInstance(), true);
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (JSONException e) {
@@ -75,7 +75,7 @@ public class AcrQueryHandler implements Handler{
 
     AcrQueryUtil util = new AcrQueryUtil();
 
-    private void populateAggregationREST(String tagId, MediciInstance mediciInstance)
+    private void populateAggregationREST(String tagId, MediciInstance mediciInstance, boolean isCollection)
             throws IOException, JSONException {
         // ACR to ORE mappings
         Map<String, String> mappings = Constants.metadataPredicateMap;
@@ -95,7 +95,32 @@ public class AcrQueryHandler implements Handler{
                 continue;
             }
             List<String> values = pair.getValue();
-            if ((pair.getKey()).contains("hasPart")) {
+            Map<String, List<String>> existingProperties;
+            if (properties.containsKey(tagId))
+                existingProperties = properties.get(tagId);
+            else {
+                existingProperties = new HashMap<String, List<String>>();
+                properties.put(tagId, existingProperties);
+            }
+            for (String result : values) {
+                List<String> existingValues = existingProperties.get(mappings.get(pair.getKey()));
+                if (existingValues == null) {
+                    existingValues = new ArrayList<String>();
+                    existingProperties.put(mappings.get(pair.getKey()), existingValues);
+                }
+                existingValues.add(result);
+            }
+        }
+
+        if(!isCollection)
+            return;
+
+        Map<AggregationType, List<String>> aggregations = util.getAggregations(mediciInstance, tagId);
+
+        for (Map.Entry<AggregationType, List<String>> pair : aggregations.entrySet()) {
+            List<String> values = pair.getValue();
+
+            if ((pair.getKey()).equals(AggregationType.COLLECTION)) {
                 for (String child : values) {
                     List<String> children = aggregation.get(tagId);
                     if (children == null)
@@ -105,40 +130,34 @@ public class AcrQueryHandler implements Handler{
                     aggregation.put(tagId, children);
 
                     if (!typeProperty.containsKey(child)) {
-                        if (child.contains("Collection") || child.contains(":col_"))
-                            typeProperty.put(child, AggregationType.COLLECTION);
-                        else {
-                            typeProperty.put(child, AggregationType.FILE);
-                            Map<String, List<String>> existingProperties;
-                            if (properties.containsKey(child))
-                                existingProperties = properties.get(child);
-                            else
-                                existingProperties = new HashMap<String, List<String>>();
-                            List<String> existingValues = existingProperties.get(Constants.sourceTerm);
-                            if (existingValues == null)
-                                existingValues = new ArrayList<String>();
-                            existingValues.add(mediciInstance.getUrl() + "/resteasy/datasets/" + child + "/file");
-                            existingProperties.put(Constants.sourceTerm, existingValues);
-                            properties.put(child, existingProperties);
-                        }
+                        typeProperty.put(child, AggregationType.COLLECTION);
                     }
-                    populateAggregationREST(child, mediciInstance);
+                    populateAggregationREST(child, mediciInstance, true);
                 }
-            } else {
-                Map<String, List<String>> existingProperties;
-                if (properties.containsKey(tagId))
-                    existingProperties = properties.get(tagId);
-                else {
-                    existingProperties = new HashMap<String, List<String>>();
-                    properties.put(tagId, existingProperties);
-                }
-                for (String result : values) {
-                    List<String> existingValues = existingProperties.get(pair.getKey());
-                    if (existingValues == null) {
-                        existingValues = new ArrayList<String>();
-                        existingProperties.put(mappings.get(pair.getKey()), existingValues);
+            } else if((pair.getKey()).equals(AggregationType.FILE)){
+                for (String child : values) {
+                    List<String> children = aggregation.get(tagId);
+                    if (children == null)
+                        children = new ArrayList<String>();
+                    children.add(child);
+
+                    aggregation.put(tagId, children);
+
+                    if (!typeProperty.containsKey(child)) {
+                        typeProperty.put(child, AggregationType.FILE);
+                        Map<String, List<String>> existingProperties;
+                        if (properties.containsKey(child))
+                            existingProperties = properties.get(child);
+                        else
+                            existingProperties = new HashMap<String, List<String>>();
+                        List<String> existingValues = existingProperties.get(Constants.sourceTerm);
+                        if (existingValues == null)
+                            existingValues = new ArrayList<String>();
+                        existingValues.add(mediciInstance.getUrl() + "/resteasy/datasets/" + child + "/file");
+                        existingProperties.put(Constants.sourceTerm, existingValues);
+                        properties.put(child, existingProperties);
                     }
-                    existingValues.add(result);
+                    populateAggregationREST(child, mediciInstance, false);
                 }
             }
         }

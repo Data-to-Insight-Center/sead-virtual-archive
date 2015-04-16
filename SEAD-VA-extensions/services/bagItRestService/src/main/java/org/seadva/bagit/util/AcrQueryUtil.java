@@ -20,6 +20,7 @@ import org.sead.acr.common.MediciProxy;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.seadva.bagit.model.AggregationType;
 import org.seadva.bagit.model.MediciInstance;
 
 import java.io.IOException;
@@ -126,11 +127,12 @@ public class AcrQueryUtil {
             throws IOException {
         // call ACR REST api and get a dynamic metadata set of given tagID
         String path = "/resteasy/datasets/";
-        if (tagId.contains("Collection")) {
+        if (tagId.contains("Collection") || tagId.contains(":col_")) {
             path = "/resteasy/collections/";
         }
         String json = getProxy(t_instance).executeAuthenticatedGet(path +
                 URLEncoder.encode(tagId) + "/unique", "");
+              //  URLEncoder.encode(tagId) , "");
 
         Map<String, List<String>> metadata = new HashMap<String, List<String>>();
         try {
@@ -145,7 +147,14 @@ public class AcrQueryUtil {
                     continue;
                 }
                 // add predicate and value to the map
-                String predicate = context.get(child).toString();
+                String predicate;
+                if(child.equals("Comment")){
+                    predicate = "http://sead-data.net/vocab/hasComment";
+                } else if(child.equals("GeoPoint")) {
+                    predicate = "http://sead-data.net/vocab/hasGeoPoint";
+                } else {
+                    predicate = context.get(child).toString();
+                }
                 List<String> list = metadata.get(predicate);
                 if (list == null) {
                     list = new ArrayList<String>();
@@ -160,14 +169,61 @@ public class AcrQueryUtil {
                         Object arrayItem = array.get(i);
                         if (arrayItem instanceof String) {
                             list.add(arrayItem.toString());
+                        }else if(arrayItem instanceof JSONObject) {
+                            list.add(arrayItem.toString());
                         }
                     }
+                } else if (value instanceof JSONObject) {
+                    list.add(value.toString());
                 }
             }
         } catch (JSONException e) {
             // TODO : Use logging and handle exceptions
             e.printStackTrace();
         }
+
+        return metadata;
+    }
+
+    public Map<AggregationType, List<String>> getAggregations(MediciInstance t_instance, String tagId)
+            throws IOException {
+
+        String path = "/resteasy/collections/";
+;
+        Map<AggregationType, List<String>> metadata = new HashMap<AggregationType, List<String>>();
+
+            List<String> CollectionsList = new ArrayList<String>();
+            List<String> FilesList = new ArrayList<String>();
+            String json_collections = getProxy(t_instance).executeAuthenticatedGet(path +
+                    URLEncoder.encode(tagId) + "/collections", "");
+            String json_datasets = getProxy(t_instance).executeAuthenticatedGet(path +
+                    URLEncoder.encode(tagId) + "/datasets", "");
+            try {
+                JSONObject response = new JSONObject(json_collections);
+                Iterator itr = response.keys();
+                while (itr.hasNext()) {
+                    String child = (String) itr.next();
+                    if (child.equals(ACR_REST_CONTEXT)) {
+                        continue;
+                    }
+                    CollectionsList.add(response.getJSONObject(child).get("Identifier").toString());
+                }
+                response = new JSONObject(json_datasets);
+                itr = response.keys();
+                while (itr.hasNext()) {
+                    String child = (String) itr.next();
+                    if (child.equals(ACR_REST_CONTEXT)) {
+                        continue;
+                    }
+                    FilesList.add(response.getJSONObject(child).get("Identifier").toString());
+                }
+            } catch (JSONException e) {
+                // TODO : Use logging and handle exceptions
+                e.printStackTrace();
+            }
+            metadata.put(AggregationType.COLLECTION , CollectionsList);
+            metadata.put(AggregationType.FILE, FilesList);
+
         return metadata;
     }
 
