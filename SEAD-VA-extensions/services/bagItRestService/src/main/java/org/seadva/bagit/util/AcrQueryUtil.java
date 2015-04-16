@@ -123,11 +123,11 @@ public class AcrQueryUtil {
         return result;
     }
 
-    public Map<String, List<String>> readMetadata(MediciInstance t_instance, String tagId)
+    public Map<String, List<String>> readMetadata(MediciInstance t_instance, String tagId, boolean isCollection)
             throws IOException {
         // call ACR REST api and get a dynamic metadata set of given tagID
         String path = "/resteasy/datasets/";
-        if (tagId.contains("Collection") || tagId.contains(":col_")) {
+        if (isCollection) {
             path = "/resteasy/collections/";
         }
         String json = getProxy(t_instance).executeAuthenticatedGet(path +

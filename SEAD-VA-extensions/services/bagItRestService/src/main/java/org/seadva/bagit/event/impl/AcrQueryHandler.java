@@ -80,7 +80,7 @@ public class AcrQueryHandler implements Handler{
         // ACR to ORE mappings
         Map<String, String> mappings = Constants.metadataPredicateMap;
         // read available metadata for the resource
-        Map<String, List<String>> metadata = util.readMetadata(mediciInstance, tagId);
+        Map<String, List<String>> metadata = util.readMetadata(mediciInstance, tagId, isCollection);
         // add generatedAt if not already set
         List<String> genAtValues = metadata.get("http://sead-data.net/terms/generatedAt");
         if (genAtValues == null) {
