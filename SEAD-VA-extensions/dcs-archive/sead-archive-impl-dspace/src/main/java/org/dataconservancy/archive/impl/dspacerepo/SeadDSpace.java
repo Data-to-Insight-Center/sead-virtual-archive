@@ -582,6 +582,8 @@ public class SeadDSpace {
     private final QName DCTERMS_ABSTRACT = new QName(DCTERMS, "abstract", "dcterms");
     private final QName DCTERMS_CONFORMSTO = new QName(DCTERMS, "conformsTo", "dcterms");
     private final QName DCTERMS_PROVENANCE = new QName(DCTERMS, "provenance", "dcterms");
+    private final QName DCTERMS_CREATOR = new QName(DCTERMS, "creator", "dcterms");
+
 
 
     /*
@@ -627,8 +629,11 @@ public class SeadDSpace {
 
             Entry entry = abdera.newEntry();
             entry.addExtension(DC_TYPE).setText("Collection");
-
-            entry.addExtension(DC_RIGHTS).setText("Rights statement from SEAD");
+            if(unit.getRights() != null) {
+                entry.addExtension(DC_RIGHTS).setText(unit.getRights());
+            } else {
+                entry.addExtension(DC_RIGHTS).setText("Rights statement from SEAD");
+            }
             entry.addExtension(DCTERMS_ALTERNATIVE).setText("Dataset that supports a publication");
             entry.addExtension(DCTERMS_ABSTRACT).setText(abstr);
             entry.addExtension(DCTERMS_CONFORMSTO).setText("Creative Commons");
