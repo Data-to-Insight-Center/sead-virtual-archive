@@ -336,7 +336,11 @@ public class DspaceRepoArchiveStore implements SeadArchiveStore {
         int handleStart = tmp+8; // 8th character from start of string deposit
         String handle = duCollection.substring(handleStart,strLen-1);
         String dSpaceURL = duCollection.substring(duCollection.lastIndexOf("http"), duCollection.lastIndexOf(".edu") + 4);
-        handle = dSpaceURL+":8250/iuswdark/handle/"+handle;
+        if(rootDu.getPrimaryLocation().getName().equals("IU Scholarworks")) {
+            handle = dSpaceURL + ":8250/iuswdark/handle/" + handle;
+        } else {
+            handle = dSpaceURL+"/handle/"+handle;
+        }
         System.out.println("DspaceRepoArchiveStore: "+handle);
         for(DcsDeliverableUnit du :pkg.getDeliverableUnits())
         {
