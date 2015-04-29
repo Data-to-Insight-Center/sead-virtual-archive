@@ -128,13 +128,13 @@ public class ROServiceRESTTest extends JerseyTest {
 
     @Test
     public void testGetRO() throws IOException {
+        String entityID = "http://localhost:8080/sead-wf/entity/2021";
         WebResource webResource = resource();
         ClientResponse response = webResource.path("resource")
                 .path("ro")
                 .path(
                         URLEncoder.encode(
-                                "http://seadva-test.d2i.indiana.edu/sead-wf/entity/766381"
-
+                                entityID
                         )
                 )
                 .get(ClientResponse.class);
@@ -142,6 +142,25 @@ public class ROServiceRESTTest extends JerseyTest {
         StringWriter writer = new StringWriter();
         IOUtils.copy(response.getEntityInputStream(), writer);
         System.out.print(writer.toString());
+        assertEquals(200, response.getStatus());
+    }
+
+    @Test
+    public void testGetJsonLDRO() throws IOException {
+        String entityID = "http://localhost:8080/sead-wf/entity/2021";
+        WebResource webResource = resource();
+        ClientResponse response = webResource.path("resource")
+                .path("jsonldro")
+                .path(
+                        URLEncoder.encode(
+                                entityID
+                        )
+                )
+                .get(ClientResponse.class);
+
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(response.getEntityInputStream(), writer);
+        System.out.println(writer.toString());
         assertEquals(200, response.getStatus());
     }
 

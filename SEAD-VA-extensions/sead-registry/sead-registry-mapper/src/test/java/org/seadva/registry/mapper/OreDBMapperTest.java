@@ -42,11 +42,11 @@ public class OreDBMapperTest extends JerseyTest {
 
         OreDBMapper oreDBMapper =  new OreDBMapper("http://localhost:8080/registry/rest/");
         OREParser parser = OREParserFactory.getInstance("RDF/XML");
-        ResourceMap rem = parser.parse(OreDBMapperTest.class.getResourceAsStream("./Vortex2_Visualization_oaiore.xml"));
+//        ResourceMap rem = parser.parse(OreDBMapperTest.class.getResourceAsStream("./Vortex2_Visualization_oaiore.xml"));
 
-        oreDBMapper.mapfromOre(rem);
+//        oreDBMapper.mapfromOre(rem);
         ResourceMap returnedRem = oreDBMapper.toORE(
-                "http://sead-test/0489a707-d428-4db4-8ce0-1ace548bc653"
+                "http://localhost:8080/sead-wf/entity/2021"
         );
         FileWriter oreStream = new FileWriter("/tmp/output_oaiore.xml");
         BufferedWriter ore = new BufferedWriter(oreStream);

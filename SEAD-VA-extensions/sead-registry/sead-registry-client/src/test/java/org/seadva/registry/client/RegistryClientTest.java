@@ -126,4 +126,15 @@ public class RegistryClientTest extends JerseyTest {
         client.postAgent(agent, "Curator");
     }
 
+    @Test
+    public void testGetAggregation() throws IOException{
+        List<AggregationWrapper> output = client.getAggregation("http://localhost:8080/sead-wf/entity/1015");
+        System.out.println(output.size());
+        String id = null;
+        for(AggregationWrapper x : output) {
+            id = x.getChild().getId();
+            System.out.println(x.getChild().getId()+" , "+x.getChild().getEntityName()+" , "+x.getChild().getEntityCreatedTime());
+        }
+    }
+
 }

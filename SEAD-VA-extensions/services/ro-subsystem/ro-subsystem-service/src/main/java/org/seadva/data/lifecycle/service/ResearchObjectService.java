@@ -38,6 +38,7 @@ import org.seadva.registry.database.model.obj.vaRegistry.*;
 import org.seadva.registry.database.model.obj.vaRegistry.Agent;
 import org.seadva.registry.mapper.DcsDBMapper;
 import org.seadva.registry.mapper.OreDBMapper;
+import org.seadva.registry.mapper.JsonDBMapper;
 import org.springframework.beans.factory.annotation.Required;
 
 import javax.ws.rs.*;
@@ -109,6 +110,15 @@ public class ResearchObjectService {
         resourceMapXml = doc.toString();
         return Response.ok(  resourceMapXml
         ).build();
+    }
+
+    @GET
+    @Path("/jsonldro/{entityId}")
+    public Response getJSONLDResearchObject( @PathParam("entityId") String roIdentifier) throws Exception {
+
+        String jsonlddoc = new JsonDBMapper(registryServiceUrl).toJSONLD(roIdentifier);
+        System.out.println("RESEARCH OBJECT SERVICE: "+jsonlddoc);
+        return Response.ok(jsonlddoc).build();
     }
 
     @GET
