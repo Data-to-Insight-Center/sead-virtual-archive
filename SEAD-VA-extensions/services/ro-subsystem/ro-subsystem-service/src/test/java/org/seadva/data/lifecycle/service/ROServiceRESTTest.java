@@ -146,25 +146,6 @@ public class ROServiceRESTTest extends JerseyTest {
     }
 
     @Test
-    public void testGetJsonLDRO() throws IOException {
-        String entityID = "http://localhost:8080/sead-wf/entity/2021";
-        WebResource webResource = resource();
-        ClientResponse response = webResource.path("resource")
-                .path("jsonldro")
-                .path(
-                        URLEncoder.encode(
-                                entityID
-                        )
-                )
-                .get(ClientResponse.class);
-
-        StringWriter writer = new StringWriter();
-        IOUtils.copy(response.getEntityInputStream(), writer);
-        System.out.println(writer.toString());
-        assertEquals(200, response.getStatus());
-    }
-
-    @Test
     public void testGetLineageGraph() throws IOException {
         WebResource webResource = resource();
 
