@@ -101,7 +101,7 @@ public class ObjectChecksum {
                     {
                         Checksum checksum = new Checksum();
                         if(checksumAlgorithm!=null){
-                            if(SeadQueryService.sead2d1fixity.get(fixity.getAlgorithm()) == checksumAlgorithm){
+                            if(SeadQueryService.sead2d1fixity.get(fixity.getAlgorithm()).equals(checksumAlgorithm)){
                                 checksum.setAlgorithm(checksumAlgorithm);
                                 checksum.setValue(fixity.getValue());
 

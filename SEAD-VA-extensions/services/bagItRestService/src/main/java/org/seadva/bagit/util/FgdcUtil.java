@@ -100,9 +100,9 @@ public class FgdcUtil {
         
         TimeinfoType timeinfoType = timeperdType.addNewTimeinfo();
         
-      //  RngdatesType rngdatesType = timeinfoType.addNewRngdates();
-       // rngdatesType.setBegdate(SeadNCEDConstants.DEFAULT_BEGINDATE);
-      //  rngdatesType.setEnddate(SeadNCEDConstants.DEFAULT_ENDDATE);
+        RngdatesType rngdatesType = timeinfoType.addNewRngdates();
+        rngdatesType.setBegdate(SeadNCEDConstants.DEFAULT_BEGINDATE);
+        rngdatesType.setEnddate(SeadNCEDConstants.DEFAULT_ENDDATE);
         
         timeperdType.setCurrent(SeadNCEDConstants.DEFAULT_CURRENTREF);
         
@@ -160,6 +160,8 @@ public class FgdcUtil {
                 cntaddrType.setCity("Unknown");
                 cntaddrType.setState("Unknown");
                 cntaddrType.setPostal("00000");
+                CntvoiceType cntvoiceType = metadataContact.addNewCntvoice();
+                cntvoiceType.setStringValue("Unknown");
                 metcType.setCntinfo(metadataContact);
             }
         }

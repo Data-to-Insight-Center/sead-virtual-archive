@@ -13,7 +13,7 @@
 
     <xsl:template match="dateUploaded">
         <xsl:if test="contains(.,'+00:00')">
-            <xsl:element name="dateSysMetadataModified">
+            <xsl:element name="dateUploaded">
                 <xsl:value-of select="concat(substring-before(.,'+00:00'),'Z')"/>
             </xsl:element>
         </xsl:if>

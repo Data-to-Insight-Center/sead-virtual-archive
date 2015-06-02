@@ -125,12 +125,12 @@ public class NodeDetails {
 
         Synchronization synchronization = new Synchronization();
         Schedule schedule = new Schedule();
-        schedule.setHour("*");
+        schedule.setHour("23");
         schedule.setMday("*");
-        schedule.setMin("*");
+        schedule.setMin("00");
         schedule.setMon("*");
-        schedule.setSec("*");
-        schedule.setWday("3");
+        schedule.setSec("00");
+        schedule.setWday("?");
         schedule.setYear("*");
         synchronization.setSchedule(schedule);
 

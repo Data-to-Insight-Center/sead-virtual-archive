@@ -45,8 +45,8 @@ public class SeadNCEDConstants {
     public static final String DEFAULT_PURPOSE = "Data related to study of Earth Surface Dynamics";
     public static final String DEFAULT_CONTACTPERSON = "National Center for Earth-surface Dynamics";
     
-   // public static final String DEFAULT_BEGINDATE = "01/01/2007";
-   // public static final String DEFAULT_ENDDATE = "05/10/2011";
+    public static final String DEFAULT_BEGINDATE = "20070101";
+    public static final String DEFAULT_ENDDATE = "20070101";
     
     public static final String DEFAULT_UUID = "TEST";
     public static final String DEFAULT_ONLINK = "http://bad.onlink"; 
@@ -76,7 +76,7 @@ public class SeadNCEDConstants {
     public static final String DEFAULT_ACCESSCONSTRAINT = "Public";
     public static final String DEFAULT_USECONSTRAINT = "Permission from Owner only";
     
-    public static final String DEFAULT_METD = "01/01/2007";
+    public static final String DEFAULT_METD = "20070101";
     
     public static final CntinfoType DEFAULT_METADATACONTACT = CntinfoType.Factory.newInstance();
     static {

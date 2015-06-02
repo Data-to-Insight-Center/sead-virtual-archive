@@ -185,6 +185,11 @@ public class MetadataGenerator extends IngestServiceBase
         metadataFile.addAlternateId(identifier);
         metadataFile.setSizeBytes(metadataFilePath.length());
 
+        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        Date now = new Date();
+        String strDate = sdfDate.format(now);
+        metadataFile.setMetadataUpdateDate(strDate);
+
         researchObject.addFile(metadataFile);
 
         BatchIndexer<ResearchObject> indexer = new ROBatchIndexer(this.solrService, null);
