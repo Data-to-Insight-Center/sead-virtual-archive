@@ -109,6 +109,7 @@ public class SeadQueryService {
             sead2d1Format.put("http://www.fgdc.gov/schemas/metadata/fgdc-std-001-1998.xsd","FGDC-STD-001-1998");
             sead2d1Format.put("http://www.openarchives.org/ore/terms","http://www.openarchives.org/ore/terms");
             sead2d1Format.put( "application/mpeg","application/mp4");
+            sead2d1Format.put( "http://ns.dataone.org/metadata/schema/onedcx/v1.0","http://ns.dataone.org/metadata/schema/onedcx/v1.0");
 
             d12seadFormat = new HashMap<String, String>();
             d12seadFormat.put( "application/vnd.ms-excel", "application/excel");
@@ -116,6 +117,7 @@ public class SeadQueryService {
             d12seadFormat.put("FGDC-STD-001-1998", "http://www.fgdc.gov/schemas/metadata/fgdc-std-001-1998.xsd");
             d12seadFormat.put("http://www.openarchives.org/ore/terms", "http://www.openarchives.org/ore/terms");
             d12seadFormat.put("application/mp4", "application/mpeg");
+            d12seadFormat.put("http://ns.dataone.org/metadata/schema/onedcx/v1.0", "http://ns.dataone.org/metadata/schema/onedcx/v1.0");
 
             d1toSeadfixity = new HashMap<String, String>();
             d1toSeadfixity.put( "SHA-1", "SHA-1");
