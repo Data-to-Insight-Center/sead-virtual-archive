@@ -78,7 +78,7 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-core</artifactId>
       <scope>test</scope>
-      <version>3.0.6.RELEASE</version>
+      <version>4.3.19.RELEASE</version>
     </dependency>
     
     <dependency>
