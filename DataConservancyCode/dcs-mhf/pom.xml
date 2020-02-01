@@ -209,7 +209,7 @@
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-core</artifactId>
-        <version>3.0.7.RELEASE</version>
+        <version>4.3.19.RELEASE</version>
       </dependency>
 
       <!-- We need Xerces >= 2.10.0 to avoid https://issues.apache.org/jira/browse/XERCESJ-589 -->
